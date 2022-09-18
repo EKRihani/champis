@@ -1,0 +1,46 @@
+N;code;Nom;Type;Hyménophore1;Hyménophore2;Chair;Chapeau.Diametre;Chapeau.Forme;Chapeau.Surface;Chapeau.Couleur;Lames.Attache;Lames.Couleur;Lames.Espace;Pied.Hauteur;Pied.Largeur;Pied.Racine;Pied.Surface;Pied.Couleur;Voile.Type;Voile.Couleur;Anneau.Presence;Anneau.Type;Spore.Couleur;Habitat
+109;828;Amanita fulva;Comestible cuit;Lames;;fibreuse;7;ovoïde, étalé mammelonné;lisse, viscidule;roux, orange, fauve;libre;blanc;peu serrées;12;1;;?;blanc, roux;présent;;non;;blanc;forêt, feuillus
+110;829;Amanita crocea;Comestible cuit;Lames;;fibreuse;15;ovoïde, [étalé mammelonné];lisse, viscidule;jaune, orange;libre;blanc, jaune;peu serrées;20;2,5;;tigré, chiné;blanc, jaune, orange;présent;;non;;blanc;forêt, feuillus
+111;827;Amanita vaginata;Comestible cuit;Lames;;fibreuse;12;ovoïde, [campanulé mammelonné], [étalé];lisse, viscidule;gris;libre;blanc;peu serrées;20;1,2;;pruineux, chiné;blanc;présent;;non;;blanc;forêt
+112;832;Amanita lividopallescens;Comestible cuit;Lames;;fibreuse;15;ovoïde convexe, étalé submammelonné;?;ocre, crème;libre;blanc;assez serrées;20;2,5;;pelucheux;blanc, gris, jaune;présent;;non;;blanc;feuillus, charmilles
+228;1509;Lactarius piperatus;Inconnu;Lames;;cassante avec lait;12;?;ruguleux;blanc, [ocre];arquées décurrentes;crème;très serrées;12;4;;?;blanc, crème;absent;;non;;brun;feuillus
+229;1513;Lactarius vellereus;Inconnu;Lames;;cassante avec lait;25;?;tomento-strigueux;blanc;fourchues subdécurrentes;blanc, crème;espacées;8;5;;?;blanc, crème;absent;;non;;brun;feuillus, (conifères)
+230;1512;Lactarius controversus;Inconnu;Lames;;cassante avec lait;20;?;lisse;blanc;fourchues arquées subdécurrentes;crème, rose;serrées;7;4;;?;blanc, rose;absent;;non;;brun;feuillus
+231;1522;Lactarius torminosus;Inconnu;Lames;;cassante avec lait;12;?;laineux;rouge, rose;subdécurrentes;blanc, rose;?;6;3;;?;blanc, [rose], [beige];absent;;non;;brun;bouleaux
+232;1523;Lactarius pubescens;Inconnu;Lames;;cassante avec lait;10;?;laineux;blanc, ocre;subdécurrentes;blanc, rose;?;5;4;;?;blanc;absent;;non;;brun;bouleaux, friches, pelouses
+233;1550;Lactarius deliciosus;Bon;Lames;;cassante avec lait;15;?;zoné;ocre, rouge;?;orange, vert;?;7;2,5;;?;subconcolore;absent;;non;;brun;pins
+234;1544;Lactarius blennius;Inconnu;Lames;;cassante avec lait;10;?;visqueux;brun, (gris);?;blanc, [crème];?;7;2,5;;?;subconcolore;absent;;non;;brun;hêtres
+235;1541;Lactarius necator;Inconnu;Lames;;cassante avec lait;15;?;brillant;brun, olive;subdécurrentes;blanc, [vert];serrées;7;3;;?;subconcolore;absent;;non;;brun;forêt, bouleaux
+236;1529;Lactarius zonarius;Inconnu;Lames;;cassante avec lait;12;?;brillant;jaune, ocre;décurrentes;crème;?;5;3;;?;blanc, brun;absent;;non;;brun;plaine
+237;1581;Lactarius quietus;Inconnu;Lames;;cassante avec lait;12;?;micacé;brun, roux, gris, rouge;?;crème, [roux];serrées;7;2;;?;brun;absent;;non;;brun;chênes
+238;1579;Lactarius chrysorrheus;Inconnu;Lames;;cassante avec lait;8;?;zoné, micacé;orange;?;crème, rose, orange;serrées;7;2;;?;blanc, [crème], [orange];absent;;non;;?;feuillus, chênes
+239;1566;Lactarius uvidus;Inconnu;Lames;;cassante avec lait;10;?;visqueux;gris, lilas, beige, rose;subdécurrentes;crème;?;10;2;;?;blanc, jaune;absent;;non;;?;feuillus, (conifères)
+240;1573;Lactarius glyciosmus;Inconnu;Lames;;cassante avec lait;5;?;pruineux, micacé;gris, beige, lilas;?;crème, orange;assez serrées;5;1;;?;blanc, [crème], [rose], [idem];absent;;non;;?;bouleaux
+241;1602;Lactarius azonites;Inconnu;Lames;;cassante avec lait;10;?;velouté;brun, gris;?;ocre, saumon;assez serrées;7;1,5;;?;subconcolore;absent;;non;;orange;charmes, hêtres
+242;1542;Lactarius vietus;Inconnu;Lames;;cassante avec lait;8;?;brillant;lilas, (gris), (beige);?;blanc, [crème];?;7;2;;?;subconcolore;absent;;non;;orange;bouleaux, pins
+243;1586;Lactarius camphoratus;Inconnu;Lames;;cassante avec lait;6;?;?;brun;?;ocre;assez serrées;5;1;;?;brun;absent;;non;;orange;forêt, (bois pourri)
+244;1569;Lactarius rufus;Inconnu;Lames;;cassante avec lait;10;?;feutré;brun, roux;?;blanc, [crème];assez serrées;10;2;;?;subconcolore;absent;;non;;orange;pins, bouleaux
+245;1571;Lactarius helvus;Toxique;Lames;;cassante avec lait;15;?;feutré;beige, ocre, (rouge), (jaune);?;crème, [ocre], [rose];serrées;10;3;;?;subconcolore;absent;;non;;orange;conifères, (bouleaux)
+246;1598;Lactarius pterosporus;Inconnu;Lames;;cassante avec lait;8;?;ridé;ocre;?;crème, [saumon];très serrées;6;1;;?;beige;absent;;non;;orange;charmes
+247;1578;Lactarius subsericatus;Inconnu;Lames;;cassante avec lait;10;?;lisse, velouté;roux, rouge;?;crème, ocre;peu serrées;8;2;;cannelé;subconcolore, brun, roux;absent;;non;;orange;épicéas
+248;1589;Lactarius cimicarius;Inconnu;Lames;;cassante avec lait;5;?;sec, chagriné;brun, noir, [gris];?;crème, rose, roux;assez serrées;5;0,5;;ridé;subconcolore;absent;;non;;orange;feuillus
+249;1582;Lactarius subdulcis;Inconnu;Lames;;cassante avec lait;6;?;mat;beige, brun, rose;?;blanc, [crème];?;6;1;;mat;crème, jaune, rose;absent;;non;;orange;feuillus, hêtres
+250;1593;Lactarius tabidus;Inconnu;Lames;;cassante avec lait;6;?;ridé;ocre, rouge;adnées subdécurrentes;crème, [beige], [rose];assez serrées;5;0,8;;?;subconcolore;absent;;non;;orange;feuillus, hêtres, (conifères)
+251;1595;Lactarius lacunarum;Inconnu;Lames;;cassante avec lait;8;?;lisse, furfuracé;roux;adnées subdécurrentes;crème, [beige], [orange];assez serrées;5;1;;ridé;subconcolore;absent;;non;;jaune;ornières, mares
+252;1576;Lactarius aurantiacus;Inconnu;Lames;;cassante avec lait;6;?;lisse;orange, jaune;?;blanc, [crème];assez serrées;6;1;;?;subconcolore;absent;;non;;?;feuillus, (conifères)
+253;1532;Lactarius pyrogalus;Inconnu;Lames;;cassante avec lait;10;?;ridulé, zoné;beige, gris, ocre;adnées;ocre, orange;espacées;7;2;;ridulé;subconcolore;absent;;non;;jaune;noisetiers
+254;1547;Lactarius trivialis;Inconnu;Lames;;cassante avec lait;15;?;visqueux;ocre, lilas, beige, brun;arquées adnées décurrentes;crème, [ocre];?;15;4;;lisse, ridulé;blanc, crème;absent;;non;;jaune;conifères, bouleaux, marécages
+298;851;Amanita phalloides;Mortel;Lames;;fibreuse;15;hémisphérique, étalé convexe;lisse;vert;libre;blanc;assez serrées;20;3;;?;blanc;présent;;oui;annuliforme;blanc;forêt, chênes
+299;854;Amanita virosa;Mortel;Lames;;fibreuse;10;ovoïde campanulé, [étalé];lisse;blanc;libre;blanc;assez serrées;15;1,5;;pelucheux, laineux;blanc;présent;;oui;annuliforme;blanc;forêt, conifères, feuillus
+300;851;Amanita phalloides var. alba;Mortel;Lames;;fibreuse;15;hémisphérique, étalé convexe;lisse;blanc;libre;blanc;assez serrées;20;3;;?;blanc;présent;;oui;annuliforme;blanc;forêt, chênes
+301;848;Amanita ovoidea;Bon;Lames;;fibreuse;30;?;lisse;blanc;libre;blanc;?;15;5;;?;blanc;présent;;oui;annuliforme;blanc;forêt, pré
+302;835;Amanita caesarea;Bon;Lames;;fibreuse;20;?;lisse;orange;libre;jaune;?;15;3;;?;jaune;présent;;oui;annuliforme;blanc;
+303;855;Amanita citrina;Inconnu;Lames;;fibreuse;10;hémisphérique, étalé;flocons;jaune;libre;blanc;serrées;15;2;;?;blanc, jaune;présent;;oui;annuliforme;blanc;forêt
+304;855;Amanita citrina var. alba;Inconnu;Lames;;fibreuse;10;hémisphérique, étalé;flocons;blanc;libre;blanc;serrées;15;2;;?;blanc;présent;;oui;annuliforme;blanc;forêt
+305;857;Amanita porphyria;Inconnu;Lames;;fibreuse;8;hémisphérique, [étalé convexe];fibrilleux;gris, violet;libre;blanc, gris;serrées;12;2;;?;blanc, gris, violet;présent;;oui;annuliforme;blanc;forêt
+306;837;Amanita muscaria;Toxique;Lames;;fibreuse;20;?;flocons;rouge, orange;libre;blanc;?;25;3;;?;blanc;présent;;oui;annuliforme;blanc;forêt
+307;839;Amanita pantherina;Toxique;Lames;;fibreuse;10;?;flocons, lisse;brun;libre;blanc;?;15;3;;?;blanc;présent;;oui;annuliforme;blanc;feuillus, conifères
+308;838;Amanita gemmata;Toxique;Lames;;fibreuse;10;?;?;crème, jaune;libre;blanc;?;15;3;;?;blanc;présent;;oui;annuliforme;blanc;feuillus, conifères
+309;843;Amanita strobiliformis;Bon;Lames;;fibreuse;20;?;flocons;blanc, [gris];libre;blanc, crème;?;25;4;;?;blanc;présent;;oui;annuliforme;blanc;forêts, charmes, chênes
+310;842;Amanita rubescens;Bon;Lames;;fibreuse;15;?;flocons;blanc, ocre;libre;blanc;?;15;4;;?;blanc, brun;présent;;oui;annuliforme;blanc;feuillus, conifères
+311;841;Amanita spissa;Bon;Lames;;fibreuse;15;?;flocons;brun;libre;blanc, gris;?;15;3;;?;blanc, bistre;présent;;oui;annuliforme;blanc;feuillus, conifères
