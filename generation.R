@@ -46,9 +46,9 @@ fonc_split <- function(x){str_split(x, ",\\s*", simplify = TRUE)}
 
 # Séparation des espèces et des critères
 for (n in 1:n_especes){
+  assign(champ_liste[n], NULL)
   assign(champ_liste[n], as.list(data_champis[n,]))
   assign(champ_liste[n], map(.x = eval(parse(text = champ_liste[n])), .f = fonc_split))
-  assign(champ_liste[n][numeriques], map(.x = eval(parse(text = champ_liste[numeriques])), .f = fonc_split))
   ordre <- paste0(champ_liste[n],"[numeriques] <- map(.x = ", champ_liste[n], "[numeriques], .f = as.numeric)")
   eval(parse(text = ordre))
 }
@@ -59,33 +59,49 @@ for (n in 1:n_especes){
 
 lots_liste <- paste0("lot", data_champis$N)
 
-n_champis <- 1e3      # Nombre de champignons pour chaque espèce
+n_champis <- 1e2      # Nombre de champignons pour chaque espèce
 f_crois <- 2          # Facteur de croissance
+tailles <- names(structure[numeriques[-c(1,2)]])    # Facteurs de taille
+textes <- names(structure[-numeriques])
+
+func_aleaN <- function(x){x * rnorm(n = n_champis, mean = 1, sd = .1)}
+func_aleaT <- function(dat, val){
+  ordre <- paste0("sample(x = ", dat, "[['", val, "']], size = n_champis, replace = TRUE)")
+  eval(parse(text = ordre))
+  } # A TESTER
 
 for (n in 1:n_especes){
   assign(lots_liste[n], NULL)
   ordre <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)")
   eval(parse(text = ordre))
-  
+  ordre_num1 <- paste0(lots_liste[n], "[tailles] <- lapply(", 
+                       champ_liste[n], "[tailles], '*', ",
+                       lots_liste[n], "$FacteurTaille)")
+  eval(parse(text = ordre_num1))
+  ordre_num2 <- paste0(lots_liste[n], "[tailles] <- map(.x = ",
+                       lots_liste[n], "[tailles], .f = func_aleaN)")
+    eval(parse(text = ordre_num2))
+#  ordre_texte <- paste0(lots_liste[n], "[textes] <- lapply(",  )    # A FINIR AVEC aleaT
 }
 
 
-lot242$Habitat <- sample(x = champ242$Habitat, size = n_champis, replace = TRUE)
-lot242$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)
-lot242$Chapeau.Diametre <- lot242$FacteurTaille*champ242$Chapeau.Diametre*rnorm(n = n_champis, mean = 1, sd = .1)
-lot242$Pied.Hauteur <- lot242$FacteurTaille*champ242$Pied.Hauteur*rnorm(n = n_champis, mean = 1, sd = .1)
-lot242$Pied.Largeur <- lot242$FacteurTaille*champ242$Pied.Largeur*rnorm(n = n_champis, mean = 1, sd = .1)
-#plot(x= lot242$Chapeau.Diametre, y = lot242$Pied.Hauteur, col = rgb(0,0,0, alpha = 0.01), pch = 16)
+lot242$Habitat <- sample(x = champ242[["Habitat"]], size = n_champis, replace = TRUE)
+# <- sample(x = champ242[[textes[m]]], size = n_champis, replace = TRUE) # A FINIR
+
+
+# sapply(lot242, function(x) x[2]) # LECTURE DONNEES CHAMPI No2
+
+plot(x= lot242$Chapeau.Diametre, y = lot242$Pied.Hauteur, col = rgb(0,0,0, alpha = 0.05), pch = 16)
 
 ggplot(data = as.data.frame(lot242), aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
   # geom_density2d_filled(bins = 100) +
   # geom_density2d(bins=15, color = "white", alpha = .2) +
   # scale_fill_viridis_d(option = "H", direction = 1) + #B,F,G (H)
   # theme(legend.position="none") +
-   stat_density_2d(geom = "polygon", contour = TRUE, contour_var = "density",
+   stat_density_2d(geom = "polygon", contour = TRUE, contour_var = "count", #density, count, ndensity
                    aes(fill = after_stat(level)),
-                   bins = 200, n = 35) +
-   scale_fill_viridis_c(option = "G", direction = -1) + #B,F,G (H)
+                   bins = 50, n = 20) +
+   scale_fill_viridis_c(option = "F", direction = -1) + #B,F,G (H)
   theme_classic() +
   geom_vline(xintercept = champ242$Chapeau.Diametre, linetype = "dotted", color = "red") +
   geom_hline(yintercept = champ242$Pied.Hauteur, linetype = "dotted", color = "red")
