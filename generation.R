@@ -21,26 +21,55 @@ data_champis <- read.csv(data_fichier,
                          encoding = "UTF-8")
 
 
+###############################
+#     PREPARATION DONNEES     #
+###############################
+
+# Ajout de valeurs NA si NA ou vide
 data_champis <- na_if(data_champis, "NA")
 data_champis <- na_if(data_champis, "")
 
+# Récupération infos de base
 structure <- sapply(X = data_champis,
                     FUN = class,
                     simplify = TRUE)
-
+numeriques <- which(structure %in% c("integer", "numeric"))
 n_especes <- nrow(data_champis)
-
 champ_liste <- paste0("champ", data_champis$N)
 
+# Fonction : séparation des chaînes (séparateur = virgule)
+fonc_split <- function(x){str_split(x, ",\\s*", simplify = TRUE)}
+
+###############################
+#     LISTES DES ESPECES      #
+###############################
+
+# Séparation des espèces et des critères
 for (n in 1:n_especes){
   assign(champ_liste[n], as.list(data_champis[n,]))
+  assign(champ_liste[n], map(.x = eval(parse(text = champ_liste[n])), .f = fonc_split))
+  assign(champ_liste[n][numeriques], map(.x = eval(parse(text = champ_liste[numeriques])), .f = fonc_split))
+  ordre <- paste0(champ_liste[n],"[numeriques] <- map(.x = ", champ_liste[n], "[numeriques], .f = as.numeric)")
+  eval(parse(text = ordre))
 }
 
-champ242$Habitat <- str_split(champ242$Habitat, ",\\s*", simplify = TRUE)
+#############################
+#     CREATION DES LOTS     #
+#############################
 
-lot242 <- NULL
-n_champis <- 1e5
-f_crois <- 2
+lots_liste <- paste0("lot", data_champis$N)
+
+n_champis <- 1e3      # Nombre de champignons pour chaque espèce
+f_crois <- 2          # Facteur de croissance
+
+for (n in 1:n_especes){
+  assign(lots_liste[n], NULL)
+  ordre <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)")
+  eval(parse(text = ordre))
+  
+}
+
+
 lot242$Habitat <- sample(x = champ242$Habitat, size = n_champis, replace = TRUE)
 lot242$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)
 lot242$Chapeau.Diametre <- lot242$FacteurTaille*champ242$Chapeau.Diametre*rnorm(n = n_champis, mean = 1, sd = .1)
