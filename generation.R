@@ -59,35 +59,30 @@ for (n in 1:n_especes){
 
 lots_liste <- paste0("lot", data_champis$N)
 
-n_champis <- 1e2      # Nombre de champignons pour chaque espèce
+n_champis <- 1e3      # Nombre de champignons pour chaque espèce
 f_crois <- 2          # Facteur de croissance
 tailles <- names(structure[numeriques[-c(1,2)]])    # Facteurs de taille
-textes <- names(structure[-numeriques])
+textes <- names(structure[-numeriques & 1:2])
 
-func_aleaN <- function(x){x * rnorm(n = n_champis, mean = 1, sd = .1)}
-func_aleaT <- function(dat, val){
-  ordre <- paste0("sample(x = ", dat, "[['", val, "']], size = n_champis, replace = TRUE)")
-  eval(parse(text = ordre))
-  } # A TESTER
+func_alea <- function(x){x * rnorm(n = n_champis, mean = 1, sd = .1)}
 
 for (n in 1:n_especes){
   assign(lots_liste[n], NULL)
-  ordre <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)")
-  eval(parse(text = ordre))
+  ordre_num0 <- paste0(lots_liste[n], "[1:2] <-", champ_liste[n], "[1:2]")
+  ordre_texte <- paste0(lots_liste[n], "$", textes, 
+                         "<- sample(x = ", champ_liste[n], "$", textes, ", size = n_champis, replace = TRUE)")
+  ordre_fac <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)")
   ordre_num1 <- paste0(lots_liste[n], "[tailles] <- lapply(", 
                        champ_liste[n], "[tailles], '*', ",
                        lots_liste[n], "$FacteurTaille)")
-  eval(parse(text = ordre_num1))
   ordre_num2 <- paste0(lots_liste[n], "[tailles] <- map(.x = ",
-                       lots_liste[n], "[tailles], .f = func_aleaN)")
-    eval(parse(text = ordre_num2))
-#  ordre_texte <- paste0(lots_liste[n], "[textes] <- lapply(",  )    # A FINIR AVEC aleaT
+                       lots_liste[n], "[tailles], .f = func_alea)")
+  eval(parse(text = ordre_num0))
+  eval(parse(text = ordre_texte))
+  eval(parse(text = ordre_fac))
+  eval(parse(text = ordre_num1))
+  eval(parse(text = ordre_num2))
 }
-
-
-lot242$Habitat <- sample(x = champ242[["Habitat"]], size = n_champis, replace = TRUE)
-# <- sample(x = champ242[[textes[m]]], size = n_champis, replace = TRUE) # A FINIR
-
 
 # sapply(lot242, function(x) x[2]) # LECTURE DONNEES CHAMPI No2
 
