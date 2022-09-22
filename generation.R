@@ -85,19 +85,3 @@ for (n in 1:n_especes){
 }
 
 # sapply(lot242, function(x) x[2]) # LECTURE DONNEES CHAMPI No2
-
-plot(x= lot242$Chapeau.Diametre, y = lot242$Pied.Hauteur, col = rgb(0,0,0, alpha = 0.05), pch = 16)
-
-ggplot(data = as.data.frame(lot242), aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
-  # geom_density2d_filled(bins = 100) +
-  # geom_density2d(bins=15, color = "white", alpha = .2) +
-  # scale_fill_viridis_d(option = "H", direction = 1) + #B,F,G (H)
-  # theme(legend.position="none") +
-   stat_density_2d(geom = "polygon", contour = TRUE, contour_var = "count", #density, count, ndensity
-                   aes(fill = after_stat(level)),
-                   bins = 50, n = 20) +
-   scale_fill_viridis_c(option = "F", direction = -1) + #B,F,G (H)
-  theme_classic() +
-  geom_vline(xintercept = champ242$Chapeau.Diametre, linetype = "dotted", color = "red") +
-  geom_hline(yintercept = champ242$Pied.Hauteur, linetype = "dotted", color = "red")
-
