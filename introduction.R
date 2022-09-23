@@ -9,8 +9,18 @@ library(tidyverse)    # Outils génériques
 #       FACTEUR CROISSANCE       #
 ##################################
 
-# A FAIRE
+n_distrib <- 1e3
+facteurs <- c(.5, 1, 1.5, 2)
 
+loi_beta <- function(facteur){rbeta(n = n_distrib, shape1 = 6*facteur, shape2 =4, ncp = .5*facteur)}
+
+beta <-lapply(X = facteurs, FUN = loi_beta)
+names(beta) <- facteurs
+beta <- as.data.frame(beta)
+beta <- pivot_longer(beta, cols = 1:ncol(beta))
+
+ggplot(data = beta, aes(x = value, colour = name)) +
+  geom_density(alpha = .7)
 
 ###############################
 #       DISTRIBUTION 2D       #
@@ -49,5 +59,6 @@ densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Haute
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
   geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red")
 
+beta
 scatter2d
 densite2d
