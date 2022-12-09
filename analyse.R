@@ -67,45 +67,45 @@ l <- nrow(structure_dataset)
 for (n in 1:l){
   plot_title <- paste("Distribution de", dataset_names[n], "des champignons")
   plot <- trainvalid_set %>%
-    ggplot(aes_string(x = dataset_names[n])) +      #aes_string allows use of string instead of variable name
+    ggplot(aes_string(x = dataset_names[n])) +      # aes_string permet l'utilisation de chaîne au lieu de nom de variable
     ggtitle(plot_title) +
     ylab("") +
     xlab(dataset_names[n]) +
     theme_bw()
-  if(structure_dataset$Final[n] %in% c("integer", "numeric")) # Histogram for integer/numeric, Barplot for character/factors/logical
+  if(structure_dataset$Final[n] %in% c("integer", "numeric")) # Histogramme pour numériques, Barplot pour autres
   {plot <- plot + geom_histogram(fill = "gray45")}
   else
   {plot <- plot + geom_bar(fill = "gray45")}
-  plotname <- paste0("study_distrib_", dataset_names[n])   # Concatenate "plot_distrib" with the column name
-  assign(plotname, plot)                 # Assign the plot to the plot_distrib_colname name
+  plotname <- paste0("study_distrib_", dataset_names[n])   # Concaténer "plot_distrib" avec nom de colonne
+  assign(plotname, plot)                 # Attribuer le graphique au nom plot_distrib_colname
 }
 
 
-#############################################
-#     DESCRIPTIVE TRAINING SET ANALYSIS     #
-#############################################
+#####################################################
+#     ANALYSE DESCRIPTIVE DU LOT D'ENTRAINEMENT     #
+#####################################################
 
-# Plot all monovariate distributions of the training set (poisonous vs edible)
+# Trace toutes les distributions monovariées du lot d'entrainement (all monovariate distributions of the training set (toxique vs comestible)
 l <- nrow(structure_dataset)
 
-for (n in 2:l){    # Column 1 (class) isn't plotted since it's the fill attribute
-  plot_title <- paste("Mushroom", dataset_names[n], "distribution")
+for (n in 2:l){    # La colonne 1 (class) n'est pas tracée (attribut de fill/couleur !)
+  plot_title <- paste("Distribution de", dataset_names[n], "des champignons")
   plot <- training_set %>%
-    ggplot(aes_string(x = dataset_names[n], fill = training_set$class)) + #aes_string allows use of string instead of variable name
+    ggplot(aes_string(x = dataset_names[n], fill = training_set$class)) + # aes_string permet l'utilisation de chaîne au lieu de nom de variable
     ggtitle(plot_title) +
     ylab("Frequency") +
     xlab(dataset_names[n]) +
     scale_y_log10() +
     theme_bw()
-  if(structure_dataset$Final[n] %in% c("integer", "numeric"))  # Histogram for integer/numeric, Barplot for character/factors/logical
+  if(structure_dataset$Final[n] %in% c("integer", "numeric"))   # Histogramme pour numériques, Barplot pour autres
   {plot <- plot + geom_histogram()}
   else
   {plot <- plot + geom_bar()}
-  plotname <- paste0("train_distrib_",dataset_names[n])   # Concatenate "train_distrib" with the column name
-  assign(plotname, plot)     # Assign the plot to the train_distrib_colname name
+  plotname <- paste0("train_distrib_",dataset_names[n])    # Concaténer "plot_distrib" avec nom de colonne
+  assign(plotname, plot)                 # Attribuer le graphique au nom plot_distrib_colname
 }
 
-# Correlation graphs for a small selection of criterias
+# Graphes de corrélation pour une (petite) sélection de critères
 pair_plots <- ggpairs(
   training_set,
   columns = c(2,15,17,10),
@@ -120,59 +120,59 @@ pair_plots <- ggpairs(
   ggplot2::aes(color = class)
 )
 
-###################################################
-#     TRAINING SET ANALYSIS WITH CARET MODELS     #
-###################################################
+###############################################################
+#     ANALYSE DU LOT D'ENTRAINEMENT AVEC MODELES DE CARET     #
+###############################################################
 # https://topepo.github.io/caret/available-models.html
 # names(getModelInfo())
 # getModelInfo(Rborist)
 
-# Define function : run model with given parameters, evaluate the performance (Specificity), return fitting results
+# Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_model){
   set.seed(1)
-  tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = 10)   # Set performance evaluation parameters to twoClassSummary (ROC, Sens, Spec), with 10-fold cross-validation
+  tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = 10)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
   cmd <- paste0("train(class ~ ., method = '",      # Build command, set performance metric to Specificity
                 fcn_model[1], 
                 "', data = trainvalid_set, trControl = tr_ctrl, metric = 'Spec', ", 
                 fcn_model[2],")")
-  fitting <- eval(parse(text = cmd))        # Run command
+  fitting <- eval(parse(text = cmd))        # Lance commande
   fitting
 }
 
-# Parallélisation
+# Parallélisation (A TESTER !!!)
 library(doParallel)
 cl <- makeCluster(spec = 5, type = "PSOCK")
 registerDoParallel(cl)
 
-# Discriminant Analysis Models
+# Modèles type Discriminant Analysis (LDA2, PDA)
 set_lda2_dim <- c("lda2", "tuneGrid  = data.frame(dimen = seq(from = 1, to = 16, by = 3))")
 set_pda_lambda <-  c("pda", "tuneGrid  = data.frame(lambda = seq(from = 1, to = 51, by = 10))")
 fit_lda2_dim <- fit_test(set_lda2_dim)
-system.time(fit_test(set_lda2_dim))      #### CHRONOMETRE
+system.time(fit_test(set_lda2_dim))      #### CHRONO
 fit_pda_lambda <- fit_test(set_pda_lambda)
 system.time(fit_test(set_pda_lambda))  #### CHRONO
-# Extract results of interest : plots and results
+# Extraire résultats d'intérêt : graphes et resultats
 fit_lda2_dim_plot <- ggplot(fit_lda2_dim)
 fit_lda2_dim_results <- fit_lda2_dim$results
 fit_pda_lambda_plot <- ggplot(fit_pda_lambda)
 fit_pda_lambda_results <- fit_pda_lambda$results
 
-## When you are done:
+## Fin parallélisation (A TESTER !!!)
 stopCluster(cl)
 
 
-# Generalized Additive Model
+# Modèles type Generalized Additive Model (GAM LOESS)
 set_gamLoess_span <-  c("gamLoess", "tuneGrid  = data.frame(span = seq(from = 0.01, to = 1, by = 0.24), degree = 1)")
 set_gamLoess_degree <-  c("gamLoess", "tuneGrid  = data.frame(degree = c(0, 1), span = 0.5)")
 fit_gamLoess_span <- fit_test(set_gamLoess_span)
 fit_gamLoess_degree <- fit_test(set_gamLoess_degree)
-# Extract results of interest : plots and results
+# Extraire résultats d'intérêt : graphes et resultats
 fit_gamLoess_span_plot <- ggplot(fit_gamLoess_span)
 fit_gamLoess_span_results <- fit_gamLoess_span$results
 fit_gamLoess_degree_plot <- ggplot(fit_gamLoess_degree)
 fit_gamLoess_degree_results <- fit_gamLoess_degree$results
 
-# Tree-based Models
+# Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
 set_rpart_cp <- c("rpart", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 5e-2))")
 set_rpartcost_complexity <- c("rpartCost", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 0.05), Cost = 1)")
 set_rpartcost_cost <- c("rpartCost", "tuneGrid  = data.frame(Cost = c(0.01, 0.4, 0.7, 1, 1.5, 2, 2.5), cp = .01)")
@@ -184,7 +184,7 @@ fit_rpartcost_complexity <- fit_test(set_rpartcost_complexity)
 fit_rpartcost_cost <- fit_test(set_rpartcost_cost)
 fit_ctree_criterion <- fit_test(set_ctree_criterion)
 fit_c50tree <- fit_test(set_c50tree)
-# Extract results of interest : plots and results
+# Extraire résultats d'intérêt : graphes et resultats
 fit_rpart_cp_results <- fit_rpart_cp$results
 fit_rpartcost_complexity_plot <- ggplot(fit_rpartcost_complexity)
 fit_rpartcost_complexity_results <- fit_rpartcost_complexity$results
@@ -203,7 +203,7 @@ fit_rpartcost_best <- fit_test(set_rpartcost_best)
 fit_rpartcost_best_results <- fit_rpartcost_best$results
 
 
-# Random Forest Models
+# Modèles type Random Forest (RFERNS, RANGER, RBORIST)
 set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
 set_ranger_mtry <- c("ranger", "tuneGrid  = data.frame(mtry = seq(from = 1, to = 106, by = 15), splitrule = 'extratrees', min.node.size = 2), num.trees = 6")
 set_ranger_splitrule <- c("ranger", "tuneGrid  = data.frame(splitrule = c('gini', 'extratrees'), mtry = 50, min.node.size = 2), num.trees = 6")
@@ -217,7 +217,7 @@ fit_ranger_splitrule <- fit_test(set_ranger_splitrule)
 fit_ranger_nodesize <- fit_test(set_ranger_nodesize)
 fit_Rborist_pred <- fit_test(set_Rborist_pred)
 fit_Rborist_minNode <- fit_test(set_Rborist_minNode)
-# Extract results of interest : plots and results
+# Extraire résultats d'intérêt : graphes et resultats
 fit_rFerns_depth_plot <- ggplot(fit_rFerns_depth)
 fit_rFerns_depth_results <- fit_rFerns_depth$results
 fit_ranger_mtry_plot <- ggplot(fit_ranger_mtry)
@@ -235,7 +235,7 @@ fit_Rborist_pred_bestTune <- fit_Rborist_pred$bestTune
 fit_Rborist_minNode_plot <- ggplot(fit_Rborist_minNode)
 fit_Rborist_minNode_results <- fit_Rborist_minNode$results
 fit_Rborist_minNode_bestTune <- fit_Rborist_minNode$bestTune
-# Run optimal ranger model
+# Lance modèle RANGER optimal
 set_ranger_best <- c("ranger", paste0("tuneGrid  = data.frame(min.node.size = ", 
                                       fit_ranger_nodesize_bestTune$min.node.size, 
                                       ", splitrule = '", fit_ranger_splitrule_bestTune$splitrule,
@@ -243,14 +243,14 @@ set_ranger_best <- c("ranger", paste0("tuneGrid  = data.frame(min.node.size = ",
                                       ", num.trees = 10"))
 fit_ranger_best <- fit_test(set_ranger_best)
 fit_ranger_best_results <- fit_ranger_best$results
-# Run optimal Rborist model
+# Lance modèle RBORIST optimal
 set_Rborist_best <- c("Rborist", paste0("tuneGrid  = data.frame(predFixed = 6, ",    # Value is forced, 6 gives a Spec = 1, and a much better sensitivity
                                         "minNode = ", fit_Rborist_minNode_bestTune$minNode, ")",
                                         ", ntrees = 3"))
 fit_Rborist_best <- fit_test(set_Rborist_best)
 fit_Rborist_best_results <- fit_Rborist_best$results
 
-# For complete factor combinations testing (SUPER SLOW)
+# Pour test complet des combinaisons de facteurs (SUPER LENT)
 # set_ranger <- c("ranger", "tuneGrid = expand.grid(mtry = seq(from = 1, to = 21, by = 5),
 #                                                 splitrule = c('gini', 'extratrees'),
 #                                                 min.node.size = seq(from = 1, to = 16, by = 5)
@@ -264,31 +264,31 @@ fit_Rborist_best_results <- fit_Rborist_best$results
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
 #########################################################
 
-# Set prediction list and run the classifier
+# Règle la liste de prédiction et lance la classification
 evaluation <- evaluation_set
 evaluation$reference <- as.logical(as.character(recode_factor(evaluation$class, edible = TRUE, poisonous = FALSE))) # Switch to logical values
 
-# Set .$reference from logical to factor, then compute confusion matrix
+# Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
 evaluation$reference <- as.factor(evaluation$reference)
 
 
-start_time <- Sys.time()     # Start chronometer
-cmd <- paste0("train(class ~ ., method = 'ranger', data = trainvalid_set,", set_ranger_best[2], ")") # Build command
-fit_ranger_final <- eval(parse(text = cmd))     # Run command
+start_time <- Sys.time()     # Démarre chrono
+cmd <- paste0("train(class ~ ., method = 'ranger', data = trainvalid_set,", set_ranger_best[2], ")") # Construction de la commande
+fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
 pred_ranger_final <- predict(object = fit_ranger_final, newdata = evaluation_set)
 CM_ranger_final <- confusionMatrix(data = pred_ranger_final, reference = evaluation_set$class)
 results_ranger <- c(CM_ranger_final$byClass["Sensitivity"], CM_ranger_final$byClass["Specificity"], CM_ranger_final$byClass["F1"])
-end_time <- Sys.time()     # Stop chronometer
+end_time <- Sys.time()     # Stop chrono
 time_ranger <- difftime(end_time, start_time)
 time_ranger <- time_ranger %>% as.numeric %>% round(.,2)
 
-start_time <- Sys.time()            # Start chronometer
-cmd <- paste0("train(class ~ ., method = 'Rborist', data = trainvalid_set,", set_Rborist_best[2], ")") # Build command
-fit_Rborist_final <- eval(parse(text = cmd))     # Run command
+start_time <- Sys.time()            # Démarre chrono
+cmd <- paste0("train(class ~ ., method = 'Rborist', data = trainvalid_set,", set_Rborist_best[2], ")") # Construction de la commande
+fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 pred_Rborist_final <- predict(object = fit_Rborist_final, newdata = evaluation_set)
 CM_Rborist_final <- confusionMatrix(data = pred_Rborist_final, reference = evaluation_set$class)
 results_Rborist <- c(CM_Rborist_final$byClass["Sensitivity"], CM_Rborist_final$byClass["Specificity"], CM_Rborist_final$byClass["F1"])
-end_time <- Sys.time()              # Stop chronometer
+end_time <- Sys.time()              # Stop chrono
 time_Rborist <- difftime(end_time, start_time)
 time_Rborist <- time_Rborist %>% as.numeric %>% round(.,2)
 
@@ -298,4 +298,4 @@ rt_result <- rbind(result_ranger, result_Rborist)
 colnames(rt_result) <- c("Sensitivity", "Specificity", "F1 score", "Run time (min)")
 rownames(rt_result) <- c("Ranger", "Rborist")
 
-save.image(file = "EKR-mushrooms.RData")     # Save data for report
+save.image(file = "EKR-mushrooms.RData")     # Sauvegarde données pour rapport
