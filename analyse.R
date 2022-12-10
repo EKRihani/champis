@@ -10,8 +10,8 @@ library(caret)        # Outils d'apprentissage machine
 # Récupération, décompression, importation des données
 datafile <- tempfile()
 
-#URL <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00615/MushroomDataset.zip"    # UCI archive
-#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # Alternative URL
+#URL <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00615/MushroomDataset.zip"    # Archive UCI
+#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # URL de mon repo
 # download.file(URL, datafile)
 
 datafile <- "~/projects/mushrooms/MushroomDataset.zip" # FICHIER LOCAL
@@ -23,18 +23,10 @@ dataset <- read.csv(datafile, header = TRUE, sep = ";")
 #  FORMATTAGE / NETTOYAGE DES DONNEES  #
 ########################################
 
-# Get initial dataset structure information
-structure_initial <- sapply(X = dataset, FUN = class, simplify = TRUE)  # Get all initial dataset variables classes
-unique_length <- function (x) {length(unique(x))}                       # Define function : count levels of a variable
-structure_uniques <- sapply(dataset, FUN = unique_length)               # Count levels of all dataset variables
-
-# Get final dataset structure information
-structure_final <- sapply(X = dataset, FUN = class, simplify = TRUE)    # Get all final dataset variables classes
-
-# Merge initial and final dataset structure information
-structure_dataset <- data.frame(cbind(structure_initial, structure_uniques, structure_final))
-colnames(structure_dataset) <- c("Initial", "Levels", "Final")
-structure_dataset$Levels <- as.numeric(as.character(structure_dataset$Levels))
+# Récupération de la structure des données
+structure_initial <- sapply(X = dataset, FUN = class, simplify = TRUE)  # Classes des variables
+unique_length <- function (x) {length(unique(x))}                       # FONCTION : compter les niveaux d'une variable
+structure_uniques <- sapply(dataset, FUN = unique_length)               # Comptage des niveaux de toutes les variables
 
 ################################
 #     ANALYSE INTRODUCTIVE     #
@@ -85,7 +77,7 @@ for (n in 1:l){
 #     ANALYSE DESCRIPTIVE DU LOT D'ENTRAINEMENT     #
 #####################################################
 
-# Trace toutes les distributions monovariées du lot d'entrainement (all monovariate distributions of the training set (toxique vs comestible)
+# Trace toutes les distributions monovariées du lot d'entrainement (toxique vs comestible)
 l <- nrow(structure_dataset)
 
 for (n in 2:l){    # La colonne 1 (class) n'est pas tracée (attribut de fill/couleur !)
@@ -131,7 +123,7 @@ pair_plots <- ggpairs(
 fit_test <- function(fcn_model){
   set.seed(1)
   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = 10)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
-  cmd <- paste0("train(class ~ ., method = '",      # Build command, set performance metric to Specificity
+  cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
                 fcn_model[1], 
                 "', data = trainvalid_set, trControl = tr_ctrl, metric = 'Spec', ", 
                 fcn_model[2],")")
