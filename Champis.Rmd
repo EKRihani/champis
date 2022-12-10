@@ -1,7 +1,8 @@
 ---
-title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
-author: "Emir Kaïs RIHANI"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+#title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
+#author: "Emir Kaïs RIHANI"
+#date: "`r format(Sys.time(), '%d %B, %Y')`"
+lang: fr
 geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
 fontsize: 12pt          # Imposé par la fac
 output: 
@@ -10,9 +11,12 @@ output:
     extra_dependencies: ["float"]
     toc: true
     toc_depth: 3
+    includes:
+      before_body: couverture.tex
 
 header-includes:
-- \renewcommand{\familydefault}{\sfdefault}
+  \renewcommand{\familydefault}{\sfdefault}
+
 indent: true
 bibliography: packages.bib
 references:
