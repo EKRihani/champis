@@ -79,3 +79,6 @@ scatter2d           # Nuage de points des tailles/diamètres
 densite2d           # Graphique de densité des tailles/diamètres
 distrib_diametre    # Distribution du diamètre
 outliers_diam*100       # % de diamètres hors-norme
+
+
+save.image(file = "EKR-Champis-Intro.RData")

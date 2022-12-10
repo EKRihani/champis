@@ -1,0 +1,109 @@
+---
+title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
+author: "Emir Kaïs RIHANI"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
+fontsize: 12pt          # Imposé par la fac
+output: 
+  pdf_document:
+    number_sections: true
+    extra_dependencies: ["float"]
+    toc: true
+    toc_depth: 3
+
+header-includes:
+- \renewcommand{\familydefault}{\sfdefault}
+indent: true
+bibliography: packages.bib
+references:
+  - id: Wagner21
+    title: "Mushroom data creation, curation, and simulation to support classification tasks"
+    author: D.Wagner, D.Heider, G.Hattab
+    url: https://doi.org/10.1038/s41598-021-87602-3
+    DOI: 10.1038/s41598-021-87602-3
+    publisher: Scientific Reports
+    type: article-journal
+    issued:
+      year: 2021
+  - id: Schlimmer87
+    title: "Mushroom Data Set"
+    author: J.Schlimmer
+    url: https://archive.ics.uci.edu/ml/datasets/Mushroom
+    DOI: 
+    publisher: University of California
+    type: article-journal
+    issued:
+      year: 1987
+
+
+csl: https://www.zotero.org/styles/vancouver-superscript
+---
+
+```{r setup, include = FALSE, warning=FALSE}
+load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
+#library(ggplot2)
+library(ggpubr)   # Combiner graphes (ggarrange)
+library(rmarkdown)
+library(knitr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+knitr::write_bib(c("tidyverse", "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr"), "packages.bib")
+```
+
+\newpage
+\section{Introduction}
+\subsection{Propos liminaire}
+\paragraph*{}
+L'identification des macromycètes est un sujet difficile, ne devant évidemment pas être pris à la légère. Les espèces rencontrées varient considérablement d'un écosystème à un autre, d'un continent à un autre, et aucun lot de données ou ouvrage sur les champignons ne saurait couvrir toute la diversité du monde fongique.
+\paragraph*{}
+Le lot de données mycologiques constitué dans cette étude, bien que constituant l'un des lots en libre accès les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
+\paragraph*{}
+Ce lot se concentre exclusivement sur les champignons habituellement rencontrés au Nord de la France. Plusieurs genres ne sont pas présents, parmi lesquels nous pouvons par exemple citer le genre  *psylocybe*, connu pour ses propriétés psychédéliques. Certains critères peuvent également varier de manière considérable selon le stade de maturité du champignon :alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).
+\paragraph*{}
+L'ingestion de certains de ces champignons est *mortelle*, même à de petites doses. Le diagnostique de l'intoxication fongique peut être difficile, et parfois trop tardif pour un traitement efficace. Des composés toxiques tels que les amanitines ne sont pas altérés ou détruits par cuisson ou congélation, et seront absorbés par l'intestin, avant de passer dans la circulation sanguine afin d'être filtrés par le foi, détruisant les cellules hépatiques, puis excrétées dans l'intester, réabsorbées, refiltrées... chaque passe détruisant les cellules hépatiques ayant survécu à la précédente, dans un cycle connu sous le nom de réabsorption hépato-entérique.
+\paragraph*{}
+Il ne faut jamais, *sous aucune circonstance*, utiliser ce type de lot de données afin de déterminer si un champignon est comestible ou non.
+
+\subsection{But de l'étude}
+\paragraph*{}
+L'identification des plantes et champignons est un problème de classification classique, qui est habituellement effectué manuellement à l'aide de clés d'identification. La plupart de ces clés sont basées sur un processus utilisant des arbres décisionnels, ce qui semble logique car rappelant la logique en arbre de l'évolution. Toutefois, cet argument rencontre quelques limites :
+\paragraph*{}
+La première limite est le nombre de chaînons manquants. Certaines espèces sont évidemment éteintes, ce qui signifie que certaines branches et noeuds de l'arbre phylogénétique sont manquants, ce qui peut compliquer l'analyse quand deux espèces apparentées ont un nombre élevé de chaînons et noeuds communs manquants. Certaines similarités entre espèces peuvent également ne pas être identifiées.
+\paragraph*{}
+La seconde limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. La divergence évolutive explique par exemple la diversité des mammifères : les chauves-souris, baleines et chevaux sont apparentés, mais ont un aspect très différent en raison de leur adaptation à des environnements très différents. D'un autre côté, la convergence évolutive explique la similarité entre l'aile de la chave-souris et l'aile de l'abeille. Toutefois, malgré leur apparente dissimilarité, l'aile de la chauve-souris est plus proche de la main humaine ou de la nageoire de la baleine que de l'aile de l'abeille. La façon la plus fiable pour évaluer le processus évolutionnaire et trouver les liens phylogénétiques de la manière la plus précise est l'analyse des génomes : les caractéristiques visibles peuvent être trompeuses. Malheureusement, ces caractéristiques sont souvent les seules aisément observables.
+\paragraph*{}
+Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visible, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème : il est essentiellement centré sur la toxicité contre les humains, de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
+\paragraph*{}
+Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutif, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques. Le but de cette étude est d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies de classification.
+
+\subsection{Etat de l'art des lots de données mycologiques}
+Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@Schlimmer87][@Schlimmer87]
+\paragraph*{}
+Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@Wagner21][@Wagner21] et mis en libre accès sous le nom de *Secondary Mushroom Dataset*.
+
+\newpage
+\section{Création du lot de données}
+\subsection{Configuration matérielle et logicielle}
+\paragraph*{}
+Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant :
+
+* CPU : AMD Ryzen 5 5600G
+* RAM : 2x16 Go DDR4-3200
+* SSD : Crucial P5 M2 NVMe
+* OS : Xubuntu Linux 20.04 LTS
+* R : version 3.6.3
+* Librairies : tidyverse[@R-tidyverse] (v1.3.1), caret[@R-caret] (v6.0-88), GGally[@R-GGally] (v2.1.2), MASS[@R-MASS] (v7.3-51.5), mda[@R-mda] (v0.4-10), rpart[@R-rpart] (v4.1-15), plyr[@R-plyr] (v1.8.5), C50[@R-C50] (v0.1.5), party[@R-party] (v1.3-9), ranger[@R-ranger] (v0.13.1), e1071[@R-e1071] (v1.7-9), rFerns[@R-rFerns] (v5.0.0), Rborist[@R-Rborist] (v0.2-3), ggpubr[@R-ggpubr] (v0.4.0), rmarkdown[@R-rmarkdown] (v2.11), knitr[@R-knitr] (v1.34).
+
+\subsection{Conception d'un lot de données synthétiques}
+\subsubsection{Principes généraux}
+\paragraph*{}
+Un lot de données synthétiques est un lot de données généré par un algorithme, par opposition aux lots de données issus d'une collecte effectuée en "vie réelle". Trois stratégies sont usuellement utilisées :
+
+* Données factices (*dummy data*) : l'ensemble des données est généré aléatoirement.
+* Données générées à partir de règles (*rule-based data*) : l'ensemble des données est généré suivant des lois définies au préalable (distribution, valeurs moyennes, minimales, maximales...)
+* Données générées par l'IA (*AI generated*) : l'ensemble des données est généré suivant des lois extraites par l'IA suite à l'analyse d'un échantillon de données obtenues en "vie réelle".
+
+
+
+\newpage
+\section{Références bibliographiques}
