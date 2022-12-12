@@ -1,12 +1,12 @@
-%\documentclass[12pt,a4paper]{article}
-%\usepackage[french]{babel}
-%\usepackage[latin1]{inputenc}
-%\usepackage[T1]{fontenc}
-%\usepackage{vmargin}
-%\usepackage{pdfpages}
-%\setmarginsrb{2.5cm}{1.5cm}{2.5cm}{2cm}{0cm}{0cm}{0cm}{0cm}
+%\documentclass[12pt,a4paper]{article} % POUR TEST
+%\usepackage[french]{babel} % POUR TEST
+%\usepackage[latin1]{inputenc} % POUR TEST
+%\usepackage[T1]{fontenc} % POUR TEST
+%\usepackage{vmargin} % POUR TEST
+%\usepackage{pdfpages} % POUR TEST
+%\setmarginsrb{2.5cm}{1.5cm}{2.5cm}{2cm}{0cm}{0cm}{0cm}{0cm} % POUR TEST
 
-%\begin{document}
+%\begin{document} % POUR TEST
 \pagestyle{empty}
 {\sffamily
 \noindent{Universit\'{e} de Lille \hfill Facult\'{e} de Pharmacie de Lille \\ Ann\'{e}e Universitaire 2022/2023}
@@ -18,7 +18,7 @@ POUR LE DIPLOME D'ETAT \\
 DE DOCTEUR EN PHARMACIE}
 \end{center}
 \vspace{13mm}
-\noindent{\textbf{\hspace*{13mm}Soutenue publiquement le xx/yy/2023 \\
+\noindent{\textbf{\hspace*{13mm}Soutenue publiquement le 12 septembre 2023 \\
 \hspace*{13mm}Par M. RIHANI Emir Ka\"{i}s}}
 \vspace{26mm}
 \begin{center}
@@ -38,11 +38,29 @@ DE DOCTEUR EN PHARMACIE}
 \textbf{Assesseur(s) :} Nom, Prenom, titre et lieu de fonction}
 }
 \newpage
-~
+~ % page blanche verso de couverture
+
+\includepdf[pages={-}]{fac-enseignants2022.pdf} % liste des profs
 \newpage
-\includepdf[pages={-}]{liste_enseignants_2022.pdf}
+~ % page blanche verso liste des profs
+
 \newpage
+\includepdf[pages={-}]{fac-disclaimer.pdf} % disclaimer opinions
+\newpage
+~ % page blanche verso disclaimer
 
-%\end{document}
+\newpage
+{\rmfamily
+~ \\ ~
+\vspace{2cm}
+{\itshape J'adresse mes sinc\`{e}res remerciements \`{a} :
+\vspace{2cm}
+\paragraph*{}
+La Dream Team de tous ceux que je vais remercier
+}
+}
+\newpage
+~ %page blanche verso de remerciements
 
-
+\newpage %début document (sommaire)
+%\end{document} % POUR TEST

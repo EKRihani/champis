@@ -13,10 +13,11 @@ output:
     toc_depth: 3
     includes:
       before_body: couverture.tex
+      after_body: quatrieme.tex
 
 header-includes:
-  - \renewcommand{\familydefault}{\sfdefault}
-  - \usepackage{pdfpages}
+  - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc
+  - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
 
 indent: true
 bibliography: packages.bib
@@ -54,10 +55,8 @@ library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
 knitr::write_bib(c("tidyverse", "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr"), "packages.bib")
 ```
-
-\newpage
-\setcounter{page}{1}
 \pagestyle{plain}
+\newpage
 \section{Introduction}
 \subsection{Propos liminaire}
 \paragraph*{}
