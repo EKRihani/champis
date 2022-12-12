@@ -15,7 +15,8 @@ output:
       before_body: couverture.tex
 
 header-includes:
-  \renewcommand{\familydefault}{\sfdefault}
+  - \renewcommand{\familydefault}{\sfdefault}
+  - \usepackage{pdfpages}
 
 indent: true
 bibliography: packages.bib
