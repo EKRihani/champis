@@ -4,15 +4,65 @@
 
 # Chargement des bibliothèques
 library(tidyverse)    # Outils génériques
+library(microbenchmark)
 
 ##################################
 #       FACTEUR CROISSANCE       #
 ##################################
 
-n_distrib <- 1e5
+n_distrib <- 1e6
+
+# Lois de distribution
+
+binom_size <- 20
+fonction_binomiale <- function(x){rbinom(n = n_distrib, size = binom_size, prob = .65)/binom_size}
+temps_binomiale <- microbenchmark(fonction_binomiale(x))
+valeurs_binomiale <- data.frame(val = fonction_binomiale(x))
+distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
+  ggtitle("Loi binomiale") +
+  xlim(min =0, max = 1) +
+  xlab("Valeur") +
+  ylab("Densité") +
+  geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  theme_bw()
+
+fonction_uniforme <- function(x){runif(n = n_distrib)}
+temps_uniforme <- microbenchmark(fonction_uniforme(x))
+valeurs_uniforme <- data.frame(val = fonction_uniforme(x))
+distrib_uniforme <- ggplot(data = valeurs_uniforme, aes(x = val)) +
+  ggtitle("Loi uniforme") +
+  xlim(min =0, max = 1) +
+  xlab("Valeur") +
+  ylab("Densité") +
+  geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  theme_bw()
+
+fonction_normale <- function(x){rnorm(n = n_distrib)}
+temps_normale <- microbenchmark(fonction_normale(x))
+valeurs_normale <- data.frame(val = fonction_normale(x))
+distrib_normale <- ggplot(data = valeurs_normale, aes(x = val)) +
+  ggtitle("Loi normale") +
+  xlim(min =0, max = 1) +
+  xlab("Valeur") +
+  ylab("Densité") +
+  geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  theme_bw()
+
+fonction_beta <- function(x){rbeta(n = n_distrib, shape1 = 6, shape2 = 4, ncp = .5)}
+temps_beta <- microbenchmark(fonction_beta(x))
+valeurs_beta <- data.frame(val = fonction_beta(x))
+distrib_beta <- ggplot(data = valeurs_beta, aes(x = val)) +
+  ggtitle("Loi beta") +
+  xlim(min =0, max = 1) +
+  xlab("Valeur") +
+  ylab("Densité") +
+  geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  theme_bw()
+
+# Focus sur la loi Beta
 facteurs <- c(.5, 1, 1.5, 2)
 
-loi_beta <- function(facteur){rbeta(n = n_distrib, shape1 = 6*facteur, shape2 =4, ncp = .5*facteur)}
+loi_beta <- function(facteur){rbeta(n = n_distrib, shape1 = 6*facteur, shape2 = 4, ncp = .5*facteur)}
 
 beta <-lapply(X = facteurs, FUN = loi_beta)
 names(beta) <- facteurs
@@ -25,8 +75,12 @@ lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
   labs(colour= "Fact. crois.") +
   xlab("Valeur") +
   ylab("Densité") +
-  geom_density(alpha = .7, bw = .025) + 
+  geom_density(alpha = .7, bw = .025, size = .6) + 
   theme_bw()
+
+
+
+
 
 ###############################
 #       DISTRIBUTION 2D       #
