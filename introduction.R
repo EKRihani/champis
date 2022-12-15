@@ -15,7 +15,7 @@ n_distrib <- 1e6
 # Lois de distribution
 
 binom_size <- 20
-fonction_binomiale <- function(x){rbinom(n = n_distrib, size = binom_size, prob = .65)/binom_size}
+fonction_binomiale <- function(x){rbinom(n = n_distrib, size = binom_size, prob = .65)}
 temps_binomiale <- microbenchmark(fonction_binomiale(x))
 valeurs_binomiale <- data.frame(val = fonction_binomiale(x))
 distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
@@ -23,7 +23,7 @@ distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
   xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("Densité") +
-  geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  geom_histogram(fill = "grey", color= "black", bins = 4*binom_size, center = 0.5) + 
   theme_bw()
 
 fonction_uniforme <- function(x){runif(n = n_distrib)}
@@ -34,7 +34,7 @@ distrib_uniforme <- ggplot(data = valeurs_uniforme, aes(x = val)) +
   xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("Densité") +
-  geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  geom_histogram(fill = "grey", color= "black", bins = 4*binom_size, center = 0.5) + 
   theme_bw()
 
 fonction_normale <- function(x){rnorm(n = n_distrib)}
@@ -42,10 +42,10 @@ temps_normale <- microbenchmark(fonction_normale(x))
 valeurs_normale <- data.frame(val = fonction_normale(x))
 distrib_normale <- ggplot(data = valeurs_normale, aes(x = val)) +
   ggtitle("Loi normale") +
-  xlim(min =0, max = 1) +
+#  xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("Densité") +
-  geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  geom_histogram(fill = "grey", color= "black", bins = 4*binom_size, center = 0.5) + 
   theme_bw()
 
 fonction_beta <- function(x){rbeta(n = n_distrib, shape1 = 6, shape2 = 4, ncp = .5)}
@@ -57,6 +57,17 @@ distrib_beta <- ggplot(data = valeurs_beta, aes(x = val)) +
   xlab("Valeur") +
   ylab("Densité") +
   geom_histogram(fill = "grey", color= "black", bins = 2*binom_size, center = 0.5) + 
+  theme_bw()
+
+fonction_poisson <- function(x){rpois(n = n_distrib, lambda = binom_size/3)/binom_size}
+temps_poisson <- microbenchmark(fonction_poisson(x))
+valeurs_poisson <- data.frame(val = fonction_poisson(x))
+distrib_poisson <- ggplot(data = valeurs_poisson, aes(x = val)) +
+  ggtitle("Loi de Poisson") +
+  xlim(min =0, max = 1) +
+  xlab("Valeur") +
+  ylab("Densité") +
+  geom_histogram(fill = "grey", color= "black", center = 0.5, bins = 4*binom_size) + 
   theme_bw()
 
 # Focus sur la loi Beta
