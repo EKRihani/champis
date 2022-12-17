@@ -4,7 +4,9 @@
 
 # Chargement des bibliothèques
 library(tidyverse)    # Outils génériques
-library(microbenchmark)
+library(microbenchmark) # Chrono
+library(MASS)   # Calcul densité 3D
+library(plotly)   # Graphes avancés
 
 ##################################
 #       FACTEUR CROISSANCE       #
@@ -91,8 +93,6 @@ lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
 
 
 
-
-
 ###############################
 #       DISTRIBUTION 2D       #
 ###############################
@@ -102,11 +102,13 @@ f_crois <- 2          # Facteur de croissance
 
 Chap.Diam <- 10
 Pied.Haut <- 8
+Pied.Large <- 2
 
 Champi_demo <- NULL
 Champi_demo$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)
 Champi_demo$Chapeau.Diametre <- Chap.Diam*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05) #.1
 Champi_demo$Pied.Hauteur <- Pied.Haut*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05)
+Champi_demo$Pied.Largeur <- Pied.Large*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05)
 Champi_demo <- as.data.frame(Champi_demo)
 
 outliers_diam <- mean(Champi_demo$Chapeau.Diametre > Chap.Diam)
@@ -139,9 +141,48 @@ distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dashed", color = "red")
 
+dens3Ddouble <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Pied.Hauteur, n= 500)
+dens3Dsimple <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Chapeau.Diametre, n= 500)
+
+graphe3Ddouble <- plot_ly(x=dens3Ddouble$x, y=dens3Ddouble$y, z=dens3Ddouble$z) %>% 
+  add_surface(colorscale ="YlGnBu", contours = list(z = list(project=list(z=TRUE), show=TRUE, usecolormap=TRUE, start = 0, end = 1, size = max(dens3Ddouble$z)/20)))
+#Blackbody, Cividis, Electric, Hot, Jet, Portland, RdBu, Viridis, YlGnBu, YlOrRd
+graphe3Dsimple <- plot_ly(x=dens3Dsimple$x, y=dens3Dsimple$y, z=dens3Dsimple$z) %>% 
+  add_surface(colorscale ="Viridis", contours = list(z = list(project=list(z=TRUE), show=TRUE, usecolormap=TRUE, start = 0, end = 1, size = max(dens3Dsimple$z)/20)))
+
+scatter3Ddouble <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Pied.Hauteur, z=Champi_demo$Pied.Largeur, marker = list(size=1)) %>% 
+  add_markers()
+scatter3Dsimple <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau.Diametre, z=Champi_demo$Chapeau.Diametre, marker = list(size=1)) %>% 
+  add_markers()
+
+##########################
+#     DONNEES FINALES    #
+##########################
+
+# Lois de distribution (temps et graphique de distribution)
+temps_binomiale
+temps_uniforme
+temps_normale
+temps_beta
+temps_poisson
+
+distrib_binomiale
+distrib_uniforme
+distrib_normale
+distrib_beta
+distrib_poisson
+
+
+# Distribution Champis
 lois_beta           # Profil des lois beta selon facteur de croissance
 scatter2d           # Nuage de points des tailles/diamètres
-densite2d           # Graphique de densité des tailles/diamètres
+densite2d           # Graphique de densité 2D des tailles/diamètres
+
+graphe3Ddouble      # Graphique de densité 3D des tailles/diamètres
+graphe3Ddouble      # Graphique de densité 3D des diamètres/diamètres (sans dispersion)
+scatter3Ddouble           # Nuage de points 3D des tailles/diamètres
+scatter3Dsimple           # Nuage de points 3D des tailles/diamètres (sans dispersion)
+
 distrib_diametre    # Distribution du diamètre
 outliers_diam*100       # % de diamètres hors-norme
 
