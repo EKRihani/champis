@@ -4,12 +4,13 @@
 library(tidyverse)
 library(caret)
 
-URL <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00615/MushroomDataset.zip"    # UCI archive
-#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # Alternative URL
-
-datafile <- tempfile()
-download.file(URL, datafile)
-datafile <- unzip(datafile, "MushroomDataset/secondary_data.csv")
+# URL <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00615/MushroomDataset.zip"    # Archive UCI 
+# URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # Adresse alternative
+# 
+# datafile <- tempfile()
+# download.file(URL, datafile)
+# datafile <- unzip(datafile, "secondary_data.csv")
+datafile <- "secondary_data.csv"
 dataset <- read.csv(datafile, header = TRUE, sep = ";")
 
 #####################################
@@ -21,7 +22,7 @@ test_index <- createDataPartition(y = dataset$cap.diameter, times = 1, p = 0.7, 
 trainvalid_set <- dataset[-test_index,]
 evaluation_set <- dataset[test_index,]
 
-# Créer lots entrainement (90%) vs validation (10%) sets
+# Créer lots entrainement (90%) vs validation (10%)
 test_index <- createDataPartition(y = trainvalid_set$cap.diameter, times = 1, p = 0.1, list = FALSE)
 training_set <- trainvalid_set[-test_index,]
 validation_set <- trainvalid_set[test_index,]
@@ -35,7 +36,7 @@ validation_set <- trainvalid_set[test_index,]
 
 # Fonction : lance modèle avec ces paramètres parameters, évalue la performance, renvoie résultats
 fit_test <- function(fcn_model){
-   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = 20)
+   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = 2)
    cmd <- paste0("train(class ~ ., method = '",
                  fcn_model[1], 
                  "', data = trainvalid_set, trControl = tr_ctrl, ", 
@@ -64,6 +65,20 @@ fit_gamLoess_span_plot <- ggplot(fit_gamLoess_span)
 fit_gamLoess_span_results <- fit_gamLoess_span$results
 fit_gamLoess_degree_plot <- ggplot(fit_gamLoess_degree)
 fit_gamLoess_degree_results <- fit_gamLoess_degree$results
+
+# Réglages hyperparamètres par méthode des hypercubes latins
+library(SLHD)
+hyp_param <- maximinSLHD(t = 2, m = 6, k = 2, power = 15, nstarts = 1, itermax = 100, total_iter = 1e5)
+hyp_param <- hyp_param$StandDesign
+hyp_param[,1] <- hyp_param[,1]-1    # Normalisation pour avoir degree = 0 ou 1
+hyp_param <- hyp_param[,-3]   # Elimination 3e colonne (excédentaire pour cet exemple)
+hyp_param <- data.frame(hyp_param)
+colnames(hyp_param) <- c("degree", "span")
+
+set_gamLoess <-  c("gamLoess", "tuneGrid = hyp_param")
+TEST <- fit_test(set_gamLoess)
+TEST$results
+ggplot(TEST)
 
 # Random Forest
 set_ranger_mtry <- c("ranger", "tuneGrid  = data.frame(mtry = seq(from = 1, to = 106, by = 15), splitrule = 'extratrees', min.node.size = 2), num.trees = 6")
