@@ -16,14 +16,15 @@ output:
 header-includes:
   - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc
   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
+  - \setlength{\abovecaptionskip}{-10pt plus 3pt minus 2pt}    # Espacement des légendes (above/below)
 indent: true
 bibliography: [packages.bib, Champis.bib]
 csl: https://www.zotero.org/styles/vancouver-superscript
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
-#load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
-#library(ggplot2)
+load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
+library(ggplot2)
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
 library(knitr)
@@ -113,25 +114,39 @@ Avec :
 * $L_{Smax}$, $D_{Smax}$ et $D_{Cmax}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété de champignon, extraites de la littérature, 
 * $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle ]0;1], et représentatives de la croissance du spécimen.
 
-Toutefois, la recherche bibliographique sur la cinétique de croissance des sporophores n'ayant pas permis de distinguer de différences de la cinétique de croissance de chacun de ces trois paramètres, nous supposerons en première approximation que la croissance du stipe en longueur, en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques, ainsi
+Toutefois, la recherche bibliographique sur la cinétique de croissance des sporophores n'ayant pas permis de distinguer de différences de la cinétique de croissance de chacun de ces trois paramètres, nous supposerons en première approximation que la croissance du stipe en longueur, en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques, nous obtenons donc :
 
 $$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
 Avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen généré aléatoirement.
 
 \paragraph*{}
-Ainsi, le problème de génération des variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire : facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires
-\paragraph*{}
+Ainsi, le problème de génération de nos trois variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire : le facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires, il convient donc de définir le cahier des charges de la distribution la plus adaptée au sujet de cette étude.
 
-[GRAPHIQUE DES DISTRIBUTIONS]
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (g.) et normale (d.)"}
+plot(ggarrange(
+   ncol = 2,
+   distrib_uniforme + ylab("Nombre"),
+   distrib_normale))
+```
 
-Les critères de sélection retenus afin de choisir une loi appropriée sont :
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi de Poisson (g.) et bêta (d.)"}
+plot(ggarrange(
+   ncol = 2,
+   distrib_poisson + ylab("Nombre"),
+   distrib_beta
+   )
+)
+``` 
+
+Les critères de sélection retenus afin de choisir la loi la plus appropriée sont :
 
 * Efficience calculatoire,
 * Distribution continue,
 * Distribution bornée, ou aisément normalisable sur un intervalle [0;1],
 * Distribution asymétrique.
+
 \paragraph*{}
-Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à la seconde. 
+Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant largement inférieurs à la seconde. 
 
 [TABLEAU DES MICROBENCHMARKS]
 \paragraph*{}
@@ -140,16 +155,33 @@ Les critères de continuité et de normalité n'appellent que peu de commentaire
 Le critère d'asymétrie est un critère permettant de tenir compte des différents paramètres pouvant impacter la distribution de taille des spécimens prélevés, parmi lesquels :
 
 * Différences de cinétique de croissance d'une famille à une autre,
-* Particularités de la croissance fongique, celle-ci s'effectuant par multiplication *et* par croissance cellulaire,
-* Probabilité de prélèvement variable selon la taille (par difficulté de détection, éthique du cueilleur, intérêt mycologique ou gastronomique...).
+* Particularités de la croissance fongique, notamment par la croissance hyphale, [@money_insights_2008; @porter_hyphal_2022]
+* Probabilité de prélèvement variable selon la taille du spécimen (par difficulté de détection, considérations éthiques, intérêt mycologique ou gastronomique...).
 
-Le premier paramètre n'a pu être exploité dans le cadre de cette étude en raison du manque de données concernant les cinétiques relatives de croissance des sporophores des différentes familles de macromycètes. Le modèle que nous proposons permet toutefois des développements ultérieurs dans ce domaine.
 \paragraph*{}
-Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce à l'issue d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petites tailles.
+Le premier paramètre évoqué précédemment n'a pu être exploité dans le cadre de cette étude en raison du manque de données concernant les cinétiques relatives de croissance des sporophores des différentes familles de macromycètes. Le modèle que nous proposons permet toutefois des développements ultérieurs dans ce domaine.
 \paragraph*{}
-Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie permet d'écarter les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
+Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce à l'issue d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
+\paragraph*{}
+Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
+\paragraph*{}
+En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence[@johnson_continuous_1995], la loi retenue dans le cadre cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de[@johnson_continuous_1995;@r_core_team_r_2021] :
+$$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \chi^{2}_{2 \beta}}$$
 
-[GRAPHIQUE DES LOIS BETA]
+Avec, comme paramètres définis empiriquement pour cette étude : 
+$$\left \{
+\begin{array}{l c c}
+\alpha = 6 F_{c} & & (shape1)\\
+\beta = 4  & & (shape2)\\
+\lambda = F_{c}/2  & & (ncp)\\
+\end{array}
+\right.$$
+
+$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part.
+
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, selon le facteur de croissance Fc"}
+plot(lois_beta)
+```
 
 
 \newpage
