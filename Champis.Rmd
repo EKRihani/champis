@@ -90,6 +90,67 @@ Les données générées par ces stratégies peuvent être de type variés, que 
 \paragraph*{}
 Pour des raisons pratiques, la méthode retenue pour créer le lot de données exploité dans notre étude sera la génération de données alphanumériques à partir de règles, extraites d'ouvrages mycologiques de référence.[@courtecuisse_cle_1986; @courtecuisse_champignons_2013; @courtecuisse_initiation_2020]
 
+\subsubsection{Génération des paramètres quantitatifs}
+\paragraph*{}
+Dans le cadre de cette étude, les variables quantitatives générées aléatoirement sont :
+
+* La longueur du stipe $L_{S}$,
+* Le diamètre du stipe $D_{S}$,
+* Le diamètre du chapeau $D_{C}$.
+
+\paragraph*{}
+En première approximation, nous pouvons considérer que toutes ces valeurs sont intrinsèquement liées à la croissance du champignon. Ces trois variables peuvent, dans l'absolu, être susceptibles de varier indépendamment des autres au cours de la croissance du champignon, les variables $L_{S}$, $D_{S}$ et $D_{C}$ obéissant alors aux lois suivantes :
+
+$$\left \{
+\begin{array}{l}
+L_{S} = L_{Smax}.F_{Ls} \\
+D_{S} = D_{Smax}.F_{Ds} \\
+D_{C} = D_{Cmax}.F_{Dc} \\
+\end{array}
+\right.$$
+Avec :
+
+* $L_{Smax}$, $D_{Smax}$ et $D_{Cmax}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété de champignon, extraites de la littérature, 
+* $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle ]0;1], et représentatives de la croissance du spécimen.
+
+Toutefois, la recherche bibliographique sur la cinétique de croissance des sporophores n'ayant pas permis de distinguer de différences de la cinétique de croissance de chacun de ces trois paramètres, nous supposerons en première approximation que la croissance du stipe en longueur, en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques, ainsi
+
+$$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
+Avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen généré aléatoirement.
+
+\paragraph*{}
+Ainsi, le problème de génération des variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire : facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires
+\paragraph*{}
+
+[GRAPHIQUE DES DISTRIBUTIONS]
+
+Les critères de sélection retenus afin de choisir une loi appropriée sont :
+
+* Efficience calculatoire,
+* Distribution continue,
+* Distribution bornée, ou aisément normalisable sur un intervalle [0;1],
+* Distribution asymétrique.
+\paragraph*{}
+Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à la seconde. 
+
+[TABLEAU DES MICROBENCHMARKS]
+\paragraph*{}
+Les critères de continuité et de normalité n'appellent que peu de commentaires. Ces critères permettent simplement de garantir la possibilité d'une infinité de valeurs dimensionnelles dans l'intervalle considéré. Le critère de continuité proscrit toutefois l'utilisation de lois de distributions discrètes telles que la loi binomiale ou la loi de Poisson, et celui de normalité écarte des distributions telles que la loi de Weibull, dont la normalisation est parfois délicate.
+\paragraph*{}
+Le critère d'asymétrie est un critère permettant de tenir compte des différents paramètres pouvant impacter la distribution de taille des spécimens prélevés, parmi lesquels :
+
+* Différences de cinétique de croissance d'une famille à une autre,
+* Particularités de la croissance fongique, celle-ci s'effectuant par multiplication *et* par croissance cellulaire,
+* Probabilité de prélèvement variable selon la taille (par difficulté de détection, éthique du cueilleur, intérêt mycologique ou gastronomique...).
+
+Le premier paramètre n'a pu être exploité dans le cadre de cette étude en raison du manque de données concernant les cinétiques relatives de croissance des sporophores des différentes familles de macromycètes. Le modèle que nous proposons permet toutefois des développements ultérieurs dans ce domaine.
+\paragraph*{}
+Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce à l'issue d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petites tailles.
+\paragraph*{}
+Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie permet d'écarter les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
+
+[GRAPHIQUE DES LOIS BETA]
+
 
 \newpage
 \section{Références bibliographiques}

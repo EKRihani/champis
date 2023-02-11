@@ -17,12 +17,12 @@ n_distrib <- 1e6
 # Lois de distribution
 
 binom_size <- 20
-fonction_binomiale <- function(x){rbinom(n = n_distrib, size = binom_size, prob = .65)}
+fonction_binomiale <- function(x){rbinom(n = n_distrib, size = binom_size, prob = .65)/binom_size}
 temps_binomiale <- microbenchmark(fonction_binomiale(x))
 valeurs_binomiale <- data.frame(val = fonction_binomiale(x))
 distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
   ggtitle("Loi binomiale") +
-  xlim(min =0, max = 1) +
+#  xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("Densité") +
   geom_histogram(fill = "grey", color= "black", bins = 4*binom_size, center = 0.5) + 
@@ -72,7 +72,7 @@ distrib_poisson <- ggplot(data = valeurs_poisson, aes(x = val)) +
   geom_histogram(fill = "grey", color= "black", center = 0.5, bins = 4*binom_size) + 
   theme_bw()
 
-# Focus sur la loi Beta
+# Focus sur la loi Beta pour génération champis
 facteurs <- c(.5, 1, 1.5, 2)
 
 loi_beta <- function(facteur){rbeta(n = n_distrib, shape1 = 6*facteur, shape2 = 4, ncp = .5*facteur)}
