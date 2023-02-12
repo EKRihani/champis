@@ -25,13 +25,12 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 
 ```{r setup, include = FALSE, warning=FALSE}
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
-library(ggplot2)
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
 library(knitr)
 library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
-knitr::write_bib(c("tidyverse", "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr"), "packages.bib")
+knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr"), "packages.bib")
 ```
 \pagestyle{plain}
 \newpage
@@ -76,8 +75,9 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * RAM : 2x16 Go DDR4-3200
 * SSD : Crucial P5 M2 NVMe
 * OS : Xubuntu Linux 20.04 LTS
-* R : version 3.6.3
-* Librairies : tidyverse[@R-tidyverse] (v1.3.1), caret[@R-caret] (v6.0-88), GGally[@R-GGally] (v2.1.2), MASS[@R-MASS] (v7.3-51.5), mda[@R-mda] (v0.4-10), rpart[@R-rpart] (v4.1-15), plyr[@R-plyr] (v1.8.5), C50[@R-C50] (v0.1.5), party[@R-party] (v1.3-9), ranger[@R-ranger] (v0.13.1), e1071[@R-e1071] (v1.7-9), rFerns[@R-rFerns] (v5.0.0), Rborist[@R-Rborist] (v0.2-3), ggpubr[@R-ggpubr] (v0.4.0), rmarkdown[@R-rmarkdown] (v2.11), knitr[@R-knitr] (v1.34).
+* R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
+* RStudio : version `r paste0(rstudioapi::versionInfo()$version, ' "', rstudioapi::versionInfo()$release_name, '"')`
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] ((v`r packageVersion("rFerns")`)), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
 
 \FloatBarrier
 \subsection{Conception d'un lot de données synthétiques}

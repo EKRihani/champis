@@ -71,7 +71,7 @@ distrib_poisson <- ggplot(data = valeurs_poisson, aes(x = val)) +
 #  ggtitle("Loi de Poisson") +
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", center = 0.5, bins = 4*binom_size) + 
+  geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_size) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -82,7 +82,7 @@ distrib_weibull <- ggplot(data = valeurs_weibull, aes(x = val)) +
 #  ggtitle("Loi de Weibull") +
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", center = 0.5, bins = 4*binom_size) + 
+  geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_size) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -215,3 +215,4 @@ outliers_diam*100       # % de diamètres hors-norme
 
 
 save.image(file = "EKR-Champis-Intro.RData")
+#load("EKR-Champis-Intro.RData")
