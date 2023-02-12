@@ -16,6 +16,7 @@ output:
 header-includes:
   - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc
   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
+  - \usepackage{placeins}   # pour bloquer ces %#@$§£ de floats
   - \setlength{\abovecaptionskip}{-10pt plus 3pt minus 2pt}    # Espacement des légendes (above/below)
 indent: true
 bibliography: [packages.bib, Champis.bib]
@@ -68,6 +69,7 @@ Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@w
 \section{Création du lot de données}
 \subsection{Configuration matérielle et logicielle}
 \paragraph*{}
+\FloatBarrier
 Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant :
 
 * CPU : AMD Ryzen 5 5600G
@@ -77,15 +79,20 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * R : version 3.6.3
 * Librairies : tidyverse[@R-tidyverse] (v1.3.1), caret[@R-caret] (v6.0-88), GGally[@R-GGally] (v2.1.2), MASS[@R-MASS] (v7.3-51.5), mda[@R-mda] (v0.4-10), rpart[@R-rpart] (v4.1-15), plyr[@R-plyr] (v1.8.5), C50[@R-C50] (v0.1.5), party[@R-party] (v1.3-9), ranger[@R-ranger] (v0.13.1), e1071[@R-e1071] (v1.7-9), rFerns[@R-rFerns] (v5.0.0), Rborist[@R-Rborist] (v0.2-3), ggpubr[@R-ggpubr] (v0.4.0), rmarkdown[@R-rmarkdown] (v2.11), knitr[@R-knitr] (v1.34).
 
+\FloatBarrier
 \subsection{Conception d'un lot de données synthétiques}
 \subsubsection{Principes généraux}
 \paragraph*{}
-Un lot de données synthétiques est un lot de données généré par un algorithme, par opposition aux lots de données issus d'une collecte effectuée en "vie réelle". Trois stratégies sont usuellement utilisées :
+Un lot de données synthétiques est un lot de données généré par un algorithme, par opposition aux lots de données issus d'une collecte effectuée en "vie réelle". 
+\paragraph*{}
+\FloatBarrier
+Trois stratégies sont usuellement utilisées :
 
 * Données factices (*dummy data*) : l'ensemble des données est généré aléatoirement.
 * Données générées à partir de règles (*rule-based data*) : l'ensemble des données est généré suivant des lois définies au préalable (distribution, valeurs moyennes, minimales, maximales...)
 * Données générées par l'IA (*AI generated*) : l'ensemble des données est généré suivant des lois extraites par l'IA suite à l'analyse d'un échantillon de données obtenues en "vie réelle".
 
+\FloatBarrier
 \paragraph*{}
 Les données générées par ces stratégies peuvent être de type variés, que nous pouvons grossièrement regrouper en données alphanumériques (quantitatives et qualitatives) et en données d'imagerie.
 \paragraph*{}
@@ -93,12 +100,14 @@ Pour des raisons pratiques, la méthode retenue pour créer le lot de données e
 
 \subsubsection{Génération des paramètres quantitatifs}
 \paragraph*{}
+\FloatBarrier
 Dans le cadre de cette étude, les variables quantitatives générées aléatoirement sont :
 
 * La longueur du stipe $L_{S}$,
 * Le diamètre du stipe $D_{S}$,
 * Le diamètre du chapeau $D_{C}$.
 
+\FloatBarrier
 \paragraph*{}
 En première approximation, nous pouvons considérer que toutes ces valeurs sont intrinsèquement liées à la croissance du champignon. Ces trois variables peuvent, dans l'absolu, être susceptibles de varier indépendamment des autres au cours de la croissance du champignon, les variables $L_{S}$, $D_{S}$ et $D_{C}$ obéissant alors aux lois suivantes :
 
@@ -109,10 +118,14 @@ D_{S} = D_{Smax}.F_{Ds} \\
 D_{C} = D_{Cmax}.F_{Dc} \\
 \end{array}
 \right.$$
+
+\FloatBarrier
 Avec :
 
 * $L_{Smax}$, $D_{Smax}$ et $D_{Cmax}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété de champignon, extraites de la littérature, 
 * $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle ]0;1], et représentatives de la croissance du spécimen.
+
+\FloatBarrier
 
 Toutefois, la recherche bibliographique sur la cinétique de croissance des sporophores n'ayant pas permis de distinguer de différences de la cinétique de croissance de chacun de ces trois paramètres, nous supposerons en première approximation que la croissance du stipe en longueur, en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques, nous obtenons donc :
 
@@ -121,23 +134,8 @@ Avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen 
 
 \paragraph*{}
 Ainsi, le problème de génération de nos trois variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire : le facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires, il convient donc de définir le cahier des charges de la distribution la plus adaptée au sujet de cette étude.
-
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (g.) et normale (d.)"}
-plot(ggarrange(
-   ncol = 2,
-   distrib_uniforme + ylab("Nombre"),
-   distrib_normale))
-```
-
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi de Poisson (g.) et bêta (d.)"}
-plot(ggarrange(
-   ncol = 2,
-   distrib_poisson + ylab("Nombre"),
-   distrib_beta
-   )
-)
-``` 
-
+\paragraph*{}
+\FloatBarrier
 Les critères de sélection retenus afin de choisir la loi la plus appropriée sont :
 
 * Efficience calculatoire,
@@ -145,25 +143,51 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 * Distribution bornée, ou aisément normalisable sur un intervalle [0;1],
 * Distribution asymétrique.
 
+\FloatBarrier
 \paragraph*{}
-Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant largement inférieurs à la seconde. 
+Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` itérations) avec la plupart des distributions d'intérêt.
 
-[TABLEAU DES MICROBENCHMARKS]
+
+```{r, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " itérations")}
+plot(chrono_distrib)
+```
+
 \paragraph*{}
 Les critères de continuité et de normalité n'appellent que peu de commentaires. Ces critères permettent simplement de garantir la possibilité d'une infinité de valeurs dimensionnelles dans l'intervalle considéré. Le critère de continuité proscrit toutefois l'utilisation de lois de distributions discrètes telles que la loi binomiale ou la loi de Poisson, et celui de normalité écarte des distributions telles que la loi de Weibull, dont la normalisation est parfois délicate.
 \paragraph*{}
+\FloatBarrier
 Le critère d'asymétrie est un critère permettant de tenir compte des différents paramètres pouvant impacter la distribution de taille des spécimens prélevés, parmi lesquels :
 
 * Différences de cinétique de croissance d'une famille à une autre,
 * Particularités de la croissance fongique, notamment par la croissance hyphale, [@money_insights_2008; @porter_hyphal_2022]
 * Probabilité de prélèvement variable selon la taille du spécimen (par difficulté de détection, considérations éthiques, intérêt mycologique ou gastronomique...).
 
+\FloatBarrier
 \paragraph*{}
 Le premier paramètre évoqué précédemment n'a pu être exploité dans le cadre de cette étude en raison du manque de données concernant les cinétiques relatives de croissance des sporophores des différentes familles de macromycètes. Le modèle que nous proposons permet toutefois des développements ultérieurs dans ce domaine.
 \paragraph*{}
 Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce à l'issue d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
 \paragraph*{}
 Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
+plot(ggarrange(
+   ncol = 3,
+   distrib_uniforme + ylab("Nombre"),
+   distrib_binomiale,
+   distrib_normale))
+```
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi de Poisson (à gauche), de Weibull (au centre) et bêta (à droite)"}
+plot(ggarrange(
+   ncol = 3,
+   distrib_poisson + ylab("Nombre"),
+   distrib_weibull,
+   distrib_beta
+   )
+)
+```
+
 \paragraph*{}
 En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence[@johnson_continuous_1995], la loi retenue dans le cadre cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de[@johnson_continuous_1995;@r_core_team_r_2021] :
 $$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \chi^{2}_{2 \beta}}$$
@@ -179,10 +203,12 @@ $$\left \{
 
 $F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part.
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, selon le facteur de croissance Fc"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
 plot(lois_beta)
 ```
 
 
+
 \newpage
+
 \section{Références bibliographiques}

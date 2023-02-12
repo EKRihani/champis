@@ -19,11 +19,10 @@ n_graph <- 1e5    # Nombre de valeurs pour graphiques
 
 binom_size <- 20
 fonction_binomiale <- function(x,N){rbinom(n = N, size = binom_size, prob = .65)}
-temps_binomiale <- microbenchmark(fonction_binomiale(x, n_chrono))
+temps_binomiale <- microbenchmark(fonction_binomiale(x, n_chrono), unit = "ms")
 valeurs_binomiale <- data.frame(val = fonction_binomiale(x, n_graph))
 distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
 #  ggtitle("Loi binomiale") +
-#  xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("") +
   geom_histogram(fill = "grey40", bins = 4*binom_size, center = 0.5) + 
@@ -31,7 +30,7 @@ distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
 fonction_uniforme <- function(x,N){runif(n = N)}
-temps_uniforme <- microbenchmark(fonction_uniforme(x, n_chrono))
+temps_uniforme <- microbenchmark(fonction_uniforme(x, n_chrono), unit = "ms")
 valeurs_uniforme <- data.frame(val = fonction_uniforme(x, n_graph))
 distrib_uniforme <- ggplot(data = valeurs_uniforme, aes(x = val)) +
 #  ggtitle("Loi uniforme") +
@@ -43,11 +42,10 @@ distrib_uniforme <- ggplot(data = valeurs_uniforme, aes(x = val)) +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
 fonction_normale <- function(x,N){rnorm(n = N)}
-temps_normale <- microbenchmark(fonction_normale(x, n_chrono))
+temps_normale <- microbenchmark(fonction_normale(x, n_chrono), unit = "ms")
 valeurs_normale <- data.frame(val = fonction_normale(x, n_graph))
 distrib_normale <- ggplot(data = valeurs_normale, aes(x = val)) +
 #  ggtitle("Loi normale") +
-#  xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("") +
   geom_histogram(fill = "grey40", bins = 4*binom_size, center = 0.5) + 
@@ -55,7 +53,7 @@ distrib_normale <- ggplot(data = valeurs_normale, aes(x = val)) +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
 fonction_beta <- function(x,N){rbeta(n = N, shape1 = 6, shape2 = 4, ncp = .5)}
-temps_beta <- microbenchmark(fonction_beta(x, n_chrono))
+temps_beta <- microbenchmark(fonction_beta(x, n_chrono), unit = "ms")
 valeurs_beta <- data.frame(val = fonction_beta(x, n_graph))
 distrib_beta <- ggplot(data = valeurs_beta, aes(x = val)) +
 #  ggtitle("Loi beta") +
@@ -66,17 +64,43 @@ distrib_beta <- ggplot(data = valeurs_beta, aes(x = val)) +
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
-fonction_poisson <- function(x,N){rpois(n = N, lambda = binom_size/3)/binom_size}
-temps_poisson <- microbenchmark(fonction_poisson(x, n_chrono))
+fonction_poisson <- function(x,N){rpois(n = N, lambda = binom_size/3)}
+temps_poisson <- microbenchmark(fonction_poisson(x, n_chrono), unit = "ms")
 valeurs_poisson <- data.frame(val = fonction_poisson(x, n_graph))
 distrib_poisson <- ggplot(data = valeurs_poisson, aes(x = val)) +
 #  ggtitle("Loi de Poisson") +
-  xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("") +
   geom_histogram(fill = "grey40", center = 0.5, bins = 4*binom_size) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+
+fonction_weibull <- function(x,N){rweibull(n = N, shape = 8)}
+temps_weibull <- microbenchmark(fonction_weibull(x, n_chrono), unit = "ms")
+valeurs_weibull <- data.frame(val = fonction_weibull(x, n_graph))
+distrib_weibull <- ggplot(data = valeurs_weibull, aes(x = val)) +
+#  ggtitle("Loi de Weibull") +
+  xlab("Valeur") +
+  ylab("") +
+  geom_histogram(fill = "grey40", center = 0.5, bins = 4*binom_size) + 
+  theme_bw() +
+  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+
+chrono_fonctions  <- bind_rows(temps_binomiale, temps_uniforme, temps_normale, 
+                              temps_beta, temps_poisson, temps_weibull)
+chrono_fonctions$names <- chrono_fonctions$expr %>% str_remove_all(., "fonction_|(x, n_chrono)|[:punct:]") %>% str_to_title(.)
+
+temps_fonctions <- summary(chrono_fonctions)
+rownames(temps_fonctions) <- temps_fonctions$expr %>% str_remove_all(., "fonction_|(x, n_chrono)|[:punct:]") %>% str_to_title(.)
+chrono_typique <- temps_fonctions$uq %>% max(.) %>% round(., digits = -2)
+temps_fonctions <- temps_fonctions %>% arrange(., mean) %>% select(min, mean, median, max) %>% round(.,2)
+colnames(temps_fonctions) <- c("Mininum", "Moyenne", "Médiane", "Maximum")
+
+chrono_distrib <- ggplot(data = chrono_fonctions, aes(y = time/1e6, x = reorder(names, time))) +
+  ylab("Temps (ms)") +
+  xlab(NULL) +
+  geom_boxplot(fill = "grey70") +
+  theme_bw()
 
 # Focus sur la loi Beta pour génération champis
 facteurs <- c(.5, 1, 1.5, 2)
@@ -90,7 +114,7 @@ beta <- pivot_longer(beta, cols = 1:ncol(beta))
 beta$name <- str_remove(beta$name, "X")
 
 lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
-#  ggtitle("Distribution de différentes lois beta") +
+#  ggtitle("Distribution de différentes lois bêta") +
   labs(colour= "Fc") +
   xlab("Valeur") +
   ylab("Densité") +
@@ -166,18 +190,15 @@ scatter3Dsimple <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau
 ##########################
 
 # Lois de distribution (temps et graphique de distribution)
-temps_binomiale
-temps_uniforme
-temps_normale
-temps_beta
-temps_poisson
+temps_fonctions
 
 distrib_binomiale
 distrib_uniforme
 distrib_normale
 distrib_beta
 distrib_poisson
-
+distrib_weibull
+chrono_distrib
 
 # Distribution Champis
 lois_beta           # Profil des lois beta selon facteur de croissance
