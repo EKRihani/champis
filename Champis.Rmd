@@ -6,7 +6,7 @@ lang: fr
 geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
 fontsize: 12pt          # Imposé par la fac
 output: 
-  pdf_document: 
+  bookdown::pdf_document2: 
     number_sections: yes
     extra_dependencies: float
     toc: yes
@@ -17,6 +17,7 @@ header-includes:
   - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc
   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
   - \usepackage{placeins}   # pour bloquer ces %#@$§£ de floats
+  - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
   - \setlength{\abovecaptionskip}{-10pt plus 3pt minus 2pt}    # Espacement des légendes (above/below)
 indent: true
 bibliography: [packages.bib, Champis.bib]
@@ -145,10 +146,10 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 
 \FloatBarrier
 \paragraph*{}
-Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` itérations) avec la plupart des distributions d'intérêt.
+Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` itérations) avec la plupart des distributions d'intérêt (voir figure \@ref(fig:Lots-Chrono)).
 
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " itérations")}
+```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " itérations")}
 plot(chrono_distrib)
 ```
 
@@ -170,7 +171,7 @@ Les deux derniers paramètres permettent de supposer que la distribution de tail
 \paragraph*{}
 Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
+```{r Lots-DistribSym, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
 plot(ggarrange(
    ncol = 3,
    distrib_uniforme + ylab("Nombre"),
@@ -178,7 +179,7 @@ plot(ggarrange(
    distrib_normale))
 ```
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi de Poisson (à gauche), de Weibull (au centre) et bêta (à droite)"}
+```{r Lots-DistribAsym, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi de Poisson (à gauche), de Weibull (au centre) et bêta (à droite)"}
 plot(ggarrange(
    ncol = 3,
    distrib_poisson + ylab("Nombre"),
@@ -201,14 +202,71 @@ $$\left \{
 \end{array}
 \right.$$
 
-$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part.
+$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \@ref(fig:Lots-LoisBeta).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
+```{r Lots-LoisBeta, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
 plot(lois_beta)
 ```
 
+Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$.
+
+Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant :
+
+$$\left \{
+\begin{array}{l}
+L_{S} = L_{Smax}.F_{T}.\delta_{Ls} ~~~~~~~~avec~~ \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{S} = D_{Smax}.F_{T}.\delta_{Ds} ~~~~~~avec~~ \delta_{Ds} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} ~~~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+\end{array}
+\right.$$
 
 
+L'impact de la dispersion sur la distribution des paramètres de taille est illustré par les figures \@ref(fig:Lots-Dispersion3D) et \@ref(fig:Lots-Dispersion2D).
+
+```{r Lots-Dispersion3D, echo = FALSE, fig.height = 3, fig.cap = "Paramètres de taille sans dispersion (à gauche) et avec dispersion (à droite)"}
+plot(ggarrange(
+   ncol = 2,
+   scatter3Ddouble,
+   scatter3Dsimple
+   )
+)
+```
+
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = "Nuage de points et densité de 2 paramètres de taille, avec dispersion"}
+plot(ggarrange(
+   ncol = 2, 
+   widths = c(3, 3.8),
+   scatter2d,
+   densite2d
+   )
+)
+```
+
+Une simulation de Monte Carlo unidimensionnelle sur `r  n_champis` individus nous permet d'évaluer la proportion de spécimens "hors normes" à environ `r outliers_diam*100` % (cf. figure \@ref(fig:HorsNormes))
+
+```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
+plot(distrib_diametre)
+```
+
+\subsubsection{Génération des paramètres qualitatifs}
+texte
+
+\FloatBarrier
+\newpage
+\section{Apprentissage machine et classification binaire}
+texte
+
+\FloatBarrier
+\newpage
+\section{Apprentissage machine et classification multiclasse}
+texte
+
+\FloatBarrier
+\newpage
+\section{Robustesse de la classification}
+texte
+
+\FloatBarrier
 \newpage
 
 \section{Références bibliographiques}

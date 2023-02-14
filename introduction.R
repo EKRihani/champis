@@ -144,14 +144,15 @@ Champi_demo <- as.data.frame(Champi_demo)
 outliers_diam <- mean(Champi_demo$Chapeau.Diametre > Chap.Diam)
 
 scatter2d <-ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
-  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
+#  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
   geom_point(shape = 3, alpha = 2e3/n_champis) +
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
-  geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red")
+  geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red") +
+  ylab("Longueur de stipe (Ls)") + xlab("Diamètre de stipe (Ds)")
 
 densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
-  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
+#  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
   # geom_density2d_filled(bins = 100) +
   # geom_density2d(bins=15, color = "white", alpha = .2) +
   # scale_fill_viridis_d(option = "H", direction = 1) + #B,F,G (H)
@@ -162,13 +163,14 @@ densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Haute
   scale_fill_viridis_c(option = "B", direction = -1, name = "Nombre") + #B,F,G (H)
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
-  geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red")
+  geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red") +
+  ylab(NULL) + xlab("Diamètre de stipe (Ds)")
 
 distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
-  ggtitle(paste0("Distribution de diamètre de chapeau de ", n_champis, " champignons générés aléatoirement")) +
+#  ggtitle(paste0("Distribution de diamètre de chapeau de ", n_champis, " champignons générés aléatoirement")) +
 #  geom_histogram(bins = 40, color = "black", fill = "grey") +
   geom_density(bw = .2, fill = "grey", alpha = .2) +
-  theme_bw() +
+  theme_bw() + xlab("Diamètre de stipe (Ds)") + ylab("Densité") +
   geom_vline(xintercept = Chap.Diam, linetype = "dashed", color = "red")
 
 dens3Ddouble <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Pied.Hauteur, n= 500)
@@ -206,7 +208,7 @@ scatter2d           # Nuage de points des tailles/diamètres
 densite2d           # Graphique de densité 2D des tailles/diamètres
 
 graphe3Ddouble      # Graphique de densité 3D des tailles/diamètres
-graphe3Ddouble      # Graphique de densité 3D des diamètres/diamètres (sans dispersion)
+graphe3Dsimple      # Graphique de densité 3D des diamètres/diamètres (sans dispersion)
 scatter3Ddouble           # Nuage de points 3D des tailles/diamètres
 scatter3Dsimple           # Nuage de points 3D des tailles/diamètres (sans dispersion)
 
@@ -215,4 +217,4 @@ outliers_diam*100       # % de diamètres hors-norme
 
 
 save.image(file = "EKR-Champis-Intro.RData")
-#load("EKR-Champis-Intro.RData")
+load("EKR-Champis-Intro.RData")
