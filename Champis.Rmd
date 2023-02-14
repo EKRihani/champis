@@ -10,6 +10,7 @@ output:
     number_sections: yes
     extra_dependencies: float
     toc: yes
+    toc_depth: 3
     includes:
       before_body: couverture.tex
       after_body: quatrieme.tex
@@ -35,9 +36,9 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 ```
 \pagestyle{plain}
 \newpage
-\section{Introduction}
-\subsection{Propos liminaire}
-\paragraph*{}
+# Introduction
+## Propos liminaire
+
 L'identification des macromycètes est un sujet difficile, ne devant évidemment pas être pris à la légère. Les espèces rencontrées varient considérablement d'un écosystème à un autre, d'un continent à un autre, et aucun lot de données ni ouvrage sur les champignons ne saurait couvrir toute la diversité du monde fongique.
 \paragraph*{}
 Le lot de données mycologiques constitué dans cette étude, bien que constituant l'un des lots en libre accès les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
@@ -48,7 +49,7 @@ L'ingestion de certains de ces champignons est *mortelle*, même à de petites d
 \paragraph*{}
 Il ne faut jamais, *sous aucune circonstance*, utiliser ce type de lot de données afin de déterminer si un champignon est comestible ou non.
 
-\subsection{But de l'étude}
+## But de l'étude
 \paragraph*{}
 L'identification des plantes et champignons est un problème de classification classique, qui est habituellement effectué manuellement à l'aide de clés d'identification. La plupart de ces clés sont basées sur un processus utilisant des arbres décisionnels, ce qui semble logique car rappelant la logique en arbre de l'évolution. Toutefois, cet argument rencontre quelques limites :
 \paragraph*{}
@@ -60,14 +61,14 @@ Le troisième problème est le critère principal de la classification. Ce crit�
 \paragraph*{}
 Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutif, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques. Le but de cette étude est d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies de classification.
 
-\subsection{Etat de l'art des lots de données mycologiques}
+## Etat de l'art des lots de données mycologiques
 Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987]
 \paragraph*{}
 Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@wagner_mushroom_2021] et mis en libre accès sous le nom de *Secondary Mushroom Dataset*.
 
 \newpage
-\section{Création du lot de données}
-\subsection{Configuration matérielle et logicielle}
+# Création du lot de données
+## Configuration matérielle et logicielle
 \paragraph*{}
 \FloatBarrier
 Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant :
@@ -81,8 +82,8 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] ((v`r packageVersion("rFerns")`)), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
 
 \FloatBarrier
-\subsection{Conception d'un lot de données synthétiques}
-\subsubsection{Principes généraux}
+## Conception d'un lot de données synthétiques
+### Principes généraux{#generation-data}
 \paragraph*{}
 Un lot de données synthétiques est un lot de données généré par un algorithme, par opposition aux lots de données issus d'une collecte effectuée en "vie réelle". 
 \paragraph*{}
@@ -99,7 +100,7 @@ Les données générées par ces stratégies peuvent être de type variés, que 
 \paragraph*{}
 Pour des raisons pratiques, la méthode retenue pour créer le lot de données exploité dans notre étude sera la génération de données alphanumériques à partir de règles, extraites d'ouvrages mycologiques de référence.[@courtecuisse_cle_1986; @courtecuisse_champignons_2013; @courtecuisse_initiation_2020]
 
-\subsubsection{Génération des paramètres quantitatifs}
+### Génération des paramètres quantitatifs
 \paragraph*{}
 \FloatBarrier
 Dans le cadre de cette étude, les variables quantitatives générées aléatoirement sont :
@@ -221,7 +222,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} ~~~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 \right.$$
 
 
-L'impact de la dispersion sur la distribution des paramètres de taille est illustré par les figures \@ref(fig:Lots-Dispersion3D) et \@ref(fig:Lots-Dispersion2D).
+L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion3D) et \@ref(fig:Lots-Dispersion2D).
 
 ```{r Lots-Dispersion3D, echo = FALSE, fig.height = 3, fig.cap = "Paramètres de taille sans dispersion (à gauche) et avec dispersion (à droite)"}
 plot(ggarrange(
@@ -242,31 +243,53 @@ plot(ggarrange(
 )
 ```
 
-Une simulation de Monte Carlo unidimensionnelle sur `r  n_champis` individus nous permet d'évaluer la proportion de spécimens "hors normes" à environ `r outliers_diam*100` % (cf. figure \@ref(fig:HorsNormes))
+Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale extraite de la littérature à environ `r outliers_diam` % (cf. figure \@ref(fig:HorsNormes)), et la proportion de spécimens dépassant de plus de 10% cette valeur maximale est inférieure à `r Superoutliers_diam` %.
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
 plot(distrib_diametre)
 ```
 
-\subsubsection{Génération des paramètres qualitatifs}
+### Génération des paramètres qualitatifs
+La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
+
+L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeur, et une valeur sera tirée aléatoirement parmi celles de ce vecteur pour caractériser chaque spécimen.
+
+\FloatBarrier
+\newpage
+# Principes de l'apprentissage machine
+## Objectif et méthodes
+L'évaluation de l'apprentissage machine se décompose conceptuellement en trois étapes :
+
+1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle.
+2. Validation : le modèle d'apprentissage développé à l'étape précédente, sera soumis à un *jeu de données de validation* (*validation data set*). Les prédictions (ex: comestibilité, espèce) proposées par le modèle d'apprentissage sur la base des informations continues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...) sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul, etc.). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (*hypermaramètres*) -- idéalement en suivant un plan d'expériences -- afin d'optimiser le modèle.
+3. Test : les performances du meilleur modèle, avec hyperparamètres optimaux, sélectionné à l'issue de l'étape de validation sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
+
+\paragraph*{}
+La séparation entre étapes d'optimisation et de test peut sembler artificielle. Le problème est en partie lié à un flou sémantique : si l'étape initiale d'entraînement ou d'apprentissage ne pose que peu de problèmes conceptuels, l'étape intermédiaire, dite de *validation* correspond en réalité à une étape d'*optimisation* du modèle et de ses hyperparamètres. Par ailleurs, l'étape finale de *test* est parfois qualifiée d'étape de *validation* dans la littérature.[@brownlee_what_2017]
+
+\paragraph*{}
+Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette troisième phase : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*). Seule une comparaison avec des données n'ayant jamais servi pour l'entraînement ou l'optimisation permettra d'évaluer avec précision le caractère prédictif du modèle, donc sa validité.
+
+## Modèles utilisés
+
+
+\FloatBarrier
+\newpage
+# Apprentissage machine et classification binaire
+
 texte
 
 \FloatBarrier
 \newpage
-\section{Apprentissage machine et classification binaire}
+# Apprentissage machine et classification multiclasse
 texte
 
 \FloatBarrier
 \newpage
-\section{Apprentissage machine et classification multiclasse}
-texte
-
-\FloatBarrier
-\newpage
-\section{Robustesse de la classification}
+# Robustesse de la classification
 texte
 
 \FloatBarrier
 \newpage
 
-\section{Références bibliographiques}
+# Références bibliographiques

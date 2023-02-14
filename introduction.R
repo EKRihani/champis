@@ -141,7 +141,8 @@ Champi_demo$Pied.Hauteur <- Pied.Haut*Champi_demo$FacteurTaille*rnorm(n = n_cham
 Champi_demo$Pied.Largeur <- Pied.Large*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05)
 Champi_demo <- as.data.frame(Champi_demo)
 
-outliers_diam <- mean(Champi_demo$Chapeau.Diametre > Chap.Diam)
+outliers_diam <- mean(Champi_demo$Chapeau.Diametre > Chap.Diam)*100
+Superoutliers_diam <- ceiling(mean(Champi_demo$Chapeau.Diametre > 1.1*Chap.Diam)*1000)/10
 
 scatter2d <-ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
 #  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
@@ -149,7 +150,7 @@ scatter2d <-ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteu
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
   geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red") +
-  ylab("Longueur de stipe (Ls)") + xlab("Diamètre de stipe (Ds)")
+  ylab("Longueur du stipe (Ls)") + xlab("Diamètre du chapeau (Dc)")
 
 densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
 #  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
@@ -164,11 +165,10 @@ densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Haute
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
   geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red") +
-  ylab(NULL) + xlab("Diamètre de stipe (Ds)")
+  ylab(NULL) + xlab("Diamètre du chapeau (Dc)")
 
 distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
 #  ggtitle(paste0("Distribution de diamètre de chapeau de ", n_champis, " champignons générés aléatoirement")) +
-#  geom_histogram(bins = 40, color = "black", fill = "grey") +
   geom_density(bw = .2, fill = "grey", alpha = .2) +
   theme_bw() + xlab("Diamètre de stipe (Ds)") + ylab("Densité") +
   geom_vline(xintercept = Chap.Diam, linetype = "dashed", color = "red")
@@ -213,8 +213,8 @@ scatter3Ddouble           # Nuage de points 3D des tailles/diamètres
 scatter3Dsimple           # Nuage de points 3D des tailles/diamètres (sans dispersion)
 
 distrib_diametre    # Distribution du diamètre
-outliers_diam*100       # % de diamètres hors-norme
-
+outliers_diam       # % de diamètres hors-norme (> 100% max)
+Superoutliers_diam    # % de diamètres super-hors-norme (>110% max), arrondi par excès au 0.1%
 
 save.image(file = "EKR-Champis-Intro.RData")
 load("EKR-Champis-Intro.RData")
