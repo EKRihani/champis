@@ -79,7 +79,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * OS : Xubuntu Linux 20.04 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * RStudio : version `r paste0(rstudioapi::versionInfo()$version, ' "', rstudioapi::versionInfo()$release_name, '"')`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] ((v`r packageVersion("rFerns")`)), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`),, MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] ((v`r packageVersion("rFerns")`)), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
 
 \FloatBarrier
 ## Conception d'un lot de données synthétiques
@@ -257,7 +257,7 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 \FloatBarrier
 \newpage
 # Principes de l'apprentissage machine
-## Objectif et méthodes
+## Jeux de données
 L'évaluation de l'apprentissage machine se décompose conceptuellement en trois étapes :
 
 1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle.
@@ -269,7 +269,36 @@ La séparation entre étapes d'optimisation et de test peut sembler artificielle
 
 \paragraph*{}
 Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette troisième phase : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*). Seule une comparaison avec des données n'ayant jamais servi pour l'entraînement ou l'optimisation permettra d'évaluer avec précision le caractère prédictif du modèle, donc sa validité.
+\paragraph*{}
+Dans un souci de clarté, nous utiliserons les termes lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
+\paragraph*{}
+Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives du lot de données intial, avec des proportions variables :
+1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement & optimisation d'autre part,
+2. Découpage du jeu de données entraînement & optimisation, en un jeu d'entraînement et un jeu d'optimisation.
+[Schéma Split Apprentissage/Optimisation/Validation]
 
+\paragraph*{}
+Le rapport de taille entre jeux de données entraînement, optimisation, évaluation fixé dans cette étude suit une loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022]
+\paragraph*{}
+Pour un nombre de coefficients compris entre 100 et 200, cette règle nous conduit à retenir :
+
+$$\left \{
+\begin{array}{l}
+R_{entr} = 85 \pm 2 \% \\
+R_{opti} = 7 \pm 1 \% \\
+R_{eval} = 8 \pm 1 \% \\
+\end{array}
+\right.$$
+
+\paragraph*{}
+Ce rapport 85:7:8 peut en pratique être obtenu par deux divisions successives avec un rapport 92:8, assez proche des valeurs empiriques communément utilisées en apprentissage machine (double découpage 90:10).
+\paragraph*{}
+Le découpage des jeux de données de cette étude utilise une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) qui vise à optimiser la représentativité des jeux de données par rapport à un découpage purement aléatoire, à l'aide d'un algorithme du plus proche voisin (NN : *Nearest Neighbour*), basé sur un arbre Kd (*k-dimensional tree*). [@joseph_split_2022]
+
+
+
+
+\FloatBarrier
 ## Modèles utilisés
 
 
