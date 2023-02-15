@@ -32,7 +32,7 @@ library(rmarkdown)
 library(knitr)
 library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
-knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr"), "packages.bib")
+knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit"), "packages.bib")
 ```
 \pagestyle{plain}
 \newpage
@@ -79,7 +79,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * OS : Xubuntu Linux 20.04 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * RStudio : version `r paste0(rstudioapi::versionInfo()$version, ' "', rstudioapi::versionInfo()$release_name, '"')`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`),, MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] ((v`r packageVersion("rFerns")`)), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`),, MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
 
 \FloatBarrier
 ## Conception d'un lot de données synthétiques
@@ -92,7 +92,7 @@ Trois stratégies sont usuellement utilisées :
 
 * Données factices (*dummy data*) : l'ensemble des données est généré aléatoirement.
 * Données générées à partir de règles (*rule-based data*) : l'ensemble des données est généré suivant des lois définies au préalable (distribution, valeurs moyennes, minimales, maximales...)
-* Données générées par l'IA (*AI generated*) : l'ensemble des données est généré suivant des lois extraites par l'IA suite à l'analyse d'un échantillon de données obtenues en "vie réelle".
+* Données générées par intelligence artificielle (*AI generated*) : l'ensemble des données est généré suivant des lois extraites par l'IA suite à l'analyse d'un échantillon de données obtenues en "vie réelle".
 
 \FloatBarrier
 \paragraph*{}
@@ -129,6 +129,7 @@ Avec :
 
 \FloatBarrier
 
+\paragraph*{}
 Toutefois, la recherche bibliographique sur la cinétique de croissance des sporophores n'ayant pas permis de distinguer de différences de la cinétique de croissance de chacun de ces trois paramètres, nous supposerons en première approximation que la croissance du stipe en longueur, en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques, nous obtenons donc :
 
 $$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
@@ -191,7 +192,7 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence[@johnson_continuous_1995], la loi retenue dans le cadre cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de[@johnson_continuous_1995;@r_core_team_r_2021] :
+En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence[@johnson_continuous_1995], la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de :[@johnson_continuous_1995;@r_core_team_r_2021]
 $$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \chi^{2}_{2 \beta}}$$
 
 Avec, comme paramètres définis empiriquement pour cette étude : 
@@ -210,7 +211,7 @@ plot(lois_beta)
 ```
 
 Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$.
-
+\paragraph*{}
 Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant :
 
 $$\left \{
@@ -221,28 +222,23 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} ~~~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 \end{array}
 \right.$$
 
+L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
 
-L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion3D) et \@ref(fig:Lots-Dispersion2D).
-
-```{r Lots-Dispersion3D, echo = FALSE, fig.height = 3, fig.cap = "Paramètres de taille sans dispersion (à gauche) et avec dispersion (à droite)"}
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = "Nuages de points de 2 paramètres de taille, sans dispersion (à gauche) et avec dispersion (à droite)"}
 plot(ggarrange(
    ncol = 2,
-   scatter3Ddouble,
-   scatter3Dsimple
+   noscatter2d,
+   scatter2d
    )
 )
 ```
 
-```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = "Nuage de points et densité de 2 paramètres de taille, avec dispersion"}
-plot(ggarrange(
-   ncol = 2, 
-   widths = c(3, 3.8),
-   scatter2d,
-   densite2d
-   )
-)
+
+```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4, fig.cap = "Diagramme de densité de 2 paramètres de taille, avec dispersion"}
+plot(densite2d)
 ```
 
+\paragraph*{}
 Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale extraite de la littérature à environ `r outliers_diam` % (cf. figure \@ref(fig:HorsNormes)), et la proportion de spécimens dépassant de plus de 10% cette valeur maximale est inférieure à `r Superoutliers_diam` %.
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
@@ -258,27 +254,28 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 \newpage
 # Principes de l'apprentissage machine
 ## Jeux de données
-L'évaluation de l'apprentissage machine se décompose conceptuellement en trois étapes :
+Le déroulement de l'apprentissage machine se décompose conceptuellement en trois étapes, mettant en jeu trois lots de données distincts :
 
 1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle.
-2. Validation : le modèle d'apprentissage développé à l'étape précédente, sera soumis à un *jeu de données de validation* (*validation data set*). Les prédictions (ex: comestibilité, espèce) proposées par le modèle d'apprentissage sur la base des informations continues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...) sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul, etc.). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (*hypermaramètres*) -- idéalement en suivant un plan d'expériences -- afin d'optimiser le modèle.
+2. Validation : le modèle d'apprentissage développé à l'étape précédente, sera soumis à un *jeu de données de validation* (*validation data set*). Les prédictions (ex: comestibilité, espèce...) proposées par le modèle d'apprentissage sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...) sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances prédictives du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) -- idéalement en suivant un plan d'expériences -- à fins d'optimisation.
 3. Test : les performances du meilleur modèle, avec hyperparamètres optimaux, sélectionné à l'issue de l'étape de validation sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
 
 \paragraph*{}
 La séparation entre étapes d'optimisation et de test peut sembler artificielle. Le problème est en partie lié à un flou sémantique : si l'étape initiale d'entraînement ou d'apprentissage ne pose que peu de problèmes conceptuels, l'étape intermédiaire, dite de *validation* correspond en réalité à une étape d'*optimisation* du modèle et de ses hyperparamètres. Par ailleurs, l'étape finale de *test* est parfois qualifiée d'étape de *validation* dans la littérature.[@brownlee_what_2017]
-
 \paragraph*{}
-Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette troisième phase : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*). Seule une comparaison avec des données n'ayant jamais servi pour l'entraînement ou l'optimisation permettra d'évaluer avec précision le caractère prédictif du modèle, donc sa validité.
+Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.
 \paragraph*{}
 Dans un souci de clarté, nous utiliserons les termes lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
 \paragraph*{}
 Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives du lot de données intial, avec des proportions variables :
+
 1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement & optimisation d'autre part,
 2. Découpage du jeu de données entraînement & optimisation, en un jeu d'entraînement et un jeu d'optimisation.
+
 [Schéma Split Apprentissage/Optimisation/Validation]
 
 \paragraph*{}
-Le rapport de taille entre jeux de données entraînement, optimisation, évaluation fixé dans cette étude suit une loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022]
+Le rapport de taille entre jeux de données entraînement, optimisation, évaluation de cette étude suit la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022]
 \paragraph*{}
 Pour un nombre de coefficients compris entre 100 et 200, cette règle nous conduit à retenir :
 
@@ -291,12 +288,9 @@ R_{eval} = 8 \pm 1 \% \\
 \right.$$
 
 \paragraph*{}
-Ce rapport 85:7:8 peut en pratique être obtenu par deux divisions successives avec un rapport 92:8, assez proche des valeurs empiriques communément utilisées en apprentissage machine (double découpage 90:10).
+Ce rapport 85:7:8 peut en pratique être obtenu par deux découpages successifs avec un rapport 92:8.
 \paragraph*{}
-Le découpage des jeux de données de cette étude utilise une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) qui vise à optimiser la représentativité des jeux de données par rapport à un découpage purement aléatoire, à l'aide d'un algorithme du plus proche voisin (NN : *Nearest Neighbour*), basé sur un arbre Kd (*k-dimensional tree*). [@joseph_split_2022]
-
-
-
+Dans cette étude, la division de ces trois jeux de données utilise une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), basé sur un arbre Kd (*k-dimensional tree*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022]
 
 \FloatBarrier
 ## Modèles utilisés

@@ -146,10 +146,18 @@ Superoutliers_diam <- ceiling(mean(Champi_demo$Chapeau.Diametre > 1.1*Chap.Diam)
 
 scatter2d <-ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
 #  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
-  geom_point(shape = 3, alpha = 2e3/n_champis) +
+  geom_point(shape = 20, alpha = 2e3/n_champis, size = .5) +
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
   geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red") +
+  ylab(NULL) + xlab("Diamètre du chapeau (Dc)")
+
+noscatter2d <-ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Chapeau.Diametre*.8)) +
+  #  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
+  geom_point(shape = 20, alpha = 2e3/n_champis, size= .5) +
+  theme_bw() +
+  geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
+  geom_hline(yintercept = Chap.Diam*.8, linetype = "dotted", color = "red") +
   ylab("Longueur du stipe (Ls)") + xlab("Diamètre du chapeau (Dc)")
 
 densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
@@ -183,9 +191,11 @@ graphe3Dsimple <- plot_ly(x=dens3Dsimple$x, y=dens3Dsimple$y, z=dens3Dsimple$z) 
   add_surface(colorscale ="Viridis", contours = list(z = list(project=list(z=TRUE), show=TRUE, usecolormap=TRUE, start = 0, end = 1, size = max(dens3Dsimple$z)/20)))
 
 scatter3Ddouble <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Pied.Hauteur, z=Champi_demo$Pied.Largeur, marker = list(size=1)) %>% 
-  add_markers()
+  add_markers() %>% 
+  layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds")))
 scatter3Dsimple <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau.Diametre, z=Champi_demo$Chapeau.Diametre, marker = list(size=1)) %>% 
-  add_markers()
+  add_markers() %>% 
+  layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds")))
 
 ##########################
 #     DONNEES FINALES    #
@@ -204,6 +214,7 @@ chrono_distrib
 
 # Distribution Champis
 lois_beta           # Profil des lois beta selon facteur de croissance
+noscatter2d         # Nuage de points des tailles/diamètres (sans dispersion)
 scatter2d           # Nuage de points des tailles/diamètres
 densite2d           # Graphique de densité 2D des tailles/diamètres
 
@@ -211,10 +222,12 @@ graphe3Ddouble      # Graphique de densité 3D des tailles/diamètres
 graphe3Dsimple      # Graphique de densité 3D des diamètres/diamètres (sans dispersion)
 scatter3Ddouble           # Nuage de points 3D des tailles/diamètres
 scatter3Dsimple           # Nuage de points 3D des tailles/diamètres (sans dispersion)
+# orca() pour export en image ???
 
 distrib_diametre    # Distribution du diamètre
 outliers_diam       # % de diamètres hors-norme (> 100% max)
 Superoutliers_diam    # % de diamètres super-hors-norme (>110% max), arrondi par excès au 0.1%
+
 
 save.image(file = "EKR-Champis-Intro.RData")
 load("EKR-Champis-Intro.RData")
