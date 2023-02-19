@@ -19,7 +19,10 @@ header-includes:
   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
   - \usepackage{placeins}   # pour bloquer ces %#@$§£ de floats
   - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
-  - \setlength{\abovecaptionskip}{-10pt plus 3pt minus 2pt}    # Espacement des légendes (above/below)
+  - \linespread{1.15}
+#  - \setlength{\baselineskip}{24pt}      #MARCHE PAS !!!
+#  - \setlength{\parskip}{1.2ex plus 1pt}       # Espacements sans ajouter des\paragraph*{} partout
+#  - \setlength{\abovecaptionskip}{-10pt plus 3pt minus 2pt}    # Espacement des légendes (above/below) POUR WINDOWS
 indent: true
 bibliography: [packages.bib, Champis.bib]
 csl: https://www.zotero.org/styles/vancouver-superscript
@@ -27,6 +30,7 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 
 ```{r setup, include = FALSE, warning=FALSE}
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
+load("EKR-analyse.RData")            # Chargement des résultats ANALYSE
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
 library(knitr)
@@ -35,10 +39,31 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
 knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit"), "packages.bib")
 ```
 \pagestyle{plain}
+
+\newpage
+# Liste des abréviations
+\flushleft
+AI : *Artificial Intelligence* (intelligence artificielle)
+
+EDA : *Exploratory Data Analysis* (analyse exploratoire des données)
+
+GAM : *Generalized Additive Model* (modèle additif généralisé)
+
+IA : Intelligence Artificielle  
+
+LDA : *Linear Discriminant Analysis* (analyse linéaire discriminante)
+
+PDA : *Penalized Discriminant Analysis* (analyse discriminante pénalisée)
+
+RF : *Random Forest* (forêt aléatoire)
+
+XGB : *eXtreme Gradient Boosting*
+
+
 \newpage
 # Introduction
 ## Propos liminaire
-
+\paragraph*{}
 L'identification des macromycètes est un sujet difficile, ne devant évidemment pas être pris à la légère. Les espèces rencontrées varient considérablement d'un écosystème à un autre, d'un continent à un autre, et aucun lot de données ni ouvrage sur les champignons ne saurait couvrir toute la diversité du monde fongique.
 \paragraph*{}
 Le lot de données mycologiques constitué dans cette étude, bien que constituant l'un des lots en libre accès les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
@@ -76,7 +101,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * CPU : AMD Ryzen 5 5600G
 * RAM : 2x16 Go DDR4-3200
 * SSD : Crucial P5 M2 NVMe
-* OS : Xubuntu Linux 20.04 LTS
+* OS : Xubuntu Linux 20.04.1 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * RStudio : version `r paste0(rstudioapi::versionInfo()$version, ' "', rstudioapi::versionInfo()$release_name, '"')`
 * Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`),, MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
@@ -148,10 +173,10 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 
 \FloatBarrier
 \paragraph*{}
-Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` itérations) avec la plupart des distributions d'intérêt (voir figure \@ref(fig:Lots-Chrono)).
+Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \@ref(fig:Lots-Chrono)).
 
 
-```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " itérations")}
+```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
 plot(chrono_distrib)
 ```
 
@@ -172,6 +197,7 @@ Le premier paramètre évoqué précédemment n'a pu être exploité dans le cad
 Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce à l'issue d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
 \paragraph*{}
 Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
+\paragraph*{}
 
 ```{r Lots-DistribSym, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
 plot(ggarrange(
@@ -198,7 +224,7 @@ $$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \ch
 Avec, comme paramètres définis empiriquement pour cette étude : 
 $$\left \{
 \begin{array}{l c c}
-\alpha = 6 F_{c} & & (shape1)\\
+\alpha = 6 \, F_{c} & & (shape1)\\
 \beta = 4  & & (shape2)\\
 \lambda = F_{c}/2  & & (ncp)\\
 \end{array}
@@ -215,10 +241,10 @@ Le modèle défini à ce stade impose une stricte proportionnalité entre diamè
 Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant :
 
 $$\left \{
-\begin{array}{l}
-L_{S} = L_{Smax}.F_{T}.\delta_{Ls} ~~~~~~~~avec~~ \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
-D_{S} = D_{Smax}.F_{T}.\delta_{Ds} ~~~~~~avec~~ \delta_{Ds} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
-D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} ~~~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+\begin{array}{ll} 
+L_{S} = L_{Smax}.F_{T}.\delta_{Ls} & ~~~~avec~~ \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{S} = D_{Smax}.F_{T}.\delta_{Ds} & ~~~~avec~~ \delta_{Ds} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
 \end{array}
 \right.$$
 
@@ -227,8 +253,8 @@ L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$,
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = "Nuages de points de 2 paramètres de taille, sans dispersion (à gauche) et avec dispersion (à droite)"}
 plot(ggarrange(
    ncol = 2,
-   noscatter2d,
-   scatter2d
+   nuage_sansdispersion,
+   nuage_avecdispersion
    )
 )
 ```
@@ -239,13 +265,14 @@ plot(densite2d)
 ```
 
 \paragraph*{}
-Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale extraite de la littérature à environ `r outliers_diam` % (cf. figure \@ref(fig:HorsNormes)), et la proportion de spécimens dépassant de plus de 10% cette valeur maximale est inférieure à `r Superoutliers_diam` %.
+Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale extraite de la littérature à environ `r taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)), et la proportion de spécimens dépassant de plus de 10% cette valeur maximale est inférieure à `r taux_supergros_diam` %.
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
 plot(distrib_diametre)
 ```
 
 ### Génération des paramètres qualitatifs
+\paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
 
 L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeur, et une valeur sera tirée aléatoirement parmi celles de ce vecteur pour caractériser chaque spécimen.
@@ -254,6 +281,7 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 \newpage
 # Principes de l'apprentissage machine
 ## Jeux de données
+\paragraph*{}
 Le déroulement de l'apprentissage machine se décompose conceptuellement en trois étapes, mettant en jeu trois lots de données distincts :
 
 1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle.
@@ -288,19 +316,389 @@ R_{eval} = 8 \pm 1 \% \\
 \right.$$
 
 \paragraph*{}
-Ce rapport 85:7:8 peut en pratique être obtenu par deux découpages successifs avec un rapport 92:8.
+Ce rapport 85:7:8 peut, dans la pratique, être obtenu par réalisation de deux découpages successifs suivant des rapports 92:8.
 \paragraph*{}
 Dans cette étude, la division de ces trois jeux de données utilise une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), basé sur un arbre Kd (*k-dimensional tree*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022]
 
 \FloatBarrier
 ## Modèles utilisés
 
+### Analyses discriminantes (lda2, pda)
+[discriminant correspondence analysis???]
+
+https://rpubs.com/markloessi/505575
+
+https://en.wikipedia.org/wiki/Altman_Z-score
+
+https://towardsdatascience.com/linear-discriminant-analysis-explained-f88be6c1e00b
+
+https://scikit-learn.org/stable/modules/lda_qda.html
+\paragraph*{}
+Cette étude propose deux classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante : un modèle basé sur l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA) et un modèle basé sur l'analyse discriminante pénalisée (*Penalized Discriminant Analysis*, PDA).
+\paragraph*{}
+L'analyse linéaire discriminante (LDA) est une méthode utilisée en statistiques et en datascience pour trouver une combinaison linéaire d'éléments qui caractérisent des éléments, afin de créer un classifieur linéaire, ou d'effectuer des réductions de dimensionnalité. Cet algorithme fonctionne en créant des combinaisons linéaires (fonctions discriminantes) de prédicteurs. [A FINIR]
+\paragraph*{}
+L'analyse discriminante pénalisée [A FINIR]
+
+### Modèle additif généralisé
+gamLoess
+
+### Arbres de décision
+rpart, Ctree, c50tree, Rpartcost
+
+### Forêts aléatoires
+rFerns, Rborist, ranger
+
 
 \FloatBarrier
 \newpage
 # Apprentissage machine et classification binaire
 
-texte
+A TRADUIRE !!!
+
+## Analyse exploratoire des données (EDA)
+
+\newpage
+La structure du lot de données est la suivante :
+```{r out.width = "90%", echo = FALSE}
+kable(structure_dataset, caption = "Dataset structure")
+```
+
+\subsection{Training set analysis}
+\paragraph*{}
+The original dataset was first randomly split into a 90%-sized training/validation set, and a 10%-sized evaluation set that is not to be used until the final validation. All distributions were then plotted using a simple loop that gets the column names and a conditional branching that uses the structure to plot an histogram or a barplot (simplified code).
+```{r, eval = FALSE}
+for (n in 1:ncol(trainingset)){
+   plot <- trainingset %>%
+      ggplot(aes_string(x = colnames(trainingset)[n]))
+   if(structure_dataset$Final[n] %in% c("integer", "numeric"))
+      {plot <- plot + geom_histogram(fill = "gray45")}
+   else
+      {plot <- plot + geom_bar(fill = "gray45")}
+   plotname <- paste0("distrib_", colnames(trainingset)[n])
+   assign(plotname, plot)
+}
+```
+Using *aes_string* instead of the traditional *aes* allows to use a string as an argument.
+\paragraph*{}
+Barplots didn't show anything remarkable, and thus weren't integrated in the report. However, dimensional distributions were more interesting : at first, they seemed to roughly follow a bell curve (fig. 1), with a long tail towards the higher values. A logarithmic transformation (fig. 2) can show more clearly the shape of this tail.  
+
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Mushroom cap diameter, stem height and stem width distribution"}
+plot(ggarrange(
+   ncol = 3,
+   study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
+   study_distrib_stem.height + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
+   study_distrib_stem.width + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL)
+   )
+)
+```
+
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Mushroom cap diameter, stem height and stem width distribution (log Y scale)"}
+plot(ggarrange(
+   ncol = 3,
+   study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
+   study_distrib_stem.height + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
+   study_distrib_stem.width + ggtitle("") + ylab("") + scale_y_log10(labels = NULL)
+   )
+)
+```
+
+The cap diameter distribution looks like a bell curve with a long right tail but actually is bimodal, with a main mode toward 5 cm, and a much smaller secondary mode toward 50 cm. This size can look very surprising, but after further investigation, it appears that some species such as *Polyporus squamosus* (dryad's saddle) can be very large, with some specimens that can weight up to 5 kg.[@courtecuisse]
+\paragraph*{}
+The stem height distribution also looks like a bell curve with a long right tail, a main mode around 5 cm, and a secondary mode at 0 cm. Again, this can look surprising, but some mushrooms have no stem, which could explain this height value.
+\paragraph*{}
+The stem width distribution looks like a bell curve with a long right tail, and a peak around 10-15 mm. In all three distributions, the right tail can probably be explained by the impossibility to have negative dimensional values.
+
+
+
+\newpage
+\subsection{Caret package models}  
+The *caret* packages provides a very convenient and efficient platform for data modelling and inference. This section will explain the strategy used for the evaluation of some of these models. The selected models were of various types :
+
+* Linear Discriminant Analysis : Linear Discriminant Analysis (lda2), Penalized Discriminant Analysis (pda)
+* Generalized Additive Model : Generalized Additive Model using LOESS (gamLoess)
+* Tree-Based Models : Classification And Regression Tree (CART) (rpart, rpartCost), Single C5.0 Tree (ctree)
+* Random Forest : Random Ferns (rferns), Random Forest (ranger, Rborist)
+
+\paragraph*{}
+The first step was to build a regression and evaluation function. The caret package allows to define it very simply with :
+
+```
+set.seed(1)
+tr_ctrl <- trainControl(classProbs = TRUE, 
+                        summaryFunction = twoClassSummary, 
+                        method = "cv", number = 10)
+train(class ~ ., 
+      method = [METHOD], 
+      data = trainvalid_set, 
+      trControl = tr_ctrl, 
+      metric = 'Spec', 
+      tuneGrid = data.frame([PARAMETERS]))
+```
+The *set.seed* insures reproducibility, the *trainControl* function allows to control various training and evaluation parameters ; in this case, to use a ROC/sensitivity/specificity criterion and a 10-fold cross-validation. The *train* function runs the train and evaluation process, while allowing the use of several parameters, such as the method selection the training/validation set, the metric used for the evaluation and the grid of model parameters.
+\paragraph*{}
+This block was included in a function to allow easy access and reproducibility. The function returns a list that can be plotted and also includes various data of interest, such as .\$results (ROC, Sensibility, Specificity), .\$bestTune (best value with the evaluation metric, Specificity in this case), and .\$finalModel (miscellanous information that can sometimes be plotted, such as trees).
+
+
+\subsubsection{Linear Discriminant Analysis Models}  
+The two Linear Discriminant Analysis Models selected for this study are lda2 (Linear Discriminant Analysis) and pda (Penalized Discriminant Analysis). The lda2 model has one tuning parameter (*dimen*, number of discriminant functions). The pda model also has a single tuning parameter (*lambda*, shrinkage penalty coefficient).  
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of lda2 (left) and pda (right) models"}
+plot(ggarrange(
+   ncol = 2,
+   fit_lda2_dim_graphe + theme_bw(),
+   fit_pda_lambda_graphe +  ylab("") + theme_bw()
+   )
+)
+```  
+\paragraph*{}
+The *dimen* parameter of the lda2 model does not seem to have much effect on specificity (*Spec =* `r round(mean(fit_lda2_dim_results[,"Spec"]), 3)`). 
+\paragraph*{}
+The *lambda* parameter of the sda model marginally affects its specificity, with lower lambda values giving slightly better results ($Spec_{max} =$ `r round(max(fit_pda_lambda_results["Spec"]))`).
+\paragraph*{}
+However, the specificity of both models are far from being sufficient for this study ($Spec \approx$ `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)),2)`), and their sensitivities don't seem to be much higher than the basic 2-criteria model ($Sens \approx$ `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)` vs `r round(best_margin2["Sensitivity"], 3)`).
+
+\subsubsection{Generalized Additive Model}  
+
+The only generalized additive model selected for this study is gamLoess (Generalized Additive Model using Locally Weighted Linear Regression). The caret package documentation indicates that gamLoess has two tuning parameters : *span* (fraction of data points used in the local neighborhood size) and *degree* (degree of linearization).
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of lda2 (left) and pda (right) models"}
+plot(ggarrange(
+   ncol = 2,
+   fit_gamLoess_span_graphe + theme_bw(),
+   fit_gamLoess_degree_graphe +  ylab("") + theme_bw()
+   )
+)
+```  
+\paragraph*{}
+The *degree* parameter of the gamLoess model does not seem to have much effect on specificity, with $\Delta Spec =$ `r round(max(fit_gamLoess_degree_results[,"Spec"]) - min(fit_gamLoess_degree_results[,"Spec"]), 3)`. 
+\paragraph*{}
+The *span* parameter marginally affects the specificity of the gamLoess model, with an optimal value of *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, that gives $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs `r round(best_margin2["Specificity"], 4)`).
+\paragraph*{}
+The specificity this model does not meet the required specificity level for this study. The GamLoess model actually proved to be inferior to the 2-criteria classifier in both specificity (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs `r best_margin2["Specificity"]`) and sensitivity (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r best_margin2["Sensitivity"]`).
+
+
+\subsubsection{Tree-Based Models}
+\paragraph*{}
+Tree-based models are of special interest in this study, for two main reasons :
+
+* Tree-based logic is usually used in manual mushrooms classification,
+* Tree models can be plotted and easily understood by humans.
+
+\paragraph*{}
+The first models presented in this study are two CART (Classification And Regression Tree) models. The basic CART model (rpart) has one complexity parameter (cp).
+
+```{r, echo = FALSE}
+
+kable(fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance of the CART (rpart) model")
+```
+
+The basic CART model does never achieve the required specificity. However, this model still comes close and gives excellent results ($Sens_{max} =$ `r round(max(fit_rpart_cp_results["Sens"]),3)`, $Spec_{max} =$ `r round(max(fit_rpart_cp_results["Spec"]),3)`).
+
+The second CART model used in this study (rpartCost) associates a complexity (*cp*) and a cost (*Cost*) parameters.
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of rpartCost according to complexity and cost values"}
+plot(ggarrange(
+   ncol = 2,
+   fit_rpartcost_complexity_graphe + scale_x_log10() + theme_bw(),
+   fit_rpartcost_cost_graphe + theme_bw()
+   )
+)
+```
+
+The best predicted specificity would be achieved with *cp =* `r fit_rpartcost_complexity_bestTune['cp']` and *Cost = * `r fit_rpartcost_cost_bestTune['Cost']`.
+
+```{r, echo = FALSE}
+
+kable(fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance of the CART (rpartCost) model")
+```
+
+The performance, while very good, did not achieve the specificity requirement.
+\paragraph*{}
+The last tree-based model was C5.0tree. This model doesn't have any tuning parameter.
+
+```{r, echo = FALSE}
+kable(fit_c50tree_results[,2:4], digits = 5, caption = "Performance of the C5.0 Tree (C5.0Tree) model")
+```
+
+Quite interestingly, despite have no tuning parameter, this model gave excellent and very balanced results out of the box, with both very high sensitivity and specificity. Still, this model didn't achieve the required *Spec* = 1 criterion.
+
+\newpage
+\subsubsection{Random Forest Models}
+\paragraph*{}
+The Random Ferns (rFerns) model has only one parameter : depth.
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of Random Ferns model"}
+fit_rFerns_depth_graphe + theme_bw()
+
+```
+\paragraph*{}
+While pretty fast, the Random Ferns model yielded disappointing results, with a maximum specificity of $Spec_{max} =$ `r round(max(fit_rFerns_depth_results["Spec"]), 3)`. The maximum sensitivity wasn't very high either ($Sens_{max} =$ `r round(max(fit_rFerns_depth_results["Sens"]), 3)`). Both metrics were inferior to the basic 2-criteria model ones.
+\paragraph*{}
+The second random forest model is the ranger model. The caret package documentation mentions three tuning parameters : the minimal node size (*min.node.size*), the number of features to split on each node (*mtry*) and the splitting rule (*splitrule*).
+
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Ranger model specificity"}
+plot(ggarrange(
+   ncol = 3,
+   fit_ranger_mtry_graphe + scale_y_log10() + theme_bw(),
+   fit_ranger_splitrule_graphe + ylab("") + theme_bw(),
+   fit_ranger_nodesize_graphe + ylab("") + theme_bw()
+   )
+)
+```
+
+The preliminary tuning step showed very promising results : even with a low number of trees (*n* = 6), the required specificity was already achieved on several occurrences with single-parameter tuning. Tuning this model with optimal parameters (*min.node.size* = `r fit_ranger_nodesize_bestTune$min.node.size`, *mtry* = `r fit_ranger_splitrule_bestTune$mtry` and *splitrule* = `r fit_ranger_splitrule_bestTune$splitrule`) gave interesting results.
+
+```{r, echo = FALSE}
+kable(fit_ranger_best_results[1:6], caption = "Performance of the Ranger model (optimal settings)")
+```
+This model achieved excellent performance, giving perfect specificity and sensitivity in this evaluation phase.
+\paragraph*{}
+The last random forest model was provided by Rborist. The caret package mentions two tuning parameters for this model : number of trial predictors for a split (*predFixed*) and minimum number of distinct row references to split a node (*minNode*).
+
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Rborist model specificity"}
+plot(ggarrange(
+   ncol = 2,
+   fit_Rborist_pred_graphe + theme_bw(),
+   fit_Rborist_minNode_graphe + ylab("") + theme_bw()
+   )
+)
+```
+
+```{r, echo = FALSE}
+kable(fit_Rborist_pred_results[1:5, 1:5], digits = 4, caption = "Performance of the Rborist model (predFixed tuning)")
+```
+
+
+Again, the preliminary tuning step showed promising results : on this model too, the required specificity was achieved on several occurrences using only single-parameter tuning. With optimal parameters (*predFixed* = 6, manually fixed value because of the higher sensitivity), and *minNode* = `r fit_Rborist_minNode_bestTune$minNode`, the performance was estimated to to be :
+
+```{r, echo = FALSE}
+kable(fit_Rborist_best_results[1:5], caption = "Performance of the Rborist model (optimal settings)")
+```
+
+The Rborist model gave the same excellent results as the Ranger one, with perfect sensitivity and specificity.
+\paragraph*{}
+These results underline an interesting fact : not all random forest models are created equal. This study shows the considerable difference in sensitivity and specificity between the rFerns and the Ranger or Rborist random forest models. In the first step of the preliminary studies of the caret package models, some random forest models also proved to be extremely slow, while others were considerably faster.
+\paragraph*{}
+Speed of some algorithms will be explored in the next section. Running time of any code portion can be very easily measured by:
+```
+start_time <- Sys.time()
+[Code to be evaluated]
+end_time <- Sys.time()
+time <- difftime(end_time, start_time)
+```
+
+\subsection{Memory Optimization}
+During the building of this study, an unforeseen and unfortunate event resulted into the addition of a secondary goal : the code had to be able to handle a `r summary_number` $\times$ `r nrow(structure_dataset)` dataset and run on lower-end computers, with only 4GB RAM + 6GB swap. Memory optimization was an interesting challenge, and implied :
+
+* Image saving on hard drive before environment cleaning,
+* Identification and removal of obsolete intermediate values,
+* Identification and removal of objects that won't be used in the final report,
+* Identification and replacement of large objects,
+* Periodic garbage collection.
+
+The identification of large objects can be performed by the following code :
+
+```{r, eval = FALSE}
+object_list <- objects()
+
+obj_size <- function(fcn_object){
+   object <- eval(parse(text = fcn_object))
+   size <- format(object.size(object), units = "Mb")
+   size <- str_remove(size, " Mb")
+   size <- as.numeric(size)
+   size
+}
+size_list <- sapply(X = object_list, FUN = obj_size)
+```
+The resulting vector can then be converted to a data frame, that returns the size of all objects :
+
+```{r, echo = FALSE}
+
+kable(head(sizes_list,30), caption = "Size of the 30 largest objects")
+```
+
+Some of these objects are quite large, but can fortunately be converted into smaller and still useful objects. 
+\paragraph*{}
+For example, the *very* large fit_rFerns_depth train object (`r sizes_list %>% filter(object == "fit_rFerns_depth") %>% select("size (Mb)") %>% round` Mb) can be split into two useful objects that gather the main metrics of interest : the fitting plot (`r format(object.size(fit_rFerns_depth_graphe), units = "KB")`) and the results (`r format(object.size(fit_rFerns_depth_results), units = "KB")`) table.
+\paragraph*{}
+Some of these objects were much smaller : ggplots are not heavy per se, but while generating plots for all variables proved to be useful at some point in the study, having more than forty 5+ MB plots in memory was not really necessary, especially when having to run training and validation steps on limited hardware.
+\paragraph*{}
+Periodic data-gathering and object deletion thus permitted to avoid unnecessary memory creep that resulted in major slowdowns or crashes.
+
+\newpage
+\section{Results}
+\subsection{Evaluation protocol}  
+\paragraph*{}
+The models that attained the specificity requirement during the validation process were selected for the final evaluation. The three selected models are :
+
+* Two-criteria classifier,
+* Ranger random forest,
+* Rborist random forest.
+
+\paragraph*{}
+All models were trained on the training dataset, set with the best hyperparameters values obtained by evaluating the performance against the validation dataset. Their performance against the evaluation dataset will be analyzed, using the same criteria as before :
+
+1. Specificity *must* be equal to one.
+2. Sensitivity should be the highest possible.
+
+\subsection{Dual criteria classifier performance}  
+\paragraph*{}
+Running the dual criteria classifier against the evaluation dataset yields the following results :
+```{r out.width = "100%", echo = FALSE}
+kable(results_biclass, digits = 4, caption = "Performance of the bi-criteria classifier (vs. evaluation)")
+```
+\paragraph*{}
+The confusion matrix shows more accurately the results : while `r CM_bifinal$table[2,2]` of the `r sum(CM_bifinal$table[,2])` edible specimen were accurately identified, `r CM_bifinal$table[2,1]` non-edible specimen were incorrectly classified as edible.  
+```{r out.width = "100%", echo = FALSE}
+kable(CM_bifinal$table, caption = "Confusion Matrix of the bi-criteria classifier (vs. evaluation)")
+```  
+
+While the model performance is quite honorable, it is not sufficient to completely fulfill the specificity criterion, which was the primary endpoint of this study. A performance decrease between the validation and evaluation stage can typically be attributed to overfitting. It is thus important to find if the performance difference is significant.
+\paragraph*{}
+```{r out.width = "100%", echo = FALSE}
+kable(bi_perf_comp, digits = 4, caption = "Comparison of performance metrics of the bi-criteria classifier")
+```  
+The performance difference does not seem to be significant, and the lower specificity just seems to be a result of a trade-off between sensitivity and specificity. The absence of significant overfitting can also be confirmed by the slight increase of the F1 score during the validation stage.
+
+\subsection{Random forest performance}  
+The final evaluation of the Ranger gave the following confusion matrix.
+
+```{r out.width = "100%", echo = FALSE}
+kable(CM_ranger_final$table, caption = "Confusion Matrix of the Ranger model (vs. evaluation)")
+```  
+The final accuracy was equal to `r CM_ranger_final$overall["Accuracy"]`, with a 95% confidence interval of [`r round(CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(CM_ranger_final$overall["AccuracyUpper"], 4)`]. The ranger model provided excellent results, in a very reasonable amount of time (`r time_ranger` min).
+\paragraph*{}
+The Rborist model gave similar results with a final accuracy equal to `r CM_Rborist_final$overall["Accuracy"]`, with a 95% confidence interval of [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. The Rborist model, while giving comparable results to the Ranger one, was sensibly slower (`r time_Rborist` min), despite being run with a lower number of trees (*n* = 3 vs 10).
+
+
+```{r out.width = "100%", echo = FALSE}
+kable(rt_result, digits = 4, caption = "Ranger and Rborist models performance (vs. evaluation)")
+```  
+
+\newpage
+\section{Conclusion}
+
+Species identification is a classic classification task, traditionally performed by humans using a classification tree strategy. 
+\paragraph*{}
+This study showed that given particular selection conditions imposed by circumstances (toxic mushrooms shouldn't be classified as edible, i.e. *Specificity* = 1), a significant amount of modelling strategies were giving insufficient results, and proved to be inferior to even a quite basic *ad-hoc* bi-criteria classification model.
+\paragraph*{}
+This bi-criteria model, while already quite efficient (*Sens* = `r round(results_biclass["Sensitivity"], 3)`, *Spec* = `r round(results_biclass["Specificity"], 3)`, *F1* = `r round(results_biclass["F1"], 3)`) did not fully achieve the specificity requirement against the evaluation dataset.
+\paragraph*{}
+The best classification tools were random forest models : ranger and Rborist, which both gave perfect sensitivity and specificity values, but with ranger being about `r round(time_Rborist/time_ranger)` times faster. The rFerns model, while also being based on random forests, was much less accurate.
+\paragraph*{}
+Apart from the limitations of the starting dataset, this work has some notable limitations :
+
+* Memory optimization could probably be improved, for example with use of local environments,
+* The basic classifier code could definitely be optimized and make more use of vectorization,
+* Parameter optimization was mostly based on the caret package documentation, which doesn't mention all parameters,
+* Parallelization could be an interesting strategy to make some computations much faster,
+* Reproductibility could be improved between Linux/Windows systems on R 3.6/4.1, especially on the layout of the report output.
+
+\paragraph*{}
+This study will provide a good basis for further personal work and experimentation on these three aspects.
+\paragraph*{}
+Working on this dataset also gave me nice future project ideas, such as the creation of a future dataset based on the same concept as the two original datasets from Schlimmer[@mushroom1] and Wagner[@mushroom2], but with more species and more extensive criteria (such as the smell or the flesh texture) taken from more comprehensive and specialized books.[@courtecuisse]
 
 \FloatBarrier
 \newpage
