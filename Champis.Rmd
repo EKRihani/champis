@@ -30,7 +30,7 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 
 ```{r setup, include = FALSE, warning=FALSE}
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
-load("EKR-analyse.RData")            # Chargement des résultats ANALYSE
+load("EKR-Champis-Analyse.RData")            # Chargement des résultats ANALYSE
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
 library(knitr)
@@ -353,35 +353,34 @@ rFerns, Rborist, ranger
 \FloatBarrier
 \newpage
 # Apprentissage machine et classification binaire
-
-A TRADUIRE !!!
-
 ## Analyse exploratoire des données (EDA)
-
-\newpage
 La structure du lot de données est la suivante :
+
 ```{r out.width = "90%", echo = FALSE}
 kable(structure_dataset, caption = "Dataset structure")
 ```
+\FloatBarrier
 
-\subsection{Training set analysis}
+\subsection{Analyse du lot d'entraîneùment}
 \paragraph*{}
-The original dataset was first randomly split into a 90%-sized training/validation set, and a 10%-sized evaluation set that is not to be used until the final validation. All distributions were then plotted using a simple loop that gets the column names and a conditional branching that uses the structure to plot an histogram or a barplot (simplified code).
+Le lot de données d'origine a été découpé deux fois avec un rapport 92/8, comme décrit dans la partie. (cf. § et p(ref!!!)) 
+\paragraph*{}
+Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles :
 ```{r, eval = FALSE}
-for (n in 1:ncol(trainingset)){
-   plot <- trainingset %>%
-      ggplot(aes_string(x = colnames(trainingset)[n]))
-   if(structure_dataset$Final[n] %in% c("integer", "numeric"))
-      {plot <- plot + geom_histogram(fill = "gray45")}
-   else
-      {plot <- plot + geom_bar(fill = "gray45")}
-   plotname <- paste0("distrib_", colnames(trainingset)[n])
-   assign(plotname, plot)
+for (n in 1:ncol(lot_apprentissage)){
+  graph <- lot_apprentissage %>%
+    ggplot(aes_string(x = colnames(lot_apprentissage)[n]))
+  if(structure_dataset$Type[n] %in% c("integer", "numeric"))
+  {graph <- graph + geom_histogram()}
+  else
+  {graph <- graph + geom_bar()}
+  nom_graph <- paste0("distrib_", colnames(lot_apprentissage)[n])
+  assign(nom_graph, graph)
 }
 ```
-Using *aes_string* instead of the traditional *aes* allows to use a string as an argument.
+L'utilisation d' *aes_string* à la place de *aes* permet d'utiliser une chaîne de caractères en argument.
 \paragraph*{}
-Barplots didn't show anything remarkable, and thus weren't integrated in the report. However, dimensional distributions were more interesting : at first, they seemed to roughly follow a bell curve (fig. 1), with a long tail towards the higher values. A logarithmic transformation (fig. 2) can show more clearly the shape of this tail.  
+Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été incluses dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (fig. REF), avec une longue queue à droite. Une transformation logarithmique (fig. REF) montre plus nettement la forme de cette queue.  
 
 ```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Mushroom cap diameter, stem height and stem width distribution"}
 plot(ggarrange(
@@ -403,7 +402,7 @@ plot(ggarrange(
 )
 ```
 
-The cap diameter distribution looks like a bell curve with a long right tail but actually is bimodal, with a main mode toward 5 cm, and a much smaller secondary mode toward 50 cm. This size can look very surprising, but after further investigation, it appears that some species such as *Polyporus squamosus* (dryad's saddle) can be very large, with some specimens that can weight up to 5 kg.[@courtecuisse]
+The cap diameter distribution looks like a bell curve with a long right tail but actually is bimodal, with a main mode toward 5 cm, and a much smaller secondary mode toward 50 cm. This size can look very surprising, but after further investigation, it appears that some species such as *Polyporus squamosus* (dryad's saddle) can be very large, with some specimens that can weight up to 5 kg.[x]
 \paragraph*{}
 The stem height distribution also looks like a bell curve with a long right tail, a main mode around 5 cm, and a secondary mode at 0 cm. Again, this can look surprising, but some mushrooms have no stem, which could explain this height value.
 \paragraph*{}
@@ -456,7 +455,7 @@ The *dimen* parameter of the lda2 model does not seem to have much effect on spe
 \paragraph*{}
 The *lambda* parameter of the sda model marginally affects its specificity, with lower lambda values giving slightly better results ($Spec_{max} =$ `r round(max(fit_pda_lambda_results["Spec"]))`).
 \paragraph*{}
-However, the specificity of both models are far from being sufficient for this study ($Spec \approx$ `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)),2)`), and their sensitivities don't seem to be much higher than the basic 2-criteria model ($Sens \approx$ `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)` vs `r round(best_margin2["Sensitivity"], 3)`).
+However, the specificity of both models are far from being sufficient for this study ($Spec \approx$ `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)),2)`), and their sensitivities don't seem to be much higher than the basic 2-criteria model ($Sens \approx$ `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)` vs xxx).
 
 \subsubsection{Generalized Additive Model}  
 
@@ -473,9 +472,9 @@ plot(ggarrange(
 \paragraph*{}
 The *degree* parameter of the gamLoess model does not seem to have much effect on specificity, with $\Delta Spec =$ `r round(max(fit_gamLoess_degree_results[,"Spec"]) - min(fit_gamLoess_degree_results[,"Spec"]), 3)`. 
 \paragraph*{}
-The *span* parameter marginally affects the specificity of the gamLoess model, with an optimal value of *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, that gives $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs `r round(best_margin2["Specificity"], 4)`).
+The *span* parameter marginally affects the specificity of the gamLoess model, with an optimal value of *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, that gives $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs xxx).
 \paragraph*{}
-The specificity this model does not meet the required specificity level for this study. The GamLoess model actually proved to be inferior to the 2-criteria classifier in both specificity (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs `r best_margin2["Specificity"]`) and sensitivity (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r best_margin2["Sensitivity"]`).
+The specificity this model does not meet the required specificity level for this study. The GamLoess model actually proved to be inferior to the 2-criteria classifier in both specificity (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs xxx and sensitivity (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs xxx).
 
 
 \subsubsection{Tree-Based Models}
@@ -613,14 +612,11 @@ size_list <- sapply(X = object_list, FUN = obj_size)
 ```
 The resulting vector can then be converted to a data frame, that returns the size of all objects :
 
-```{r, echo = FALSE}
-
-kable(head(sizes_list,30), caption = "Size of the 30 largest objects")
-```
+xxx
 
 Some of these objects are quite large, but can fortunately be converted into smaller and still useful objects. 
 \paragraph*{}
-For example, the *very* large fit_rFerns_depth train object (`r sizes_list %>% filter(object == "fit_rFerns_depth") %>% select("size (Mb)") %>% round` Mb) can be split into two useful objects that gather the main metrics of interest : the fitting plot (`r format(object.size(fit_rFerns_depth_graphe), units = "KB")`) and the results (`r format(object.size(fit_rFerns_depth_results), units = "KB")`) table.
+For example, the *very* large fit_rFerns_depth train object (xxx Mb) can be split into two useful objects that gather the main metrics of interest : the fitting plot (xxx) and the results (xxx) table.
 \paragraph*{}
 Some of these objects were much smaller : ggplots are not heavy per se, but while generating plots for all variables proved to be useful at some point in the study, having more than forty 5+ MB plots in memory was not really necessary, especially when having to run training and validation steps on limited hardware.
 \paragraph*{}
@@ -645,20 +641,14 @@ All models were trained on the training dataset, set with the best hyperparamete
 \subsection{Dual criteria classifier performance}  
 \paragraph*{}
 Running the dual criteria classifier against the evaluation dataset yields the following results :
-```{r out.width = "100%", echo = FALSE}
-kable(results_biclass, digits = 4, caption = "Performance of the bi-criteria classifier (vs. evaluation)")
-```
+xxx
 \paragraph*{}
-The confusion matrix shows more accurately the results : while `r CM_bifinal$table[2,2]` of the `r sum(CM_bifinal$table[,2])` edible specimen were accurately identified, `r CM_bifinal$table[2,1]` non-edible specimen were incorrectly classified as edible.  
-```{r out.width = "100%", echo = FALSE}
-kable(CM_bifinal$table, caption = "Confusion Matrix of the bi-criteria classifier (vs. evaluation)")
-```  
+The confusion matrix shows more accurately the results : while xxx of the yyy edible specimen were accurately identified, zzz non-edible specimen were incorrectly classified as edible.  
+xxx
 
 While the model performance is quite honorable, it is not sufficient to completely fulfill the specificity criterion, which was the primary endpoint of this study. A performance decrease between the validation and evaluation stage can typically be attributed to overfitting. It is thus important to find if the performance difference is significant.
 \paragraph*{}
-```{r out.width = "100%", echo = FALSE}
-kable(bi_perf_comp, digits = 4, caption = "Comparison of performance metrics of the bi-criteria classifier")
-```  
+xxx
 The performance difference does not seem to be significant, and the lower specificity just seems to be a result of a trade-off between sensitivity and specificity. The absence of significant overfitting can also be confirmed by the slight increase of the F1 score during the validation stage.
 
 \subsection{Random forest performance}  
@@ -683,7 +673,7 @@ Species identification is a classic classification task, traditionally performed
 \paragraph*{}
 This study showed that given particular selection conditions imposed by circumstances (toxic mushrooms shouldn't be classified as edible, i.e. *Specificity* = 1), a significant amount of modelling strategies were giving insufficient results, and proved to be inferior to even a quite basic *ad-hoc* bi-criteria classification model.
 \paragraph*{}
-This bi-criteria model, while already quite efficient (*Sens* = `r round(results_biclass["Sensitivity"], 3)`, *Spec* = `r round(results_biclass["Specificity"], 3)`, *F1* = `r round(results_biclass["F1"], 3)`) did not fully achieve the specificity requirement against the evaluation dataset.
+This bi-criteria model, while already quite efficient (xxx) did not fully achieve the specificity requirement against the evaluation dataset.
 \paragraph*{}
 The best classification tools were random forest models : ranger and Rborist, which both gave perfect sensitivity and specificity values, but with ranger being about `r round(time_Rborist/time_ranger)` times faster. The rFerns model, while also being based on random forests, was much less accurate.
 \paragraph*{}
@@ -698,7 +688,7 @@ Apart from the limitations of the starting dataset, this work has some notable l
 \paragraph*{}
 This study will provide a good basis for further personal work and experimentation on these three aspects.
 \paragraph*{}
-Working on this dataset also gave me nice future project ideas, such as the creation of a future dataset based on the same concept as the two original datasets from Schlimmer[@mushroom1] and Wagner[@mushroom2], but with more species and more extensive criteria (such as the smell or the flesh texture) taken from more comprehensive and specialized books.[@courtecuisse]
+Working on this dataset also gave me nice future project ideas, such as the creation of a future dataset based on the same concept as the two original datasets from Schlimmer[x] and Wagner[y], but with more species and more extensive criteria (such as the smell or the flesh texture) taken from more comprehensive and specialized books.[z]
 
 \FloatBarrier
 \newpage

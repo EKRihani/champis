@@ -34,8 +34,8 @@ dataset_noms <- row.names(structure_dataset)
 
 
 #Réduction taille à 10% POUR BROUILLON
-reduc_index <- createDataPartition(y = dataset$cap.diameter, times = 1, p = 0.08, list = FALSE)
-dataset <- dataset[reduc_index,]
+#reduc_index <- createDataPartition(y = dataset$cap.diameter, times = 1, p = 0.1, list = FALSE)
+#dataset <- dataset[reduc_index,]
 
 ################################
 #     ANALYSE INTRODUCTIVE     #
@@ -208,9 +208,9 @@ set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
 set_ranger_mtry <- c("ranger", "tuneGrid  = data.frame(mtry = seq(from = 1, to = 106, by = 15), splitrule = 'extratrees', min.node.size = 2), num.trees = 6")
 set_ranger_splitrule <- c("ranger", "tuneGrid  = data.frame(splitrule = c('gini', 'extratrees'), mtry = 50, min.node.size = 2), num.trees = 6")
 set_ranger_nodesize <- c("ranger", "tuneGrid  = data.frame(min.node.size = seq(from = 1, to = 15, by = 2), mtry = 50, splitrule = 'extratrees'), num.trees = 6")
-set_Rborist_pred <- c("Rborist", "tuneGrid  = data.frame(predFixed = seq(from = 1, to = 41, by = 20), minNode = 2), ntrees = 3")
-set_Rborist_minNode <- c("Rborist", "tuneGrid  = data.frame(minNode = seq(from = 1, to = 5, by = 2), predFixed =50), ntrees = 3")
-system.time(fit_test(set_ranger_mtry))  ####### CHRONO
+set_Rborist_pred <- c("Rborist", "tuneGrid  = data.frame(predFixed = seq(from = 1, to = 41, by = 10), minNode = 2), ntrees = 3")
+set_Rborist_minNode <- c("Rborist", "tuneGrid  = data.frame(minNode = seq(from = 1, to = 5, by = 1), predFixed =50), ntrees = 3")
+#system.time(fit_test(set_ranger_mtry))  ####### CHRONO
 fit_rFerns_depth <- fit_test(set_rFerns_depth)
 fit_ranger_mtry <- fit_test(set_ranger_mtry)
 fit_ranger_splitrule <- fit_test(set_ranger_splitrule)
@@ -298,5 +298,5 @@ rt_result <- rbind(result_ranger, result_Rborist)
 colnames(rt_result) <- c("Sensitivity", "Specificity", "F1 score", "Run time (min)")
 rownames(rt_result) <- c("Ranger", "Rborist")
 
-save.image(file = "EKR-champis-analyse.RData")     # Sauvegarde données pour rapport
-load(file = "EKR-champis-analyse.RData")     # Sauvegarde données pour rapport
+save.image(file = "EKR-Champis-Analyse.RData")     # Sauvegarde données pour rapport
+load(file = "EKR-Champis-Analyse.RData")     # Sauvegarde données pour rapport
