@@ -51,11 +51,19 @@ GAM : *Generalized Additive Model* (modèle additif généralisé)
 
 IA : Intelligence Artificielle  
 
+Kd-tree : *K-dimensionnal tree* (arbre k-dimensionnel)
+
 LDA : *Linear Discriminant Analysis* (analyse linéaire discriminante)
+
+LOESS : *LOcally Estimated Scatterplot Smoothing* (régression locale)
+
+NN : *Nearest Neighbour* (plus proche voisin)
 
 PDA : *Penalized Discriminant Analysis* (analyse discriminante pénalisée)
 
 RF : *Random Forest* (forêt aléatoire)
+
+ROC : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
 
 XGB : *eXtreme Gradient Boosting*
 
@@ -410,15 +418,15 @@ La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe e
 \newpage
 ## Modèles de la librairie *caret*
 
-The *caret* packages provides a very convenient and efficient platform for data modelling and inference. This section will explain the strategy used for the evaluation of some of these models. The selected models were of various types :
+La librairie *caret* fournit une plateforme très pratique et efficiente pour la modélisation de données et l'inférence par apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles. Les modèles sélectionnés sont de types variés :
 
-* Linear Discriminant Analysis : Linear Discriminant Analysis (lda2), Penalized Discriminant Analysis (pda)
-* Generalized Additive Model : Generalized Additive Model using LOESS (gamLoess)
-* Tree-Based Models : Classification And Regression Tree (CART) (rpart, rpartCost), Single C5.0 Tree (ctree)
-* Random Forest : Random Ferns (rferns), Random Forest (ranger, Rborist)
+* Analyse discriminante linéaire (LDA) : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
+* Modèle additif généralisé (GAM) : *Generalized Additive Model using LOESS* (gamLoess)
+* Modèle arborescent : *Classification And Regression Tree* (CART) (rpart, rpartCost), *Single C5.0 Tree* (ctree)
+* Forêt aléatoire : *Random Ferns* (rferns), *Random Forest* (ranger, Rborist)
 
 \paragraph*{}
-The first step was to build a regression and evaluation function. The caret package allows to define it very simply with :
+La première étape est de construire une fonction d'évaluation et de régression. La librairie caret permet de la définir très simplement par :  [A MODIFIER EN COHERENCE AVEC LE FICHIER R]
 
 ```
 set.seed(1)
@@ -432,7 +440,12 @@ train(class ~ .,
       metric = 'Spec', 
       tuneGrid = data.frame([PARAMETERS]))
 ```
-The *set.seed* insures reproducibility, the *trainControl* function allows to control various training and evaluation parameters ; in this case, to use a ROC/sensitivity/specificity criterion and a 10-fold cross-validation. The *train* function runs the train and evaluation process, while allowing the use of several parameters, such as the method selection the training/validation set, the metric used for the evaluation and the grid of model parameters.
+La fonction *set.seed* assure la reproductibilité.
+
+La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans notre cas, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 10 blocs (*10-folds*). [LIER LE N-FOLD AU CODE] 
+
+La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation
+The *train* function runs the train and evaluation process, while allowing the use of several parameters, such as the method selection the training/validation set, the metric used for the evaluation and the grid of model parameters.
 \paragraph*{}
 This block was included in a function to allow easy access and reproducibility. The function returns a list that can be plotted and also includes various data of interest, such as .\$results (ROC, Sensibility, Specificity), .\$bestTune (best value with the evaluation metric, Specificity in this case), and .\$finalModel (miscellanous information that can sometimes be plotted, such as trees).
 
