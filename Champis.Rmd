@@ -401,17 +401,15 @@ plot(ggarrange(
    )
 )
 ```
-
-The cap diameter distribution looks like a bell curve with a long right tail but actually is bimodal, with a main mode toward 5 cm, and a much smaller secondary mode toward 50 cm. This size can look very surprising, but after further investigation, it appears that some species such as *Polyporus squamosus* (dryad's saddle) can be very large, with some specimens that can weight up to 5 kg.[x]
+La distribution du diamètre du chapeau $D_{C}$a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx 50cm$. Cette taille surprenante est attribuable à des variétés telles que *Polyporus squamosus*[x]
 \paragraph*{}
-The stem height distribution also looks like a bell curve with a long right tail, a main mode around 5 cm, and a secondary mode at 0 cm. Again, this can look surprising, but some mushrooms have no stem, which could explain this height value.
+La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en clochavec une longue queue à droite, un mode principal à 5cm et un mode secondaire à 0cm. Cette valeur peut également sembler surprenante, mais certains champignons n'ont pas de stipe, ce qui explique cette valeur.
 \paragraph*{}
-The stem width distribution looks like a bell curve with a long right tail, and a peak around 10-15 mm. In all three distributions, the right tail can probably be explained by the impossibility to have negative dimensional values.
-
-
+La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx 10-15mm$. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 
 \newpage
-\subsection{Caret package models}  
+## Modèles de la librairie *caret*
+
 The *caret* packages provides a very convenient and efficient platform for data modelling and inference. This section will explain the strategy used for the evaluation of some of these models. The selected models were of various types :
 
 * Linear Discriminant Analysis : Linear Discriminant Analysis (lda2), Penalized Discriminant Analysis (pda)
