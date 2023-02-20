@@ -504,16 +504,16 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 * Les arbres de décision obtenus peuvent être tracés, et facilement interprétés par l'humain.
 
 \paragraph*{}
-Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). The basic CART model (rpart) has one complexity parameter (cp).
+Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
 
 ```{r, echo = FALSE}
 
 kable(fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance of the CART (rpart) model")
 ```
 
-The basic CART model does never achieve the required specificity. However, this model still comes close and gives excellent results ($Sens_{max} =$ `r round(max(fit_rpart_cp_results["Sens"]),3)`, $Spec_{max} =$ `r round(max(fit_rpart_cp_results["Spec"]),3)`).
+Le modèle CART basique n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(fit_rpart_cp_results["Spec"]),3)`).
 
-The second CART model used in this study (rpartCost) associates a complexity (*cp*) and a cost (*Cost*) parameters.
+Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of rpartCost according to complexity and cost values"}
 plot(ggarrange(
