@@ -45,6 +45,8 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 \flushleft
 AI : *Artificial Intelligence* (intelligence artificielle)
 
+CART : *Classification And Regression Tree* (arbre de classification et de régression)
+
 EDA : *Exploratory Data Analysis* (analyse exploratoire des données)
 
 GAM : *Generalized Additive Model* (modèle additif généralisé)
@@ -362,6 +364,8 @@ rFerns, Rborist, ranger
 \newpage
 # Apprentissage machine et classification binaire
 ## Analyse exploratoire des données (EDA)
+\FloatBarrier
+\paragraph*{}
 La structure du lot de données est la suivante :
 
 ```{r out.width = "90%", echo = FALSE}
@@ -369,7 +373,6 @@ kable(structure_dataset, caption = "Dataset structure")
 ```
 \FloatBarrier
 
-\subsection{Analyse du lot d'entraîneùment}
 \paragraph*{}
 Le lot de données d'origine a été découpé deux fois avec un rapport 92/8, comme décrit dans la partie. (cf. § et p(ref!!!)) 
 \paragraph*{}
@@ -390,7 +393,7 @@ L'utilisation d' *aes_string* à la place de *aes* permet d'utiliser une chaîne
 \paragraph*{}
 Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été incluses dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (fig. REF), avec une longue queue à droite. Une transformation logarithmique (fig. REF) montre plus nettement la forme de cette queue.  
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Mushroom cap diameter, stem height and stem width distribution"}
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe"}
 plot(ggarrange(
    ncol = 3,
    study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
@@ -400,7 +403,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Mushroom cap diameter, stem height and stem width distribution (log Y scale)"}
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe (échelle log en Y)"}
 plot(ggarrange(
    ncol = 3,
    study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
@@ -417,7 +420,7 @@ La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe e
 
 \newpage
 ## Modèles de la librairie *caret*
-
+\paragraph*{}
 La librairie *caret* fournit une plateforme très pratique et efficiente pour la modélisation de données et l'inférence par apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles. Les modèles sélectionnés sont de types variés :
 
 * Analyse discriminante linéaire (LDA) : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
@@ -444,16 +447,15 @@ La fonction *set.seed* assure la reproductibilité.
 
 La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans notre cas, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 10 blocs (*10-folds*). [LIER LE N-FOLD AU CODE] 
 
-La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation
-The *train* function runs the train and evaluation process, while allowing the use of several parameters, such as the method selection the training/validation set, the metric used for the evaluation and the grid of model parameters.
+La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation, la métrique utilisée pour l'évaluation (sensibilité, spécificité, ROC...) ainsi que la grille des paramètres utilisés par le modèle.
 \paragraph*{}
-This block was included in a function to allow easy access and reproducibility. The function returns a list that can be plotted and also includes various data of interest, such as .\$results (ROC, Sensibility, Specificity), .\$bestTune (best value with the evaluation metric, Specificity in this case), and .\$finalModel (miscellanous information that can sometimes be plotted, such as trees).
+Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, telles que .\$results (ROC, Sensibilité, Specificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
 
-
-\subsubsection{Linear Discriminant Analysis Models}  
-The two Linear Discriminant Analysis Models selected for this study are lda2 (Linear Discriminant Analysis) and pda (Penalized Discriminant Analysis). The lda2 model has one tuning parameter (*dimen*, number of discriminant functions). The pda model also has a single tuning parameter (*lambda*, shrinkage penalty coefficient).  
-
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of lda2 (left) and pda (right) models"}
+### Modèles d'analyse discriminante linéaire
+\paragraph*{}
+Les deux modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
+\FloatBarrier
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificité des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(
    ncol = 2,
    fit_lda2_dim_graphe + theme_bw(),
@@ -462,17 +464,23 @@ plot(ggarrange(
 )
 ```  
 \paragraph*{}
-The *dimen* parameter of the lda2 model does not seem to have much effect on specificity (*Spec =* `r round(mean(fit_lda2_dim_results[,"Spec"]), 3)`). 
+Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la spécificité (*Spec =* `r round(mean(fit_lda2_dim_results[,"Spec"]), 3)`). 
 \paragraph*{}
-The *lambda* parameter of the sda model marginally affects its specificity, with lower lambda values giving slightly better results ($Spec_{max} =$ `r round(max(fit_pda_lambda_results["Spec"]))`).
+La paramètre *lambda* du modèle pda impacte sa spécificité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Spec_{max} =$ `r round(max(fit_pda_lambda_results["Spec"]))`).
 \paragraph*{}
-However, the specificity of both models are far from being sufficient for this study ($Spec \approx$ `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)),2)`), and their sensitivities don't seem to be much higher than the basic 2-criteria model ($Sens \approx$ `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)` vs xxx).
+Toutefois, la spécificité de ces deux modèles est nettement insuffisante pour notre étude ($Spec \approx$ `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)),2)`), et leurs sensiblités n'ont rien de remarquable non plus ($Sens \approx$ `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
+\paragraph*{}
+Ces performances médiocres s'expliquent par le fonctionnement même des modèles LDA qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple :
 
-\subsubsection{Generalized Additive Model}  
+* Données binaires ou booléennes
+* Données catégorielles basées sur des données numériques
 
-The only generalized additive model selected for this study is gamLoess (Generalized Additive Model using Locally Weighted Linear Regression). The caret package documentation indicates that gamLoess has two tuning parameters : *span* (fraction of data points used in the local neighborhood size) and *degree* (degree of linearization).
-
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of lda2 (left) and pda (right) models"}
+\FloatBarrier
+### Modèle additif généralisé  
+\paragraph*{}
+Le seul modèle additif généralisé choisi pour cette étude est gamLoess (Generalized Additive Model using Locally Weighted Linear Regression). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
+\FloatBarrier
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity de gamLoess en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(
    ncol = 2,
    fit_gamLoess_span_graphe + theme_bw(),
@@ -481,22 +489,22 @@ plot(ggarrange(
 )
 ```  
 \paragraph*{}
-The *degree* parameter of the gamLoess model does not seem to have much effect on specificity, with $\Delta Spec =$ `r round(max(fit_gamLoess_degree_results[,"Spec"]) - min(fit_gamLoess_degree_results[,"Spec"]), 3)`. 
+L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet significatif sur la spécificité, avec $\Delta Spec =$ `r round(max(fit_gamLoess_degree_results[,"Spec"]) - min(fit_gamLoess_degree_results[,"Spec"]), 3)`. 
 \paragraph*{}
-The *span* parameter marginally affects the specificity of the gamLoess model, with an optimal value of *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, that gives $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs xxx).
+L'hyerparamètre *span* affecte marginalement la spécificité de gamLoess, avec une valeur optimale de *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, résultant en $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)`.
 \paragraph*{}
-The specificity this model does not meet the required specificity level for this study. The GamLoess model actually proved to be inferior to the 2-criteria classifier in both specificity (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs xxx and sensitivity (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs xxx).
+La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en specificité (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs (`r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)), 3)`)) qu'en sensibilité (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
 
-
-\subsubsection{Tree-Based Models}
+\FloatBarrier
+### Modèles d'arbres de décision
 \paragraph*{}
-Tree-based models are of special interest in this study, for two main reasons :
+Les modèles basés sur des arbres de décision ont un intérêt tout particulier pour cette étude, pour ceux raisons majeures :
 
-* Tree-based logic is usually used in manual mushrooms classification,
-* Tree models can be plotted and easily understood by humans.
+* La logique en arbre de décision est habituellement usitée pour la classification manuelle des champignons,
+* Les arbres de décision obtenus peuvent être tracés, et facilement interprétés par l'humain.
 
 \paragraph*{}
-The first models presented in this study are two CART (Classification And Regression Tree) models. The basic CART model (rpart) has one complexity parameter (cp).
+Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). The basic CART model (rpart) has one complexity parameter (cp).
 
 ```{r, echo = FALSE}
 
