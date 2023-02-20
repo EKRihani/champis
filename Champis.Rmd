@@ -354,7 +354,7 @@ L'analyse discriminante pénalisée [A FINIR]
 gamLoess
 
 ### Arbres de décision
-rpart, Ctree, c50tree, Rpartcost
+rpart, Ctree???, c50tree, Rpartcost
 
 ### Forêts aléatoires
 rFerns, Rborist, ranger
@@ -412,7 +412,7 @@ plot(ggarrange(
    )
 )
 ```
-La distribution du diamètre du chapeau $D_{C}$a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx 50cm$. Cette taille surprenante est attribuable à des variétés telles que *Polyporus squamosus*[x]
+La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx 50cm$. Cette taille surprenante est attribuable à des variétés telles que *Polyporus squamosus*[@courtecuisse_champignons_2013]
 \paragraph*{}
 La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en clochavec une longue queue à droite, un mode principal à 5cm et un mode secondaire à 0cm. Cette valeur peut également sembler surprenante, mais certains champignons n'ont pas de stipe, ce qui explique cette valeur.
 \paragraph*{}
@@ -429,7 +429,9 @@ La librairie *caret* fournit une plateforme très pratique et efficiente pour la
 * Forêt aléatoire : *Random Ferns* (rferns), *Random Forest* (ranger, Rborist)
 
 \paragraph*{}
-La première étape est de construire une fonction d'évaluation et de régression. La librairie caret permet de la définir très simplement par :  [A MODIFIER EN COHERENCE AVEC LE FICHIER R]
+La première étape est de construire une fonction d'évaluation et de régression. La librairie caret permet de la définir très simplement par :  
+
+[A MODIFIER EN COHERENCE AVEC LE FICHIER R]
 
 ```
 set.seed(1)
@@ -449,13 +451,13 @@ La fonction *trainControl* permet de contrôler divers paramètres d'entraîneme
 
 La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation, la métrique utilisée pour l'évaluation (sensibilité, spécificité, ROC...) ainsi que la grille des paramètres utilisés par le modèle.
 \paragraph*{}
-Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, telles que .\$results (ROC, Sensibilité, Specificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
+Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, telles que .\$results (ROC, sensibilité, spécificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
 
 ### Modèles d'analyse discriminante linéaire
 \paragraph*{}
 Les deux modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 \FloatBarrier
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificité des modèles lda2 (à gauche) et pda (à droite)"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(
    ncol = 2,
    fit_lda2_dim_graphe + theme_bw(),
@@ -480,7 +482,7 @@ Ces performances médiocres s'expliquent par le fonctionnement même des modèle
 \paragraph*{}
 Le seul modèle additif généralisé choisi pour cette étude est gamLoess (Generalized Additive Model using Locally Weighted Linear Regression). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
 \FloatBarrier
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity de gamLoess en fonction du span (gauche) and du degré (droite)"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de gamLoess en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(
    ncol = 2,
    fit_gamLoess_span_graphe + theme_bw(),
@@ -493,7 +495,7 @@ L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet signi
 \paragraph*{}
 L'hyerparamètre *span* affecte marginalement la spécificité de gamLoess, avec une valeur optimale de *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, résultant en $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)`.
 \paragraph*{}
-La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en specificité (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs (`r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)), 3)`)) qu'en sensibilité (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
+La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en spécificité (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs (`r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)), 3)`) qu'en sensibilité (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -505,6 +507,7 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 
 \paragraph*{}
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
+\FloatBarrier
 
 ```{r, echo = FALSE}
 
@@ -513,9 +516,10 @@ kable(fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance of the CART
 
 Le modèle CART basique n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(fit_rpart_cp_results["Spec"]),3)`).
 
+\FloatBarrier
 Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of rpartCost according to complexity and cost values"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de rpartCost en fonction des valeurs de complexité et de coût"}
 plot(ggarrange(
    ncol = 2,
    fit_rpartcost_complexity_graphe + scale_x_log10() + theme_bw(),
@@ -524,38 +528,41 @@ plot(ggarrange(
 )
 ```
 
-The best predicted specificity would be achieved with *cp =* `r fit_rpartcost_complexity_bestTune['cp']` and *Cost = * `r fit_rpartcost_cost_bestTune['Cost']`.
+La plus haute spécificité est atteinte pour *cp =* `r fit_rpartcost_complexity_bestTune['cp']` et *Cost = * `r fit_rpartcost_cost_bestTune['Cost']`.
 
 ```{r, echo = FALSE}
 
 kable(fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance of the CART (rpartCost) model")
 ```
 
-The performance, while very good, did not achieve the specificity requirement.
+Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise.
 \paragraph*{}
-The last tree-based model was C5.0tree. This model doesn't have any tuning parameter.
+Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre.
+\FloatBarrier
 
 ```{r, echo = FALSE}
-kable(fit_c50tree_results[,2:4], digits = 5, caption = "Performance of the C5.0 Tree (C5.0Tree) model")
+kable(fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 Tree")
 ```
 
-Quite interestingly, despite have no tuning parameter, this model gave excellent and very balanced results out of the box, with both very high sensitivity and specificity. Still, this model didn't achieve the required *Spec* = 1 criterion.
-
+De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C.50 tree n'a pas rempli l'objectif posé par le critère *Spec* = 1.
+\FloatBarrier
 \newpage
-\subsubsection{Random Forest Models}
+### Forêts aléatoires
 \paragraph*{}
-The Random Ferns (rFerns) model has only one parameter : depth.
-
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Specificity of Random Ferns model"}
+Le premier modèle de forêt aléatoire évalué dans cette étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
+\FloatBarrier
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité du modèle de fougères aléatoires"}
 fit_rFerns_depth_graphe + theme_bw()
 
 ```
 \paragraph*{}
-While pretty fast, the Random Ferns model yielded disappointing results, with a maximum specificity of $Spec_{max} =$ `r round(max(fit_rFerns_depth_results["Spec"]), 3)`. The maximum sensitivity wasn't very high either ($Sens_{max} =$ `r round(max(fit_rFerns_depth_results["Sens"]), 3)`). Both metrics were inferior to the basic 2-criteria model ones.
+Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoire a fourni des résultats peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(fit_rFerns_depth_results["Sens"]), 3)`).
+\FloatBarrier
 \paragraph*{}
-The second random forest model is the ranger model. The caret package documentation mentions three tuning parameters : the minimal node size (*min.node.size*), the number of features to split on each node (*mtry*) and the splitting rule (*splitrule*).
+Le second modèle de forêt aléatoire évalué est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) and et la règle contrôlant cette séparation (*splitrule*).
+\FloatBarrier
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Ranger model specificity"}
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Spécificité du modèle Ranger"}
 plot(ggarrange(
    ncol = 3,
    fit_ranger_mtry_graphe + scale_y_log10() + theme_bw(),
@@ -565,14 +572,16 @@ plot(ggarrange(
 )
 ```
 
-The preliminary tuning step showed very promising results : even with a low number of trees (*n* = 6), the required specificity was already achieved on several occurrences with single-parameter tuning. Tuning this model with optimal parameters (*min.node.size* = `r fit_ranger_nodesize_bestTune$min.node.size`, *mtry* = `r fit_ranger_splitrule_bestTune$mtry` and *splitrule* = `r fit_ranger_splitrule_bestTune$splitrule`) gave interesting results.
+Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r fit_ranger_nodesize_bestTune$min.node.size`, *mtry* = `r fit_ranger_splitrule_bestTune$mtry` and *splitrule* = `r fit_ranger_splitrule_bestTune$splitrule`) a donné d'excellents résultats.
 
 ```{r, echo = FALSE}
-kable(fit_ranger_best_results[1:6], caption = "Performance of the Ranger model (optimal settings)")
+kable(fit_ranger_best_results[1:6], caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
 ```
-This model achieved excellent performance, giving perfect specificity and sensitivity in this evaluation phase.
+Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité parfaites dans cette phrase d'évaluation.
 \paragraph*{}
-The last random forest model was provided by Rborist. The caret package mentions two tuning parameters for this model : number of trial predictors for a split (*predFixed*) and minimum number of distinct row references to split a node (*minNode*).
+\FloatBarrier
+Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
+\FloatBarrier
 
 ```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Rborist model specificity"}
 plot(ggarrange(
