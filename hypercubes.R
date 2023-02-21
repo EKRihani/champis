@@ -22,10 +22,12 @@ biquad <- BIQUAD(opti_LHS[,1], opti_LHS[,2], opti_LHS[,3])
 library(DiceEval)
 modelComparison(X=opti_LHS,Y=quad,type="all", formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
+#modelComparison(X=opti_LHS,Y=quad,type="all", formula=Y~ poly(X1,2)+poly(X2,2)+X1:X2) # A TESTER
+
 Modele_Mars <- modelFit(X=opti_LHS, Y=biquad, type="MARS", degree=4)
 Modele_PolyMars <- modelFit(X=opti_LHS, Y=biquad, type="PolyMARS", gcv=4)
 Modele_Kriging <- modelFit(X=opti_LHS, Y=biquad, type="Kriging", formula=Y~X1+X2+X3+X1:X2+X1:X3+X2:X3+I(X1^2)+I(X2^2)+I(X3^2))
-
+#Modele_Kriging <- modelFit(X=opti_LHS, Y=biquad, type="Kriging", formula=Y~poly(X1,2)+poly(X2,2)+poly(X3,2)+X1:X2+X1:X3+X2:X3) # A TESTER
 
 Test <- BIQUAD(LHS[,1], LHS[,2], LHS[,3])
 Pred_Mars <- modelPredict(Modele_Mars, LHS)
