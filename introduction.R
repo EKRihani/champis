@@ -146,8 +146,8 @@ Champi_demo$Pied.Hauteur <- Pied.Haut*Champi_demo$FacteurTaille*rnorm(n = n_cham
 Champi_demo$Pied.Largeur <- Pied.Large*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05)
 Champi_demo <- as.data.frame(Champi_demo)
 
-taux_gros_diam <- mean(Champi_demo$Chapeau.Diametre > Chap.Diam)*100
-taux_supergros_diam <- round(mean(Champi_demo$Chapeau.Diametre > 1.1*Chap.Diam )+000.5,3)*100
+taux_gros_diam <- round(mean(Champi_demo$Chapeau.Diametre > Chap.Diam)*100 , 1)
+taux_supergros_diam <- round(mean(Champi_demo$Chapeau.Diametre > (1.1*Chap.Diam) )+000.5,3)*100
 
 nuage_avecdispersion <-ggplot(data = Champi_demo[1:n_reduit,], aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
   geom_point(shape = 20, alpha = 2e3/n_champis, size = .5) +
