@@ -431,7 +431,7 @@ La première étape est de construire une fonction d'évaluation et de régressi
 
 [A MODIFIER EN COHERENCE AVEC LE FICHIER R]
 
-```
+```{r, eval = FALSE}
 set.seed(1)
 tr_ctrl <- trainControl(classProbs = TRUE, 
                         summaryFunction = twoClassSummary, 
@@ -544,7 +544,6 @@ kable(fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C
 
 De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C.50 tree n'a pas rempli l'objectif posé par le critère *Spec* = 1.
 \FloatBarrier
-\newpage
 
 ### Forêts aléatoires
 \paragraph*{}
@@ -606,7 +605,7 @@ Le modèle Rborist a donné les mêmes excellents résultats que le modèle Rang
 Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
 \paragraph*{}
 La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code peut facilement être mesurée par :
-```
+```{r, eval = FALSE}
 temps_debut <- Sys.time()
 [Code à évaluer]
 temps_fin <- Sys.time()
