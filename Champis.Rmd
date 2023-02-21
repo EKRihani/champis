@@ -637,7 +637,7 @@ kable(CM_ranger_final$table, caption = "Confusion Matrix of the Ranger model (vs
 
 La précision finale est égale à `r CM_ranger_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r time_ranger` min), preuve de sa grande efficience calculatoire.
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats identiques à Ranger, s'est avéré sensiblement plus lent (`r time_Rborist` min), bien qu'ayant été lancé avec un nombre d'arbres moindre (*n* = 3 vs 10). [RELIER AU CODE]
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats identiques à Ranger, s'est avéré sensiblement plus rapide (`r time_Rborist` min).
 
 ```{r out.width = "100%", echo = FALSE}
 kable(rt_result, digits = 4, caption = "Ranger and Rborist models performance (vs. evaluation)")
