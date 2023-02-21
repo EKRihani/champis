@@ -9,11 +9,8 @@ library(caret)        # Outils d'apprentissage machine
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-
-#URL <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00615/MushroomDataset.zip"    # Archive UCI
 #URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-
 fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
 
 fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
@@ -28,8 +25,8 @@ structure_initial <- sapply(X = dataset, FUN = class, simplify = TRUE)  # Classe
 unique_length <- function (x) {length(unique(x))}                       # FONCTION : compter les niveaux d'une variable
 structure_uniques <- sapply(dataset, FUN = unique_length)               # Comptage des niveaux de toutes les variables
 structure_dataset <- data.frame(cbind(structure_initial, structure_uniques))
-colnames(structure_dataset) <- c("Type", "Levels")
-structure_dataset$Levels <- as.numeric(as.character(structure_dataset$Levels))
+colnames(structure_dataset) <- c("Type", "Niveaux")
+structure_dataset$Niveaux <- as.numeric(as.character(structure_dataset$Niveaux))
 dataset_noms <- row.names(structure_dataset)
 
 
@@ -42,42 +39,43 @@ dataset_noms <- row.names(structure_dataset)
 ################################
 
 # Résumés introductifs
-summary_number <- nrow(dataset)  # Comptage champis
-summary_dataset <- summary(dataset) # Résumé des catégories
+synthese_nombre <- nrow(dataset)  # Comptage champis
+synthese_dataset <- summary(dataset) # Résumé des catégories
 
 ##############################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
 ##############################################################################
 
-
+split1 <- 0.08
+split2 <- 0.08
 # Creation lots d'entrainement/validation (92%) et evaluation (8%)
 set.seed(1)
-test_index <- createDataPartition(y = dataset$cap.diameter, times = 1, p = 0.08, list = FALSE)
-lot_appr_opti <- dataset[-test_index,]
-lot_evaluation <- dataset[test_index,]
+index1 <- createDataPartition(y = dataset$cap.diameter, times = 1, p = split1, list = FALSE)
+lot_appr_opti <- dataset[-index1,]
+lot_evaluation <- dataset[index1,]
 
 # Creation lots d'entrainement (92%) et validation (8%)
 set.seed(1)
-test_index <- createDataPartition(y = lot_appr_opti$cap.diameter, times = 1, p = 0.08, list = FALSE)
-lot_apprentissage <- lot_appr_opti[-test_index,]
-lot_evaluation <- lot_appr_opti[test_index,]
+index2 <- createDataPartition(y = lot_appr_opti$cap.diameter, times = 1, p = split2, list = FALSE)
+lot_apprentissage <- lot_appr_opti[-index2,]
+lot_evaluation <- lot_appr_opti[index2,]
 
 # Tracage des distributions monovariées du lot (entrainement+validation)
 l <- nrow(structure_dataset)
 for (n in 1:l){
-  titre_graphe <- paste("Distribution de", dataset_noms[n], "des champignons")
-  plot <- lot_appr_opti %>%
-    ggplot(aes_string(x = dataset_noms[n])) +      # aes_string permet l'utilisation de chaîne au lieu de nom de variable
-    ggtitle(titre_graphe) +
-    ylab("") +
-    xlab(dataset_noms[n]) +
-    theme_bw()
-  if(structure_dataset$Type[n] %in% c("integer", "numeric")) # Histogramme pour numériques, Barplot pour autres
-  {plot <- plot + geom_histogram(fill = "gray45")}
-  else
-  {plot <- plot + geom_bar(fill = "gray45")}
-  nom_graph <- paste0("study_distrib_", dataset_noms[n])   # Concaténer "plot_distrib" avec nom de colonne
-  assign(nom_graph, plot)                 # Attribuer le graphique au nom plot_distrib_colname
+   titre_graphe <- paste("Distribution de", dataset_noms[n], "des champignons")
+   plot <- lot_appr_opti %>%
+      ggplot(aes_string(x = dataset_noms[n])) +      # aes_string permet l'utilisation de chaîne au lieu de nom de variable
+      ggtitle(titre_graphe) +
+      ylab("") +
+      xlab(dataset_noms[n]) +
+      theme_bw()
+   if(structure_dataset$Type[n] %in% c("integer", "numeric")) # Histogramme pour numériques, Barplot pour autres
+   {plot <- plot + geom_histogram(fill = "gray45")}
+   else
+   {plot <- plot + geom_bar(fill = "gray45")}
+   nom_graph <- paste0("study_distrib_", dataset_noms[n])   # Concaténer "plot_distrib" avec nom de colonne
+   assign(nom_graph, plot)                 # Attribuer le graphique au nom plot_distrib_colname
 }
 
 
@@ -89,35 +87,35 @@ for (n in 1:l){
 l <- nrow(structure_dataset)
 
 for (n in 2:l){    # La colonne 1 (class) n'est pas tracée (attribut de fill/couleur !)
-  titre_graphe <- paste("Distribution de", dataset_noms[n], "des champignons")
-  plot <- lot_apprentissage %>%
-    ggplot(aes_string(x = dataset_noms[n], fill = lot_apprentissage$class)) + # aes_string permet l'utilisation de chaîne au lieu de nom de variable
-    ggtitle(titre_graphe) +
-    ylab("Frequency") +
-    xlab(dataset_noms[n]) +
-    scale_y_log10() +
-    theme_bw()
-  if(structure_dataset$Type[n] %in% c("integer", "numeric"))   # Histogramme pour numériques, Barplot pour autres
-  {plot <- plot + geom_histogram()}
-  else
-  {plot <- plot + geom_bar()}
-  nom_graph <- paste0("train_distrib_",dataset_noms[n])    # Concaténer "plot_distrib" avec nom de colonne
-  assign(nom_graph, plot)                 # Attribuer le graphique au nom plot_distrib_colname
+   titre_graphe <- paste("Distribution de", dataset_noms[n], "des champignons")
+   plot <- lot_apprentissage %>%
+      ggplot(aes_string(x = dataset_noms[n], fill = lot_apprentissage$class)) + # aes_string permet l'utilisation de chaîne au lieu de nom de variable
+      ggtitle(titre_graphe) +
+      ylab("Frequency") +
+      xlab(dataset_noms[n]) +
+      scale_y_log10() +
+      theme_bw()
+   if(structure_dataset$Type[n] %in% c("integer", "numeric"))   # Histogramme pour numériques, Barplot pour autres
+   {plot <- plot + geom_histogram()}
+   else
+   {plot <- plot + geom_bar()}
+   nom_graph <- paste0("train_distrib_",dataset_noms[n])    # Concaténer "plot_distrib" avec nom de colonne
+   assign(nom_graph, plot)                 # Attribuer le graphique au nom plot_distrib_colname
 }
 
 # Graphes de corrélation pour une (petite) sélection de critères
 paires_graphes <- ggpairs(
-  lot_apprentissage,
-  columns = c(2,15,17,10),
-  lower = NULL,
-  diag = list(continuous = wrap("densityDiag", alpha = .6), 
-              discrete = wrap("barDiag")
-  ),
-  upper = list(continuous = wrap("points", alpha = .3, shape = 20), 
-               combo = wrap("dot", alpha = .3, shape = 20),
-               discrete = wrap("dot_no_facet", alpha = .3, shape = 20)
-  ),
-  ggplot2::aes(color = class)
+   lot_apprentissage,
+   columns = c(2,15,17,10),
+   lower = NULL,
+   diag = list(continuous = wrap("densityDiag", alpha = .6), 
+               discrete = wrap("barDiag")
+   ),
+   upper = list(continuous = wrap("points", alpha = .3, shape = 20), 
+                combo = wrap("dot", alpha = .3, shape = 20),
+                discrete = wrap("dot_no_facet", alpha = .3, shape = 20)
+   ),
+   ggplot2::aes(color = class)
 )
 
 ###############################################################
@@ -127,16 +125,17 @@ paires_graphes <- ggpairs(
 # names(getModelInfo())
 # getModelInfo(Rborist)
 
+n_folds <- 5
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_model){
-  set.seed(1)
-  tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = 2)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
-  cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
-                fcn_model[1], 
-                "', data = lot_appr_opti, trControl = tr_ctrl, metric = 'Spec', ", 
-                fcn_model[2],")")
-  fitting <- eval(parse(text = cmd))        # Lance commande
-  fitting
+   set.seed(1)
+   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
+   cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
+                 fcn_model[1], 
+                 "', data = lot_appr_opti, trControl = tr_ctrl, metric = 'Spec', ", 
+                 fcn_model[2],")")
+   fitting <- eval(parse(text = cmd))        # Lance commande
+   fitting
 }
 
 # Parallélisation (A TESTER !!!)
@@ -144,18 +143,21 @@ fit_test <- function(fcn_model){
 # cl <- makeCluster(spec = 5, type = "PSOCK")
 # registerDoParallel(cl)
 
+grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 52, by = 3))
+grid_pda_lambda <- data.frame(lambda = seq(from = 1, to = 61, by = 3))
+
 # Modèles type Discriminant Analysis (LDA2, PDA)
-set_lda2_dim <- c("lda2", "tuneGrid  = data.frame(dimen = seq(from = 1, to = 16, by = 3))")
-set_pda_lambda <-  c("pda", "tuneGrid  = data.frame(lambda = seq(from = 1, to = 51, by = 10))")
+set_lda2_dim <- c("lda2", "tuneGrid  = grid_lda_dimen")
+set_pda_lambda <- c("pda", "tuneGrid  = grid_pda_lambda")
 fit_lda2_dim <- fit_test(set_lda2_dim)
 system.time(fit_test(set_lda2_dim))      #### CHRONO
 fit_pda_lambda <- fit_test(set_pda_lambda)
 system.time(fit_test(set_pda_lambda))  #### CHRONO
 # Extraire résultats d'intérêt : graphes et resultats
-fit_lda2_dim_graphe <- ggplot(fit_lda2_dim)
+fit_lda2_dim_graphe <- ggplot(data = fit_lda2_dim$results, aes(x = dimen, y = Spec)) + geom_point() + ylab("Spécificité")
 fit_lda2_dim_results <- fit_lda2_dim$results
-fit_pda_lambda_graphe <- ggplot(fit_pda_lambda)
 fit_pda_lambda_results <- fit_pda_lambda$results
+fit_pda_lambda_graphe <- ggplot(data = fit_pda_lambda$results, aes(x = lambda, y = Spec)) + geom_point() + ylab("Spécificité")
 
 ## Fin parallélisation (A TESTER !!!)
 # stopCluster(cl)
@@ -173,7 +175,9 @@ fit_gamLoess_degree_graphe <- ggplot(fit_gamLoess_degree)
 fit_gamLoess_degree_results <- fit_gamLoess_degree$results
 
 # Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
-set_rpart_cp <- c("rpart", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 5e-2))")
+
+grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
+set_rpart_cp <- c("rpart", "tuneGrid  = grid_rpart_cp")
 set_rpartcost_complexity <- c("rpartCost", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 0.05), Cost = 1)")
 set_rpartcost_cost <- c("rpartCost", "tuneGrid  = data.frame(Cost = c(0.01, 0.4, 0.7, 1, 1.5, 2, 2.5), cp = .01)")
 set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
@@ -186,6 +190,7 @@ fit_ctree_criterion <- fit_test(set_ctree_criterion)
 fit_c50tree <- fit_test(set_c50tree)
 # Extraire résultats d'intérêt : graphes et resultats
 fit_rpart_cp_results <- fit_rpart_cp$results
+fit_rpart_cp_graphe <- ggplot(data = fit_rpart_cp$results, aes(x = cp, y = Spec)) + geom_point() + ylab("Spécificité") + scale_x_log10()
 fit_rpartcost_complexity_graphe <- ggplot(fit_rpartcost_complexity)
 fit_rpartcost_complexity_results <- fit_rpartcost_complexity$results
 fit_rpartcost_complexity_bestTune <- fit_rpartcost_complexity$bestTune
@@ -199,7 +204,7 @@ fit_c50tree_results <- fit_c50tree$results
 set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = data.frame(cp = ",
                                             fit_rpartcost_complexity$bestTune$cp, 
                                             ", Cost = ", fit_rpartcost_cost$bestTune$Cost, ")" ))
-fit_rpartcost_best <- fit_test(set_rpartcost_best)
+fit_rpart_cp_resultsfit_rpart_cp_resultsfit_rpartcost_best <- fit_test(set_rpartcost_best)
 fit_rpartcost_best_results <- fit_rpartcost_best$results
 
 

@@ -362,14 +362,13 @@ rFerns, Rborist, ranger
 \newpage
 # Apprentissage machine et classification binaire
 ## Analyse exploratoire des données (EDA)
-\FloatBarrier
+
 \paragraph*{}
 La structure du lot de données est la suivante :
 
 ```{r out.width = "90%", echo = FALSE}
 kable(structure_dataset, caption = "Dataset structure")
 ```
-\FloatBarrier
 
 \paragraph*{}
 Le lot de données d'origine a été découpé deux fois avec un rapport 92/8, comme décrit dans la partie. (cf. § et p(ref!!!)) 
@@ -441,7 +440,7 @@ train(class ~ .,
       data = trainvalid_set, 
       trControl = tr_ctrl, 
       metric = 'Spec', 
-      tuneGrid = data.frame([PARAMETERS]))
+      tuneGrid = data.frame([PARAMETRES]))
 ```
 La fonction *set.seed* assure la reproductibilité.
 
@@ -450,11 +449,11 @@ La fonction *trainControl* permet de contrôler divers paramètres d'entraîneme
 La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation, la métrique utilisée pour l'évaluation (sensibilité, spécificité, ROC...) ainsi que la grille des paramètres utilisés par le modèle.
 \paragraph*{}
 Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, telles que .\$results (ROC, sensibilité, spécificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
-
+\FloatBarrier
 ### Modèles d'analyse discriminante linéaire
 \paragraph*{}
 Les deux modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
-\FloatBarrier
+
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(
    ncol = 2,
@@ -462,7 +461,8 @@ plot(ggarrange(
    fit_pda_lambda_graphe +  ylab("") + theme_bw()
    )
 )
-```  
+```
+
 \paragraph*{}
 Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la spécificité (*Spec =* `r round(mean(fit_lda2_dim_results[,"Spec"]), 3)`). 
 \paragraph*{}
@@ -479,7 +479,7 @@ Ces performances médiocres s'expliquent par le fonctionnement même des modèle
 ### Modèle additif généralisé  
 \paragraph*{}
 Le seul modèle additif généralisé choisi pour cette étude est gamLoess (Generalized Additive Model using Locally Weighted Linear Regression). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
-\FloatBarrier
+
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de gamLoess en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(
    ncol = 2,
@@ -487,7 +487,8 @@ plot(ggarrange(
    fit_gamLoess_degree_graphe +  ylab("") + theme_bw()
    )
 )
-```  
+```
+
 \paragraph*{}
 L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet significatif sur la spécificité, avec $\Delta Spec =$ `r round(max(fit_gamLoess_degree_results[,"Spec"]) - min(fit_gamLoess_degree_results[,"Spec"]), 3)`. 
 \paragraph*{}
@@ -505,19 +506,16 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 
 \paragraph*{}
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
-\FloatBarrier
 
 ```{r, echo = FALSE}
-
-kable(fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance of the CART (rpart) model")
+kable(fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
 ```
 
 Le modèle CART basique n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(fit_rpart_cp_results["Spec"]),3)`).
 
-\FloatBarrier
 Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de rpartCost en fonction des valeurs de complexité et de coût"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de rpartCost en fonction de la complexité et du coût"}
 plot(ggarrange(
    ncol = 2,
    fit_rpartcost_complexity_graphe + scale_x_log10() + theme_bw(),
@@ -529,37 +527,33 @@ plot(ggarrange(
 La plus haute spécificité est atteinte pour *cp =* `r fit_rpartcost_complexity_bestTune['cp']` et *Cost = * `r fit_rpartcost_cost_bestTune['Cost']`.
 
 ```{r, echo = FALSE}
-
-kable(fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance of the CART (rpartCost) model")
+kable(fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
 ```
 
 Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre.
-\FloatBarrier
-\paragraph{}*
+
 ```{r, echo = FALSE}
-kable(fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 Tree")
+kable(fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree")
 ```
 
-De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C.50 tree n'a pas rempli l'objectif posé par le critère *Spec* = 1.
-\FloatBarrier
+De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère *Spec* = 1.
 
 ### Forêts aléatoires
 \paragraph*{}
 Le premier modèle de forêt aléatoire évalué dans cette étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
-\FloatBarrier
+
 \paragraph{}*
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité du modèle de fougères aléatoires"}
 fit_rFerns_depth_graphe + theme_bw()
-
 ```
+
 \paragraph*{}
 Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoire a fourni des résultats peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(fit_rFerns_depth_results["Sens"]), 3)`).
-\FloatBarrier
+
 \paragraph*{}
 Le second modèle de forêt aléatoire évalué est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) and et la règle contrôlant cette séparation (*splitrule*).
-\FloatBarrier
 
 ```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Spécificité du modèle Ranger"}
 plot(ggarrange(
@@ -576,11 +570,10 @@ Les étapes préliminaires de l'optimisation du modèle se sont avérées promet
 ```{r, echo = FALSE}
 kable(fit_ranger_best_results[1:6], caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
 ```
+
 Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité parfaites dans cette phrase d'évaluation.
 \paragraph*{}
-\FloatBarrier
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
-\FloatBarrier
 
 ```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Rborist model specificity"}
 plot(ggarrange(
@@ -611,11 +604,12 @@ temps_debut <- Sys.time()
 temps_fin <- Sys.time()
 duree <- difftime(temps_fin, temps_debut)
 ```
+
 \newpage
 ## Résultats
 ### Protocole d'évaluation
 \paragraph*{}
-Les modèles ayant atteint le critères de spécificité ($Spec = 1$) lors de l'étape d'optimisation ont été choisis pour l'évaluation. Les deux modèles choisis sont deux forêts aléatoires
+Les modèles ayant atteint le critère de spécificité ($Spec = 1$) lors de l'étape d'optimisation ont été choisis pour l'évaluation. Les deux modèles choisis sont deux forêts aléatoires :
 
 * Forêt aléatoire de type Ranger,
 * Forêt aléatoire de type Rborist.
@@ -623,8 +617,8 @@ Les modèles ayant atteint le critères de spécificité ($Spec = 1$) lors de l'
 \paragraph*{}
 Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, réglés avec les meilleurs hyperparamètres obtenus par mesure des performances face au jeu de données d'optimisation. Leurs performances face au jeu de données d'évaluation seront analysées avec les mêmes critères que précédemment :
 
-1. La spécificité *doit* être égale à 1.
-2. La sensibilité doit être la plus haute possible.
+* La spécificité *doit* être égale à 1.
+* La sensibilité doit être la plus haute possible.
 
 ### Performances des modèles de forêts aléatoires  
 
@@ -640,7 +634,7 @@ La précision finale est égale à `r CM_ranger_final$overall["Accuracy"]`, avec
 La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats identiques à Ranger, s'est avéré sensiblement plus rapide (`r time_Rborist` min).
 
 ```{r out.width = "100%", echo = FALSE}
-kable(rt_result, digits = 4, caption = "Ranger and Rborist models performance (vs. evaluation)")
+kable(rt_result, digits = 4, caption = "Performances des modèles Ranger et Rborist (évaluation)")
 ```
 
 \FloatBarrier
