@@ -417,7 +417,7 @@ La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe
 La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx 10-15mm$. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 
 \newpage
-## Modèles de la librairie *caret*
+## Modèles de la librairie *caret* : optimisation et sélection
 \paragraph*{}
 La librairie *caret* fournit une plateforme très pratique et efficiente pour la modélisation de données et l'inférence par apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles. Les modèles sélectionnés sont de types variés :
 
@@ -596,127 +596,53 @@ plot(ggarrange(
 kable(fit_Rborist_pred_results[1:5, 1:5], digits = 4, caption = "Performance of the Rborist model (predFixed tuning)")
 ```
 
-
-Again, the preliminary tuning step showed promising results : on this model too, the required specificity was achieved on several occurrences using only single-parameter tuning. With optimal parameters (*predFixed* = 6, manually fixed value because of the higher sensitivity), and *minNode* = `r fit_Rborist_minNode_bestTune$minNode`, the performance was estimated to to be :
+Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. Avec des paramètres optimaux (*predFixed* = 6, fixé manuellement en raison de la sensibilité plus élevée), et *minNode* = `r fit_Rborist_minNode_bestTune$minNode`, la performance est estimée à :
 
 ```{r, echo = FALSE}
 kable(fit_Rborist_best_results[1:5], caption = "Performance of the Rborist model (optimal settings)")
 ```
-
-The Rborist model gave the same excellent results as the Ranger one, with perfect sensitivity and specificity.
+Le modèle Rborist a donné les mêmes excellents résultats que le modèle Ranger, avec une sensibilité et une spécificité parfaites.
 \paragraph*{}
-These results underline an interesting fact : not all random forest models are created equal. This study shows the considerable difference in sensitivity and specificity between the rFerns and the Ranger or Rborist random forest models. In the first step of the preliminary studies of the caret package models, some random forest models also proved to be extremely slow, while others were considerably faster.
+Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
 \paragraph*{}
-Speed of some algorithms will be explored in the next section. Running time of any code portion can be very easily measured by:
+La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code peut facilement être mesurée par :
 ```
-start_time <- Sys.time()
-[Code to be evaluated]
-end_time <- Sys.time()
-time <- difftime(end_time, start_time)
+temps_debut <- Sys.time()
+[Code à évaluer]
+temps_fin <- Sys.time()
+duree <- difftime(temps_fin, temps_debut)
 ```
-
-\subsection{Memory Optimization}
-During the building of this study, an unforeseen and unfortunate event resulted into the addition of a secondary goal : the code had to be able to handle a `r summary_number` $\times$ `r nrow(structure_dataset)` dataset and run on lower-end computers, with only 4GB RAM + 6GB swap. Memory optimization was an interesting challenge, and implied :
-
-* Image saving on hard drive before environment cleaning,
-* Identification and removal of obsolete intermediate values,
-* Identification and removal of objects that won't be used in the final report,
-* Identification and replacement of large objects,
-* Periodic garbage collection.
-
-The identification of large objects can be performed by the following code :
-
-```{r, eval = FALSE}
-object_list <- objects()
-
-obj_size <- function(fcn_object){
-   object <- eval(parse(text = fcn_object))
-   size <- format(object.size(object), units = "Mb")
-   size <- str_remove(size, " Mb")
-   size <- as.numeric(size)
-   size
-}
-size_list <- sapply(X = object_list, FUN = obj_size)
-```
-The resulting vector can then be converted to a data frame, that returns the size of all objects :
-
-xxx
-
-Some of these objects are quite large, but can fortunately be converted into smaller and still useful objects. 
-\paragraph*{}
-For example, the *very* large fit_rFerns_depth train object (xxx Mb) can be split into two useful objects that gather the main metrics of interest : the fitting plot (xxx) and the results (xxx) table.
-\paragraph*{}
-Some of these objects were much smaller : ggplots are not heavy per se, but while generating plots for all variables proved to be useful at some point in the study, having more than forty 5+ MB plots in memory was not really necessary, especially when having to run training and validation steps on limited hardware.
-\paragraph*{}
-Periodic data-gathering and object deletion thus permitted to avoid unnecessary memory creep that resulted in major slowdowns or crashes.
-
 \newpage
-\section{Results}
-\subsection{Evaluation protocol}  
+## Résultats
+### Protocole d'évaluation
 \paragraph*{}
-The models that attained the specificity requirement during the validation process were selected for the final evaluation. The three selected models are :
+Les modèles ayant atteint le critères de spécificité ($Spec = 1$) lors de l'étape d'optimisation ont été choisis pour l'évaluation. Les deux modèles choisis sont deux forêts aléatoires
 
-* Two-criteria classifier,
-* Ranger random forest,
-* Rborist random forest.
+* Forêt aléatoire de type Ranger,
+* Forêt aléatoire de type Rborist.
 
 \paragraph*{}
-All models were trained on the training dataset, set with the best hyperparameters values obtained by evaluating the performance against the validation dataset. Their performance against the evaluation dataset will be analyzed, using the same criteria as before :
+Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, réglés avec les meilleurs hyperparamètres obtenus par mesure des performances face au jeu de données d'optimisation. Leurs performances face au jeu de données d'évaluation seront analysées avec les mêmes critères que précédemment :
 
-1. Specificity *must* be equal to one.
-2. Sensitivity should be the highest possible.
+1. La spécificité *doit* être égale à 1.
+2. La sensibilité doit être la plus haute possible.
 
-\subsection{Dual criteria classifier performance}  
-\paragraph*{}
-Running the dual criteria classifier against the evaluation dataset yields the following results :
-xxx
-\paragraph*{}
-The confusion matrix shows more accurately the results : while xxx of the yyy edible specimen were accurately identified, zzz non-edible specimen were incorrectly classified as edible.  
-xxx
+### Performances des modèles de forêts aléatoires  
 
-While the model performance is quite honorable, it is not sufficient to completely fulfill the specificity criterion, which was the primary endpoint of this study. A performance decrease between the validation and evaluation stage can typically be attributed to overfitting. It is thus important to find if the performance difference is significant.
-\paragraph*{}
-xxx
-The performance difference does not seem to be significant, and the lower specificity just seems to be a result of a trade-off between sensitivity and specificity. The absence of significant overfitting can also be confirmed by the slight increase of the F1 score during the validation stage.
 
-\subsection{Random forest performance}  
-The final evaluation of the Ranger gave the following confusion matrix.
+L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
 
 ```{r out.width = "100%", echo = FALSE}
 kable(CM_ranger_final$table, caption = "Confusion Matrix of the Ranger model (vs. evaluation)")
 ```  
-The final accuracy was equal to `r CM_ranger_final$overall["Accuracy"]`, with a 95% confidence interval of [`r round(CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(CM_ranger_final$overall["AccuracyUpper"], 4)`]. The ranger model provided excellent results, in a very reasonable amount of time (`r time_ranger` min).
-\paragraph*{}
-The Rborist model gave similar results with a final accuracy equal to `r CM_Rborist_final$overall["Accuracy"]`, with a 95% confidence interval of [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. The Rborist model, while giving comparable results to the Ranger one, was sensibly slower (`r time_Rborist` min), despite being run with a lower number of trees (*n* = 3 vs 10).
 
+La précision finale est égale à `r CM_ranger_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r time_ranger` min), preuve de sa grande efficience calculatoire.
+\paragraph*{}
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats identiques à Ranger, s'est avéré sensiblement plus lent (`r time_Rborist` min), bien qu'ayant été lancé avec un nombre d'arbres moindre (*n* = 3 vs 10). [RELIER AU CODE]
 
 ```{r out.width = "100%", echo = FALSE}
 kable(rt_result, digits = 4, caption = "Ranger and Rborist models performance (vs. evaluation)")
-```  
-
-\newpage
-\section{Conclusion}
-
-Species identification is a classic classification task, traditionally performed by humans using a classification tree strategy. 
-\paragraph*{}
-This study showed that given particular selection conditions imposed by circumstances (toxic mushrooms shouldn't be classified as edible, i.e. *Specificity* = 1), a significant amount of modelling strategies were giving insufficient results, and proved to be inferior to even a quite basic *ad-hoc* bi-criteria classification model.
-\paragraph*{}
-This bi-criteria model, while already quite efficient (xxx) did not fully achieve the specificity requirement against the evaluation dataset.
-\paragraph*{}
-The best classification tools were random forest models : ranger and Rborist, which both gave perfect sensitivity and specificity values, but with ranger being about `r round(time_Rborist/time_ranger)` times faster. The rFerns model, while also being based on random forests, was much less accurate.
-\paragraph*{}
-Apart from the limitations of the starting dataset, this work has some notable limitations :
-
-* Memory optimization could probably be improved, for example with use of local environments,
-* The basic classifier code could definitely be optimized and make more use of vectorization,
-* Parameter optimization was mostly based on the caret package documentation, which doesn't mention all parameters,
-* Parallelization could be an interesting strategy to make some computations much faster,
-* Reproductibility could be improved between Linux/Windows systems on R 3.6/4.1, especially on the layout of the report output.
-
-\paragraph*{}
-This study will provide a good basis for further personal work and experimentation on these three aspects.
-\paragraph*{}
-Working on this dataset also gave me nice future project ideas, such as the creation of a future dataset based on the same concept as the two original datasets from Schlimmer[x] and Wagner[y], but with more species and more extensive criteria (such as the smell or the flesh texture) taken from more comprehensive and specialized books.[z]
+```
 
 \FloatBarrier
 \newpage
