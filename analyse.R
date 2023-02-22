@@ -144,10 +144,9 @@ fit_test <- function(fcn_model){
 # cl <- makeCluster(spec = 5, type = "PSOCK")
 # registerDoParallel(cl)
 
+# Modèles type Discriminant Analysis (LDA2, PDA)
 grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 52, by = 3))
 grid_pda_lambda <- data.frame(lambda = seq(from = 1, to = 61, by = 3))
-
-# Modèles type Discriminant Analysis (LDA2, PDA)
 set_lda2_dim <- c("lda2", "tuneGrid  = grid_lda_dimen")
 set_pda_lambda <- c("pda", "tuneGrid  = grid_pda_lambda")
 fit_lda2_dim <- fit_test(set_lda2_dim)
@@ -156,9 +155,11 @@ fit_pda_lambda <- fit_test(set_pda_lambda)
 system.time(fit_test(set_pda_lambda))  #### CHRONO
 # Extraire résultats d'intérêt : graphes et resultats
 fit_lda2_dim_graphe <- ggplot(data = fit_lda2_dim$results, aes(x = dimen, y = Spec)) + geom_point() + ylab("Spécificité")
+fit_lda2_dim_grapheROC <- ggplot(data = fit_lda2_dim$results, aes(x = dimen, y = ROC)) + geom_point() + ylab("ROC")
 fit_lda2_dim_results <- fit_lda2_dim$results
 fit_pda_lambda_results <- fit_pda_lambda$results
 fit_pda_lambda_graphe <- ggplot(data = fit_pda_lambda$results, aes(x = lambda, y = Spec)) + geom_point() + ylab("Spécificité")
+fit_pda_lambda_grapheROC <- ggplot(data = fit_pda_lambda$results, aes(x = lambda, y = ROC)) + geom_point() + ylab("ROC")
 
 ## Fin parallélisation (A TESTER !!!)
 # stopCluster(cl)
