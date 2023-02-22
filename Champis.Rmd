@@ -47,6 +47,8 @@ AI : *Artificial Intelligence* (intelligence artificielle)
 
 CART : *Classification And Regression Tree* (arbre de classification et de régression)
 
+DOE : *Design of Experiments* (plan d'expériences)
+
 EDA : *Exploratory Data Analysis* (analyse exploratoire des données)
 
 GAM : *Generalized Additive Model* (modèle additif généralisé)
@@ -57,9 +59,13 @@ Kd-tree : *K-dimensional tree* (arbre k-dimensionel)
 
 LDA : *Linear Discriminant Analysis* (analyse linéaire discriminante)
 
+LH : *Latin Hypercube* (hypercube latin)
+
 LOESS : *LOcally Estimated Scatterplot Smoothing* (régression locale)
 
 NN : *Nearest Neighbour* (plus proche voisin)
+
+NOLH : *Nearly Orthogonal Latin Hypercube* (hypercube latin quasi orthogonal)
 
 PDA : *Penalized Discriminant Analysis* (analyse discriminante pénalisée)
 
@@ -357,6 +363,19 @@ rpart, Ctree???, c50tree, Rpartcost
 ### Forêts aléatoires
 rFerns, Rborist, ranger
 
+## Optimisation par plans d'expérience (DOE)
+
+Certains modèles nécessiteront une optimisation de leurs paramètres de configuration (*hyperparamètres*). L'optimisation des paramètres expérimentaux relève du domaine des plans d'expérience. De nombreux plans et stratégies sont envisageables, le choix dépend en partie des caractéristiques du processus à optimiser.
+\paragraph*{}
+En effet, l'optimisation des paramètres d'un modèle informatique présente quelques particularités notables :
+
+* La réalisation d'une expérience supplémentaire a un coût faible,
+* Il peut exister plusieurs métriques coexistantes,
+* La fonction de réponse peut s'avérer relativement complexe.
+\paragraph*{}
+Ces particularités imposent d'explorer de manière méthodique la totalité de l'espace expérimental.
+\paragraph*{}
+La méthode des hypercubes latins est une extension du principe des carrés latins.
 
 \FloatBarrier
 \newpage
