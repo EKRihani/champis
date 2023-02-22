@@ -6,6 +6,7 @@
 library(tidyverse)    # Outils génériques
 library(GGally)       # Outils supplémentaires pour les graphiques
 library(caret)        # Outils d'apprentissage machine
+library(DiceDesign)    # Hypercubes Latins
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
@@ -177,9 +178,19 @@ fit_gamLoess_degree_results <- fit_gamLoess_degree$results
 # Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
 
 grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
+
+LHS <- lhsDesign(n = 20, dimension = 2, randomized=TRUE, seed=13)$design
+LHS <- maximinESE_LHS(LHS)$design
+grid_rpartcost <- data.frame(LHS)
+colnames(grid_rpartcost) <- c("cp", "Cost")
+grid_rpartcost$cp <- 10^(-grid_rpartcost$cp*3.5-1.5)
+grid_rpartcost$Cost <- grid_rpartcost$Cost*2.5
+
 set_rpart_cp <- c("rpart", "tuneGrid  = grid_rpart_cp")
-set_rpartcost_complexity <- c("rpartCost", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 0.05), Cost = 1)")
-set_rpartcost_cost <- c("rpartCost", "tuneGrid  = data.frame(Cost = c(0.01, 0.4, 0.7, 1, 1.5, 2, 2.5), cp = .01)")
+#set_rpartcost_complexity <- c("rpartCost", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 0.05), Cost = 1)")
+#set_rpartcost_cost <- c("rpartCost", "tuneGrid  = data.frame(Cost = c(0.01, 0.4, 0.7, 1, 1.5, 2, 2.5), cp = .01)")
+set_rpartcost <- c("rpartCost", "tuneGrid  = grid_rpartcost")     # A TESTER !!!
+
 set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
 set_c50tree <- c("C5.0Tree", "")
 system.time(fit_test(set_rpart_cp))    ####### CHRONO
