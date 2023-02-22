@@ -184,7 +184,7 @@ grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 LHS <- nolhDesign(dimension =2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
 grid_rpartcost <- data.frame(LHS)
 colnames(grid_rpartcost) <- c("cp", "Cost")
-grid_rpartcost$cp <- 10^(-grid_rpartcost$cp*3.5-1.5)
+grid_rpartcost$cp <- (grid_rpartcost$cp*1e-2+1e-5)
 grid_rpartcost$Cost <- grid_rpartcost$Cost*2.5+1e-3
 
 set_rpart_cp <- c("rpart", "tuneGrid  = grid_rpart_cp")
@@ -198,7 +198,7 @@ system.time(fit_test(set_rpart_cp))    ####### CHRONO
 fit_rpart_cp <- fit_test(set_rpart_cp)
 #fit_rpartcost_complexity <- fit_test(set_rpartcost_complexity)
 #fit_rpartcost_cost <- fit_test(set_rpartcost_cost)
-fit_rpartcost <- fit_test(set_rpartcost)     # A TESTER
+fit_rpartcost <- fit_test(set_rpartcost)
 fit_ctree_criterion <- fit_test(set_ctree_criterion)
 fit_c50tree <- fit_test(set_c50tree)
 # Extraire résultats d'intérêt : graphes et resultats
@@ -212,20 +212,18 @@ fit_rpart_cp_graphe <- ggplot(data = fit_rpart_cp$results, aes(x = cp, y = Spec)
 #fit_rpartcost_cost_bestTune <- fit_rpartcost_cost$bestTune
 fit_rpartcost_results <- fit_rpartcost$results
 
-#fit_rpartcost_graphe 
-ggplot(data = fit_rpartcost_results, aes(x = Cost, y = cp)) +
-   geom_raster(aes(fill = Spec), interpolate = FALSE) +
-   ylim(0, 3.2e-2) + scale_y_log10()
-
-mod_rpartcost <- modelFit(X=grid_rpartcost, Y=fit_rpartcost_results$Spec, type="Kriging", formula=Y~poly(cp,2)+poly(Cost,2)+cp:Cost)
-pred_rpartcost <- expand.grid(grid_rpartcost$cp, grid_rpartcost$Cost)
-colnames(pred_rpartcost) <- c("cp", "Cost")
+mod_rpartcost <- modelFit(X=fit_rpartcost_results[,1:2], Y=fit_rpartcost_results$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+pred_rpartcost <- expand.grid(fit_rpartcost_results[,1:2])
+colnames(pred_rpartcost) <- c("Cost", "cp")
 pred_rpartcost$Spec <- modelPredict(mod_rpartcost, pred_rpartcost)
-ggplot(data = pred_rpartcost, aes(x = Cost, y = cp)) +
-   geom_raster(aes(fill = Spec), interpolate = FALSE) +
-   ylim(0, 3.2e-2) + scale_y_log10()
+fit_rpartcost_graphe
+ggplot() +
+   geom_tile(data = pred_rpartcost, aes(x = Cost, y = cp, fill = Spec)) +
+   geom_tile(data = fit_rpartcost_results, aes(x = Cost, y = cp, fill = Spec), color = "blue", linewidth =.5) +
+   scale_fill_viridis_c(option = "F", direction = 1) +
+   theme_bw()
+   
 
-fit_rpartcost_bestTune <- fit_rpartcost$bestTune
 fit_ctree_criterion_graphe <- ggplot(fit_ctree_criterion)
 fit_ctree_criterion_results <- fit_ctree_criterion$results
 fit_c50tree_results <- fit_c50tree$results

@@ -5,7 +5,7 @@ library(tidyverse)
 
 
 library(DiceDesign)
-LHS <- lhsDesign(n = 20, dimension = 3, randomized=TRUE, seed=13)$design
+LHS <- lhsDesign(n = 10, dimension = 3, randomized=TRUE, seed=13)$design
 opti_LHS <- maximinESE_LHS(LHS)$design
 plot(opti_LHS)
 
@@ -41,3 +41,24 @@ predict(object=KM, newdata=LHS, type="UK")
 
 
 data.frame(Test, Pred_Mars, Pred_PolyMars, Pred_Kriging)
+
+opti_LHS2 <- nolhDesign(dimension =2, range = c(0, 1))$design
+# LHS2 <- lhsDesign(n = 20, dimension = 2, randomized=TRUE, seed=2)$design
+# opti_LHS2 <- maximinESE_LHS(LHS2)$design
+plot(opti_LHS2)
+LHS2 <- data.frame(opti_LHS2)
+colnames(LHS2) <- c("alpha","beta")
+LHS2$alpha <- 0.01*LHS2$alpha
+LHS2r <- log(LHS2$alpha + 0.05*LHS2$beta)
+
+
+Mod <- modelFit(X=LHS2, Y=LHS2r, type="MARS", degree = 4)
+Mod <- modelFit(X=LHS2, Y=LHS2r, type="Kriging", formula=Y~alpha+beta+alpha:beta+I(alpha^2)+I(beta^2))
+LHS2t <- data.frame(expand_grid(LHS2$alpha, LHS2$beta))
+colnames(LHS2t) <- c("alpha","beta")
+LHS2t$pred <- modelPredict(Mod, LHS2t)
+LHS2t <- cbind(LHS2t, LHS2p)
+ggplot() +
+   geom_tile(data = LHS2t, aes(x = alpha, y = beta, fill = pred)) +
+   geom_tile(data = LHS2, aes(x = alpha, y = beta, fill = LHS2r), color = "red", linewidth =.5) +
+   scale_fill_viridis_c(option = "F", direction = 1)
