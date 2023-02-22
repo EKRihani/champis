@@ -180,8 +180,7 @@ fit_gamLoess_degree_results <- fit_gamLoess_degree$results
 
 grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 
-LHS <- lhsDesign(n = 20, dimension = 2, randomized=TRUE, seed=13)$design
-LHS <- maximinESE_LHS(LHS)$design
+LHS <- nolhDesign(dimension =2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
 grid_rpartcost <- data.frame(LHS)
 colnames(grid_rpartcost) <- c("cp", "Cost")
 grid_rpartcost$cp <- 10^(-grid_rpartcost$cp*3.5-1.5)
@@ -226,36 +225,66 @@ fit_rpartcost_best_results <- fit_rpartcost_best$results
 
 # Modèles type Random Forest (RFERNS, RANGER, RBORIST)
 set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
-set_ranger_mtry <- c("ranger", "tuneGrid  = data.frame(mtry = seq(from = 1, to = 106, by = 15), splitrule = 'extratrees', min.node.size = 2), num.trees = 6")
-set_ranger_splitrule <- c("ranger", "tuneGrid  = data.frame(splitrule = c('gini', 'extratrees'), mtry = 50, min.node.size = 2), num.trees = 6")
-set_ranger_nodesize <- c("ranger", "tuneGrid  = data.frame(min.node.size = seq(from = 1, to = 15, by = 2), mtry = 50, splitrule = 'extratrees'), num.trees = 6")
-set_Rborist_pred <- c("Rborist", "tuneGrid  = data.frame(predFixed = seq(from = 1, to = 41, by = 10), minNode = 2), ntrees = 3")
-set_Rborist_minNode <- c("Rborist", "tuneGrid  = data.frame(minNode = seq(from = 1, to = 5, by = 1), predFixed =50), ntrees = 3")
+
+LHSa <- lhsDesign(n = 20, dimension = 3, randomized=TRUE, seed=1337)$design
+LHSb <- lhsDesign(n = 20, dimension = 3, randomized=TRUE, seed=007)$design
+LHS <- rbind(LHSa, LHSb)
+LHS <- maximinESE_LHS(LHS)$design
+grid_ranger <- data.frame(LHS)
+colnames(grid_ranger) <- c("mtry", "min.node.size", "num.trees")
+grid_ranger$splitrule <- c(rep("extratrees", 20), rep("gini", 20))
+grid_ranger$mtry <- round(1+grid_ranger$mtry*99,0)
+grid_ranger$min.node.size <- round(1+grid_ranger$min.node.size*39,0)
+grid_ranger$num.trees <- round(1+grid_ranger$num.trees*9,0) # VOIR SI LE NUM.TREES MARCHE ???
+
+LHSa <- maximinESE_LHS(LHSa)$design
+grid_Rborist <- data.frame(LHSa)
+colnames(grid_Rborist) <- c("predFixed", "minNode", "ntrees")
+grid_Rborist$predFixed <- round(1+grid_Rborist$predFixed*39,0)
+grid_Rborist$minNode <- round(1+grid_Rborist$minNode*9,0)
+grid_Rborist$ntrees <- round(1+grid_Rborist$ntrees*5,0)
+
+#set_ranger_mtry <- c("ranger", "tuneGrid  = data.frame(mtry = seq(from = 1, to = 106, by = 15), splitrule = 'extratrees', min.node.size = 2), num.trees = 6")
+#set_ranger_splitrule <- c("ranger", "tuneGrid  = data.frame(splitrule = c('gini', 'extratrees'), mtry = 50, min.node.size = 2), num.trees = 6")
+#set_ranger_nodesize <- c("ranger", "tuneGrid  = data.frame(min.node.size = seq(from = 1, to = 15, by = 2), mtry = 50, splitrule = 'extratrees'), num.trees = 6")
+set_ranger <- c("ranger", "tuneGrid  = grid_ranger") # A TESTER
+set_Rborist <- c("Rborist", "tuneGrid  = grid_Rborist)
+#set_Rborist_pred <- c("Rborist", "tuneGrid  = data.frame(predFixed = seq(from = 1, to = 41, by = 10), minNode = 2), ntrees = 3")
+#set_Rborist_minNode <- c("Rborist", "tuneGrid  = data.frame(minNode = seq(from = 1, to = 5, by = 1), predFixed =50), ntrees = 3")
 #system.time(fit_test(set_ranger_mtry))  ####### CHRONO
 fit_rFerns_depth <- fit_test(set_rFerns_depth)
-fit_ranger_mtry <- fit_test(set_ranger_mtry)
-fit_ranger_splitrule <- fit_test(set_ranger_splitrule)
-fit_ranger_nodesize <- fit_test(set_ranger_nodesize)
-fit_Rborist_pred <- fit_test(set_Rborist_pred)
-fit_Rborist_minNode <- fit_test(set_Rborist_minNode)
+fit_ranger <- fit_test(set_ranger)
+#fit_ranger_mtry <- fit_test(set_ranger_mtry)
+#fit_ranger_splitrule <- fit_test(set_ranger_splitrule)
+#fit_ranger_nodesize <- fit_test(set_ranger_nodesize)
+fit_Rborist <- fit_test(set_Rborist)
+#fit_Rborist_pred <- fit_test(set_Rborist_pred)
+#fit_Rborist_minNode <- fit_test(set_Rborist_minNode)
 # Extraire résultats d'intérêt : graphes et resultats
 fit_rFerns_depth_graphe <- ggplot(fit_rFerns_depth)
 fit_rFerns_depth_results <- fit_rFerns_depth$results
-fit_ranger_mtry_graphe <- ggplot(fit_ranger_mtry)
-fit_ranger_mtry_results <- fit_ranger_mtry$results
-fit_ranger_mtry_bestTune <- fit_ranger_mtry$bestTune
-fit_ranger_splitrule_graphe <- ggplot(fit_ranger_splitrule)
-fit_ranger_splitrule_results <- fit_ranger_splitrule$results
-fit_ranger_splitrule_bestTune <- fit_ranger_splitrule$bestTune
-fit_ranger_nodesize_graphe <- ggplot(fit_ranger_nodesize)
-fit_ranger_nodesize_results <- fit_ranger_nodesize$results
-fit_ranger_nodesize_bestTune <- fit_ranger_nodesize$bestTune
-fit_Rborist_pred_graphe <- ggplot(fit_Rborist_pred)
-fit_Rborist_pred_results <- fit_Rborist_pred$results
-fit_Rborist_pred_bestTune <- fit_Rborist_pred$bestTune
-fit_Rborist_minNode_graphe <- ggplot(fit_Rborist_minNode)
-fit_Rborist_minNode_results <- fit_Rborist_minNode$results
-fit_Rborist_minNode_bestTune <- fit_Rborist_minNode$bestTune
+
+fit_ranger_results <- fit_ranger$results
+fit_ranger_bestTune <- fit_ranger$bestTune
+
+#fit_ranger_mtry_graphe <- ggplot(fit_ranger_mtry)
+#fit_ranger_mtry_results <- fit_ranger_mtry$results
+#fit_ranger_mtry_bestTune <- fit_ranger_mtry$bestTune
+#fit_ranger_splitrule_graphe <- ggplot(fit_ranger_splitrule)
+#fit_ranger_splitrule_results <- fit_ranger_splitrule$results
+#fit_ranger_splitrule_bestTune <- fit_ranger_splitrule$bestTune
+#fit_ranger_nodesize_graphe <- ggplot(fit_ranger_nodesize)
+#fit_ranger_nodesize_results <- fit_ranger_nodesize$results
+#fit_ranger_nodesize_bestTune <- fit_ranger_nodesize$bestTune
+#fit_Rborist_pred_graphe <- ggplot(fit_Rborist_pred)
+#fit_Rborist_pred_results <- fit_Rborist_pred$results
+#fit_Rborist_pred_bestTune <- fit_Rborist_pred$bestTune
+#fit_Rborist_minNode_graphe <- ggplot(fit_Rborist_minNode)
+#fit_Rborist_minNode_results <- fit_Rborist_minNode$results
+#fit_Rborist_minNode_bestTune <- fit_Rborist_minNode$bestTune
+fit_Rborist_results <- fit_Rborist$results
+fit_Rborist_bestTune <- fit_Rborist$bestTune
+
 # Lance modèle RANGER optimal
 set_ranger_best <- c("ranger", paste0("tuneGrid  = data.frame(min.node.size = ", 
                                       fit_ranger_nodesize_bestTune$min.node.size, 
