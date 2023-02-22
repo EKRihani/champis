@@ -7,6 +7,7 @@ library(tidyverse)    # Outils génériques
 library(microbenchmark) # Chrono
 library(MASS)   # Calcul densité 3D
 library(plotly)   # Graphes avancés
+library(DiceDesign)   # Hypercubes latins
 
 ##################################
 #       FACTEUR CROISSANCE       #
@@ -199,6 +200,16 @@ distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
 # nuage3D_sansdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau.Diametre, z=Champi_demo$Chapeau.Diametre, marker = list(size=1)) %>% 
 #   add_markers() %>% 
 #   layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds")))
+
+############################
+#     HYPERCUBES LATINS    #
+############################
+
+LHS <- lhsDesign(n = 20, dimension = 2, randomized=TRUE, seed=13)$design
+opti_LHS <- maximinESE_LHS(LHS)$design
+graphe_opti_LHS <- plot(opti_LHS)
+graphe_LHS <- plot(LHS)   
+
 
 ##########################
 #     DONNEES FINALES    #
