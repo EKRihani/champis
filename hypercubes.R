@@ -1,11 +1,11 @@
 library(tidyverse)
-library(lhs)
+#library(lhs)
 
-geneticLHS(n = 10, k = 3, pop = 50, gen = 2, criterium = "Maximin")
+#geneticLHS(n = 10, k = 3, pop = 50, gen = 2, criterium = "Maximin")
 
 
 library(DiceDesign)
-LHS <- lhsDesign(n = 15, dimension = 3, randomized=TRUE, seed=13)$design
+LHS <- lhsDesign(n = 20, dimension = 3, randomized=TRUE, seed=13)$design
 opti_LHS <- maximinESE_LHS(LHS)$design
 plot(opti_LHS)
 

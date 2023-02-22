@@ -7,6 +7,7 @@ library(tidyverse)    # Outils génériques
 library(GGally)       # Outils supplémentaires pour les graphiques
 library(caret)        # Outils d'apprentissage machine
 library(DiceDesign)    # Hypercubes Latins
+library(DiceEval)       # Modélisation sur hypercubes latins
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
@@ -184,7 +185,7 @@ LHS <- nolhDesign(dimension =2, range = c(0, 1))$design     # Hypercube latin qu
 grid_rpartcost <- data.frame(LHS)
 colnames(grid_rpartcost) <- c("cp", "Cost")
 grid_rpartcost$cp <- 10^(-grid_rpartcost$cp*3.5-1.5)
-grid_rpartcost$Cost <- grid_rpartcost$Cost*2.5
+grid_rpartcost$Cost <- grid_rpartcost$Cost*2.5+1e-3
 
 set_rpart_cp <- c("rpart", "tuneGrid  = grid_rpart_cp")
 #set_rpartcost_complexity <- c("rpartCost", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 0.05), Cost = 1)")
@@ -209,8 +210,21 @@ fit_rpart_cp_graphe <- ggplot(data = fit_rpart_cp$results, aes(x = cp, y = Spec)
 #fit_rpartcost_cost_graphe <- ggplot(fit_rpartcost_cost)
 #fit_rpartcost_cost_results <- fit_rpartcost_cost$results
 #fit_rpartcost_cost_bestTune <- fit_rpartcost_cost$bestTune
-fit_rpartcost_graphe <- ggplot(fit_rpartcost)      # A TESTER, ou GRAPHE DENSITE
 fit_rpartcost_results <- fit_rpartcost$results
+
+#fit_rpartcost_graphe 
+ggplot(data = fit_rpartcost_results, aes(x = Cost, y = cp)) +
+   geom_raster(aes(fill = Spec), interpolate = FALSE) +
+   ylim(0, 3.2e-2) + scale_y_log10()
+
+mod_rpartcost <- modelFit(X=grid_rpartcost, Y=fit_rpartcost_results$Spec, type="Kriging", formula=Y~poly(cp,2)+poly(Cost,2)+cp:Cost)
+pred_rpartcost <- expand.grid(grid_rpartcost$cp, grid_rpartcost$Cost)
+colnames(pred_rpartcost) <- c("cp", "Cost")
+pred_rpartcost$Spec <- modelPredict(mod_rpartcost, pred_rpartcost)
+ggplot(data = pred_rpartcost, aes(x = Cost, y = cp)) +
+   geom_raster(aes(fill = Spec), interpolate = FALSE) +
+   ylim(0, 3.2e-2) + scale_y_log10()
+
 fit_rpartcost_bestTune <- fit_rpartcost$bestTune
 fit_ctree_criterion_graphe <- ggplot(fit_ctree_criterion)
 fit_ctree_criterion_results <- fit_ctree_criterion$results
@@ -248,7 +262,7 @@ grid_Rborist$ntrees <- round(1+grid_Rborist$ntrees*5,0)
 #set_ranger_splitrule <- c("ranger", "tuneGrid  = data.frame(splitrule = c('gini', 'extratrees'), mtry = 50, min.node.size = 2), num.trees = 6")
 #set_ranger_nodesize <- c("ranger", "tuneGrid  = data.frame(min.node.size = seq(from = 1, to = 15, by = 2), mtry = 50, splitrule = 'extratrees'), num.trees = 6")
 set_ranger <- c("ranger", "tuneGrid  = grid_ranger") # A TESTER
-set_Rborist <- c("Rborist", "tuneGrid  = grid_Rborist)
+set_Rborist <- c("Rborist", "tuneGrid  = grid_Rborist")
 #set_Rborist_pred <- c("Rborist", "tuneGrid  = data.frame(predFixed = seq(from = 1, to = 41, by = 10), minNode = 2), ntrees = 3")
 #set_Rborist_minNode <- c("Rborist", "tuneGrid  = data.frame(minNode = seq(from = 1, to = 5, by = 1), predFixed =50), ntrees = 3")
 #system.time(fit_test(set_ranger_mtry))  ####### CHRONO
@@ -260,13 +274,12 @@ fit_ranger <- fit_test(set_ranger)
 fit_Rborist <- fit_test(set_Rborist)
 #fit_Rborist_pred <- fit_test(set_Rborist_pred)
 #fit_Rborist_minNode <- fit_test(set_Rborist_minNode)
+
 # Extraire résultats d'intérêt : graphes et resultats
 fit_rFerns_depth_graphe <- ggplot(fit_rFerns_depth)
 fit_rFerns_depth_results <- fit_rFerns_depth$results
-
 fit_ranger_results <- fit_ranger$results
 fit_ranger_bestTune <- fit_ranger$bestTune
-
 #fit_ranger_mtry_graphe <- ggplot(fit_ranger_mtry)
 #fit_ranger_mtry_results <- fit_ranger_mtry$results
 #fit_ranger_mtry_bestTune <- fit_ranger_mtry$bestTune
