@@ -196,19 +196,23 @@ set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01,
 set_c50tree <- c("C5.0Tree", "")
 system.time(fit_test(set_rpart_cp))    ####### CHRONO
 fit_rpart_cp <- fit_test(set_rpart_cp)
-fit_rpartcost_complexity <- fit_test(set_rpartcost_complexity)
-fit_rpartcost_cost <- fit_test(set_rpartcost_cost)
+#fit_rpartcost_complexity <- fit_test(set_rpartcost_complexity)
+#fit_rpartcost_cost <- fit_test(set_rpartcost_cost)
+fit_rpartcost <- fit_test(set_rpartcost)     # A TESTER
 fit_ctree_criterion <- fit_test(set_ctree_criterion)
 fit_c50tree <- fit_test(set_c50tree)
 # Extraire résultats d'intérêt : graphes et resultats
 fit_rpart_cp_results <- fit_rpart_cp$results
 fit_rpart_cp_graphe <- ggplot(data = fit_rpart_cp$results, aes(x = cp, y = Spec)) + geom_point() + ylab("Spécificité") + scale_x_log10()
-fit_rpartcost_complexity_graphe <- ggplot(fit_rpartcost_complexity)
-fit_rpartcost_complexity_results <- fit_rpartcost_complexity$results
-fit_rpartcost_complexity_bestTune <- fit_rpartcost_complexity$bestTune
-fit_rpartcost_cost_graphe <- ggplot(fit_rpartcost_cost)
-fit_rpartcost_cost_results <- fit_rpartcost_cost$results
-fit_rpartcost_cost_bestTune <- fit_rpartcost_cost$bestTune
+#fit_rpartcost_complexity_graphe <- ggplot(fit_rpartcost_complexity)
+#fit_rpartcost_complexity_results <- fit_rpartcost_complexity$results
+#fit_rpartcost_complexity_bestTune <- fit_rpartcost_complexity$bestTune
+#fit_rpartcost_cost_graphe <- ggplot(fit_rpartcost_cost)
+#fit_rpartcost_cost_results <- fit_rpartcost_cost$results
+#fit_rpartcost_cost_bestTune <- fit_rpartcost_cost$bestTune
+fit_rpartcost_graphe <- ggplot(fit_rpartcost)      # A TESTER, ou GRAPHE DENSITE
+fit_rpartcost_results <- fit_rpartcost$results
+fit_rpartcost_bestTune <- fit_rpartcost$bestTune
 fit_ctree_criterion_graphe <- ggplot(fit_ctree_criterion)
 fit_ctree_criterion_results <- fit_ctree_criterion$results
 fit_c50tree_results <- fit_c50tree$results
