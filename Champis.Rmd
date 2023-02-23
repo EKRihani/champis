@@ -61,8 +61,6 @@ Kd-tree : *K-dimensional tree* (arbre k-dimensionel)
 
 LDA : *Linear Discriminant Analysis* (analyse linéaire discriminante)
 
-LH : *Latin Hypercube* (hypercube latin)
-
 LHS : *Latin Hypercube Sample* (échantillonnage par hypercube latin)
 
 LOESS : *LOcally Estimated Scatterplot Smoothing* (régression locale)
@@ -377,14 +375,17 @@ En effet, l'optimisation des paramètres d'un modèle informatique présente que
 * Il peut exister plusieurs métriques coexistantes,
 * La fonction de réponse peut s'avérer relativement complexe.
 \paragraph*{}
-Ces particularités imposent d'explorer de manière méthodique la totalité de l'espace expérimental. Il existe une multitude de méthodes permettant de générer des plans expérimentaux, dits SFD (*Space Filling Design*), permettant d'optimiser l'occupation de l'espace expérimental. La méthode retenue ici sera celle des hypercubes latins, notamment en raison de sa simplicité conceptuelle.
+Ces particularités imposent d'explorer de manière méthodique la totalité de l'espace expérimental. Il existe une multitude de méthodes permettant de générer des plans expérimentaux, dits SFD (*Space Filling Design*), permettant d'optimiser l'occupation de l'espace expérimental. La méthode retenue pour cette étude sera celle des hypercubes latins, en raison de son utilisation répandue[citation SANTIAGO] et de sa simplicité conceptuelle.
+[http://www.azurad.fr/medias/133-documentation--6-construction-of-space-filling.pdf]
 \paragraph*{}
 La méthode des hypercubes latins est une extension du principe des carrés latins. Un carré latin est une grille $n \times n$, remplie de n éléments distincts arrangés de sorte que chaque ligne et chaque colonne ne contienne qu’un seul exemplaire de chacun des n éléments. Dans le domaine des plans d'expériences, l'application des carrés latins revient à diviser un domaine expérimental bidimensionnel en une grille $n \times n$, et à placer une expérience et une seule sur chaque ligne et chaque colonne.
 \paragraph*{}
 L'application du concept de carré latin dans un domaine expérimental à trois dimensions aboutit au cube latin. La généralisation dans un espace n-dimensionnel mène au concept d'hypercube latin.
 \paragraph*{}
-De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être générés. Deux stratégies d'optimisation présentent un intérêt particulier pour la conception de plans expérimentaux :
-* Les carrés latins avec optimisation
+De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être générés. Nous pouvons en citer principalement trois :
+* Carrés latins aléatoires
+* Carrés latins optimisés, visant à optimiser l'occupation spatiale
+* Carrés latins orthogonaux ou quasi-orthogonaux
 
 ```{r Carres-Latins, echo = FALSE, fig.height = 3, fig.cap = "Carré latin (à gauche), carré latin avec optimisation maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
 plot(ggarrange(
@@ -395,7 +396,6 @@ plot(ggarrange(
    )
 )
 ```
-
 \FloatBarrier
 \newpage
 # Apprentissage machine et classification binaire
