@@ -150,7 +150,7 @@ Champi_demo <- as.data.frame(Champi_demo)
 taux_gros_diam <- round(mean(Champi_demo$Chapeau.Diametre > Chap.Diam)*100 , 1)
 taux_supergros_diam <- round(mean(Champi_demo$Chapeau.Diametre > (1.1*Chap.Diam) )+000.5,3)*100
 
-nuage_avecdispersion <-ggplot(data = Champi_demo[1:n_reduit,], aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
+nuage_avecdispersion <- ggplot(data = Champi_demo[1:n_reduit,], aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
   geom_point(shape = 20, alpha = 2e3/n_champis, size = .5) +
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
@@ -205,10 +205,19 @@ distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
 #     HYPERCUBES LATINS    #
 ############################
 
-LHS <- lhsDesign(n = 20, dimension = 2, randomized=TRUE, seed=13)$design
+LHS <- lhsDesign(n = 17, dimension = 2, randomized=FALSE, seed=11)$design
 opti_LHS <- maximinESE_LHS(LHS)$design
-graphe_opti_LHS <- plot(opti_LHS)
-graphe_LHS <- plot(LHS)   
+NOHLD <- nolhDesign(dimension =2, range = c(0, 1))$design
+LHS <- data.frame(LHS)
+opti_LHS <- data.frame(opti_LHS)
+NOHLD <- data.frame(NOHLD)
+colnames(LHS) <- c("X1", "X2")
+colnames(opti_LHS) <- c("X1", "X2")
+colnames(NOHLD) <- c("X1", "X2")
+
+graphe_LHS <- ggplot(data = LHS, aes(x = X1, y = X2)) + geom_point(shape = 20, size = 5) + theme_bw()
+graphe_optiLHS <- ggplot(data = opti_LHS, aes(x = X1, y = X2)) + geom_point(shape = 20, size = 5) + theme_bw()
+graphe_NOHLD <- ggplot(data = NOHLD, aes(x = X1, y = X2)) + geom_point(shape = 20, size = 5) + theme_bw()
 
 
 ##########################
