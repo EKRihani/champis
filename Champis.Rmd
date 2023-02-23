@@ -385,7 +385,7 @@ L'application du concept de carré latin dans un domaine expérimental à trois 
 De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être générés. Nous pouvons en citer principalement trois :
 * Carrés latins aléatoires
 * Carrés latins optimisés, visant à optimiser l'occupation spatiale
-* Carrés latins orthogonaux ou quasi-orthogonaux
+* Carrés latins quasi-orthogonaux, visant à minimiser la corrélation des estimateurs des effets principaux.
 
 ```{r Carres-Latins, echo = FALSE, fig.height = 3, fig.cap = "Carré latin (à gauche), carré latin avec optimisation maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
 plot(ggarrange(
