@@ -42,7 +42,7 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 
 \newpage
 # Liste des abréviations
-\flushleft
+\begin{flushleft}
 AI : *Artificial Intelligence* (intelligence artificielle)
 
 CART : *Classification And Regression Tree* (arbre de classification et de régression)
@@ -76,7 +76,7 @@ RF : *Random Forest* (forêt aléatoire)
 ROC : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
 
 XGB : *eXtreme Gradient Boosting*
-
+\end{flushleft}
 
 \newpage
 # Introduction
@@ -121,11 +121,11 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * SSD : Crucial P5 M2 NVMe
 * OS : Xubuntu Linux 20.04.1 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
-* RStudio : version `r paste0(rstudioapi::versionInfo()$version, ' "', rstudioapi::versionInfo()$release_name, '"')`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`),, MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`).
+* RStudio : version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`).
 
 \FloatBarrier
-## Conception d'un lot de données synthétiques
+## Principes de conception d'un lot de données synthétiques
 ### Principes généraux{#generation-data}
 \paragraph*{}
 Un lot de données synthétiques est un lot de données généré par un algorithme, par opposition aux lots de données issus d'une collecte effectuée en "vie réelle". 
@@ -143,7 +143,7 @@ Les données générées par ces stratégies peuvent être de type variés, que 
 \paragraph*{}
 Pour des raisons pratiques et de maturité des technologies disponibles à l'heure actuelle, la méthode retenue pour créer le lot de données exploité dans notre étude sera la génération de données alphanumériques à partir de règles, extraites d'ouvrages mycologiques de référence.[@courtecuisse_cle_1986; @courtecuisse_champignons_2013; @courtecuisse_initiation_2020]
 
-### Génération des paramètres quantitatifs
+### Principes de génération des paramètres quantitatifs
 \paragraph*{}
 \FloatBarrier
 Dans le cadre de cette étude, les variables quantitatives générées aléatoirement sont :
@@ -262,10 +262,11 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 \end{array}
 \right.$$
 
+\paragraph*{}
 L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
 \paragraph{}*
 
-```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = "Nuages de points de 2 paramètres de taille, sans dispersion (à gauche) et avec dispersion (à droite)"}
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons"}
 plot(ggarrange(
    ncol = 2,
    nuage_sansdispersion,
@@ -289,11 +290,15 @@ plot(distrib_diametre)
 
 \FloatBarrier
 
-### Génération des paramètres qualitatifs
+### Principes de génération des paramètres qualitatifs
 \paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
 
 L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeur, et une valeur sera tirée aléatoirement parmi celles de ce vecteur pour caractériser chaque spécimen.
+
+## Développement d'un algorithme de génération de lot synthétique
+
+*Plus de détails concrets sur la méthode utilisée en pratique...*
 
 \newpage
 \FloatBarrier
@@ -353,7 +358,11 @@ https://towardsdatascience.com/linear-discriminant-analysis-explained-f88be6c1e0
 
 https://scikit-learn.org/stable/modules/lda_qda.html
 \paragraph*{}
-Cette étude propose deux classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante : un modèle basé sur l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA) et un modèle basé sur l'analyse discriminante pénalisée (*Penalized Discriminant Analysis*, PDA).
+Cette étude propose plusieurs classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante :
+
+* un modèle basé sur l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA),
+* un modèle basé sur l'analyse discriminante pénalisée (*Penalized Discriminant Analysis*, PDA).
+
 \paragraph*{}
 L'analyse linéaire discriminante (LDA) est une méthode utilisée en statistiques et en datascience pour trouver une combinaison linéaire d'éléments qui caractérisent des éléments, afin de créer un classifieur linéaire, ou d'effectuer des réductions de dimensionnalité. Cet algorithme fonctionne en créant des combinaisons linéaires (fonctions discriminantes) de prédicteurs. [A FINIR]
 \paragraph*{}
@@ -382,14 +391,14 @@ En effet, l'optimisation des paramètres d'un modèle informatique présente que
 Ces particularités imposent d'explorer de manière méthodique la totalité de l'espace expérimental. Il existe une multitude de méthodes permettant de générer des plans expérimentaux, dits SFD (*Space Filling Design*), permettant d'optimiser l'occupation de l'espace expérimental. La méthode retenue pour cette étude sera celle des hypercubes latins, en raison de son utilisation répandue[citation SANTIAGO] et de sa simplicité conceptuelle.
 [http://www.azurad.fr/medias/133-documentation--6-construction-of-space-filling.pdf]
 \paragraph*{}
-La méthode des hypercubes latins est une extension du principe des carrés latins. Un carré latin est une grille $n \times n$, remplie de n éléments distincts arrangés de sorte que chaque ligne et chaque colonne ne contienne qu’un seul exemplaire de chacun des n éléments. Dans le domaine des plans d'expériences, l'application des carrés latins revient à diviser un domaine expérimental bidimensionnel en une grille $n \times n$, et à placer une expérience et une seule sur chaque ligne et chaque colonne.
+La méthode des hypercubes latins est une extension du principe des carrés latins. Un carré latin est une grille $n \times n$, remplie de $n$ éléments distincts arrangés de sorte que chaque ligne et chaque colonne ne contienne qu’un seul exemplaire de chacun des $n$ éléments. Dans le domaine des plans d'expériences, l'application des carrés latins revient à diviser un domaine expérimental bidimensionnel en une grille $n \times n$, et à placer une expérience et une seule sur chaque ligne et chaque colonne.
 \paragraph*{}
 L'application du concept de carré latin dans un domaine expérimental à trois dimensions aboutit au cube latin. La généralisation dans un espace n-dimensionnel mène au concept d'hypercube latin.
 \paragraph*{}
 De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être générés. Nous pouvons citer principalement trois types d'hypercubes latins :
 
 * Aléatoires,
-* Optimisés, visant à optimiser l'occupation spatiale,
+* Optimisés, afin d'optimiser l'occupation spatiale,
 * Orthogonaux, visant à minimiser la corrélation des estimateurs des effets principaux.
 
 ```{r Carres-Latins, echo = FALSE, fig.height = 2.5, fig.cap = "Carré latin aléatoire (à gauche), carré latin avec optimisation évolutive ESE maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
@@ -421,6 +430,7 @@ kable(structure_dataset, caption = "Dataset structure")
 Le lot de données d'origine a été découpé deux fois avec un rapport 92/8, comme décrit dans la partie. (cf. § et p(ref!!!)) 
 \paragraph*{}
 Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles :
+
 ```{r, eval = FALSE}
 for (n in 1:ncol(lot_apprentissage)){
   graph <- lot_apprentissage %>%
@@ -433,9 +443,10 @@ for (n in 1:ncol(lot_apprentissage)){
   assign(nom_graph, graph)
 }
 ```
-L'utilisation d' *aes_string* à la place de *aes* permet d'utiliser une chaîne de caractères en argument.
+
+L'utilisation d'*aes_string* à la place de *aes* permet d'utiliser une chaîne de caractères en argument.
 \paragraph*{}
-Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (fig. REF), avec une longue queue à droite. Une transformation logarithmique (fig. REF) montre plus nettement la forme de cette queue.  
+Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (fig. REF), avec une longue queue à droite. Une transformation logarithmique (fig. REF) montre plus nettement la forme de cette queue.
 
 ```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe"}
 plot(ggarrange(
@@ -456,11 +467,12 @@ plot(ggarrange(
    )
 )
 ```
-La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx 50cm$. Cette taille surprenante est attribuable à des variétés telles que *Polyporus squamosus*[@courtecuisse_champignons_2013]
+
+La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx 50~cm$. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@courtecuisse_champignons_2013]
 \paragraph*{}
-La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en clochavec une longue queue à droite, un mode principal à 5cm et un mode secondaire à 0cm. Cette valeur peut également sembler surprenante, mais certains champignons n'ont pas de stipe, ce qui explique cette valeur.
+La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en clochavec une longue queue à droite, un mode principal à 5 cm et un mode secondaire à 0 cm. Cette valeur peut également sembler surprenante, mais certains champignons n'ont pas de stipe, ce qui explique cette valeur.
 \paragraph*{}
-La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx 10-15mm$. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
+La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx 10-15$mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 
 \newpage
 ## Modèles de la librairie *caret* : optimisation et sélection
@@ -482,21 +494,22 @@ set.seed(1)
 tr_ctrl <- trainControl(classProbs = TRUE, 
                         summaryFunction = twoClassSummary, 
                         method = "cv", number = 10)
-train(class ~ ., 
-      method = [METHOD], 
-      data = trainvalid_set, 
-      trControl = tr_ctrl, 
-      metric = 'Spec', 
+train(class ~ .,
+      method = [METHODE],
+      data = lot_appr_opti,
+      trControl = tr_ctrl,
+      metric = 'Spec',
       tuneGrid = data.frame([PARAMETRES]))
 ```
 La fonction *set.seed* assure la reproductibilité.
 
-La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans notre cas, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 10 blocs (*10-folds*). [LIER LE N-FOLD AU CODE] 
+La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans cet exemple, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 10 blocs (*10-folds*).
 
 La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation, la métrique utilisée pour l'évaluation (sensibilité, spécificité, ROC...) ainsi que la grille des paramètres utilisés par le modèle.
 \paragraph*{}
-Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, telles que .\$results (ROC, sensibilité, spécificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
+Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, contenues dans .\$results (ROC, sensibilité, spécificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
 \FloatBarrier
+
 ### Modèles d'analyse discriminante linéaire
 \paragraph*{}
 Les deux modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
@@ -511,9 +524,9 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la spécificité (*Spec =* `r round(mean(fit_lda2_dim_results[,"Spec"]), 3)`). 
+Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la spécificité ($Spec =$ `r round(mean(fit_lda2_dim_results[,"Spec"]), 3)`). 
 \paragraph*{}
-La paramètre *lambda* du modèle pda impacte sa spécificité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Spec_{max} =$ `r round(max(fit_pda_lambda_results["Spec"]))`).
+Le paramètre *lambda* du modèle pda impacte sa spécificité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Spec_{max} =$ `r round(max(fit_pda_lambda_results["Spec"]))`).
 \paragraph*{}
 Toutefois, la spécificité de ces deux modèles est nettement insuffisante pour notre étude ($Spec \approx$ `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)),2)`), et leurs sensiblités n'ont rien de remarquable non plus ($Sens \approx$ `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
 \paragraph*{}
@@ -525,7 +538,7 @@ Ces performances médiocres s'expliquent par le fonctionnement même des modèle
 \FloatBarrier
 ### Modèle additif généralisé  
 \paragraph*{}
-Le seul modèle additif généralisé choisi pour cette étude est gamLoess (Generalized Additive Model using Locally Weighted Linear Regression). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
+Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de gamLoess en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(
@@ -541,7 +554,7 @@ L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet signi
 \paragraph*{}
 L'hyerparamètre *span* affecte marginalement la spécificité de gamLoess, avec une valeur optimale de *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, résultant en $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)`.
 \paragraph*{}
-La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en spécificité (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs (`r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)), 3)`) qu'en sensibilité (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
+La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en spécificité (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)), 3)`) qu'en sensibilité (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -591,7 +604,7 @@ De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce
 \paragraph*{}
 Le premier modèle de forêt aléatoire évalué dans cette étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
 
-\paragraph{}*
+\paragraph*{}
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité du modèle de fougères aléatoires"}
 fit_rFerns_depth_graphe + theme_bw()
 ```
@@ -600,7 +613,7 @@ fit_rFerns_depth_graphe + theme_bw()
 Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoire a fourni des résultats peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(fit_rFerns_depth_results["Sens"]), 3)`).
 
 \paragraph*{}
-Le second modèle de forêt aléatoire évalué est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) and et la règle contrôlant cette séparation (*splitrule*).
+Le second modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
 ```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Spécificité du modèle Ranger"}
 plot(ggarrange(
@@ -622,7 +635,7 @@ Ce modèle s'est comporté de façon excellente, donnant une spécificité et un
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Rborist model specificity"}
+```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Spécificité du modèle Rborist"}
 plot(ggarrange(
    ncol = 2,
    fit_Rborist_pred_graphe + theme_bw(),
@@ -632,19 +645,23 @@ plot(ggarrange(
 ```
 
 ```{r, echo = FALSE}
-kable(fit_Rborist_pred_results[1:5, 1:5], digits = 4, caption = "Performance of the Rborist model (predFixed tuning)")
+kable(fit_Rborist_pred_results[1:5, 1:5], digits = 4, caption = "Performances du modèle Rborist (réglage de predFixed)")
 ```
 
+\paragraph*{}
 Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. Avec des paramètres optimaux (*predFixed* = 6, fixé manuellement en raison de la sensibilité plus élevée), et *minNode* = `r fit_Rborist_minNode_bestTune$minNode`, la performance est estimée à :
+\FloatBarrier
 
 ```{r, echo = FALSE}
-kable(fit_Rborist_best_results[1:5], caption = "Performance of the Rborist model (optimal settings)")
+kable(fit_Rborist_best_results[1:5], caption = "Performance du modèle Rborist (hyperparamètres optimaux)")
 ```
+\FloatBarrier
+\paragraph*{}
 Le modèle Rborist a donné les mêmes excellents résultats que le modèle Ranger, avec une sensibilité et une spécificité parfaites.
 \paragraph*{}
-Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
+Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
 \paragraph*{}
-La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code peut facilement être mesurée par :
+La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code R peut facilement être mesurée par :
 ```{r, eval = FALSE}
 temps_debut <- Sys.time()
 [Code à évaluer]
@@ -669,16 +686,16 @@ Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, 
 
 ### Performances des modèles de forêts aléatoires  
 
-
+\FloatBarrier
 L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
 
 ```{r out.width = "100%", echo = FALSE}
 kable(CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
 ```  
 
-La précision finale est égale à `r CM_ranger_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r time_ranger` min), preuve de sa grande efficience calculatoire.
+La précision finale est égale à `r round(CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r time_ranger` min), preuve de sa grande efficience calculatoire.
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats identiques à Ranger, s'est avéré sensiblement plus rapide (`r time_Rborist` min).
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r time_Rborist` min).
 
 ```{r out.width = "100%", echo = FALSE}
 kable(rt_result, digits = 4, caption = "Performances des modèles Ranger et Rborist (évaluation)")
