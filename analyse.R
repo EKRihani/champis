@@ -181,7 +181,7 @@ fit_gamLoess_degree_results <- fit_gamLoess_degree$results
 
 grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 
-LHS <- nolhDesign(dimension =2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
+LHS <- nolhDesign(dimension = 2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
 grid_rpartcost <- data.frame(LHS)
 colnames(grid_rpartcost) <- c("cp", "Cost")
 grid_rpartcost$cp <- (grid_rpartcost$cp*1e-2+1e-5)
@@ -212,15 +212,15 @@ pred_rpartcost2$Spec <- modelPredict(mod_rpartcost_spec, pred_rpartcost)
 pred_rpartcost2$Sens <- modelPredict(mod_rpartcost_sens, pred_rpartcost)
 pred_rpartcost <- cbind(pred_rpartcost, pred_rpartcost2)
 fit_rpartcost_spec_graphe <- ggplot() +
-   geom_tile(data = pred_rpartcost, aes(x = Cost, y = cp, fill = Spec)) +
-   geom_tile(data = fit_rpartcost_results, aes(x = Cost, y = cp, fill = Spec), color = "blue", linewidth =.5) +
+   geom_raster(data = pred_rpartcost, aes(x = Cost, y = cp, fill = Spec), interpolate = TRUE) +
+   geom_tile(data = fit_rpartcost_results, aes(x = Cost, y = cp, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 fit_rpartcost_sens_graphe <- ggplot() +
-   geom_tile(data = pred_rpartcost, aes(x = Cost, y = cp, fill = Sens)) +
-   geom_tile(data = fit_rpartcost_results, aes(x = Cost, y = cp, fill = Sens), color = "blue", linewidth =.5) +
-   scale_fill_viridis_c(option = "F", direction = 1) +
+   geom_raster(data = pred_rpartcost, aes(x = Cost, y = cp, fill = Sens), interpolate = TRUE) +
+   geom_tile(data = fit_rpartcost_results, aes(x = Cost, y = cp, fill = Sens), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -237,24 +237,20 @@ fit_rpartcost_best_results <- fit_rpartcost_best$results
 # Modèles type Random Forest (RFERNS, RANGER, RBORIST)
 set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
 
-LHSa <- lhsDesign(n = 20, dimension = 2, randomized=FALSE, seed=1337)$design  # dimension 3 pour num.trees & ntrees
-LHSb <- lhsDesign(n = 20, dimension = 2, randomized=FALSE, seed=007)$design  # dimension 3 pour num.trees & ntrees
-LHS <- rbind(LHSa, LHSb)
-LHS <- maximinESE_LHS(LHS)$design
 grid_ranger <- data.frame(LHS)
+grid_ranger <- rbind(grid_ranger,grid_ranger)
 colnames(grid_ranger) <- c("mtry", "min.node.size")
 #colnames(grid_ranger) <- c("mtry", "min.node.size, num.trees")     # Pour num.treees, à tester
-grid_ranger$splitrule <- c(rep("extratrees", 20), rep("gini", 20))
-grid_ranger$mtry <- round(1+grid_ranger$mtry*99,0)
-grid_ranger$min.node.size <- round(1+grid_ranger$min.node.size*39,0)
+grid_ranger$splitrule <- c(rep("extratrees", 17), rep("gini", 17))
+grid_ranger$mtry <- round(1+grid_ranger$mtry*48,0)       # Si arrondi : prendre des multiples de 16 (car 17 points pour 2d)
+grid_ranger$min.node.size <- round(1+grid_ranger$min.node.size*32,0)
 #grid_ranger$num.trees <- round(1+grid_ranger$num.trees*9,0) # VOIR SI LE NUM.TREES MARCHE ???
 
-LHSa <- maximinESE_LHS(LHSa)$design
-grid_Rborist <- data.frame(LHSa)
+grid_Rborist <- data.frame(LHS)
 #colnames(grid_Rborist) <- c("predFixed", "minNode", "ntrees")
 colnames(grid_Rborist) <- c("predFixed", "minNode")
-grid_Rborist$predFixed <- round(1+grid_Rborist$predFixed*39,0)
-grid_Rborist$minNode <- round(1+grid_Rborist$minNode*9,0)
+grid_Rborist$predFixed <- round(1+grid_Rborist$predFixed*32,0)
+grid_Rborist$minNode <- round(1+grid_Rborist$minNode*16,0)
 #grid_Rborist$ntrees <- round(1+grid_Rborist$ntrees*5,0)
 
 set_ranger <- c("ranger", "tuneGrid  = grid_ranger, num.trees = 6") # A TESTER
@@ -264,7 +260,6 @@ fit_rFerns_depth <- fit_test(set_rFerns_depth)
 fit_ranger <- fit_test(set_ranger)
 fit_Rborist <- fit_test(set_Rborist)
 
-
 # Extraire résultats d'intérêt : graphes et resultats
 fit_rFerns_depth_graphe <- ggplot(fit_rFerns_depth)
 fit_rFerns_depth_results <- fit_rFerns_depth$results
@@ -272,6 +267,54 @@ fit_ranger_results <- fit_ranger$results
 fit_ranger_bestTune <- fit_ranger$bestTune
 fit_Rborist_results <- fit_Rborist$results
 fit_Rborist_bestTune <- fit_Rborist$bestTune
+
+fit_ranger_GINI <- fit_ranger_results %>% filter (splitrule == "gini")
+fit_ranger_ET <- fit_ranger_results %>% filter (splitrule == "extratrees")
+mod_ranger_spec_GINI <- modelFit(X=fit_ranger_GINI[,1:2], Y=fit_ranger_GINI$Spec,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+mod_ranger_sens_GINI <- modelFit(X=fit_ranger_GINI[,1:2], Y=fit_ranger_GINI$Sens,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+mod_ranger_spec_ET <- modelFit(X=fit_ranger_ET[,1:2], Y=fit_ranger_ET$Spec,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+mod_ranger_sens_ET <- modelFit(X=fit_ranger_ET[,1:2], Y=fit_ranger_ET$Sens,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+
+pred_ranger_GINI <- expand.grid(fit_ranger_GINI[,1:2])
+colnames(pred_ranger_GINI) <- c("mtry", "min.node.size")
+pred_ranger_GINI2 <- NULL
+pred_ranger_GINI2$Spec <- modelPredict(mod_ranger_spec_GINI, pred_ranger_GINI)
+pred_ranger_GINI2$Sens <- modelPredict(mod_ranger_sens_GINI, pred_ranger_GINI)
+pred_ranger_GINI <- cbind(pred_ranger_GINI, pred_ranger_GINI2)
+
+pred_ranger_ET <- expand.grid(fit_ranger_ET[,1:2])
+colnames(pred_ranger_ET) <- c("mtry", "min.node.size")
+pred_ranger_ET2 <- NULL
+pred_ranger_ET2$Spec <- modelPredict(mod_ranger_spec_ET, pred_ranger_ET)
+pred_ranger_ET2$Sens <- modelPredict(mod_ranger_sens_ET, pred_ranger_ET)
+pred_ranger_ET <- cbind(pred_ranger_ET, pred_ranger_ET2)
+
+fit_ranger_Gini_spec_graphe <- ggplot() +
+   geom_raster(data = pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
+   geom_tile(data = fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = "F", direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+fit_ranger_Gini_sens_graphe <- ggplot() +
+   geom_raster(data = pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
+   geom_tile(data = fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = "G", direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+
+fit_ranger_ET_spec_graphe <- ggplot() +
+   geom_raster(data = pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
+   geom_tile(data = fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = "F", direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+fit_ranger_ET_sens_graphe <- ggplot() +
+   geom_raster(data = pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
+   geom_tile(data = fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = "G", direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+
 
 # Lance modèle RANGER optimal
 set_ranger_best <- c("ranger", paste0("tuneGrid  = fit_ranger_bestTune, num.trees = 6"))

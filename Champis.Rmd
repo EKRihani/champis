@@ -266,7 +266,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
 \paragraph{}*
 
-```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons"}
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
    ncol = 2,
    nuage_sansdispersion,
@@ -575,11 +575,11 @@ Le modèle CART basique n'atteint jamais la spécificité requise $Spec = 1$. To
 
 Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en bleu)"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
-   ncol = 2,
+   ncol = 2, widths = c(8,7),
    fit_rpartcost_spec_graphe,
-   fit_rpartcost_sens_graphe
+   fit_rpartcost_sens_graphe + ylab(NULL)
    )
 )
 ```
@@ -615,12 +615,20 @@ Quoique très efficient sur le plan calculatoire, le modèle de fougères aléat
 \paragraph*{}
 Le second modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Spécificité du modèle Ranger"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
-   ncol = 3,
-   fit_ranger_mtry_graphe + scale_y_log10() + theme_bw(),
-   fit_ranger_splitrule_graphe + ylab("") + theme_bw(),
-   fit_ranger_nodesize_graphe + ylab("") + theme_bw()
+   ncol = 2, widths = c(8,7),
+   fit_ranger_Gini_spec_graphe,
+   fit_ranger_Gini_sens_graphe + ylab(NULL)
+   )
+)
+```
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+plot(ggarrange(
+   ncol = 2, widths = c(8,7),
+   fit_ranger_ET_spec_graphe,
+   fit_ranger_ET_sens_graphe + ylab(NULL)
    )
 )
 ```
