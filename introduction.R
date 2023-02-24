@@ -148,7 +148,7 @@ Champi_demo$Pied.Largeur <- Pied.Large*Champi_demo$FacteurTaille*rnorm(n = n_cha
 Champi_demo <- as.data.frame(Champi_demo)
 
 taux_gros_diam <- round(mean(Champi_demo$Chapeau.Diametre > Chap.Diam)*100 , 1)
-taux_supergros_diam <- round(mean(Champi_demo$Chapeau.Diametre > (1.1*Chap.Diam) )+000.5,3)*100
+taux_supergros_diam <- round(mean(Champi_demo$Chapeau.Diametre > (1.1*Chap.Diam) )+0.005,3)*100
 
 nuage_avecdispersion <- ggplot(data = Champi_demo[1:n_reduit,], aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
   geom_point(shape = 20, alpha = 2e3/n_champis, size = .5) +
@@ -215,9 +215,21 @@ colnames(LHS) <- c("X1", "X2")
 colnames(opti_LHS) <- c("X1", "X2")
 colnames(NOHLD) <- c("X1", "X2")
 
-graphe_LHS <- ggplot(data = LHS, aes(x = X1, y = X2)) + geom_point(shape = 20, size = 5) + theme_bw()
-graphe_optiLHS <- ggplot(data = opti_LHS, aes(x = X1, y = X2)) + geom_point(shape = 20, size = 5) + theme_bw()
-graphe_NOHLD <- ggplot(data = NOHLD, aes(x = X1, y = X2)) + geom_point(shape = 20, size = 5) + theme_bw()
+graphe_LHS <- ggplot(data = LHS, aes(x = X1, y = X2)) +
+   geom_point(shape = 20, size = 5) + 
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   ylab(NULL)
+graphe_optiLHS <- ggplot(data = opti_LHS, aes(x = X1, y = X2)) +
+   geom_point(shape = 20, size = 5) + 
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   ylab(NULL)
+graphe_NOHLD <- ggplot(data = NOHLD, aes(x = X1, y = X2)) +
+   geom_point(shape = 20, size = 5) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   ylab(NULL)
 
 
 ##########################
@@ -231,6 +243,11 @@ distrib_normale
 distrib_beta
 distrib_poisson
 distrib_weibull
+
+# Hypercubes latins
+graphe_LHS
+graphe_optiLHS
+graphe_NOHLD
 
 #temps_fonctions
 chrono_distrib

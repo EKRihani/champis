@@ -188,138 +188,101 @@ grid_rpartcost$cp <- (grid_rpartcost$cp*1e-2+1e-5)
 grid_rpartcost$Cost <- grid_rpartcost$Cost*2.5+1e-3
 
 set_rpart_cp <- c("rpart", "tuneGrid  = grid_rpart_cp")
-#set_rpartcost_complexity <- c("rpartCost", "tuneGrid  = data.frame(cp = c(1e-5, 1e-4, 1e-3, 1e-2, 0.05), Cost = 1)")
-#set_rpartcost_cost <- c("rpartCost", "tuneGrid  = data.frame(Cost = c(0.01, 0.4, 0.7, 1, 1.5, 2, 2.5), cp = .01)")
 set_rpartcost <- c("rpartCost", "tuneGrid  = grid_rpartcost")     # A TESTER !!!
 
 set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
 set_c50tree <- c("C5.0Tree", "")
 system.time(fit_test(set_rpart_cp))    ####### CHRONO
 fit_rpart_cp <- fit_test(set_rpart_cp)
-#fit_rpartcost_complexity <- fit_test(set_rpartcost_complexity)
-#fit_rpartcost_cost <- fit_test(set_rpartcost_cost)
 fit_rpartcost <- fit_test(set_rpartcost)
 fit_ctree_criterion <- fit_test(set_ctree_criterion)
 fit_c50tree <- fit_test(set_c50tree)
+
 # Extraire résultats d'intérêt : graphes et resultats
 fit_rpart_cp_results <- fit_rpart_cp$results
 fit_rpart_cp_graphe <- ggplot(data = fit_rpart_cp$results, aes(x = cp, y = Spec)) + geom_point() + ylab("Spécificité") + scale_x_log10()
-#fit_rpartcost_complexity_graphe <- ggplot(fit_rpartcost_complexity)
-#fit_rpartcost_complexity_results <- fit_rpartcost_complexity$results
-#fit_rpartcost_complexity_bestTune <- fit_rpartcost_complexity$bestTune
-#fit_rpartcost_cost_graphe <- ggplot(fit_rpartcost_cost)
-#fit_rpartcost_cost_results <- fit_rpartcost_cost$results
-#fit_rpartcost_cost_bestTune <- fit_rpartcost_cost$bestTune
 fit_rpartcost_results <- fit_rpartcost$results
 
-mod_rpartcost <- modelFit(X=fit_rpartcost_results[,1:2], Y=fit_rpartcost_results$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+mod_rpartcost_spec <- modelFit(X=fit_rpartcost_results[,1:2], Y=fit_rpartcost_results$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+mod_rpartcost_sens <-  modelFit(X=fit_rpartcost_results[,1:2], Y=fit_rpartcost_results$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
 pred_rpartcost <- expand.grid(fit_rpartcost_results[,1:2])
 colnames(pred_rpartcost) <- c("Cost", "cp")
-pred_rpartcost$Spec <- modelPredict(mod_rpartcost, pred_rpartcost)
-fit_rpartcost_graphe
-ggplot() +
+pred_rpartcost2 <- NULL
+pred_rpartcost2$Spec <- modelPredict(mod_rpartcost_spec, pred_rpartcost)
+pred_rpartcost2$Sens <- modelPredict(mod_rpartcost_sens, pred_rpartcost)
+pred_rpartcost <- cbind(pred_rpartcost, pred_rpartcost2)
+fit_rpartcost_spec_graphe <- ggplot() +
    geom_tile(data = pred_rpartcost, aes(x = Cost, y = cp, fill = Spec)) +
    geom_tile(data = fit_rpartcost_results, aes(x = Cost, y = cp, fill = Spec), color = "blue", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
-   theme_bw()
-   
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+fit_rpartcost_sens_graphe <- ggplot() +
+   geom_tile(data = pred_rpartcost, aes(x = Cost, y = cp, fill = Sens)) +
+   geom_tile(data = fit_rpartcost_results, aes(x = Cost, y = cp, fill = Sens), color = "blue", linewidth =.5) +
+   scale_fill_viridis_c(option = "F", direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
 fit_ctree_criterion_graphe <- ggplot(fit_ctree_criterion)
 fit_ctree_criterion_results <- fit_ctree_criterion$results
 fit_c50tree_results <- fit_c50tree$results
-# Run best CART model
-set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = data.frame(cp = ",
-                                            fit_rpartcost_complexity$bestTune$cp, 
-                                            ", Cost = ", fit_rpartcost_cost$bestTune$Cost, ")" ))
-fit_rpart_cp_resultsfit_rpart_cp_resultsfit_rpartcost_best <- fit_test(set_rpartcost_best)
+
+# Meilleur modèle CART
+set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = fit_rpartcost$bestTune"))
+fit_rpartcost_best <- fit_test(set_rpartcost_best)
 fit_rpartcost_best_results <- fit_rpartcost_best$results
 
 
 # Modèles type Random Forest (RFERNS, RANGER, RBORIST)
 set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
 
-LHSa <- lhsDesign(n = 20, dimension = 3, randomized=TRUE, seed=1337)$design
-LHSb <- lhsDesign(n = 20, dimension = 3, randomized=TRUE, seed=007)$design
+LHSa <- lhsDesign(n = 20, dimension = 2, randomized=FALSE, seed=1337)$design  # dimension 3 pour num.trees & ntrees
+LHSb <- lhsDesign(n = 20, dimension = 2, randomized=FALSE, seed=007)$design  # dimension 3 pour num.trees & ntrees
 LHS <- rbind(LHSa, LHSb)
 LHS <- maximinESE_LHS(LHS)$design
 grid_ranger <- data.frame(LHS)
-colnames(grid_ranger) <- c("mtry", "min.node.size", "num.trees")
+colnames(grid_ranger) <- c("mtry", "min.node.size")
+#colnames(grid_ranger) <- c("mtry", "min.node.size, num.trees")     # Pour num.treees, à tester
 grid_ranger$splitrule <- c(rep("extratrees", 20), rep("gini", 20))
 grid_ranger$mtry <- round(1+grid_ranger$mtry*99,0)
 grid_ranger$min.node.size <- round(1+grid_ranger$min.node.size*39,0)
-grid_ranger$num.trees <- round(1+grid_ranger$num.trees*9,0) # VOIR SI LE NUM.TREES MARCHE ???
+#grid_ranger$num.trees <- round(1+grid_ranger$num.trees*9,0) # VOIR SI LE NUM.TREES MARCHE ???
 
 LHSa <- maximinESE_LHS(LHSa)$design
 grid_Rborist <- data.frame(LHSa)
-colnames(grid_Rborist) <- c("predFixed", "minNode", "ntrees")
+#colnames(grid_Rborist) <- c("predFixed", "minNode", "ntrees")
+colnames(grid_Rborist) <- c("predFixed", "minNode")
 grid_Rborist$predFixed <- round(1+grid_Rborist$predFixed*39,0)
 grid_Rborist$minNode <- round(1+grid_Rborist$minNode*9,0)
-grid_Rborist$ntrees <- round(1+grid_Rborist$ntrees*5,0)
+#grid_Rborist$ntrees <- round(1+grid_Rborist$ntrees*5,0)
 
-#set_ranger_mtry <- c("ranger", "tuneGrid  = data.frame(mtry = seq(from = 1, to = 106, by = 15), splitrule = 'extratrees', min.node.size = 2), num.trees = 6")
-#set_ranger_splitrule <- c("ranger", "tuneGrid  = data.frame(splitrule = c('gini', 'extratrees'), mtry = 50, min.node.size = 2), num.trees = 6")
-#set_ranger_nodesize <- c("ranger", "tuneGrid  = data.frame(min.node.size = seq(from = 1, to = 15, by = 2), mtry = 50, splitrule = 'extratrees'), num.trees = 6")
-set_ranger <- c("ranger", "tuneGrid  = grid_ranger") # A TESTER
+set_ranger <- c("ranger", "tuneGrid  = grid_ranger, num.trees = 6") # A TESTER
 set_Rborist <- c("Rborist", "tuneGrid  = grid_Rborist")
-#set_Rborist_pred <- c("Rborist", "tuneGrid  = data.frame(predFixed = seq(from = 1, to = 41, by = 10), minNode = 2), ntrees = 3")
-#set_Rborist_minNode <- c("Rborist", "tuneGrid  = data.frame(minNode = seq(from = 1, to = 5, by = 1), predFixed =50), ntrees = 3")
 #system.time(fit_test(set_ranger_mtry))  ####### CHRONO
 fit_rFerns_depth <- fit_test(set_rFerns_depth)
 fit_ranger <- fit_test(set_ranger)
-#fit_ranger_mtry <- fit_test(set_ranger_mtry)
-#fit_ranger_splitrule <- fit_test(set_ranger_splitrule)
-#fit_ranger_nodesize <- fit_test(set_ranger_nodesize)
 fit_Rborist <- fit_test(set_Rborist)
-#fit_Rborist_pred <- fit_test(set_Rborist_pred)
-#fit_Rborist_minNode <- fit_test(set_Rborist_minNode)
+
 
 # Extraire résultats d'intérêt : graphes et resultats
 fit_rFerns_depth_graphe <- ggplot(fit_rFerns_depth)
 fit_rFerns_depth_results <- fit_rFerns_depth$results
 fit_ranger_results <- fit_ranger$results
 fit_ranger_bestTune <- fit_ranger$bestTune
-#fit_ranger_mtry_graphe <- ggplot(fit_ranger_mtry)
-#fit_ranger_mtry_results <- fit_ranger_mtry$results
-#fit_ranger_mtry_bestTune <- fit_ranger_mtry$bestTune
-#fit_ranger_splitrule_graphe <- ggplot(fit_ranger_splitrule)
-#fit_ranger_splitrule_results <- fit_ranger_splitrule$results
-#fit_ranger_splitrule_bestTune <- fit_ranger_splitrule$bestTune
-#fit_ranger_nodesize_graphe <- ggplot(fit_ranger_nodesize)
-#fit_ranger_nodesize_results <- fit_ranger_nodesize$results
-#fit_ranger_nodesize_bestTune <- fit_ranger_nodesize$bestTune
-#fit_Rborist_pred_graphe <- ggplot(fit_Rborist_pred)
-#fit_Rborist_pred_results <- fit_Rborist_pred$results
-#fit_Rborist_pred_bestTune <- fit_Rborist_pred$bestTune
-#fit_Rborist_minNode_graphe <- ggplot(fit_Rborist_minNode)
-#fit_Rborist_minNode_results <- fit_Rborist_minNode$results
-#fit_Rborist_minNode_bestTune <- fit_Rborist_minNode$bestTune
 fit_Rborist_results <- fit_Rborist$results
 fit_Rborist_bestTune <- fit_Rborist$bestTune
 
 # Lance modèle RANGER optimal
-set_ranger_best <- c("ranger", paste0("tuneGrid  = data.frame(min.node.size = ", 
-                                      fit_ranger_nodesize_bestTune$min.node.size, 
-                                      ", splitrule = '", fit_ranger_splitrule_bestTune$splitrule,
-                                      "', mtry = ", fit_ranger_splitrule_bestTune$mtry, ")", 
-                                      ", num.trees = 3"))
+set_ranger_best <- c("ranger", paste0("tuneGrid  = fit_ranger_bestTune, num.trees = 6"))
 fit_ranger_best <- fit_test(set_ranger_best)
 fit_ranger_best_results <- fit_ranger_best$results
+
 # Lance modèle RBORIST optimal
-set_Rborist_best <- c("Rborist", paste0("tuneGrid  = data.frame(predFixed = 6, ",    # Value is forced, 6 gives a Spec = 1, and a much better sensitivity
-                                        "minNode = ", fit_Rborist_minNode_bestTune$minNode, ")",
-                                        ", ntrees = 2"))
+set_Rborist_best <- c("Rborist", paste0("tuneGrid  = fit_Rborist_bestTune, ntrees = 2"))
 fit_Rborist_best <- fit_test(set_Rborist_best)
 fit_Rborist_best_results <- fit_Rborist_best$results
 
-# Pour test complet des combinaisons de facteurs (SUPER LENT)
-# set_ranger <- c("ranger", "tuneGrid = expand.grid(mtry = seq(from = 1, to = 21, by = 5),
-#                                                 splitrule = c('gini', 'extratrees'),
-#                                                 min.node.size = seq(from = 1, to = 16, by = 5)
-#                 )" )
-# fit_ranger <- fit_test(set_ranger)
-# plot(fit_ranger, metric = "Spec", plotType = "level", scales = list(x = list(rot = 90)))
-# plot(fit_ranger, metric = "Spec")
-# ggplot(fit_ranger)
 
 #########################################################
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
@@ -327,7 +290,7 @@ fit_Rborist_best_results <- fit_Rborist_best$results
 
 # Règle la liste de prédiction et lance la classification
 evaluation <- lot_evaluation
-evaluation$reference <- as.logical(as.character(recode_factor(evaluation$class, edible = TRUE, poisonous = FALSE))) # Switch to logical values
+evaluation$reference <- as.logical(as.character(recode_factor(evaluation$class, e = TRUE, p = FALSE))) # Bascule en booléen
 
 # Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
 evaluation$reference <- as.factor(evaluation$reference)
@@ -356,8 +319,13 @@ time_Rborist <- time_Rborist %>% as.numeric %>% round(.,2)
 result_Rborist <- c(CM_Rborist_final$byClass["Sensitivity"], CM_Rborist_final$byClass["Specificity"], CM_Rborist_final$byClass["F1"], time_Rborist)
 result_ranger <- c(CM_ranger_final$byClass["Sensitivity"], CM_ranger_final$byClass["Specificity"], CM_ranger_final$byClass["F1"], time_ranger)
 rt_result <- rbind(result_ranger, result_Rborist)
-colnames(rt_result) <- c("Sensitivity", "Specificity", "F1 score", "Run time (min)")
+colnames(rt_result) <- c("Sensibilité", "Spécificité", "F1 score", "Durée (min)")
 rownames(rt_result) <- c("Ranger", "Rborist")
 
+# Suppression gros fichiers intermédiaires, avant sauvegarde
+rm(fit_pda_lambda, fit_lda2_dim, fit_gamLoess_degree, fit_gamLoess_span,
+   fit_ctree_criterion, fit_c50tree, fit_rFerns_depth, 
+   fit_Rborist, fit_Rborist_best, fit_Rborist_final,
+   fit_ranger, fit_ranger_best, fit_ranger_final)
 save.image(file = "EKR-Champis-Analyse.RData")     # Sauvegarde données pour rapport
-load(file = "EKR-Champis-Analyse.RData")     # Sauvegarde données pour rapport
+load(file = "EKR-Champis-Analyse.RData")     # Chargement données pour rapport
