@@ -386,13 +386,13 @@ La méthode des hypercubes latins est une extension du principe des carrés lati
 \paragraph*{}
 L'application du concept de carré latin dans un domaine expérimental à trois dimensions aboutit au cube latin. La généralisation dans un espace n-dimensionnel mène au concept d'hypercube latin.
 \paragraph*{}
-De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être générés. Nous pouvons en citer principalement trois :
+De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être générés. Nous pouvons citer principalement trois types d'hypercubes latins :
 
-* Carrés latins aléatoires,
-* Carrés latins optimisés, visant à optimiser l'occupation spatiale,
-* Carrés latins orthogonaux, visant à minimiser la corrélation des estimateurs des effets principaux.
+* Aléatoires,
+* Optimisés, visant à optimiser l'occupation spatiale,
+* Orthogonaux, visant à minimiser la corrélation des estimateurs des effets principaux.
 
-```{r Carres-Latins, echo = FALSE, fig.height = 2.5, fig.cap = "Carré latin aléatoire (à gauche), carré latin avec optimisation maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
+```{r Carres-Latins, echo = FALSE, fig.height = 2.5, fig.cap = "Carré latin aléatoire (à gauche), carré latin avec optimisation évolutive ESE maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
 plot(ggarrange(
    ncol = 3,
    graphe_LHS + ylab("X2"),
