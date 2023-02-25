@@ -30,7 +30,10 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 
 ```{r setup, include = FALSE, warning=FALSE}
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
-load("EKR-Champis-Analyse.RData")            # Chargement des résultats ANALYSE
+load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
+load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
+load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats CLASSIFICATION MULTICLASSE
+
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
 library(knitr)

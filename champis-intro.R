@@ -24,10 +24,9 @@ fonction_binomiale <- function(x,N){rbinom(n = N, size = binom_taille, prob = .6
 temps_binomiale <- microbenchmark(fonction_binomiale(x, n_chrono), times = fois_chrono, unit = "ms")
 valeurs_binomiale <- data.frame(val = fonction_binomiale(x, n_graph))
 distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
-#  ggtitle("Loi binomiale") +
+  geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) +
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -35,11 +34,10 @@ fonction_uniforme <- function(x,N){runif(n = N)}
 temps_uniforme <- microbenchmark(fonction_uniforme(x, n_chrono), times = fois_chrono, unit = "ms")
 valeurs_uniforme <- data.frame(val = fonction_uniforme(x, n_graph))
 distrib_uniforme <- ggplot(data = valeurs_uniforme, aes(x = val)) +
-#  ggtitle("Loi uniforme") +
+  geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) +
   xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -47,10 +45,9 @@ fonction_normale <- function(x,N){rnorm(n = N)}
 temps_normale <- microbenchmark(fonction_normale(x, n_chrono), times = fois_chrono, unit = "ms")
 valeurs_normale <- data.frame(val = fonction_normale(x, n_graph))
 distrib_normale <- ggplot(data = valeurs_normale, aes(x = val)) +
-#  ggtitle("Loi normale") +
+  geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) +
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -58,11 +55,10 @@ fonction_beta <- function(x,N){rbeta(n = N, shape1 = 6, shape2 = 4, ncp = .5)}
 temps_beta <- microbenchmark(fonction_beta(x, n_chrono), times = fois_chrono, unit = "ms")
 valeurs_beta <- data.frame(val = fonction_beta(x, n_graph))
 distrib_beta <- ggplot(data = valeurs_beta, aes(x = val)) +
-#  ggtitle("Loi beta") +
+  geom_histogram(fill = "grey40", bins = 2*binom_taille, center = 0.5) + 
   xlim(min =0, max = 1) +
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", bins = 2*binom_taille, center = 0.5) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -70,10 +66,9 @@ fonction_poisson <- function(x,N){rpois(n = N, lambda = binom_taille/3)}
 temps_poisson <- microbenchmark(fonction_poisson(x, n_chrono), times = fois_chrono, unit = "ms")
 valeurs_poisson <- data.frame(val = fonction_poisson(x, n_graph))
 distrib_poisson <- ggplot(data = valeurs_poisson, aes(x = val)) +
-#  ggtitle("Loi de Poisson") +
+  geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_taille) + 
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_taille) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
@@ -81,33 +76,26 @@ fonction_weibull <- function(x,N){rweibull(n = N, shape = 8)}
 temps_weibull <- microbenchmark(fonction_weibull(x, n_chrono), times = fois_chrono, unit = "ms")
 valeurs_weibull <- data.frame(val = fonction_weibull(x, n_graph))
 distrib_weibull <- ggplot(data = valeurs_weibull, aes(x = val)) +
-#  ggtitle("Loi de Weibull") +
+  geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_taille) +
   xlab("Valeur") +
   ylab("") +
-  geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_taille) + 
   theme_bw() +
   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
-#nettoyage données
-rm(valeurs_beta, valeurs_binomiale, valeurs_normale, valeurs_poisson, valeurs_uniforme, valeurs_weibull)
-
 # Calculs chrono
-chrono_fonctions  <- bind_rows(temps_binomiale, temps_uniforme, temps_normale, 
+chrono_fonctions  <- bind_rows(temps_binomiale, temps_uniforme, temps_normale,
                               temps_beta, temps_poisson, temps_weibull)
 chrono_fonctions$names <- chrono_fonctions$expr %>% str_remove_all(., "fonction_|(x, n_chrono)|[:punct:]") %>% str_to_title(.)
-#temps_fonctions <- summary(chrono_fonctions)
-#rownames(temps_fonctions) <- temps_fonctions$expr %>% str_remove_all(., "fonction_|(x, n_chrono)|[:punct:]") %>% str_to_title(.)
 chrono_typique <- summary(chrono_fonctions)$uq %>% max(.) %>% `+`(50) %>% round(., digits = -2)  #Arrondir à la centaine (digits -2) par excès (+50)
-#temps_fonctions <- temps_fonctions %>% arrange(., mean) %>% select(min, mean, median, max) %>% round(.,2)
-#colnames(temps_fonctions) <- c("Mininum", "Moyenne", "Médiane", "Maximum")
 
-#Graphe chrono
+# Graphe chrono
 chrono_distrib <- ggplot(data = chrono_fonctions, aes(y = time/1e6, x = reorder(names, time))) +
-  ylab("Temps (ms)") +   xlab(NULL) +
   geom_boxplot(fill = "grey70", outlier.alpha = 0.3) +
+  xlab(NULL) +
+  ylab("Temps (ms)") +
   theme_bw()
 
-# Focus sur la loi Beta pour génération champis
+# Focus sur la loi Beta pour génération de champignons
 facteurs <- c(.5, 1, 1.5, 2)
 
 loi_beta <- function(facteur){rbeta(n = n_graph, shape1 = 6*facteur, shape2 = 4, ncp = .5*facteur)}
@@ -119,18 +107,17 @@ beta <- pivot_longer(beta, cols = 1:ncol(beta))
 beta$name <- str_remove(beta$name, "X")
 
 lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
-#  ggtitle("Distribution de différentes lois bêta") +
   labs(colour= "Fc") +
+  geom_density(alpha = .7, bw = .025, linewidth = .6) +
   xlab("Valeur") +
   ylab("Densité") +
-  geom_density(alpha = .7, bw = .025, linewidth = .6) + 
   theme_bw()
-
 
 
 ###############################
 #       DISTRIBUTION 2D       #
 ###############################
+
 set.seed(1337)       # Pour reproductibilité
 n_champis <- 1e5      # Nombre de champignons
 n_reduit <- 2e4      # Nombre réduit (pour nuyages de points 2D)
@@ -165,11 +152,6 @@ nuage_sansdispersion <-ggplot(data = Champi_demo[1:n_reduit,], aes(x = Chapeau.D
   ylab("Longueur du stipe (Ls)") + xlab("Diamètre du chapeau (Dc)")
 
 densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
-#  ggtitle(paste0("Distribution de taille de ", n_champis, " champignons générés aléatoirement")) +
-  # geom_density2d_filled(bins = 100) +
-  # geom_density2d(bins=15, color = "white", alpha = .2) +
-  # scale_fill_viridis_d(option = "H", direction = 1) + #B,F,G (H)
-  # theme(legend.position="none") +
   stat_density_2d(geom = "polygon", contour = TRUE, contour_var = "count",       #density, count, ndensity
                   aes(fill = after_stat(level)),
                   bins = 50, n = 30) +
@@ -211,6 +193,7 @@ NOHLD <- nolhDesign(dimension =2, range = c(0, 1))$design
 LHS <- data.frame(LHS)
 opti_LHS <- data.frame(opti_LHS)
 NOHLD <- data.frame(NOHLD)
+
 colnames(LHS) <- c("X1", "X2")
 colnames(opti_LHS) <- c("X1", "X2")
 colnames(NOHLD) <- c("X1", "X2")
@@ -220,11 +203,13 @@ graphe_LHS <- ggplot(data = LHS, aes(x = X1, y = X2)) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    ylab(NULL)
+
 graphe_optiLHS <- ggplot(data = opti_LHS, aes(x = X1, y = X2)) +
    geom_point(shape = 20, size = 5) + 
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    ylab(NULL)
+
 graphe_NOHLD <- ggplot(data = NOHLD, aes(x = X1, y = X2)) +
    geom_point(shape = 20, size = 5) +
    theme_bw() +
@@ -268,5 +253,12 @@ distrib_diametre    # Distribution du diamètre
 taux_gros_diam       # % de diamètres hors-norme (> 100% max)
 taux_supergros_diam    # % de diamètres super-hors-norme (>110% max), arrondi par excès au 0.1%
 
+# Nettoyage données et sauvegarde
+
+rm(valeurs_beta, valeurs_binomiale, valeurs_normale, valeurs_poisson, valeurs_uniforme, valeurs_weibull,
+  temps_beta, temps_binomiale, temps_normale, temps_poisson, temps_uniforme, temps_weibull,
+  fonction_beta, fonction_binomiale, fonction_normale, fonction_poisson, fonction_uniforme, fonction_weibull,
+  beta, loi_beta, chrono_fonctions, Champi_demo)
+
 save.image(file = "EKR-Champis-Intro.RData")
-load("EKR-Champis-Intro.RData")
+#load("EKR-Champis-Intro.RData")
