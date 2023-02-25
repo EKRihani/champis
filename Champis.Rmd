@@ -298,7 +298,12 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 
 ## Développement d'un algorithme de génération de lot synthétique
 
+\paragraph*{}
 *Plus de détails concrets sur la méthode utilisée en pratique...*
+\paragraph*{}
+*L'algorithme est écrit et fonctionne, à partir des données primaires du Secondary Dataset de Dennis Wagner. C'est cet algorithme qui a servi à créer le lot de données de la classification multiclasse.*
+\paragraph*{}
+*Pour avoir mes propres lots de données, il ne me reste plus qu'à avoir mes propres données primaires, c'est à dire entrer manuellement les caractéristiques clés de mes 400+ champignons, un par un...*
 
 \newpage
 \FloatBarrier
@@ -415,6 +420,8 @@ plot(ggarrange(
 \newpage
 
 # Apprentissage machine et classification binaire
+
+*Brouillon, le lot de données utilisé ici est le Secondary Mushroom Dataset de D.Wagner.*
 
 ## Analyse exploratoire des données (EDA)
 
