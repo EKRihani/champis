@@ -281,7 +281,7 @@ plot(densite2d)
 ```
 
 \paragraph*{}
-Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale extraite de la littérature à environ `r taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)), et la proportion de spécimens dépassant de plus de 10% cette valeur maximale est inférieure à `r taux_supergros_diam` %.
+Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)). La proportion de spécimens dépassant de plus de 10% cette valeur maximale sera quant à elle inférieure à `r taux_supergros_diam` %.
 \paragraph*{}
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
@@ -294,7 +294,7 @@ plot(distrib_diametre)
 \paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
 
-L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeur, et une valeur sera tirée aléatoirement parmi celles de ce vecteur pour caractériser chaque spécimen.
+L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement parmi celles de ce vecteur pour caractériser chaque spécimen.
 
 ## Développement d'un algorithme de génération de lot synthétique
 
