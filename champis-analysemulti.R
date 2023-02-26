@@ -10,17 +10,21 @@ library(DiceEval)       # Modélisation sur hypercubes latins
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # URL de mon repo
+#URL <- "https://github.com/EKRihani/champis/raw/master/lot_test.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
+fichier_data <- "~/projects/champis/lot_test.zip" # FICHIER LOCAL
 
-fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
-dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
+fichier_data <- unzip(fichier_data, "lot_test.csv")
+dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)   # sep ; ou, selon fichier
 
 
 ##############################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
 ##############################################################################
+# Masquage family/name/classe + renommage correct
+dataset$name <- NULL
+dataset$class <- NULL
+dataset$family <- str_replace_all(dataset$family, "[:space:]|-", "_")
 
 split1 <- 0.08
 split2 <- 0.08
@@ -49,10 +53,10 @@ MUL_n_folds <- 5
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_model){
    set.seed(1)
-   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = MUL_n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
-   cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
+   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = multiClassSummary, method = "cv", number = MUL_n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
+   cmd <- paste0("train(family ~ ., method = '",      # Construit commande, évaluation de performance
                  fcn_model[1], 
-                 "', data = MUL_lot_appr_opti, trControl = tr_ctrl, metric = 'Spec', ", 
+                 "', data = MUL_lot_appr_opti, trControl = tr_ctrl, ", 
                  fcn_model[2],")")
    fitting <- eval(parse(text = cmd))        # Lance commande
    fitting
@@ -82,39 +86,31 @@ MUL_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0
 MUL_set_c50tree <- c("C5.0Tree", "")
 system.time(fit_test(MUL_set_rpart_cp))    ####### CHRONO
 MUL_fit_rpart_cp <- fit_test(MUL_set_rpart_cp)
-MUL_fit_rpartcost <- fit_test(MUL_set_rpartcost)
+MUL_fit_rpartcost <- fit_test(MUL_set_rpartcost)      # MARCHE PAS ????
 MUL_fit_ctree_criterion <- fit_test(MUL_set_ctree_criterion)
-MUL_fit_c50tree <- fit_test(MUL_set_c50tree)
+MUL_fit_c50tree <- fit_test(MUL_set_c50tree)    # NE MARCHE PAS ????
 
 # Extraire résultats d'intérêt : graphes et resultats
 MUL_fit_rpart_cp_results <- MUL_fit_rpart_cp$results
-MUL_fit_rpart_cp_graphe <- ggplot(data = MUL_fit_rpart_cp$results, aes(x = cp, y = Spec)) + geom_point() + ylab("Spécificité") + scale_x_log10()
+MUL_fit_rpart_cp_graphe <- ggplot(data = MUL_fit_rpart_cp$results, aes(x = cp, y = Kappa)) + geom_point() +  scale_x_log10()
 
 MUL_fit_rpartcost_results <- MUL_fit_rpartcost$results
-MUL_mod_rpartcost_spec <- modelFit(X=MUL_fit_rpartcost_results[,1:2], Y=MUL_fit_rpartcost_results$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-MUL_mod_rpartcost_sens <-  modelFit(X=MUL_fit_rpartcost_results[,1:2], Y=MUL_fit_rpartcost_results$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+MUL_mod_rpartcost_kappa <- modelFit(X=MUL_fit_rpartcost_results[,1:2], Y=MUL_fit_rpartcost_results$Kappa,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
 MUL_pred_rpartcost <- expand.grid(MUL_fit_rpartcost_results[,1:2])
 colnames(MUL_pred_rpartcost) <- c("Cost", "cp")
 MUL_pred_rpartcost2 <- NULL
-MUL_pred_rpartcost2$Spec <- modelPredict(MUL_mod_rpartcost_spec, MUL_pred_rpartcost)
-MUL_pred_rpartcost2$Sens <- modelPredict(MUL_mod_rpartcost_sens, MUL_pred_rpartcost)
+MUL_pred_rpartcost2$Kappa <- modelPredict(MUL_mod_rpartcost_spec, MUL_pred_rpartcost)
 MUL_pred_rpartcost <- cbind(MUL_pred_rpartcost, MUL_pred_rpartcost2)
-MUL_fit_rpartcost_spec_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_rpartcost, aes(x = Cost, y = cp, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Spec), color = "black", linewidth =.5) +
+MUL_fit_rpartcost_kappa_graphe <- ggplot() +
+   geom_raster(data = MUL_pred_rpartcost, aes(x = Cost, y = cp, fill = Kappa), interpolate = TRUE) +
+   geom_tile(data = MUL_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Kappa), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
-MUL_fit_rpartcost_sens_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_rpartcost, aes(x = Cost, y = cp, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Sens), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
 MUL_fit_ctree_criterion_graphe <- ggplot(MUL_fit_ctree_criterion)
 MUL_fit_ctree_criterion_results <- MUL_fit_ctree_criterion$results
-MUL_fit_c50tree_results <- MUL_fit_c50tree$results
+MUL_fit_c50tree_results <- MUL_fit_c50tree$results       # NE MARCHE PAS ???
 
 # Meilleur modèle CART
 MUL_best_rpartcost <- which.max(MUL_fit_rpartcost_results$Spec^MUL_ratioSpeSen*MUL_fit_rpartcost_results$Sens)
@@ -286,14 +282,10 @@ colnames(MUL_RF_resultat) <- c("Sensibilité", "Spécificité", "F1 score", "Dur
 rownames(MUL_RF_resultat) <- c("Ranger", "Rborist")
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
-rm(dataset, MUL_evaluation, #MUL_lot_appr_opti, MUL_lot_apprentissage, MUL_lot_evaluation,
-   MUL_fit_pda_lambda, MUL_fit_lda2_dim, MUL_fit_gamLoess_degree, MUL_fit_gamLoess_span,
-   MUL_fit_rpart_cp, MUL_fit_rpartcost,
-   MUL_fit_ctree_criterion, MUL_fit_c50tree, MUL_fit_rFerns_depth, 
+rm(dataset, MUL_evaluation, MUL_lot_appr_opti, MUL_lot_apprentissage, MUL_lot_evaluation,
+   MUL_fit_rpart_cp, MUL_fit_rpartcost, MUL_fit_rpartcost_best, MUL_fit_ctree_criterion, MUL_fit_c50tree,
    MUL_fit_Rborist, MUL_fit_Rborist_best, MUL_fit_Rborist_final,
    MUL_fit_ranger, MUL_fit_ranger_best, MUL_fit_ranger_final)
-save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données pour rapport
-load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données pour rapport
 
 save.image(file = "EKR-Champis-AnalyseMulti.RData")     # Sauvegarde données pour rapport
 load(file = "EKR-Champis-AnalyseMulti.RData")     # Chargement données pour rapport

@@ -10,7 +10,7 @@ library(DiceEval)       # Modélisation sur hypercubes latins
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # URL de mon repo
+#URL <- "https://github.com/EKRihani/champis/raw/master/MushroomDataset.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
 fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
 
@@ -319,9 +319,9 @@ colnames(BI_RF_resultat) <- c("Sensibilité", "Spécificité", "F1 score", "Dur�
 rownames(BI_RF_resultat) <- c("Ranger", "Rborist")
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
-rm(dataset, BI_evaluation, #BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
+rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
    BI_fit_pda_lambda, BI_fit_lda2_dim, BI_fit_gamLoess_degree, BI_fit_gamLoess_span,
-   BI_fit_rpart_cp, BI_fit_rpartcost,
+   BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
    BI_fit_ctree_criterion, BI_fit_c50tree, BI_fit_rFerns_depth, 
    BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)

@@ -32,7 +32,7 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
-#load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats CLASSIFICATION MULTICLASSE
+load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats CLASSIFICATION MULTICLASSE
 
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
@@ -685,7 +685,6 @@ temps_fin <- Sys.time()
 duree <- difftime(temps_fin, temps_debut)
 ```
 
-\newpage
 ## Résultats
 ### Protocole d'évaluation
 \paragraph*{}
@@ -718,11 +717,142 @@ kable(BI_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et
 ```
 
 \FloatBarrier
+
 \newpage
 # Apprentissage machine et classification multiclasse
-texte
+
+*Brouillon, le lot de données utilisé ici est un lot synthétique créé par moi-même, mais à partir des données primaires du Secondary Mushroom Dataset de D.Wagner.*
+\paragraph*{}
+Etant données des performances qu'ont montré les différents modèles lors de la classification binaire, seuls les modèles basés sur les arbres décisionnels et les forêts aléatoires seront évalués dans cette section.
+\FloatBarrier
+## Classification par familles
+
+### Modèles d'arbres de décision
+\paragraph*{}
+
+\paragraph*{}
+Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
+
+```{r, echo = FALSE}
+kable(MUL_fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
+```
+
+Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(MUL_fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(MUL_fit_rpart_cp_results["Spec"]),3)`).
+
+Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(ggarrange(
+   ncol = 2, widths = c(8,7),
+   MUL_fit_rpartcost_spec_graphe,
+   MUL_fit_rpartcost_sens_graphe + ylab(NULL)
+   )
+)
+```
+
+Les performances maximales sont atteintes pour *cp =* `r MUL_best_rpartcostgrid['cp']` et *Cost = * `r MUL_best_rpartcostgrid['Cost']`.
+
+```{r, echo = FALSE}
+kable(MUL_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
+```
+
+Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise.
+\paragraph*{}
+<!-- Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. -->
+
+<!-- ```{r, echo = FALSE} -->
+<!-- kable(MUL_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree") -->
+<!-- ``` -->
+
+<!-- De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Spec = 1$. -->
+
+### Forêts aléatoires
+
+\paragraph*{}
+Le premier modèle de forêt aléatoire évalué dans cette partie est le modèle ranger, qui possède trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+plot(ggarrange(
+   ncol = 2, widths = c(8,7),
+   MUL_fit_ranger_Gini_spec_graphe,
+   MUL_fit_ranger_Gini_sens_graphe + ylab(NULL)
+   )
+)
+```
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+plot(ggarrange(
+   ncol = 2, widths = c(8,7),
+   MUL_fit_ranger_ET_spec_graphe,
+   MUL_fit_ranger_ET_sens_graphe + ylab(NULL)
+   )
+)
+```
+
+Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r MUL_best_rangergrid$min.node.size`, *mtry* = `r MUL_best_rangergrid$mtry` et *splitrule* = `r MUL_best_rangergrid$splitrule`) a donné d'excellents résultats.
+
+```{r, echo = FALSE}
+kable(MUL_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
+```
+
+Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
+\paragraph*{}
+Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(ggarrange(
+   ncol = 2, widths = c(8,7),
+   MUL_fit_Rborist_spec_graphe,
+   MUL_fit_Rborist_sens_graphe + ylab(NULL)
+   )
+)
+```
+
+\paragraph*{}
+Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
+\paragraph*{}
+Avec des paramètres optimaux (*predFixed* = `r MUL_best_Rboristgrid$predFixed` et *minNode* = `r MUL_best_Rboristgrid$minNode`), la performance est estimée à :
+\FloatBarrier
+
+```{r, echo = FALSE}
+kable(MUL_fit_Rborist_best_results[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
+```
+\FloatBarrier
+\paragraph*{}
+Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger, avec une sensibilité et une spécificité excellentes.
+\paragraph*{}
+Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
+\paragraph*{}
+La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code R peut facilement être mesurée par :
+```{r, eval = FALSE}
+temps_debut <- Sys.time()
+[Code à évaluer]
+temps_fin <- Sys.time()
+duree <- difftime(temps_fin, temps_debut)
+```
+
+### Résultats
+Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqués précédemment.
 
 \FloatBarrier
+L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
+
+```{r out.width = "100%", echo = FALSE}
+kable(MUL_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
+```  
+
+La précision finale est égale à `r round(MUL_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(MUL_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MUL_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r MUL_temps_ranger` min), preuve de sa grande efficience calculatoire.
+\paragraph*{}
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MUL_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MUL_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MUL_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r MUL_temps_Rborist` min).
+
+```{r out.width = "100%", echo = FALSE}
+kable(MUL_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)")
+```
+
+\FloatBarrier
+
+## Classification par espèce
+
 \newpage
 # Robustesse de la classification
 texte
