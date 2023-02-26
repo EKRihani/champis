@@ -111,7 +111,9 @@ fit_ctree_criterion_results <- fit_ctree_criterion$results
 fit_c50tree_results <- fit_c50tree$results
 
 # Meilleur modèle CART
-set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = fit_rpartcost$bestTune"))
+best_rpartcost <- which.max(fit_rpartcost_results$Spec^10*fit_rpartcost_results$Sens)
+best_rpartcostgrid <- data.frame(Cost = fit_rpartcost_results[best_rpartcost,]$Cost, cp =fit_rpartcost_results[best_rpartcost,]$cp)
+set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = best_rpartcostgrid"))
 fit_rpartcost_best <- fit_test(set_rpartcost_best)
 fit_rpartcost_best_results <- fit_rpartcost_best$results
 
@@ -197,6 +199,27 @@ fit_ranger_ET_sens_graphe <- ggplot() +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
+mod_Rborist_spec <- modelFit(X=fit_Rborist_results[,1:2], Y=fit_Rborist_results$Spec,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+mod_Rborist_sens <-  modelFit(X=fit_Rborist_results[,1:2], Y=fit_Rborist_results$Sens,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+pred_Rborist <- expand.grid(fit_Rborist_results[,1:2])
+colnames(pred_Rborist) <- c("predFixed", "minNode")
+pred_Rborist2 <- NULL
+pred_Rborist2$Spec <- modelPredict(mod_Rborist_spec, pred_Rborist)
+pred_Rborist2$Sens <- modelPredict(mod_Rborist_sens, pred_Rborist)
+pred_Rborist <- cbind(pred_Rborist, pred_Rborist2)
+
+fit_Rborist_spec_graphe <- ggplot() +
+   geom_raster(data = pred_Rborist, aes(x = predFixed, y = minNode, fill = Spec), interpolate = TRUE) +
+   geom_tile(data = fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Spec), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = "F", direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+fit_Rborist_sens_graphe <- ggplot() +
+   geom_raster(data = pred_Rborist, aes(x = predFixed, y = minNode, fill = Sens), interpolate = TRUE) +
+   geom_tile(data = fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Sens), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = "G", direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
 # Lance modèle RANGER optimal
 set_ranger_best <- c("ranger", paste0("tuneGrid  = fit_ranger_bestTune, num.trees = 6"))

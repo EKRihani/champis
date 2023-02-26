@@ -32,7 +32,7 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
-load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats CLASSIFICATION MULTICLASSE
+#load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats CLASSIFICATION MULTICLASSE
 
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
@@ -594,7 +594,7 @@ plot(ggarrange(
 )
 ```
 
-La plus haute spécificité est atteinte pour *cp =* `r fit_rpartcost_complexity_bestTune['cp']` et *Cost = * `r fit_rpartcost_cost_bestTune['Cost']`.
+Les performances maximales sont atteintes pour *cp =* `r best_rpartcostgrid['cp']` et *Cost = * `r best_rpartcostgrid['Cost']`.
 
 ```{r, echo = FALSE}
 kable(fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
@@ -643,39 +643,37 @@ plot(ggarrange(
 )
 ```
 
-Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r fit_ranger_nodesize_bestTune$min.node.size`, *mtry* = `r fit_ranger_splitrule_bestTune$mtry` and *splitrule* = `r fit_ranger_splitrule_bestTune$splitrule`) a donné d'excellents résultats.
+Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r best_rangergrid$min.node.size`, *mtry* = `r best_rangergrid$mtry` et *splitrule* = `r best_rangergrid$splitrule`) a donné d'excellents résultats.
 
 ```{r, echo = FALSE}
 kable(fit_ranger_best_results[1:6], caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
 ```
 
-Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité parfaites dans cette phrase d'évaluation.
+Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Spécificité du modèle Rborist"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
-   ncol = 2,
-   fit_Rborist_pred_graphe + theme_bw(),
-   fit_Rborist_minNode_graphe + ylab("") + theme_bw()
+   ncol = 2, widths = c(8,7),
+   fit_Rborist_spec_graphe,
+   fit_Rborist_sens_graphe + ylab(NULL)
    )
 )
 ```
 
-```{r, echo = FALSE}
-kable(fit_Rborist_pred_results[1:5, 1:5], digits = 4, caption = "Performances du modèle Rborist (réglage de predFixed)")
-```
-
 \paragraph*{}
-Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. Avec des paramètres optimaux (*predFixed* = 6, fixé manuellement en raison de la sensibilité plus élevée), et *minNode* = `r fit_Rborist_minNode_bestTune$minNode`, la performance est estimée à :
+Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
+\paragraph*{}
+Avec des paramètres optimaux (*predFixed* = `r best_Rboristgrid$predFixed` et *minNode* = `r best_Rboristgrid$minNode`), la performance est estimée à :
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(fit_Rborist_best_results[1:5], caption = "Performance du modèle Rborist (hyperparamètres optimaux)")
+kable(fit_Rborist_best_results[1:5], caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
 ```
 \FloatBarrier
 \paragraph*{}
-Le modèle Rborist a donné les mêmes excellents résultats que le modèle Ranger, avec une sensibilité et une spécificité parfaites.
+Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger, avec une sensibilité et une spécificité excellentes.
 \paragraph*{}
 Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
 \paragraph*{}
