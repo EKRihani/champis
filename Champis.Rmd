@@ -39,7 +39,7 @@ library(rmarkdown)
 library(knitr)
 library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
-knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit"), "packages.bib")
+knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging"), "packages.bib")
 ```
 \pagestyle{plain}
 
@@ -442,14 +442,14 @@ Le lot de données d'origine a été découpé deux fois avec un rapport 92/8, c
 Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles :
 
 ```{r, eval = FALSE}
-for (n in 1:ncol(lot_apprentissage)){
-  graph <- lot_apprentissage %>%
-    ggplot(aes_string(x = colnames(lot_apprentissage)[n]))
+for (n in 1:ncol(BI_lot_apprentissage)){
+  graph <- BI_lot_apprentissage %>%
+    ggplot(aes_string(x = colnames(BI_lot_apprentissage)[n]))
   if(structure_dataset$Type[n] %in% c("integer", "numeric"))
   {graph <- graph + geom_histogram()}
   else
   {graph <- graph + geom_bar()}
-  nom_graph <- paste0("distrib_", colnames(lot_apprentissage)[n])
+  nom_graph <- paste0("distrib_", colnames(BI_lot_apprentissage)[n])
   assign(nom_graph, graph)
 }
 ```
@@ -506,7 +506,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
                         method = "cv", number = 10)
 train(class ~ .,
       method = [METHODE],
-      data = lot_appr_opti,
+      data = BI_lot_appr_opti,
       trControl = tr_ctrl,
       metric = 'Spec',
       tuneGrid = data.frame([PARAMETRES]))
@@ -527,18 +527,18 @@ Les deux modèles d'analyse discriminante linéaire (LDA) choisis pour cette ét
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(
    ncol = 2,
-   fit_lda2_dim_graphe + theme_bw(),
-   fit_pda_lambda_graphe +  ylab("") + theme_bw()
+   BI_fit_lda2_dim_graphe + theme_bw(),
+   BI_fit_pda_lambda_graphe +  ylab("") + theme_bw()
    )
 )
 ```
 
 \paragraph*{}
-Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la spécificité ($Spec =$ `r round(mean(fit_lda2_dim_results[,"Spec"]), 3)`). 
+Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la spécificité ($Spec =$ `r round(mean(BI_fit_lda2_dim_results[,"Spec"]), 3)`). 
 \paragraph*{}
-Le paramètre *lambda* du modèle pda impacte sa spécificité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Spec_{max} =$ `r round(max(fit_pda_lambda_results["Spec"]))`).
+Le paramètre *lambda* du modèle pda impacte sa spécificité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Spec_{max} =$ `r round(max(BI_fit_pda_lambda_results["Spec"]))`).
 \paragraph*{}
-Toutefois, la spécificité de ces deux modèles est nettement insuffisante pour notre étude ($Spec \approx$ `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)),2)`), et leurs sensiblités n'ont rien de remarquable non plus ($Sens \approx$ `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
+Toutefois, la spécificité de ces deux modèles est nettement insuffisante pour notre étude ($Spec \approx$ `r round(mean(c(BI_fit_lda2_dim_results$Spec, BI_fit_pda_lambda_results$Spec)),2)`), et leurs sensiblités n'ont rien de remarquable non plus ($Sens \approx$ `r round(mean(c(BI_fit_lda2_dim_results$Sens, BI_fit_pda_lambda_results$Sens)), 3)`).
 \paragraph*{}
 Ces performances médiocres s'expliquent par le fonctionnement même des modèles LDA qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple :
 
@@ -553,18 +553,18 @@ Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Ge
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de gamLoess en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(
    ncol = 2,
-   fit_gamLoess_span_graphe + theme_bw(),
-   fit_gamLoess_degree_graphe +  ylab("") + theme_bw()
+   BI_fit_gamLoess_span_graphe + theme_bw(),
+   BI_fit_gamLoess_degree_graphe +  ylab("") + theme_bw()
    )
 )
 ```
 
 \paragraph*{}
-L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet significatif sur la spécificité, avec $\Delta Spec =$ `r round(max(fit_gamLoess_degree_results[,"Spec"]) - min(fit_gamLoess_degree_results[,"Spec"]), 3)`. 
+L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet significatif sur la spécificité, avec $\Delta Spec =$ `r round(max(BI_fit_gamLoess_degree_results[,"Spec"]) - min(BI_fit_gamLoess_degree_results[,"Spec"]), 3)`. 
 \paragraph*{}
-L'hyerparamètre *span* affecte marginalement la spécificité de gamLoess, avec une valeur optimale de *span* = `r fit_gamLoess_span_results[which.max(fit_gamLoess_span_results[,"Spec"]), "span"]`, résultant en $Spec_{max} =$ `r round(max(fit_gamLoess_span_results["Spec"]), 3)`.
+L'hyerparamètre *span* affecte marginalement la spécificité de gamLoess, avec une valeur optimale de *span* = `r BI_fit_gamLoess_span_results[which.max(BI_fit_gamLoess_span_results[,"Spec"]), "span"]`, résultant en $Spec_{max} =$ `r round(max(BI_fit_gamLoess_span_results["Spec"]), 3)`.
 \paragraph*{}
-La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en spécificité (`r round(max(fit_gamLoess_span_results["Spec"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Spec, fit_pda_lambda_results$Spec)), 3)`) qu'en sensibilité (`r round(max(fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(fit_lda2_dim_results$Sens, fit_pda_lambda_results$Sens)), 3)`).
+La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en spécificité (`r round(max(BI_fit_gamLoess_span_results["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_results$Spec, BI_fit_pda_lambda_results$Spec)), 3)`) qu'en sensibilité (`r round(max(BI_fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_results$Sens, BI_fit_pda_lambda_results$Sens)), 3)`).
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -578,26 +578,26 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
 
 ```{r, echo = FALSE}
-kable(fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
+kable(BI_fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
 ```
 
-Le modèle CART basique n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(fit_rpart_cp_results["Spec"]),3)`).
+Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(BI_fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(BI_fit_rpart_cp_results["Spec"]),3)`).
 
 Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2, widths = c(8,7),
-   fit_rpartcost_spec_graphe,
-   fit_rpartcost_sens_graphe + ylab(NULL)
+   BI_fit_rpartcost_spec_graphe,
+   BI_fit_rpartcost_sens_graphe + ylab(NULL)
    )
 )
 ```
 
-Les performances maximales sont atteintes pour *cp =* `r best_rpartcostgrid['cp']` et *Cost = * `r best_rpartcostgrid['Cost']`.
+Les performances maximales sont atteintes pour *cp =* `r BI_best_rpartcostgrid['cp']` et *Cost = * `r BI_best_rpartcostgrid['Cost']`.
 
 ```{r, echo = FALSE}
-kable(fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
+kable(BI_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
 ```
 
 Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise.
@@ -605,10 +605,10 @@ Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'
 Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre.
 
 ```{r, echo = FALSE}
-kable(fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree")
+kable(BI_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree")
 ```
 
-De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère *Spec* = 1.
+De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Spec = 1$.
 
 ### Forêts aléatoires
 \paragraph*{}
@@ -616,11 +616,11 @@ Le premier modèle de forêt aléatoire évalué dans cette étude est le modèl
 
 \paragraph*{}
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité du modèle de fougères aléatoires"}
-fit_rFerns_depth_graphe + theme_bw()
+BI_fit_rFerns_depth_graphe + theme_bw()
 ```
 
 \paragraph*{}
-Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoire a fourni des résultats peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(fit_rFerns_depth_results["Sens"]), 3)`).
+Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoire a fourni des résultats peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Sens"]), 3)`).
 
 \paragraph*{}
 Le second modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
@@ -628,8 +628,8 @@ Le second modèle de forêt aléatoire que nous évaluons dans cette étude est 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
    ncol = 2, widths = c(8,7),
-   fit_ranger_Gini_spec_graphe,
-   fit_ranger_Gini_sens_graphe + ylab(NULL)
+   BI_fit_ranger_Gini_spec_graphe,
+   BI_fit_ranger_Gini_sens_graphe + ylab(NULL)
    )
 )
 ```
@@ -637,16 +637,16 @@ plot(ggarrange(
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
 plot(ggarrange(
    ncol = 2, widths = c(8,7),
-   fit_ranger_ET_spec_graphe,
-   fit_ranger_ET_sens_graphe + ylab(NULL)
+   BI_fit_ranger_ET_spec_graphe,
+   BI_fit_ranger_ET_sens_graphe + ylab(NULL)
    )
 )
 ```
 
-Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r best_rangergrid$min.node.size`, *mtry* = `r best_rangergrid$mtry` et *splitrule* = `r best_rangergrid$splitrule`) a donné d'excellents résultats.
+Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r BI_best_rangergrid$min.node.size`, *mtry* = `r BI_best_rangergrid$mtry` et *splitrule* = `r BI_best_rangergrid$splitrule`) a donné d'excellents résultats.
 
 ```{r, echo = FALSE}
-kable(fit_ranger_best_results[1:6], caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
+kable(BI_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
 ```
 
 Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
@@ -656,8 +656,8 @@ Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régi
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2, widths = c(8,7),
-   fit_Rborist_spec_graphe,
-   fit_Rborist_sens_graphe + ylab(NULL)
+   BI_fit_Rborist_spec_graphe,
+   BI_fit_Rborist_sens_graphe + ylab(NULL)
    )
 )
 ```
@@ -665,11 +665,11 @@ plot(ggarrange(
 \paragraph*{}
 Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
 \paragraph*{}
-Avec des paramètres optimaux (*predFixed* = `r best_Rboristgrid$predFixed` et *minNode* = `r best_Rboristgrid$minNode`), la performance est estimée à :
+Avec des paramètres optimaux (*predFixed* = `r BI_best_Rboristgrid$predFixed` et *minNode* = `r BI_best_Rboristgrid$minNode`), la performance est estimée à :
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(fit_Rborist_best_results[1:5], caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
+kable(BI_fit_Rborist_best_results[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
 ```
 \FloatBarrier
 \paragraph*{}
@@ -706,15 +706,15 @@ Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, 
 L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
 
 ```{r out.width = "100%", echo = FALSE}
-kable(CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
+kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
 ```  
 
-La précision finale est égale à `r round(CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r time_ranger` min), preuve de sa grande efficience calculatoire.
+La précision finale est égale à `r round(BI_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(BI_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r BI_temps_ranger` min), preuve de sa grande efficience calculatoire.
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r time_Rborist` min).
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r BI_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(BI_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r BI_temps_Rborist` min).
 
 ```{r out.width = "100%", echo = FALSE}
-kable(rt_result, digits = 4, caption = "Performances des modèles Ranger et Rborist (évaluation)")
+kable(BI_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)")
 ```
 
 \FloatBarrier
