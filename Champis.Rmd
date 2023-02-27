@@ -588,8 +588,8 @@ Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperp
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2, widths = c(8,7),
-   BI_fit_rpartcost_spec_graphe,
-   BI_fit_rpartcost_sens_graphe + ylab(NULL)
+   BI_fit_rpartcost_spec_graphe + theme(legend.position="bottom"),
+   BI_fit_rpartcost_sens_graphe + theme(legend.position="bottom") + ylab(NULL)
    )
 )
 ```
