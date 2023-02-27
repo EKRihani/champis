@@ -48,6 +48,8 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 \begin{flushleft}
 AI : *Artificial Intelligence* (intelligence artificielle)
 
+AUC : *Area Under Curve* (aire sous la courbe)
+
 CART : *Classification And Regression Tree* (arbre de classification et de régression)
 
 DOE : *Design of Experiments* (plan d'expériences)
@@ -420,6 +422,24 @@ plot(ggarrange(
 ```
 
 \FloatBarrier
+## Evaluation des performances des modèles
+
+L'optimisation des modèles ainsi que la comparaison des performances des modèles entre eux implique nécessairement de définir quel sera le critère vis-à-vis duquel cette performance sera évaluée.
+\paragraph*{}
+De nombreux critères sont utilisables, en fonction du cahier des charges, mais également du type de tâche effectuée : régression, classification binaire, classification multiclasse.
+\paragraph*{}
+Dans une tâche de classification binaire, les critères usuels sont la spécificité, la sensibilité, et l'aire sous la courbe de fonction d'efficacité du récepteur (*AUC ROC*, parfois abrégé en *ROC*). Il conviendra bien évidemment, avant d'utiliser des indicateurs tels que la spécificité et la sensibilité, de définir la notion de test positif et test négatif.
+\paragraph*{}
+D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de Youden pondéré, qui permet de pondérer la spécificité et la sensibilité au sein d'un index synthétique. Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités nulles.
+
+https://acsjournals.onlinelibrary.wiley.com/doi/10.1002/1097-0142(1950)3:1%3C32::AID-CNCR2820030106%3E3.0.CO;2-3
+https://www.tandfonline.com/doi/full/10.1080/03610926.2018.1435809?scroll=top&needAccess=true&role=tab
+\paragraph*{}
+En l'espèce, l'index J de Youden pondéré nous permet donc de construire un indice synthétique nous permettant de considérer qu'il est bien plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible, sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
+\paragraph*{}
+L'index J de Youden pondéré est donné par :
+$ S_{w} = Sen^{2w} \times Spe^{2.(1-w)} ~~~~ avec~ 0  \in \left[ 0 ; 1 \right] $
+
 \newpage
 
 # Apprentissage machine et classification binaire
@@ -495,7 +515,7 @@ La librairie *caret* fournit une plateforme très pratique et efficiente pour la
 * Forêt aléatoire : *Random Ferns* (rferns), *Random Forest* (ranger, Rborist)
 
 \paragraph*{}
-La première étape est de construire une fonction d'évaluation et de régression. La librairie caret permet de la définir très simplement par :  
+La première étape est de construire une fonction d'évaluation et de régression, afin de rationnaliser notre travail. En effet, l'évaluation et la régression seront effectuées très fréquemment au cours de cette étude, il est donc souhaitable d'assigner une fonction dédiée à ces tâches. La librairie caret permet de la définir très simplement par :  
 
 [A MODIFIER EN COHERENCE AVEC LE FICHIER R]
 
@@ -517,7 +537,7 @@ La fonction *trainControl* permet de contrôler divers paramètres d'entraîneme
 
 La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation, la métrique utilisée pour l'évaluation (sensibilité, spécificité, ROC...) ainsi que la grille des paramètres utilisés par le modèle.
 \paragraph*{}
-Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, contenues dans .\$results (ROC, sensibilité, spécificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
+Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, contenues dans .\$results (pour une classification binaire : AUC de ROC, sensibilité, spécificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
 \FloatBarrier
 
 ### Modèles d'analyse discriminante linéaire
