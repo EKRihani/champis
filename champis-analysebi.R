@@ -134,13 +134,15 @@ BI_fit_rpartcost_spec_graphe <- ggplot() +
    geom_tile(data = BI_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 BI_fit_rpartcost_sens_graphe <- ggplot() +
    geom_raster(data = BI_pred_rpartcost, aes(x = Cost, y = cp, fill = Sens), interpolate = TRUE) +
    geom_tile(data = BI_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Sens), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 
 BI_fit_ctree_criterion_graphe <- ggplot(BI_fit_ctree_criterion)
 BI_fit_ctree_criterion_results <- BI_fit_ctree_criterion$results
@@ -214,26 +216,30 @@ BI_fit_ranger_Gini_spec_graphe <- ggplot() +
    geom_tile(data = BI_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 BI_fit_ranger_Gini_sens_graphe <- ggplot() +
    geom_raster(data = BI_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
    geom_tile(data = BI_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 
 BI_fit_ranger_ET_spec_graphe <- ggplot() +
    geom_raster(data = BI_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
    geom_tile(data = BI_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 BI_fit_ranger_ET_sens_graphe <- ggplot() +
    geom_raster(data = BI_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
    geom_tile(data = BI_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 
 BI_best_ranger <- which.max(BI_fit_ranger_results$Spec^BI_ratioSpeSen*BI_fit_ranger_results$Sens)
 BI_best_rangergrid <- data.frame(mtry = BI_fit_ranger_results[BI_best_ranger,]$mtry, min.node.size =BI_fit_ranger_results[BI_best_ranger,]$min.node.size, splitrule =BI_fit_ranger_results[BI_best_ranger,]$splitrule)
@@ -255,13 +261,15 @@ BI_fit_Rborist_spec_graphe <- ggplot() +
    geom_tile(data = BI_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 BI_fit_Rborist_sens_graphe <- ggplot() +
    geom_raster(data = BI_pred_Rborist, aes(x = predFixed, y = minNode, fill = Sens), interpolate = TRUE) +
    geom_tile(data = BI_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Sens), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 
 BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec^BI_ratioSpeSen*BI_fit_Rborist_results$Sens)
 BI_best_Rboristgrid <- data.frame(predFixed = BI_fit_Rborist_results[BI_best_Rborist,]$predFixed, minNode =BI_fit_Rborist_results[BI_best_Rborist,]$minNode)

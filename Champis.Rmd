@@ -40,7 +40,7 @@ library(knitr)
 library(tidyverse)
 library(bookdown)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
-knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "Bookdown"), "packages.bib")
+knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown"), "packages.bib")
 ```
 \pagestyle{plain}
 
@@ -439,15 +439,17 @@ https://www.tandfonline.com/doi/full/10.1080/03610926.2018.1435809?scroll=top&ne
 En l'espèce, l'index J de Youden pondéré nous permet donc de construire un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible, sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
 \paragraph*{}
 L'index J de Youden pondéré est donné par :
-$ S_{w} = Sen^{2w} . Spe^{2.(1-w)} ~~~~ avec~ 0  \in \left[ 0 ; 1 \right] $
-En posant arbitrairement $w = 3$, nous obtenons :
-$S_{w} = Sen^{6} . Spe^{-4}$
-Ce qui revient à fixer dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité.
+$$ S_{w} = Sen^{2w} . Spe^{2(1-w)} ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
+<!-- 0 \leq w \leq 1 $$ -->
 \paragraph*{}
-Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt peuvent être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), la sensibilité et la spécificité moyennes.
+Nous fixerons arbitrairement $w = 3$, soit $S_{w} = Sen^{6} . Spe^{-4}$ ;ce qui revient à fixer dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité.
+\paragraph*{}
+Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
+\paragraph*{}
 Nous retiendrons ici le kappa de Cohen, calculé à partir de la matrice de confusion, et donné par :
-$ \kappa{} = \frac{p_{0} - p_ {e}}{1 - p_{e}} $
-Avec $p_{0} la probabilité d'accord entre notre modèle et la classe réelle du champignon, et p_{e} la probablité d'un même accord résultant du pur hasard.
+$\kappa{} = \frac{p_{0}-p_{e}}{1-p_{e}}$
+
+Avec $p_{0}$ la probabilité d'accord entre notre modèle et la classe réelle du champignon, et $p_{e}$ la probablité d'un même accord résultant du pur hasard.
 
 [ INSERER SCHEMA MATRICE DE CONFUSION ]
 
@@ -616,11 +618,11 @@ Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec =
 
 Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
-   BI_fit_rpartcost_spec_graphe + theme(legend.position="bottom"),
-   BI_fit_rpartcost_sens_graphe + theme(legend.position="bottom") + ylab(NULL)
+   ncol = 2,
+   BI_fit_rpartcost_spec_graphe,
+   BI_fit_rpartcost_sens_graphe
    )
 )
 ```
@@ -656,20 +658,20 @@ Quoique très efficient sur le plan calculatoire, le modèle de fougères aléat
 \paragraph*{}
 Le second modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
+   ncol = 2,
    BI_fit_ranger_Gini_spec_graphe,
-   BI_fit_ranger_Gini_sens_graphe + ylab(NULL)
+   BI_fit_ranger_Gini_sens_graphe
    )
 )
 ```
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
+   ncol = 2,
    BI_fit_ranger_ET_spec_graphe,
-   BI_fit_ranger_ET_sens_graphe + ylab(NULL)
+   BI_fit_ranger_ET_sens_graphe
    )
 )
 ```
@@ -684,17 +686,17 @@ Ce modèle s'est comporté de façon excellente, donnant une spécificité et un
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
+   ncol = 2,
    BI_fit_Rborist_spec_graphe,
-   BI_fit_Rborist_sens_graphe + ylab(NULL)
+   BI_fit_Rborist_sens_graphe
    )
 )
 ```
 
 \paragraph*{}
-Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
+Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteinte sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
 \paragraph*{}
 Avec des paramètres optimaux (*predFixed* = `r BI_best_Rboristgrid$predFixed` et *minNode* = `r BI_best_Rboristgrid$minNode`), la performance est estimée à :
 \FloatBarrier
@@ -772,11 +774,11 @@ Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec =
 
 Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
+   ncol = 2,
    MUL_fit_rpartcost_spec_graphe,
-   MUL_fit_rpartcost_sens_graphe + ylab(NULL)
+   MUL_fit_rpartcost_sens_graphe
    )
 )
 ```
@@ -802,20 +804,20 @@ Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'
 \paragraph*{}
 Le premier modèle de forêt aléatoire évalué dans cette partie est le modèle ranger, qui possède trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
+   ncol = 2,
    MUL_fit_ranger_Gini_spec_graphe,
-   MUL_fit_ranger_Gini_sens_graphe + ylab(NULL)
+   MUL_fit_ranger_Gini_sens_graphe
    )
 )
 ```
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
+   ncol = 2,
    MUL_fit_ranger_ET_spec_graphe,
-   MUL_fit_ranger_ET_sens_graphe + ylab(NULL)
+   MUL_fit_ranger_ET_sens_graphe
    )
 )
 ```
@@ -830,11 +832,11 @@ Ce modèle s'est comporté de façon excellente, donnant une spécificité et un
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
-   ncol = 2, widths = c(8,7),
-   MUL_fit_Rborist_spec_graphe,
-   MUL_fit_Rborist_sens_graphe + ylab(NULL)
+   ncol = 2,
+   MUL_fit_Rborist_spec_graphe + theme(legend.position="bottom"),
+   MUL_fit_Rborist_sens_graphe + theme(legend.position="bottom")
    )
 )
 ```

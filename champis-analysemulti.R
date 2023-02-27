@@ -177,26 +177,30 @@ MUL_fit_ranger_Gini_spec_graphe <- ggplot() +
    geom_tile(data = MUL_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 MUL_fit_ranger_Gini_sens_graphe <- ggplot() +
    geom_raster(data = MUL_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
    geom_tile(data = MUL_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 
 MUL_fit_ranger_ET_spec_graphe <- ggplot() +
    geom_raster(data = MUL_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
    geom_tile(data = MUL_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 MUL_fit_ranger_ET_sens_graphe <- ggplot() +
    geom_raster(data = MUL_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
    geom_tile(data = MUL_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 
 MUL_best_ranger <- which.max(MUL_fit_ranger_results$Spec^MUL_ratioSpeSen*MUL_fit_ranger_results$Sens)
 MUL_best_rangergrid <- data.frame(mtry = MUL_fit_ranger_results[MUL_best_ranger,]$mtry, min.node.size =MUL_fit_ranger_results[MUL_best_ranger,]$min.node.size, splitrule =MUL_fit_ranger_results[MUL_best_ranger,]$splitrule)
@@ -218,13 +222,15 @@ MUL_fit_Rborist_spec_graphe <- ggplot() +
    geom_tile(data = MUL_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Spec), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 MUL_fit_Rborist_sens_graphe <- ggplot() +
    geom_raster(data = MUL_pred_Rborist, aes(x = predFixed, y = minNode, fill = Sens), interpolate = TRUE) +
    geom_tile(data = MUL_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Sens), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 
 MUL_best_Rborist <- which.max(MUL_fit_Rborist_results$Spec^MUL_ratioSpeSen*MUL_fit_Rborist_results$Sens)
 MUL_best_Rboristgrid <- data.frame(predFixed = MUL_fit_Rborist_results[MUL_best_Rborist,]$predFixed, minNode =MUL_fit_Rborist_results[MUL_best_Rborist,]$minNode)

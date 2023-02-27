@@ -52,11 +52,15 @@ LHS2$alpha <- 0.01*LHS2$alpha
 LHS2r <- log(LHS2$alpha + 0.05*LHS2$beta)
 
 
-Mod <- modelFit(X=LHS2, Y=LHS2r, type="MARS", degree = 4)
-Mod <- modelFit(X=LHS2, Y=LHS2r, type="Kriging", formula=Y~alpha+beta+alpha:beta+I(alpha^2)+I(beta^2))
+ModM <- modelFit(X=LHS2, Y=LHS2r, type="MARS", degree = 4)
+ModK <- modelFit(X=LHS2, Y=LHS2r, type="Kriging", formula=Y~alpha+beta+alpha:beta+I(alpha^2)+I(beta^2))
+
+ModK$model$trend.coef      # COEFFICIENTS : HYPER IMPORTANT <3 <3 <3
+ModK$model$trend.coef[1]   # Constante, etc.
+
 LHS2t <- data.frame(expand_grid(LHS2$alpha, LHS2$beta))
 colnames(LHS2t) <- c("alpha","beta")
-LHS2t$pred <- modelPredict(Mod, LHS2t)
+LHS2t$pred <- modelPredict(ModM, LHS2t)
 LHS2t <- cbind(LHS2t, LHS2p)
 ggplot() +
    geom_tile(data = LHS2t, aes(x = alpha, y = beta, fill = pred)) +
