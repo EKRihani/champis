@@ -47,15 +47,26 @@ BI_lot_evaluation <- BI_lot_appr_opti[index2,]
 BI_ratioSpeSen <- 10
 BI_n_folds <- 5
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
-fit_test <- function(fcn_model){
+fit_test <- function(fcn_modele){
    set.seed(1)
    tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = BI_n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
    cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
-                 fcn_model[1], 
+                 fcn_modele[1], 
                  "', data = BI_lot_appr_opti, trControl = tr_ctrl, metric = 'Spec', ", 
-                 fcn_model[2],")")
+                 fcn_modele[2],")")
    fitting <- eval(parse(text = cmd))        # Lance commande
    fitting
+}
+
+# Définition de fonction : graphique 2D
+graphe2D <- function(fcn_donnees, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
+   ggplot() +
+   geom_raster(data = fcn_donnees, aes(x = fcn_x, y = fcn_y, fill = fcn_metrique), interpolate = TRUE) +
+   geom_tile(data = fcn_donnees, aes(x = fcn_x, y = fcn_y, fill = fcn_metrique), color = "black", linewidth =.5) +
+   scale_fill_viridis_c(option = fcn_couleur, direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position="bottom")
 }
 
 # Parallélisation (A TESTER !!!)
@@ -192,10 +203,10 @@ BI_fit_Rborist_bestTune <- BI_fit_Rborist$bestTune
 
 BI_fit_ranger_GINI <- BI_fit_ranger_results %>% filter (splitrule == "gini")
 BI_fit_ranger_ET <- BI_fit_ranger_results %>% filter (splitrule == "extratrees")
-BI_mod_ranger_spec_GINI <- modelFit(X=BI_fit_ranger_GINI[,1:2], Y=BI_fit_ranger_GINI$Spec,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-BI_mod_ranger_sens_GINI <- modelFit(X=BI_fit_ranger_GINI[,1:2], Y=BI_fit_ranger_GINI$Sens,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-BI_mod_ranger_spec_ET <- modelFit(X=BI_fit_ranger_ET[,1:2], Y=BI_fit_ranger_ET$Spec,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-BI_mod_ranger_sens_ET <- modelFit(X=BI_fit_ranger_ET[,1:2], Y=BI_fit_ranger_ET$Sens,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_spec_GINI <- modelFit(X=BI_fit_ranger_GINI[,1:2], Y=BI_fit_ranger_GINI$Spec, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_sens_GINI <- modelFit(X=BI_fit_ranger_GINI[,1:2], Y=BI_fit_ranger_GINI$Sens, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_spec_ET <- modelFit(X=BI_fit_ranger_ET[,1:2], Y=BI_fit_ranger_ET$Spec, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_sens_ET <- modelFit(X=BI_fit_ranger_ET[,1:2], Y=BI_fit_ranger_ET$Sens, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
 
 BI_pred_ranger_GINI <- expand.grid(BI_fit_ranger_GINI[,1:2])
 colnames(BI_pred_ranger_GINI) <- c("mtry", "min.node.size")
@@ -256,6 +267,8 @@ BI_pred_Rborist2$Spec <- modelPredict(BI_mod_Rborist_spec, BI_pred_Rborist)
 BI_pred_Rborist2$Sens <- modelPredict(BI_mod_Rborist_sens, BI_pred_Rborist)
 BI_pred_Rborist <- cbind(BI_pred_Rborist, BI_pred_Rborist2)
 
+
+graphe2D(BI_pred_Rborist, predFixed, minNode, Spec, "F")
 BI_fit_Rborist_spec_graphe <- ggplot() +
    geom_raster(data = BI_pred_Rborist, aes(x = predFixed, y = minNode, fill = Spec), interpolate = TRUE) +
    geom_tile(data = BI_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Spec), color = "black", linewidth =.5) +
