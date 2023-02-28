@@ -434,6 +434,7 @@ Dans une tâche de classification binaire, les critères usuels sont la spécifi
 D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de Youden pondéré, qui permet de pondérer la spécificité et la sensibilité au sein d'un index synthétique. Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités nulles.
 
 https://acsjournals.onlinelibrary.wiley.com/doi/10.1002/1097-0142(1950)3:1%3C32::AID-CNCR2820030106%3E3.0.CO;2-3
+
 https://www.tandfonline.com/doi/full/10.1080/03610926.2018.1435809?scroll=top&needAccess=true&role=tab
 \paragraph*{}
 En l'espèce, l'index J de Youden pondéré nous permet donc de construire un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible, sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
@@ -442,7 +443,8 @@ L'index J de Youden pondéré est donné par :
 $$ S_{w} = Sen^{2w} . Spe^{2(1-w)} ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
 <!-- 0 \leq w \leq 1 $$ -->
 \paragraph*{}
-Nous fixerons arbitrairement $w = 3$, soit $S_{w} = Sen^{6} . Spe^{-4}$ ;ce qui revient à fixer dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité.
+Nous fixerons arbitrairement $w = 1/11$, soit $S_{w} = Sen^{2/11} . Spe^{20/11}$ ;ce qui revient à fixer dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité. 
+<!-- x = 9/10 ou1/11 ... -->
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
@@ -618,7 +620,12 @@ kable(BI_fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modè
 Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(BI_fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(BI_fit_rpart_cp_results["Spec"]),3)`).
 \FloatBarrier
 \paragraph*{}
-Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp /geq 0,05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la spécificité
+Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp \geq 0,05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la spécificité se fera inévitablement au détriment de la sensibilité, et inversement.
+\paragraph*{}
+En pratique, pour $cp \geq 0,05$, notre modèle d'IA basé sur ce type d'arbre de décision se montrera soit excessivement sévère, rejetant un nombre considérable de champignons comestibles (quadrant supérieur gauche, $cost \leq 1,5$), soit au contraire excessivement laxiste, admettant un nombre important de champignons non-comestibles (quadrant supérieur droit, $cost \geq 1,5$).
+\paragraph*{}
+C'est dans la section inférieure de ces graphiques ($cp \leq 0,025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
+
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
@@ -630,7 +637,7 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-Les performances maximales sont atteintes pour *cp =* `r BI_best_rpartcostgrid['cp']` et *Cost = * `r BI_best_rpartcostgrid['Cost']`.
+Les performances maximales seront ici atteintes pour *cp =* `r BI_best_rpartcostgrid['cp']` et *Cost = * `r BI_best_rpartcostgrid['Cost']`.
 
 ```{r, echo = FALSE}
 kable(BI_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")

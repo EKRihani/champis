@@ -44,9 +44,9 @@ BI_lot_evaluation <- BI_lot_appr_opti[index2,]
 # names(getModelInfo())
 # getModelInfo(Rborist)
 
-BI_w <- 3
-BI_RatioSpe <- 2*BI_w
-BI_RatioSens <- 2*(1-BI_w)
+BI_w <- 1/11
+BI_RatioSens <- 2*BI_w
+BI_RatioSpe <- 2*(1-BI_w)
 BI_n_folds <- 5
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_modele){
@@ -61,15 +61,19 @@ fit_test <- function(fcn_modele){
 }
 
 # Définition de fonction : graphique 2D
-graphe2D <- function(fcn_donnees, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
-   ggplot() +
-   geom_raster(data = fcn_donnees, aes(x = fcn_x, y = fcn_y, fill = fcn_metrique), interpolate = TRUE) +
-   geom_tile(data = fcn_donnees, aes(x = fcn_x, y = fcn_y, fill = fcn_metrique), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = fcn_couleur, direction = 1) +
+graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
+   cmd <- paste0(fcn_donnees, " %>% ggplot() +
+   geom_raster(data =", fcn_donnees, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), interpolate = TRUE) +
+   geom_tile(data =", fcn_modele, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), color = 'black', linewidth =.5) +
+   scale_fill_viridis_c(option ='" , fcn_couleur, "', direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
+   theme(legend.position='bottom')"
+   )
+   eval(parse(text = cmd))
 }
+
+
 
 # Parallélisation (A TESTER !!!)
 # library(doParallel)
@@ -133,6 +137,7 @@ BI_fit_c50tree <- fit_test(BI_set_c50tree)
 BI_fit_rpart_cp_results <- BI_fit_rpart_cp$results
 BI_fit_rpart_cp_graphe <- ggplot(data = BI_fit_rpart_cp$results, aes(x = cp, y = Spec)) + geom_point() + ylab("Spécificité") + scale_x_log10()
 
+# Modèle quadratique
 BI_fit_rpartcost_results <- BI_fit_rpartcost$results
 BI_mod_rpartcost_spec <- modelFit(X=BI_fit_rpartcost_results[,1:2], Y=BI_fit_rpartcost_results$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
 BI_mod_rpartcost_sens <-  modelFit(X=BI_fit_rpartcost_results[,1:2], Y=BI_fit_rpartcost_results$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
@@ -142,20 +147,10 @@ BI_pred_rpartcost2 <- NULL
 BI_pred_rpartcost2$Spec <- modelPredict(BI_mod_rpartcost_spec, BI_pred_rpartcost)
 BI_pred_rpartcost2$Sens <- modelPredict(BI_mod_rpartcost_sens, BI_pred_rpartcost)
 BI_pred_rpartcost <- cbind(BI_pred_rpartcost, BI_pred_rpartcost2)
-BI_fit_rpartcost_spec_graphe <- ggplot() +
-   geom_raster(data = BI_pred_rpartcost, aes(x = Cost, y = cp, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = BI_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Spec), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "F", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
-BI_fit_rpartcost_sens_graphe <- ggplot() +
-   geom_raster(data = BI_pred_rpartcost, aes(x = Cost, y = cp, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = BI_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Sens), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "G", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
+
+# Graphes 2D
+BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_results", "Cost", "cp", "Spec", "F")
+BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_results", "Cost", "cp", "Sens", "G")
 
 BI_fit_ctree_criterion_graphe <- ggplot(BI_fit_ctree_criterion)
 BI_fit_ctree_criterion_results <- BI_fit_ctree_criterion$results
@@ -224,35 +219,11 @@ BI_pred_ranger_ET2$Spec <- modelPredict(BI_mod_ranger_spec_ET, BI_pred_ranger_ET
 BI_pred_ranger_ET2$Sens <- modelPredict(BI_mod_ranger_sens_ET, BI_pred_ranger_ET)
 BI_pred_ranger_ET <- cbind(BI_pred_ranger_ET, BI_pred_ranger_ET2)
 
-BI_fit_ranger_Gini_spec_graphe <- ggplot() +
-   geom_raster(data = BI_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = BI_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "F", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
-BI_fit_ranger_Gini_sens_graphe <- ggplot() +
-   geom_raster(data = BI_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = BI_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "G", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
-
-BI_fit_ranger_ET_spec_graphe <- ggplot() +
-   geom_raster(data = BI_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = BI_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "F", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
-BI_fit_ranger_ET_sens_graphe <- ggplot() +
-   geom_raster(data = BI_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = BI_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "G", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
+# Graphes 2D
+BI_fit_ranger_Gini_spec_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Spec", "F")
+BI_fit_ranger_Gini_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
+BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "mtry", "min.node.size", "Spec", "F")
+BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
 
 BI_best_ranger <- which.max(BI_fit_ranger_results$Spec^BI_ratioSpeSen*BI_fit_ranger_results$Sens)
 BI_best_rangergrid <- data.frame(mtry = BI_fit_ranger_results[BI_best_ranger,]$mtry, min.node.size =BI_fit_ranger_results[BI_best_ranger,]$min.node.size, splitrule =BI_fit_ranger_results[BI_best_ranger,]$splitrule)
@@ -269,22 +240,9 @@ BI_pred_Rborist2$Spec <- modelPredict(BI_mod_Rborist_spec, BI_pred_Rborist)
 BI_pred_Rborist2$Sens <- modelPredict(BI_mod_Rborist_sens, BI_pred_Rborist)
 BI_pred_Rborist <- cbind(BI_pred_Rborist, BI_pred_Rborist2)
 
-
-graphe2D(BI_pred_Rborist, predFixed, minNode, Spec, "F")
-BI_fit_Rborist_spec_graphe <- ggplot() +
-   geom_raster(data = BI_pred_Rborist, aes(x = predFixed, y = minNode, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = BI_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Spec), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "F", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
-BI_fit_Rborist_sens_graphe <- ggplot() +
-   geom_raster(data = BI_pred_Rborist, aes(x = predFixed, y = minNode, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = BI_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Sens), color = "black", linewidth =.5) +
-   scale_fill_viridis_c(option = "G", direction = 1) +
-   theme_bw() +
-   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position="bottom")
+# Graphes 2D
+BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Spec", "F")
+BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Sens", "G")
 
 BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec^BI_ratioSpeSen*BI_fit_Rborist_results$Sens)
 BI_best_Rboristgrid <- data.frame(predFixed = BI_fit_Rborist_results[BI_best_Rborist,]$predFixed, minNode =BI_fit_Rborist_results[BI_best_Rborist,]$minNode)
