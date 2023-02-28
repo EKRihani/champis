@@ -44,7 +44,9 @@ BI_lot_evaluation <- BI_lot_appr_opti[index2,]
 # names(getModelInfo())
 # getModelInfo(Rborist)
 
-BI_ratioSpeSen <- 10
+BI_w <- 3
+BI_RatioSpe <- 2*BI_w
+BI_RatioSens <- 2*(1-BI_w)
 BI_n_folds <- 5
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_modele){
@@ -160,7 +162,7 @@ BI_fit_ctree_criterion_results <- BI_fit_ctree_criterion$results
 BI_fit_c50tree_results <- BI_fit_c50tree$results
 
 # Meilleur modèle CART
-BI_best_rpartcost <- which.max(BI_fit_rpartcost_results$Spec^BI_ratioSpeSen*BI_fit_rpartcost_results$Sens)
+BI_best_rpartcost <- which.max(BI_fit_rpartcost_results$Spec^BI_RatioSpe*BI_fit_rpartcost_results$Sens^BI_RatioSens)
 BI_best_rpartcostgrid <- data.frame(Cost = BI_fit_rpartcost_results[BI_best_rpartcost,]$Cost, cp =BI_fit_rpartcost_results[BI_best_rpartcost,]$cp)
 BI_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = BI_best_rpartcostgrid"))
 BI_fit_rpartcost_best <- fit_test(BI_set_rpartcost_best)
