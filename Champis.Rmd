@@ -447,7 +447,7 @@ Nous fixerons arbitrairement $w = 3$, soit $S_{w} = Sen^{6} . Spe^{-4}$ ;ce qui 
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
 Nous retiendrons ici le kappa de Cohen, calculé à partir de la matrice de confusion, et donné par :
-$\kappa{} = \frac{p_{0}-p_{e}}{1-p_{e}}$
+$$\kappa{} = \frac{p_{0}-p_{e}}{1-p_{e}}$$
 
 Avec $p_{0}$ la probabilité d'accord entre notre modèle et la classe réelle du champignon, et $p_{e}$ la probablité d'un même accord résultant du pur hasard.
 
@@ -608,15 +608,17 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 * Les arbres de décision obtenus peuvent être tracés, et facilement interprétés par l'humain.
 
 \paragraph*{}
-Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
+Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART le plus simple proposé dans notre étude (rpart) ne dispose que d'un seul hyperparamètre  : *cp* (complexité).
+\FloatBarrier
 
 ```{r, echo = FALSE}
 kable(BI_fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
 ```
 
 Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(BI_fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(BI_fit_rpart_cp_results["Spec"]),3)`).
-
-Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
+\FloatBarrier
+\paragraph*{}
+Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp /geq 0,05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la spécificité
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
@@ -627,36 +629,67 @@ plot(ggarrange(
 )
 ```
 
+\paragraph*{}
 Les performances maximales sont atteintes pour *cp =* `r BI_best_rpartcostgrid['cp']` et *Cost = * `r BI_best_rpartcostgrid['Cost']`.
 
 ```{r, echo = FALSE}
 kable(BI_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
 ```
-
+\paragraph*{}
 Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre.
+\FloatBarrier
 
 ```{r, echo = FALSE}
 kable(BI_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree")
 ```
 
+\paragraph*{}
 De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Spec = 1$.
 
 ### Forêts aléatoires
 \paragraph*{}
+\FloatBarrier
 Le premier modèle de forêt aléatoire évalué dans cette étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
-
-\paragraph*{}
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité du modèle de fougères aléatoires"}
 BI_fit_rFerns_depth_graphe + theme_bw()
 ```
 
 \paragraph*{}
-Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoire a fourni des résultats peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Sens"]), 3)`).
-
+Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Sens"]), 3)`).
+\FloatBarrier
 \paragraph*{}
-Le second modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
+Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
+
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(ggarrange(
+   ncol = 2,
+   BI_fit_Rborist_spec_graphe,
+   BI_fit_Rborist_sens_graphe
+   )
+)
+```
+\paragraph*{}
+En posant comme facteurs réduits :
+
+* $X_{1} \in [0;1]$ pour le paramètre *minNode*,
+* $X_{2} \in [0;1]$ pour le paramètre *predFixed*,
+
+Nous pouvons modéliser la réponse, avec un modèle quadratique
+$$ Y = \beta _{0} + \beta _{1}.X_{1} + \beta _{2}.X_{2} + \beta _{12}.X_{1}.X_{2} + \beta _{11}.X_{1}^{2} + \beta _{22}.X_{2}^{2}$$
+\paragraph*{}
+Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteinte sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
+\paragraph*{}
+Avec des paramètres optimaux (*predFixed* = `r BI_best_Rboristgrid$predFixed` et *minNode* = `r BI_best_Rboristgrid$minNode`), la performance est estimée à :
+\FloatBarrier
+```{r, echo = FALSE}
+kable(BI_fit_Rborist_best_results[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
+```
+\FloatBarrier
+Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
+\paragraph*{}
+Le derier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
@@ -676,37 +709,15 @@ plot(ggarrange(
 )
 ```
 
+\paragraph*{}
 Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r BI_best_rangergrid$min.node.size`, *mtry* = `r BI_best_rangergrid$mtry` et *splitrule* = `r BI_best_rangergrid$splitrule`) a donné d'excellents résultats.
 
 ```{r, echo = FALSE}
 kable(BI_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
 ```
 
-Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
 \paragraph*{}
-Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
-
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
-plot(ggarrange(
-   ncol = 2,
-   BI_fit_Rborist_spec_graphe,
-   BI_fit_Rborist_sens_graphe
-   )
-)
-```
-
-\paragraph*{}
-Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteinte sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
-\paragraph*{}
-Avec des paramètres optimaux (*predFixed* = `r BI_best_Rboristgrid$predFixed` et *minNode* = `r BI_best_Rboristgrid$minNode`), la performance est estimée à :
-\FloatBarrier
-
-```{r, echo = FALSE}
-kable(BI_fit_Rborist_best_results[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
-```
-\FloatBarrier
-\paragraph*{}
-Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger, avec une sensibilité et une spécificité excellentes.
+Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité et une spécificité excellentes.
 \paragraph*{}
 Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
 \paragraph*{}
@@ -896,6 +907,7 @@ texte
 # Références bibliographiques
 <div id="refs"></div>
 
+\newpage
 # (APPENDIX) Appendix {-} 
 
 # Annexes A
