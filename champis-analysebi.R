@@ -16,7 +16,8 @@ fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
 
 fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
 dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
-
+dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
+dataset$class <- relevel(dataset$class, ref = "toxique")
 
 ##############################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
@@ -44,17 +45,20 @@ BI_lot_evaluation <- BI_lot_appr_opti[index2,]
 # names(getModelInfo())
 # getModelInfo(Rborist)
 
-BI_w <- 1/11
+BI_w <- 10/11        # Ou 1/11
 BI_RatioSens <- 2*BI_w
-BI_RatioSpe <- 2*(1-BI_w)
+BI_RatioSpec <- 2*(1-BI_w)
 BI_n_folds <- 5
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_modele){
    set.seed(1)
-   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = twoClassSummary, method = "cv", number = BI_n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
+   tr_ctrl <- trainControl(classProbs = TRUE, 
+                           summaryFunction = twoClassSummary, 
+                           method = "cv", 
+                           number = BI_n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (n-fold)
    cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
                  fcn_modele[1], 
-                 "', data = BI_lot_appr_opti, trControl = tr_ctrl, metric = 'Spec', ", 
+                 "', data = BI_lot_appr_opti, trControl = tr_ctrl, metric = 'Sens', ", 
                  fcn_modele[2],")")
    fitting <- eval(parse(text = cmd))        # Lance commande
    fitting
@@ -71,6 +75,17 @@ graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_co
    theme(legend.position='bottom')"
    )
    eval(parse(text = cmd))
+}
+
+grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
+   ggplot(data = fcn_donnees, aes_string(x = fcn_abcisse)) +      # aes_string permet d'utiliser une chaîne de caractères (fcn_abcisse)
+      geom_line(aes(y = Sens, color = "Sensibilité")) +
+      geom_point(aes(y = Sens, color = "Sensibilité")) +
+      geom_line(aes(y = Spec, color = "Spécificité")) +
+      geom_point(aes(y = Spec, color = "Spécificité")) +
+      geom_line(aes(y = Jw, color = "Jw")) +
+      geom_point(aes(y = Jw, color = "Jw")) +
+      ylab(NULL) + labs(colour = "Performance") + theme_bw()
 }
 
 
@@ -90,12 +105,13 @@ system.time(fit_test(BI_set_lda2_dim))      #### CHRONO
 BI_fit_pda_lambda <- fit_test(BI_set_pda_lambda)
 system.time(fit_test(BI_set_pda_lambda))  #### CHRONO
 # Extraire résultats d'intérêt : graphes et resultats
-BI_fit_lda2_dim_graphe <- ggplot(data = BI_fit_lda2_dim$results, aes(x = dimen, y = Spec)) + geom_point() + ylab("Spécificité")
-BI_fit_lda2_dim_grapheROC <- ggplot(data = BI_fit_lda2_dim$results, aes(x = dimen, y = ROC)) + geom_point() + ylab("ROC")
-BI_fit_lda2_dim_results <- BI_fit_lda2_dim$results
-BI_fit_pda_lambda_results <- BI_fit_pda_lambda$results
-BI_fit_pda_lambda_graphe <- ggplot(data = BI_fit_pda_lambda$results, aes(x = lambda, y = Spec)) + geom_point() + ylab("Spécificité")
-BI_fit_pda_lambda_grapheROC <- ggplot(data = BI_fit_pda_lambda$results, aes(x = lambda, y = ROC)) + geom_point() + ylab("ROC")
+BI_fit_lda2_dim_resultats <- BI_fit_lda2_dim$results
+BI_fit_lda2_dim_resultats <- BI_fit_lda2_dim_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_lda2_dim_graphe <- grapheSpeSenJw(BI_fit_lda2_dim_resultats, "dimen")
+
+BI_fit_pda_lambda_resultats <- BI_fit_pda_lambda$results
+BI_fit_pda_lambda_resultats <- BI_fit_pda_lambda_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_pda_lambda_graphe <- grapheSpeSenJw(BI_fit_pda_lambda_resultats, "lambda")
 
 ## Fin parallélisation (A TESTER !!!)
 # stopCluster(cl)
@@ -107,10 +123,14 @@ BI_set_gamLoess_degree <-  c("gamLoess", "tuneGrid  = data.frame(degree = c(0, 1
 BI_fit_gamLoess_span <- fit_test(BI_set_gamLoess_span)
 BI_fit_gamLoess_degree <- fit_test(BI_set_gamLoess_degree)
 # Extraire résultats d'intérêt : graphes et resultats
-BI_fit_gamLoess_span_graphe <- ggplot(BI_fit_gamLoess_span)
-BI_fit_gamLoess_span_results <- BI_fit_gamLoess_span$results
-BI_fit_gamLoess_degree_graphe <- ggplot(BI_fit_gamLoess_degree)
-BI_fit_gamLoess_degree_results <- BI_fit_gamLoess_degree$results
+BI_fit_gamLoess_span_resultats <- BI_fit_gamLoess_span$results
+BI_fit_gamLoess_span_resultats <- BI_fit_gamLoess_span_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_gamLoess_span_graphe <- grapheSpeSenJw(BI_fit_gamLoess_span_resultats, "span")
+
+BI_fit_gamLoess_degree_resultats <- BI_fit_gamLoess_degree$results
+BI_fit_gamLoess_degree_resultats <- BI_fit_gamLoess_degree_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_gamLoess_degree_graphe <- grapheSpeSenJw(BI_fit_gamLoess_degree_resultats, "degree")
+
 
 # Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
 
@@ -134,30 +154,41 @@ BI_fit_ctree_criterion <- fit_test(BI_set_ctree_criterion)
 BI_fit_c50tree <- fit_test(BI_set_c50tree)
 
 # Extraire résultats d'intérêt : graphes et resultats
-BI_fit_rpart_cp_results <- BI_fit_rpart_cp$results
-BI_fit_rpart_cp_graphe <- ggplot(data = BI_fit_rpart_cp$results, aes(x = cp, y = Spec)) + geom_point() + ylab("Spécificité") + scale_x_log10()
+BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results
+BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, "cp") + scale_x_log10()
 
 # Modèle quadratique
-BI_fit_rpartcost_results <- BI_fit_rpartcost$results
-BI_mod_rpartcost_spec <- modelFit(X=BI_fit_rpartcost_results[,1:2], Y=BI_fit_rpartcost_results$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-BI_mod_rpartcost_sens <-  modelFit(X=BI_fit_rpartcost_results[,1:2], Y=BI_fit_rpartcost_results$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-BI_pred_rpartcost <- expand.grid(BI_fit_rpartcost_results[,1:2])
+BI_fit_rpartcost_resultats <- BI_fit_rpartcost$results
+BI_fit_rpartcost_resultats <- BI_fit_rpartcost_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_mod_rpartcost_spec <- modelFit(X=BI_fit_rpartcost_resultats[,1:2], Y=BI_fit_rpartcost_resultats$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+BI_mod_rpartcost_sens <-  modelFit(X=BI_fit_rpartcost_resultats[,1:2], Y=BI_fit_rpartcost_resultats$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+BI_mod_rpartcost_jw <-  modelFit(X=BI_fit_rpartcost_resultats[,1:2], Y=BI_fit_rpartcost_resultats$Jw,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+
+
+BI_pred_rpartcost <- expand.grid(BI_fit_rpartcost_resultats[,1:2])
 colnames(BI_pred_rpartcost) <- c("Cost", "cp")
 BI_pred_rpartcost2 <- NULL
 BI_pred_rpartcost2$Spec <- modelPredict(BI_mod_rpartcost_spec, BI_pred_rpartcost)
 BI_pred_rpartcost2$Sens <- modelPredict(BI_mod_rpartcost_sens, BI_pred_rpartcost)
+BI_pred_rpartcost2$Jw <- modelPredict(BI_mod_rpartcost_jw, BI_pred_rpartcost)
 BI_pred_rpartcost <- cbind(BI_pred_rpartcost, BI_pred_rpartcost2)
 
 # Graphes 2D
-BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_results", "Cost", "cp", "Spec", "F")
-BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_results", "Cost", "cp", "Sens", "G")
+BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
+BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
+BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Jw", "D")
 
-BI_fit_ctree_criterion_graphe <- ggplot(BI_fit_ctree_criterion)
-BI_fit_ctree_criterion_results <- BI_fit_ctree_criterion$results
+# ctree pas dans le rapport ?????
+BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion$results
+BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_ctree_criterion_graphe <- grapheSpeSenJw(BI_fit_ctree_criterion_resultats, "mincriterion")
+
 BI_fit_c50tree_results <- BI_fit_c50tree$results
 
+
 # Meilleur modèle CART
-BI_best_rpartcost <- which.max(BI_fit_rpartcost_results$Spec^BI_RatioSpe*BI_fit_rpartcost_results$Sens^BI_RatioSens)
+BI_best_rpartcost <- which.max(BI_fit_rpartcost_results$Spec^BI_RatioSpec*BI_fit_rpartcost_results$Sens^BI_RatioSens)
 BI_best_rpartcostgrid <- data.frame(Cost = BI_fit_rpartcost_results[BI_best_rpartcost,]$Cost, cp =BI_fit_rpartcost_results[BI_best_rpartcost,]$cp)
 BI_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = BI_best_rpartcostgrid"))
 BI_fit_rpartcost_best <- fit_test(BI_set_rpartcost_best)
@@ -225,7 +256,7 @@ BI_fit_ranger_Gini_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger
 BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "mtry", "min.node.size", "Spec", "F")
 BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
 
-BI_best_ranger <- which.max(BI_fit_ranger_results$Spec^BI_ratioSpeSen*BI_fit_ranger_results$Sens)
+BI_best_ranger <- which.max(BI_fit_ranger_results$Spec^BI_ratioSpec*BI_fit_ranger_results$Sens^BI_ratioSens)
 BI_best_rangergrid <- data.frame(mtry = BI_fit_ranger_results[BI_best_ranger,]$mtry, min.node.size =BI_fit_ranger_results[BI_best_ranger,]$min.node.size, splitrule =BI_fit_ranger_results[BI_best_ranger,]$splitrule)
 BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_best_rangergrid"))
 BI_fit_ranger_best <- fit_test(BI_set_ranger_best)
@@ -244,7 +275,7 @@ BI_pred_Rborist <- cbind(BI_pred_Rborist, BI_pred_Rborist2)
 BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Spec", "F")
 BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Sens", "G")
 
-BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec^BI_ratioSpeSen*BI_fit_Rborist_results$Sens)
+BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec^BI_ratioSpec*BI_fit_Rborist_results$Sens^BI_ratioSens)
 BI_best_Rboristgrid <- data.frame(predFixed = BI_fit_Rborist_results[BI_best_Rborist,]$predFixed, minNode =BI_fit_Rborist_results[BI_best_Rborist,]$minNode)
 BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_best_Rboristgrid"))
 BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
@@ -267,7 +298,7 @@ BI_fit_Rborist_best_results <- BI_fit_Rborist_best$results
 
 # Règle la liste de prédiction et lance la classification
 BI_evaluation <- BI_lot_evaluation
-BI_evaluation$reference <- as.logical(as.character(recode_factor(BI_evaluation$class, e = TRUE, p = FALSE))) # Bascule en booléen
+BI_evaluation$reference <- as.logical(as.character(recode_factor(BI_evaluation$class, toxique = TRUE, comestible = FALSE))) # Bascule en booléen
 
 # Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
 BI_evaluation$reference <- as.factor(BI_evaluation$reference)
@@ -300,11 +331,11 @@ colnames(BI_RF_resultat) <- c("Sensibilité", "Spécificité", "F1 score", "Dur�
 rownames(BI_RF_resultat) <- c("Ranger", "Rborist")
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
-rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
-   BI_fit_pda_lambda, BI_fit_lda2_dim, BI_fit_gamLoess_degree, BI_fit_gamLoess_span,
-   BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
-   BI_fit_ctree_criterion, BI_fit_c50tree, BI_fit_rFerns_depth, 
-   BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
-   BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
+# rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
+#    BI_fit_pda_lambda, BI_fit_lda2_dim, BI_fit_gamLoess_degree, BI_fit_gamLoess_span,
+#    BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
+#    BI_fit_ctree_criterion, BI_fit_c50tree, BI_fit_rFerns_depth, 
+#    BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
+#    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
 save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données pour rapport
 load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données pour rapport

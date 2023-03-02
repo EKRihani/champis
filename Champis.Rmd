@@ -436,15 +436,17 @@ D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de You
 https://acsjournals.onlinelibrary.wiley.com/doi/10.1002/1097-0142(1950)3:1%3C32::AID-CNCR2820030106%3E3.0.CO;2-3
 
 https://www.tandfonline.com/doi/full/10.1080/03610926.2018.1435809?scroll=top&needAccess=true&role=tab
+
+https://pubmed.ncbi.nlm.nih.gov/23506596/
 \paragraph*{}
 En l'espèce, l'index J de Youden pondéré nous permet donc de construire un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible, sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
 \paragraph*{}
 L'index J de Youden pondéré est donné par :
-$$ S_{w} = Sen^{2w} . Spe^{2(1-w)} ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
+$$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
 <!-- 0 \leq w \leq 1 $$ -->
 \paragraph*{}
-Nous fixerons arbitrairement $w = 1/11$, soit $S_{w} = Sen^{2/11} . Spe^{20/11}$ ;ce qui revient à fixer dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité. 
-<!-- x = 9/10 ou1/11 ... -->
+En posant la toxicité en tant que valeur positive, nous pouvons donc fixer arbitrairement $w$ afin d'obtenir un index de Youden pondéré accordant dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité. Ce critère nous permet d'établir $w = 10/11$.
+<!-- x = 10/11 ou 1/11 ... -->
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
@@ -532,8 +534,6 @@ La librairie *caret* fournit une plateforme très pratique et efficiente pour la
 \paragraph*{}
 La première étape est de construire une fonction d'évaluation et de régression, afin de rationnaliser notre travail. En effet, l'évaluation et la régression seront effectuées très fréquemment au cours de cette étude, il est donc souhaitable d'assigner une fonction dédiée à ces tâches. La librairie caret permet de la définir très simplement par :  
 
-[A MODIFIER EN COHERENCE AVEC LE FICHIER R]
-
 ```{r, eval = FALSE}
 set.seed(1)
 tr_ctrl <- trainControl(classProbs = TRUE, 
@@ -543,7 +543,7 @@ train(class ~ .,
       method = [METHODE],
       data = BI_lot_appr_opti,
       trControl = tr_ctrl,
-      metric = 'Spec',
+      metric = 'Sens',
       tuneGrid = data.frame([PARAMETRES]))
 ```
 La fonction *set.seed* assure la reproductibilité.
@@ -559,21 +559,21 @@ Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité 
 \paragraph*{}
 Les deux modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité des modèles lda2 (à gauche) et pda (à droite)"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(
    ncol = 2,
-   BI_fit_lda2_dim_graphe + theme_bw(),
-   BI_fit_pda_lambda_graphe +  ylab("") + theme_bw()
+   BI_fit_lda2_dim_graphe,
+   BI_fit_pda_lambda_graphe + theme_bw()
    )
 )
 ```
 
 \paragraph*{}
-Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la spécificité ($Spec =$ `r round(mean(BI_fit_lda2_dim_results[,"Spec"]), 3)`). 
+Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la sensibilité ($Sens =$ `r round(mean(BI_fit_lda2_dim_resultats[,"Sens"]), 3)`). 
 \paragraph*{}
-Le paramètre *lambda* du modèle pda impacte sa spécificité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Spec_{max} =$ `r round(max(BI_fit_pda_lambda_results["Spec"]))`).
+Le paramètre *lambda* du modèle pda impacte sa sensibilité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Sens_{max} =$ `r round(max(BI_fit_pda_lambda_resultats["Sens"]),3)`).
 \paragraph*{}
-Toutefois, la spécificité de ces deux modèles est nettement insuffisante pour notre étude ($Spec \approx$ `r round(mean(c(BI_fit_lda2_dim_results$Spec, BI_fit_pda_lambda_results$Spec)),2)`), et leurs sensiblités n'ont rien de remarquable non plus ($Sens \approx$ `r round(mean(c(BI_fit_lda2_dim_results$Sens, BI_fit_pda_lambda_results$Sens)), 3)`).
+Toutefois, la sensibilité de ces deux modèles reste malheureusement très insuffisante pour notre étude ($Sens \approx$ `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Sens)),2)`), et leurs spécificités n'ont rien de remarquable non plus ($Spec \approx$ `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
 \paragraph*{}
 Ces performances médiocres s'expliquent par le fonctionnement même des modèles LDA qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple :
 
@@ -585,21 +585,21 @@ Ces performances médiocres s'expliquent par le fonctionnement même des modèle
 \paragraph*{}
 Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité de gamLoess en fonction du span (gauche) and du degré (droite)"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(
    ncol = 2,
-   BI_fit_gamLoess_span_graphe + theme_bw(),
-   BI_fit_gamLoess_degree_graphe +  ylab("") + theme_bw()
+   BI_fit_gamLoess_span_graphe,
+   BI_fit_gamLoess_degree_graphe
    )
 )
 ```
 
 \paragraph*{}
-L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet significatif sur la spécificité, avec $\Delta Spec =$ `r round(max(BI_fit_gamLoess_degree_results[,"Spec"]) - min(BI_fit_gamLoess_degree_results[,"Spec"]), 3)`. 
+L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet significatif sur la sensibilité, avec $\Delta Sens =$ `r round(max(BI_fit_gamLoess_degree_resultats[,"Sens"]) - min(BI_fit_gamLoess_degree_resultats[,"Sens"]), 3)`. 
 \paragraph*{}
-L'hyerparamètre *span* affecte marginalement la spécificité de gamLoess, avec une valeur optimale de *span* = `r BI_fit_gamLoess_span_results[which.max(BI_fit_gamLoess_span_results[,"Spec"]), "span"]`, résultant en $Spec_{max} =$ `r round(max(BI_fit_gamLoess_span_results["Spec"]), 3)`.
+L'hyerparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de *span* = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Sens"]), "span"]`, aboutissant à une sensibilité maximale de $Sens_{max} =$ `r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)`.
 \paragraph*{}
-La spécificité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en spécificité (`r round(max(BI_fit_gamLoess_span_results["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_results$Spec, BI_fit_pda_lambda_results$Spec)), 3)`) qu'en sensibilité (`r round(max(BI_fit_gamLoess_span_results["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_results$Sens, BI_fit_pda_lambda_results$Sens)), 3)`).
+La sensibilité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -614,26 +614,30 @@ Les premiers modèles présentés dans le cadre de notre étude sont deux modèl
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(BI_fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
+kable(BI_fit_rpart_cp_resultats[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
 ```
 
-Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(BI_fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(BI_fit_rpart_cp_results["Spec"]),3)`).
+Le modèle CART le plus simple n'atteint jamais la sensibilité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(BI_fit_rpart_cp_resultats["Sens"]),3)` et $Spec_{max} =$ `r round(max(BI_fit_rpart_cp_resultats["Spec"]),3)`).
 \FloatBarrier
 \paragraph*{}
-Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp \geq 0,05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la spécificité se fera inévitablement au détriment de la sensibilité, et inversement.
+Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp \geq 0,05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et inversement.
 \paragraph*{}
 En pratique, pour $cp \geq 0,05$, notre modèle d'IA basé sur ce type d'arbre de décision se montrera soit excessivement sévère, rejetant un nombre considérable de champignons comestibles (quadrant supérieur gauche, $cost \leq 1,5$), soit au contraire excessivement laxiste, admettant un nombre important de champignons non-comestibles (quadrant supérieur droit, $cost \geq 1,5$).
 \paragraph*{}
 C'est dans la section inférieure de ces graphiques ($cp \leq 0,025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
 
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
-   BI_fit_rpartcost_spec_graphe,
-   BI_fit_rpartcost_sens_graphe
+   BI_fit_rpartcost_sens_graphe,
+   BI_fit_rpartcost_spec_graphe
    )
 )
+```
+
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances (index de Youden pondéré 10:1) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
 ```
 
 \paragraph*{}
@@ -643,7 +647,7 @@ Les performances maximales seront ici atteintes pour *cp =* `r BI_best_rpartcost
 kable(BI_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
 ```
 \paragraph*{}
-Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise.
+Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la sensibilité requise.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre.
 \FloatBarrier
@@ -653,27 +657,27 @@ kable(BI_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèl
 ```
 
 \paragraph*{}
-De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Spec = 1$.
+De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Sens = 1$.
 
 ### Forêts aléatoires
 \paragraph*{}
 \FloatBarrier
 Le premier modèle de forêt aléatoire évalué dans cette étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Spécificité du modèle de fougères aléatoires"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Sensibilité du modèle de fougères aléatoires"}
 BI_fit_rFerns_depth_graphe + theme_bw()
 ```
 
 \paragraph*{}
-Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec une spécificité maximale de $Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Spec"]), 3)`. La sensibilité maximale n'est pas très élevée non plus ($Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Sens"]), 3)`).
+Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec une sensibilité maximale de $Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Sens"]), 3)`. La spécificité maximale n'est pas très élevée non plus ($Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Spec"]), 3)`).
 \FloatBarrier
 \paragraph*{}
 Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
-   BI_fit_Rborist_spec_graphe,
-   BI_fit_Rborist_sens_graphe
+   BI_fit_Rborist_sens_graphe,
+   BI_fit_Rborist_spec_graphe
    )
 )
 ```
@@ -694,24 +698,24 @@ Avec des paramètres optimaux (*predFixed* = `r BI_best_Rboristgrid$predFixed` e
 kable(BI_fit_Rborist_best_results[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
 ```
 \FloatBarrier
-Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
+Ce modèle s'est comporté de façon excellente, donnant une sensibilité et une spécificité remarquables dans cette phrase d'évaluation.
 \paragraph*{}
 Le derier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
    ncol = 2,
-   BI_fit_ranger_Gini_spec_graphe,
-   BI_fit_ranger_Gini_sens_graphe
+   BI_fit_ranger_Gini_sens_graphe,
+   BI_fit_ranger_Gini_spec_graphe
    )
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
 plot(ggarrange(
    ncol = 2,
-   BI_fit_ranger_ET_spec_graphe,
-   BI_fit_ranger_ET_sens_graphe
+   BI_fit_ranger_ET_sens_graphe,
+   BI_fit_ranger_ET_spec_graphe
    )
 )
 ```
@@ -726,9 +730,9 @@ kable(BI_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du mo
 \paragraph*{}
 Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité et une spécificité excellentes.
 \paragraph*{}
-Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
+Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides et ont pu être retenus pour notre étude.
 \paragraph*{}
-La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code R peut facilement être mesurée par :
+La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code R pouvant facilement être mesurée par :
 ```{r, eval = FALSE}
 temps_debut <- Sys.time()
 [Code à évaluer]
@@ -747,8 +751,8 @@ Les modèles ayant atteint le critère de spécificité ($Spec = 1$) lors de l'�
 \paragraph*{}
 Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, réglés avec les meilleurs hyperparamètres obtenus par mesure des performances face au jeu de données d'optimisation. Leurs performances face au jeu de données d'évaluation seront analysées avec les mêmes critères que précédemment :
 
-* La spécificité *doit* être égale à 1.
-* La sensibilité doit être la plus haute possible.
+* La sensibilité *doit* être supérieure à 0,9999.
+* La spécificité doit être la plus haute possible.
 
 ### Performances des modèles de forêts aléatoires  
 
@@ -785,18 +789,18 @@ Etant données des performances qu'ont montré les différents modèles lors de 
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
 
 ```{r, echo = FALSE}
-kable(MUL_fit_rpart_cp_results[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
+kable(MUL_fit_rpart_cp_resultats[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
 ```
 
-Le modèle CART le plus simple n'atteint jamais la spécificité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(MUL_fit_rpart_cp_results["Sens"]),3)` et $Spec_{max} =$ `r round(max(MUL_fit_rpart_cp_results["Spec"]),3)`).
+Le modèle CART le plus simple n'atteint jamais la sensibilité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(MUL_fit_rpart_cp_resultats["Sens"]),3)` et $Spec_{max} =$ `r round(max(MUL_fit_rpart_cp_resultats["Spec"]),3)`).
 
 Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
-   MUL_fit_rpartcost_spec_graphe,
-   MUL_fit_rpartcost_sens_graphe
+   MUL_fit_rpartcost_sens_graphe,
+   MUL_fit_rpartcost_spec_graphe
    )
 )
 ```
@@ -822,20 +826,20 @@ Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'
 \paragraph*{}
 Le premier modèle de forêt aléatoire évalué dans cette partie est le modèle ranger, qui possède trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
    ncol = 2,
-   MUL_fit_ranger_Gini_spec_graphe,
-   MUL_fit_ranger_Gini_sens_graphe
+   MUL_fit_ranger_Gini_sens_graphe,
+   MUL_fit_ranger_Gini_spec_graphe
    )
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
 plot(ggarrange(
    ncol = 2,
-   MUL_fit_ranger_ET_spec_graphe,
-   MUL_fit_ranger_ET_sens_graphe
+   MUL_fit_ranger_ET_sens_graphe,
+   MUL_fit_ranger_ET_spec_graphe
    )
 )
 ```
@@ -850,17 +854,17 @@ Ce modèle s'est comporté de façon excellente, donnant une spécificité et un
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Spécificité (à gauche) et sensibilité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
-   MUL_fit_Rborist_spec_graphe + theme(legend.position="bottom"),
-   MUL_fit_Rborist_sens_graphe + theme(legend.position="bottom")
+   MUL_fit_Rborist_sens_graphe,
+   MUL_fit_Rborist_spec_graphe
    )
 )
 ```
 
 \paragraph*{}
-Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
+Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique.
 \paragraph*{}
 Avec des paramètres optimaux (*predFixed* = `r MUL_best_Rboristgrid$predFixed` et *minNode* = `r MUL_best_Rboristgrid$minNode`), la performance est estimée à :
 \FloatBarrier
@@ -890,7 +894,7 @@ L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
 
 ```{r out.width = "100%", echo = FALSE}
 kable(MUL_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
-```  
+```
 
 La précision finale est égale à `r round(MUL_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(MUL_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MUL_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r MUL_temps_ranger` min), preuve de sa grande efficience calculatoire.
 \paragraph*{}
