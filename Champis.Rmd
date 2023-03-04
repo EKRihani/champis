@@ -125,7 +125,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * CPU : AMD Ryzen 5 5600G
 * RAM : 2x16 Go DDR4-3200
 * SSD : Crucial P5 M2 NVMe
-* OS : Xubuntu Linux 20.04.1 LTS
+* OS : Xubuntu Linux 22.04.2 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * RStudio : version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
 * Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`, bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
@@ -358,7 +358,7 @@ Dans cette étude, la division de ces trois jeux de données utilise une méthod
 \FloatBarrier
 
 ## Modèles utilisés
-### Analyses discriminantes (lda2, pda)
+### Analyses discriminantes
 [discriminant correspondence analysis???]
 
 https://rpubs.com/markloessi/505575
@@ -399,8 +399,7 @@ En effet, l'optimisation des paramètres d'un modèle informatique présente que
 * La fonction de réponse peut s'avérer relativement complexe.
 
 \paragraph*{}
-Ces particularités imposent d'explorer de manière méthodique la totalité de l'espace expérimental. Il existe une multitude de méthodes permettant de générer des plans expérimentaux, dits SFD (*Space Filling Design*), permettant d'optimiser l'occupation de l'espace expérimental. La méthode retenue pour cette étude sera celle des hypercubes latins, en raison de son utilisation répandue[citation SANTIAGO] et de sa simplicité conceptuelle.
-[http://www.azurad.fr/medias/133-documentation--6-construction-of-space-filling.pdf]
+Ces particularités imposent d'explorer de manière méthodique la totalité de l'espace expérimental. Il existe une multitude de méthodes permettant de générer des plans expérimentaux, dits SFD (*Space Filling Design*), permettant d'optimiser l'occupation de l'espace expérimental. La méthode retenue pour cette étude sera celle des hypercubes latins, en raison de son utilisation répandue[@santiago_construction_2012] et de sa simplicité conceptuelle.
 \paragraph*{}
 La méthode des hypercubes latins est une extension du principe des carrés latins. Un carré latin est une grille $n \times n$, remplie de $n$ éléments distincts arrangés de sorte que chaque ligne et chaque colonne ne contienne qu’un seul exemplaire de chacun des $n$ éléments. Dans le domaine des plans d'expériences, l'application des carrés latins revient à diviser un domaine expérimental bidimensionnel en une grille $n \times n$, et à placer une expérience et une seule sur chaque ligne et chaque colonne.
 \paragraph*{}
@@ -431,17 +430,11 @@ De nombreux critères sont utilisables, en fonction du cahier des charges, mais 
 \paragraph*{}
 Dans une tâche de classification binaire, les critères usuels sont la spécificité, la sensibilité, et l'aire sous la courbe de fonction d'efficacité du récepteur (*AUC ROC*, parfois abrégé en *ROC*). Il conviendra bien évidemment, avant d'utiliser des indicateurs tels que la spécificité et la sensibilité, de définir la notion de test positif et test négatif.
 \paragraph*{}
-D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de Youden pondéré, qui permet de pondérer la spécificité et la sensibilité au sein d'un index synthétique. Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités nulles.
-
-https://acsjournals.onlinelibrary.wiley.com/doi/10.1002/1097-0142(1950)3:1%3C32::AID-CNCR2820030106%3E3.0.CO;2-3
-
-https://www.tandfonline.com/doi/full/10.1080/03610926.2018.1435809?scroll=top&needAccess=true&role=tab
-
-https://pubmed.ncbi.nlm.nih.gov/23506596/
+D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de Youden[@youden_index_1950] pondéré, qui permet de d'ajuster les pondérations de la spécificité et la sensibilité au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
 \paragraph*{}
 En l'espèce, l'index J de Youden pondéré nous permet donc de construire un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible, sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
 \paragraph*{}
-L'index J de Youden pondéré est donné par :
+L'index J de Youden pondéré est donné par :[@rucker_summary_2010]
 $$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
 <!-- 0 \leq w \leq 1 $$ -->
 \paragraph*{}
@@ -780,6 +773,7 @@ kable(BI_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et
 \paragraph*{}
 Etant données des performances qu'ont montré les différents modèles lors de la classification binaire, seuls les modèles basés sur les arbres décisionnels et les forêts aléatoires seront évalués dans cette section.
 \FloatBarrier
+
 ## Classification par familles
 
 ### Modèles d'arbres de décision
