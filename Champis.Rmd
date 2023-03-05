@@ -629,7 +629,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances (index de Youden pondéré 10:1) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances (index de Youden pondéré 10:1) de rpartCost en fonction des paramètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
 ```
 
@@ -656,12 +656,13 @@ De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce
 \paragraph*{}
 \FloatBarrier
 Le premier modèle de forêt aléatoire évalué dans cette étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Sensibilité du modèle de fougères aléatoires"}
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle de fougères aléatoires"}
 BI_fit_rFerns_depth_graphe + theme_bw()
 ```
 
 \paragraph*{}
-Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec une sensibilité maximale de $Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Sens"]), 3)`. La spécificité maximale n'est pas très élevée non plus ($Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_results["Spec"]), 3)`).
+Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec une sensibilité maximale de $Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_resultats["Sens"]), 3)`. La spécificité maximale n'est pas très élevée non plus ($Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_resultats["Spec"]), 3)`).
 \FloatBarrier
 \paragraph*{}
 Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
@@ -674,14 +675,17 @@ plot(ggarrange(
    )
 )
 ```
+
 \paragraph*{}
 En posant comme facteurs réduits :
 
 * $X_{1} \in [0;1]$ pour le paramètre *minNode*,
 * $X_{2} \in [0;1]$ pour le paramètre *predFixed*,
 
-Nous pouvons modéliser la réponse, avec un modèle quadratique
+Nous pouvons modéliser la réponse avec un modèle quadratique
 $$ Y = \beta _{0} + \beta _{1}.X_{1} + \beta _{2}.X_{2} + \beta _{12}.X_{1}.X_{2} + \beta _{11}.X_{1}^{2} + \beta _{22}.X_{2}^{2}$$
+
+
 \paragraph*{}
 Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteinte sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
 \paragraph*{}
@@ -709,6 +713,16 @@ plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_sens_graphe,
    BI_fit_ranger_ET_spec_graphe
+   )
+)
+```
+
+
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des paramètres réduits : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(ggarrange(
+   ncol = 2,
+   BI_fit_ranger_ET_jw_graphe,
+   BI_fit_ranger_Gini_jw_graphe
    )
 )
 ```

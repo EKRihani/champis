@@ -65,6 +65,18 @@ fit_test <- function(fcn_modele){
 }
 
 # Définition de fonction : graphique 2D
+# graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
+#    fcn_x <- enquo(fcn_x)
+#    fcn_y <- enquo(fcn_y)
+#    fcn_metrique <- enquo(fcn_metrique)
+#    ggplot() +
+#       geom_raster(data = BI_pred_rpartcost, aes(x = !!fcn_x, y = !!fcn_y, fill = !!fcn_metrique), interpolate = TRUE) +
+#       geom_tile(data = fcn_modele, aes(x = !!fcn_x, y = !!fcn_y, fill = !!fcn_metrique), color = "black", linewidth =.5) +
+#       scale_fill_viridis_c(option = fcn_couleur, direction = 1) +
+#       theme_bw() +
+#       theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+#       theme(legend.position = "bottom")
+# }
 graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
    cmd <- paste0(fcn_donnees, " %>% ggplot() +
    geom_raster(data =", fcn_donnees, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), interpolate = TRUE) +
@@ -77,8 +89,11 @@ graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_co
    eval(parse(text = cmd))
 }
 
+
+# Définition de fonction : graphique nuage/ligne de Sens+Spec+Youden
 grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
-   ggplot(data = fcn_donnees, aes_string(x = fcn_abcisse)) +      # aes_string permet d'utiliser une chaîne de caractères (fcn_abcisse)
+   fcn_abcisse <- enquo(fcn_abcisse)
+   ggplot(data = fcn_donnees, aes(x = !!fcn_abcisse)) +
       geom_line(aes(y = Sens, color = "Sensibilité")) +
       geom_point(aes(y = Sens, color = "Sensibilité")) +
       geom_line(aes(y = Spec, color = "Spécificité")) +
@@ -137,13 +152,14 @@ BI_fit_gamLoess_degree_graphe <- grapheSpeSenJw(BI_fit_gamLoess_degree_resultats
 BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 
 BI_LHS <- nolhDesign(dimension = 2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
-BI_grid_rpartcost <- data.frame(BI_LHS)
-colnames(BI_grid_rpartcost) <- c("cp", "Cost")
-BI_grid_rpartcost$cp <- (BI_grid_rpartcost$cp*1e-2+1e-5)
-BI_grid_rpartcost$Cost <- BI_grid_rpartcost$Cost*2.5+1e-3
+BI_LHS <- data.frame(BI_LHS)
+colnames(BI_LHS) <- c("X1", "X2")
+BI_grid_rpartcost <- BI_LHS
+BI_grid_rpartcost$cp <- BI_grid_rpartcost$X1*1e-2+1e-5
+BI_grid_rpartcost$Cost <- BI_grid_rpartcost$X2*2.5+1e-3
 
 BI_set_rpart_cp <- c("rpart", "tuneGrid  = BI_grid_rpart_cp")
-BI_set_rpartcost <- c("rpartCost", "tuneGrid  = BI_grid_rpartcost")     # A TESTER !!!
+BI_set_rpartcost <- c("rpartCost", "tuneGrid  = BI_grid_rpartcost[c('cp', 'Cost')]")
 
 BI_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
 BI_set_c50tree <- c("C5.0Tree", "")
@@ -156,33 +172,38 @@ BI_fit_c50tree <- fit_test(BI_set_c50tree)
 # Extraire résultats d'intérêt : graphes et resultats
 BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results
 BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, "cp") + scale_x_log10()
+BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_x_log10()
 
 # Modèle quadratique
 BI_fit_rpartcost_resultats <- BI_fit_rpartcost$results
-BI_fit_rpartcost_resultats <- BI_fit_rpartcost_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_mod_rpartcost_spec <- modelFit(X=BI_fit_rpartcost_resultats[,1:2], Y=BI_fit_rpartcost_resultats$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-BI_mod_rpartcost_sens <-  modelFit(X=BI_fit_rpartcost_resultats[,1:2], Y=BI_fit_rpartcost_resultats$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-BI_mod_rpartcost_jw <-  modelFit(X=BI_fit_rpartcost_resultats[,1:2], Y=BI_fit_rpartcost_resultats$Jw,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+BI_fit_rpartcost_resultats <- BI_fit_rpartcost_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)     # Calcul du Jw
+BI_fit_rpartcost_resultats <- left_join(BI_fit_rpartcost_resultats, BI_grid_rpartcost, by = c("Cost", "cp"))      # Ajout des facteurs réduits
 
+BI_mod_rpartcost_spec <- modelFit(X=BI_fit_rpartcost_resultats[,c("cp", "Cost")], Y=BI_fit_rpartcost_resultats$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+BI_mod_rpartcost_sens <-  modelFit(X=BI_fit_rpartcost_resultats[,c("cp", "Cost")], Y=BI_fit_rpartcost_resultats$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+BI_mod_rpartcost_jw <-  modelFit(X=BI_fit_rpartcost_resultats[,c("X1", "X2")], Y=BI_fit_rpartcost_resultats$Jw,  type="Kriging", formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
 BI_pred_rpartcost <- expand.grid(BI_fit_rpartcost_resultats[,1:2])
-colnames(BI_pred_rpartcost) <- c("Cost", "cp")
+BI_pred_rpartcost <- left_join(BI_pred_rpartcost, BI_grid_rpartcost[,c("cp", "X1")], by = "cp")
+BI_pred_rpartcost <- left_join(BI_pred_rpartcost, BI_grid_rpartcost[,c("Cost", "X2")], by = "Cost")
 BI_pred_rpartcost2 <- NULL
-BI_pred_rpartcost2$Spec <- modelPredict(BI_mod_rpartcost_spec, BI_pred_rpartcost)
-BI_pred_rpartcost2$Sens <- modelPredict(BI_mod_rpartcost_sens, BI_pred_rpartcost)
-BI_pred_rpartcost2$Jw <- modelPredict(BI_mod_rpartcost_jw, BI_pred_rpartcost)
+BI_pred_rpartcost2$Spec <- modelPredict(BI_mod_rpartcost_spec, BI_pred_rpartcost[,c("cp", "Cost")])
+BI_pred_rpartcost2$Sens <- modelPredict(BI_mod_rpartcost_sens, BI_pred_rpartcost[,c("cp", "Cost")])
+BI_pred_rpartcost2$Jw <- modelPredict(BI_mod_rpartcost_jw, BI_pred_rpartcost[,c("X1", "X2")])
 BI_pred_rpartcost <- cbind(BI_pred_rpartcost, BI_pred_rpartcost2)
 
 # Graphes 2D
+# BI_fit_rpartcost_spec_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Spec, "F")
+# BI_fit_rpartcost_sens_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Sens, "G")
+# BI_fit_rpartcost_jw_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, X2, X1, Jw, "D")
 BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
 BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
-BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Jw", "D")
+BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "X2", "X1", "Jw", "D")
 
 # ctree pas dans le rapport ?????
 BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion$results
 BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_ctree_criterion_graphe <- grapheSpeSenJw(BI_fit_ctree_criterion_resultats, "mincriterion")
+BI_fit_ctree_criterion_graphe <- grapheSpeSenJw(BI_fit_ctree_criterion_resultats, mincriterion)
 
 BI_fit_c50tree_results <- BI_fit_c50tree$results
 
@@ -196,65 +217,95 @@ BI_fit_rpartcost_best_results <- BI_fit_rpartcost_best$results
 
 
 # Modèles type Random Forest (RFERNS, RANGER, RBORIST)
+# Ranger OK, faire RBORIST avec les matrices X1 X2
 BI_set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
 
-BI_grid_ranger <- data.frame(BI_LHS)
+BI_grid_ranger <- BI_LHS
 BI_grid_ranger <- rbind(BI_grid_ranger,BI_grid_ranger)
-colnames(BI_grid_ranger) <- c("mtry", "min.node.size")
-#colnames(BI_grid_ranger) <- c("mtry", "min.node.size, num.trees")     # Pour num.treees, à tester
-BI_grid_ranger$splitrule <- c(rep("extratrees", 17), rep("gini", 17))
-BI_grid_ranger$mtry <- round(1+BI_grid_ranger$mtry*48,0)       # Si arrondi : prendre des multiples de 16 (car 17 points pour 2d)
-BI_grid_ranger$min.node.size <- round(1+BI_grid_ranger$min.node.size*32,0)
-#BI_grid_ranger$num.trees <- round(1+BI_grid_ranger$num.trees*9,0) # VOIR SI LE NUM.TREES MARCHE ???
+BI_grid_ranger$X3 <- c(rep(0, 17), rep(1, 17))
+BI_grid_ranger$mtry <- round(1+BI_grid_ranger$X1*48,0)       # Si arrondi : prendre des multiples de 16 (car 17 points pour 2d)
+BI_grid_ranger$min.node.size <- round(1+BI_grid_ranger$X2*32,0)
+BI_grid_ranger$splitrule <- recode_factor(BI_grid_ranger$X3, "0" = "gini", "1" = "extratrees")
+
 
 BI_grid_Rborist <- data.frame(BI_LHS)
-#colnames(BI_grid_Rborist) <- c("predFixed", "minNode", "ntrees")
 colnames(BI_grid_Rborist) <- c("predFixed", "minNode")
 BI_grid_Rborist$predFixed <- round(1+BI_grid_Rborist$predFixed*32,0)
 BI_grid_Rborist$minNode <- round(1+BI_grid_Rborist$minNode*16,0)
-#BI_grid_Rborist$ntrees <- round(1+BI_grid_Rborist$ntrees*5,0)
 
-BI_set_ranger <- c("ranger", "tuneGrid  = BI_grid_ranger, num.trees = 6") # A TESTER
+BI_set_ranger <- c("ranger", "tuneGrid  = BI_grid_ranger[c('mtry', 'min.node.size', 'splitrule')], num.trees = 6") # OK
+
 BI_set_Rborist <- c("Rborist", "tuneGrid  = BI_grid_Rborist")
-#system.time(fit_test(BI_set_ranger_mtry))  ####### CHRONO
+
 BI_fit_rFerns_depth <- fit_test(BI_set_rFerns_depth)
 BI_fit_ranger <- fit_test(BI_set_ranger)
 BI_fit_Rborist <- fit_test(BI_set_Rborist)
 
 # Extraire résultats d'intérêt : graphes et resultats
-BI_fit_rFerns_depth_graphe <- ggplot(BI_fit_rFerns_depth)
-BI_fit_rFerns_depth_results <- BI_fit_rFerns_depth$results
-BI_fit_ranger_results <- BI_fit_ranger$results
+BI_fit_rFerns_depth_resultats <- BI_fit_rFerns_depth$results
+BI_fit_rFerns_depth_resultats <-BI_fit_rFerns_depth_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_rFerns_depth_graphe <- grapheSpeSenJw(BI_fit_rFerns_depth_resultats, depth)
+
+
+BI_fit_ranger_resultats <- BI_fit_ranger$results
 BI_fit_ranger_bestTune <- BI_fit_ranger$bestTune
-BI_fit_Rborist_results <- BI_fit_Rborist$results
+BI_fit_Rborist_resultats <- BI_fit_Rborist$results
 BI_fit_Rborist_bestTune <- BI_fit_Rborist$bestTune
 
-BI_fit_ranger_GINI <- BI_fit_ranger_results %>% filter (splitrule == "gini")
-BI_fit_ranger_ET <- BI_fit_ranger_results %>% filter (splitrule == "extratrees")
-BI_mod_ranger_spec_GINI <- modelFit(X=BI_fit_ranger_GINI[,1:2], Y=BI_fit_ranger_GINI$Spec, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-BI_mod_ranger_sens_GINI <- modelFit(X=BI_fit_ranger_GINI[,1:2], Y=BI_fit_ranger_GINI$Sens, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-BI_mod_ranger_spec_ET <- modelFit(X=BI_fit_ranger_ET[,1:2], Y=BI_fit_ranger_ET$Spec, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-BI_mod_ranger_sens_ET <- modelFit(X=BI_fit_ranger_ET[,1:2], Y=BI_fit_ranger_ET$Sens, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_fit_ranger_resultats <- BI_fit_ranger_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)     # Calcul du Jw
+BI_fit_ranger_resultats <- left_join(BI_fit_ranger_resultats, BI_grid_ranger, by = c("mtry", "min.node.size", "splitrule"))      # Ajout des facteurs réduits
+BI_fit_ranger_GINI <- BI_fit_ranger_resultats %>% filter (splitrule == "gini")
+BI_fit_ranger_ET <- BI_fit_ranger_resultats %>% filter (splitrule == "extratrees")
+BI_mod_ranger_spec_GINI <- modelFit(X=BI_fit_ranger_GINI[,c("mtry", "min.node.size")], Y=BI_fit_ranger_GINI$Spec, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_sens_GINI <- modelFit(X=BI_fit_ranger_GINI[,c("mtry", "min.node.size")], Y=BI_fit_ranger_GINI$Sens, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_spec_ET <- modelFit(X=BI_fit_ranger_ET[,c("mtry", "min.node.size")], Y=BI_fit_ranger_ET$Spec, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_sens_ET <- modelFit(X=BI_fit_ranger_ET[,c("mtry", "min.node.size")], Y=BI_fit_ranger_ET$Sens, type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+BI_mod_ranger_jw_GINI <- modelFit(X=BI_fit_ranger_GINI[,c("X1", "X2")], Y=BI_fit_ranger_ET$Jw, type="Kriging", formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
+BI_mod_ranger_jw_ET <- modelFit(X=BI_fit_ranger_ET[,c("X1", "X2")], Y=BI_fit_ranger_ET$Jw, type="Kriging", formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
+BI_mod_ranger_jw <-  modelFit(X=BI_fit_ranger_resultats[,c("X1", "X2", "X3")], 
+                              Y=BI_fit_ranger_resultats$Jw,  
+                              type="Kriging", 
+                              formula=Y~X1+X2+X3+X1:X2+X2:X3+I(X1^2)+I(X2^2)+I(X3^2)) # BUGGGG ????#
+
 
 BI_pred_ranger_GINI <- expand.grid(BI_fit_ranger_GINI[,1:2])
-colnames(BI_pred_ranger_GINI) <- c("mtry", "min.node.size")
+BI_pred_ranger_GINI$splitrule <- "gini"
+BI_pred_ranger_GINI <- left_join(BI_pred_ranger_GINI, BI_grid_ranger[,c("mtry", "X1")], by = "mtry")
+BI_pred_ranger_GINI <- left_join(BI_pred_ranger_GINI, BI_grid_ranger[,c("min.node.size", "X2")], by = "min.node.size")
+BI_pred_ranger_GINI <- left_join(BI_pred_ranger_GINI, BI_grid_ranger[,c("splitrule", "X3")], by = "splitrule")
+BI_pred_ranger_GINI <- unique(BI_pred_ranger_GINI)    # Nettoyage valeurs uniques (car BI_grid_ranger contient les lignes ET...)
 BI_pred_ranger_GINI2 <- NULL
-BI_pred_ranger_GINI2$Spec <- modelPredict(BI_mod_ranger_spec_GINI, BI_pred_ranger_GINI)
-BI_pred_ranger_GINI2$Sens <- modelPredict(BI_mod_ranger_sens_GINI, BI_pred_ranger_GINI)
+BI_pred_ranger_GINI2$Spec <- modelPredict(BI_mod_ranger_spec_GINI, BI_pred_ranger_GINI[,c("mtry", "min.node.size")])
+BI_pred_ranger_GINI2$Sens <- modelPredict(BI_mod_ranger_sens_GINI, BI_pred_ranger_GINI[,c("mtry", "min.node.size")])
+BI_pred_ranger_GINI2$Jw <- modelPredict(BI_mod_ranger_jw_GINI, BI_pred_ranger_GINI[,c("X1", "X2")])
 BI_pred_ranger_GINI <- cbind(BI_pred_ranger_GINI, BI_pred_ranger_GINI2)
 
 BI_pred_ranger_ET <- expand.grid(BI_fit_ranger_ET[,1:2])
-colnames(BI_pred_ranger_ET) <- c("mtry", "min.node.size")
+BI_pred_ranger_ET$splitrule <- "extratrees"
+BI_pred_ranger_ET <- left_join(BI_pred_ranger_ET, BI_grid_ranger[,c("mtry", "X1")], by = "mtry")
+BI_pred_ranger_ET <- left_join(BI_pred_ranger_ET, BI_grid_ranger[,c("min.node.size", "X2")], by = "min.node.size")
+BI_pred_ranger_ET <- left_join(BI_pred_ranger_ET, BI_grid_ranger[,c("splitrule", "X3")], by = "splitrule")
+BI_pred_ranger_ET <- unique(BI_pred_ranger_ET)    # Nettoyage valeurs uniques (car BI_grid_ranger contient les lignes Gini...
 BI_pred_ranger_ET2 <- NULL
-BI_pred_ranger_ET2$Spec <- modelPredict(BI_mod_ranger_spec_ET, BI_pred_ranger_ET)
-BI_pred_ranger_ET2$Sens <- modelPredict(BI_mod_ranger_sens_ET, BI_pred_ranger_ET)
+BI_pred_ranger_ET2$Spec <- modelPredict(BI_mod_ranger_spec_ET, BI_pred_ranger_ET[,c("mtry", "min.node.size")])
+BI_pred_ranger_ET2$Sens <- modelPredict(BI_mod_ranger_sens_ET, BI_pred_ranger_ET[,c("mtry", "min.node.size")])
+BI_pred_ranger_ET2$Jw <- modelPredict(BI_mod_ranger_jw_ET, BI_pred_ranger_ET[,c("X1", "X2")])
 BI_pred_ranger_ET <- cbind(BI_pred_ranger_ET, BI_pred_ranger_ET2)
 
 # Graphes 2D
 BI_fit_ranger_Gini_spec_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Spec", "F")
 BI_fit_ranger_Gini_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
+BI_fit_ranger_Gini_jw_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "X1", "X2", "Jw", "D")
 BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "mtry", "min.node.size", "Spec", "F")
 BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
+BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "X1", "X2", "Jw", "D")
+
+# BI_fit_ranger_Gini_spec_graphe <- graphe2D(BI_pred_ranger_GINI, BI_fit_ranger_GINI, mtry, min.node.size, Spec, "F")
+# BI_fit_ranger_Gini_sens_graphe <- graphe2D(BI_pred_ranger_GINI, BI_fit_ranger_GINI, mtry, min.node.size, Sens, "G")
+# BI_fit_ranger_Gini_jw_graphe <- graphe2D(BI_pred_ranger_GINI, BI_fit_ranger_GINI, X1, X2, Jw, "D")
+# BI_fit_ranger_ET_spec_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, mtry, min.node.size, Spec, "F")
+# BI_fit_ranger_ET_sens_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, mtry, min.node.size, Sens, "G")
+# BI_fit_ranger_ET_jw_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, X1, X2, Jw, "D")
 
 BI_best_ranger <- which.max(BI_fit_ranger_results$Spec^BI_ratioSpec*BI_fit_ranger_results$Sens^BI_ratioSens)
 BI_best_rangergrid <- data.frame(mtry = BI_fit_ranger_results[BI_best_ranger,]$mtry, min.node.size =BI_fit_ranger_results[BI_best_ranger,]$min.node.size, splitrule =BI_fit_ranger_results[BI_best_ranger,]$splitrule)
@@ -272,6 +323,8 @@ BI_pred_Rborist2$Sens <- modelPredict(BI_mod_Rborist_sens, BI_pred_Rborist)
 BI_pred_Rborist <- cbind(BI_pred_Rborist, BI_pred_Rborist2)
 
 # Graphes 2D
+# BI_fit_Rborist_spec_graphe <- graphe2D(BI_pred_Rborist, BI_fit_Rborist_results, predFixed, minNode, Spec, "F")
+# BI_fit_Rborist_sens_graphe <- graphe2D(BI_pred_Rborist, BI_fit_Rborist_results, predFixed, minNode, Sens, "G")
 BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Spec", "F")
 BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Sens", "G")
 
