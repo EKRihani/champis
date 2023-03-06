@@ -53,6 +53,8 @@ AUC : *Area Under Curve* (aire sous la courbe)
 
 CART : *Classification And Regression Tree* (arbre de classification et de régression)
 
+CSV : *Comma Separated Values* ([fichier de] valeurs séparées par des virgules)
+
 DOE : *Design of Experiments* (plan d'expériences)
 
 EDA : *Exploratory Data Analysis* (analyse exploratoire des données)
@@ -933,28 +935,34 @@ texte
 *Pour l'instant, l'algorithme est écrit et fonctionne, à partir des données primaires du Secondary Dataset de Dennis Wagner. C'est cet algorithme qui a servi à créer le lot de données de la classification multiclasse.*
 \paragraph*{}
 *Pour avoir mes propres lots de données, il ne me reste plus qu'à avoir mes propres données primaires, c'est à dire entrer manuellement les caractéristiques clés de mes 400+ champignons, un par un...*
+\paragraph*{} 
+La seule bibliothèque utilisée lors de la création du lot de données synthétique est le *tidyverse*[@R-tidyverse], collection de bibliothèques spécialisées dans le domaine de la *data science* et notamment dédiées au traitement, au nettoyage et à la visualisation de données.
+
+```{r, eval = FALSE}
+library(tidyverse)
+```
+
+Nous chargeons ensuite le fichier zip, incluant le fichier csv contenant les caractéristiques typiques des macromycètes (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.), qui est lu et attribué à un *dataframe*. Les lignes commentées correspondent à l'utilisation d'un fichier identique hébergé à distance sur un dépôt GitHub.
+
+```{r, eval = FALSE}
+fichier_data <- tempfile()
+#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"
+#download.file(URL, fichier_data)
+fichier_data <- "~/projects/champis/MushroomDataset.zip"       # Fichier local
+fichier_data <- unzip(fichier_data, "MushroomDataset/primary_data.csv")
+data_champis <- read.csv(fichier_data, 
+                         header = TRUE, 
+                         sep = ";", 
+                         stringsAsFactors = TRUE)
+```
+
+etc etc.
 
 \newpage
 
 # Annexe : outils d'analyse exploratoire des données (EDA)
 
-*Exemple de code...*
-\paragraph*{}
-```{r, eval = FALSE}
-for (n in 1:ncol(BI_lot_apprentissage)){
-  graph <- BI_lot_apprentissage %>%
-    ggplot(aes_string(x = colnames(BI_lot_apprentissage)[n]))
-  if(structure_dataset$Type[n] %in% c("integer", "numeric"))
-  {graph <- graph + geom_histogram()}
-  else
-  {graph <- graph + geom_bar()}
-  nom_graph <- paste0("distrib_", colnames(BI_lot_apprentissage)[n])
-  assign(nom_graph, graph)
-}
-```
-
-L'utilisation d'*aes_string* à la place de *aes* permet d'utiliser une chaîne de caractères en argument.
-
+*Code EDA...*
 
 \newpage
 
@@ -962,3 +970,52 @@ L'utilisation d'*aes_string* à la place de *aes* permet d'utiliser une chaîne 
 # Annexe : développement des algorithmes d'apprentissage machine
 
 *Le gros du code...*
+
+\paragraph*{}
+Nous détaillerons ici principalement les algorithmes utilisés pour le classifieur binaire. Les particularités d'intérêt des classifieurs multiples seront évoquées brièvement lors des développements de cette section.
+
+## Initialisation
+
+\paragraph*{}
+Les bibliothèques utilisées lors des étapes d'apprentissage machine sont :
+
+* tidyverse[@R-tidyverse], collection de bibliothèques spécialisées dans le domaine de la *data science*,
+* DiceDesign[@R-DiceDesign], bibliothèque spécialisée dans la création de plans d'expériences hypercubiques,
+* DiceEval[@R-DiceEval], bibliothèque spécialisée dans la modélisation des résultats de plans d'expériences hypercubiques,
+* caret[@R-caret], collection d'outils dédiés à l'apprentissage machine.
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(DiceDesign)
+library(DiceEval)
+library(caret)
+```
+
+\paragraph*{}
+Le chargement des données s'effectue de la même façon que lors des sections précédentes. Dans le cadre d'une classification binaire, nous attribuons arbitrairement, à l'aide de la fonction *relevel*, la valeur positive à la classe *"toxique"*.
+
+```{r, eval = FALSE}
+fichier_data <- tempfile()
+fichier_data <- "~/projects/champis/MushroomDataset.zip"
+fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
+dataset <- read.csv(fichier_data, 
+                    header = TRUE, 
+                    sep = ";", 
+                    stringsAsFactors = TRUE)
+dataset$class <- relevel(dataset$class, ref = "toxique")
+```
+
+## Création des jeux d'entraînement, optimisation et évaluation
+
+La création du jeu d'évaluation s'effectue par dichotomie du jeu de données avec un ratio 92/8.
+
+```{r, eval = FALSE}
+set.seed(7)
+split1 <- 0.08
+index1 <- createDataPartition(y = dataset$cap.diameter, 
+                              times = 1, 
+                              p = split1, 
+                              list = FALSE)
+BI_lot_appr_opti <- dataset[-index1,]
+BI_lot_evaluation <- dataset[index1,]
+```

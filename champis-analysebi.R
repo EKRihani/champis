@@ -19,23 +19,23 @@ dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = T
 dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
 dataset$class <- relevel(dataset$class, ref = "toxique")
 
-##############################################################################
-#     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
-##############################################################################
+####################################################################
+#     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION     #
+####################################################################
 
 split1 <- 0.08
-split2 <- 0.08
-# Creation lots d'entrainement/validation (92%) et BI_evaluation (8%)
+#split2 <- 0.08
+# Creation lots d'entrainement/optimisation (92%) et d'évaluation (8%)
 set.seed(007)
 index1 <- createDataPartition(y = dataset$cap.diameter, times = 1, p = split1, list = FALSE)
 BI_lot_appr_opti <- dataset[-index1,]
 BI_lot_evaluation <- dataset[index1,]
 
 # Creation lots d'entrainement (92%) et validation (8%)
-set.seed(1337)
-index2 <- createDataPartition(y = BI_lot_appr_opti$cap.diameter, times = 1, p = split2, list = FALSE)
-BI_lot_apprentissage <- BI_lot_appr_opti[-index2,]
-BI_lot_evaluation <- BI_lot_appr_opti[index2,]
+# set.seed(1337)
+# index2 <- createDataPartition(y = BI_lot_appr_opti$cap.diameter, times = 1, p = split2, list = FALSE)
+# BI_lot_apprentissage <- BI_lot_appr_opti[-index2,]
+# BI_lot_evaluation <- BI_lot_appr_opti[index2,]
 
 
 ##############################################################################
