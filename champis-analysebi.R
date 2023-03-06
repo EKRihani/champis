@@ -273,7 +273,7 @@ BI_pred_ranger_GINI$splitrule <- "gini"
 BI_pred_ranger_GINI <- left_join(BI_pred_ranger_GINI, BI_grid_ranger[,c("mtry", "X1")], by = "mtry")
 BI_pred_ranger_GINI <- left_join(BI_pred_ranger_GINI, BI_grid_ranger[,c("min.node.size", "X2")], by = "min.node.size")
 BI_pred_ranger_GINI <- left_join(BI_pred_ranger_GINI, BI_grid_ranger[,c("splitrule", "X3")], by = "splitrule")
-BI_pred_ranger_GINI <- unique(BI_pred_ranger_GINI)    # Nettoyage valeurs uniques (car BI_grid_ranger contient les lignes ET...)
+BI_pred_ranger_GINI <- unique(BI_pred_ranger_GINI)       # Nettoyage valeurs uniques (car BI_grid_ranger contient les lignes ET...)
 BI_pred_ranger_GINI2 <- NULL
 BI_pred_ranger_GINI2$Spec <- modelPredict(BI_mod_ranger_spec_GINI, BI_pred_ranger_GINI[,c("mtry", "min.node.size")])
 BI_pred_ranger_GINI2$Sens <- modelPredict(BI_mod_ranger_sens_GINI, BI_pred_ranger_GINI[,c("mtry", "min.node.size")])
@@ -285,7 +285,7 @@ BI_pred_ranger_ET$splitrule <- "extratrees"
 BI_pred_ranger_ET <- left_join(BI_pred_ranger_ET, BI_grid_ranger[,c("mtry", "X1")], by = "mtry")
 BI_pred_ranger_ET <- left_join(BI_pred_ranger_ET, BI_grid_ranger[,c("min.node.size", "X2")], by = "min.node.size")
 BI_pred_ranger_ET <- left_join(BI_pred_ranger_ET, BI_grid_ranger[,c("splitrule", "X3")], by = "splitrule")
-BI_pred_ranger_ET <- unique(BI_pred_ranger_ET)    # Nettoyage valeurs uniques (car BI_grid_ranger contient les lignes Gini...
+BI_pred_ranger_ET <- unique(BI_pred_ranger_ET)        # Nettoyage valeurs uniques (car BI_grid_ranger contient les lignes Gini...)
 BI_pred_ranger_ET2 <- NULL
 BI_pred_ranger_ET2$Spec <- modelPredict(BI_mod_ranger_spec_ET, BI_pred_ranger_ET[,c("mtry", "min.node.size")])
 BI_pred_ranger_ET2$Sens <- modelPredict(BI_mod_ranger_sens_ET, BI_pred_ranger_ET[,c("mtry", "min.node.size")])
