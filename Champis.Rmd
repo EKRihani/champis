@@ -270,7 +270,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 
 \paragraph*{}
 L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
-\paragraph{}*
+\paragraph*{}
 
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
@@ -281,14 +281,19 @@ plot(ggarrange(
 )
 ```
 
+\paragraph*{}
+La dispersion ainsi créée permet ainsi de créer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale comme ilustré par la figure \@ref(fig:Lots-DispersionDensite)). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnélles maximales généralement admises par la littérature.
+
+[faire calcul sur R pour relier aux chiffres]
 
 ```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4, fig.cap = "Diagramme de densité de 2 paramètres de taille, avec dispersion"}
 plot(densite2d)
 ```
 
 \paragraph*{}
-Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)). La proportion de spécimens dépassant de plus de 10% cette valeur maximale sera quant à elle inférieure à `r taux_supergros_diam` %.
+Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r taux_supergros_diam` %.
 \paragraph*{}
+##### CALCULS A REVERIFIER, PAS COHERENT.... #####
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
 plot(distrib_diametre)
@@ -305,9 +310,9 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 ## Développement d'un algorithme de génération de lot synthétique
 
 \paragraph*{}
-*Plus de détails concrets sur la méthode utilisée en pratique...*
+*Plus de détails concrets sur la méthode utilisée en pratique, avec extraits de code...*
 \paragraph*{}
-*L'algorithme est écrit et fonctionne, à partir des données primaires du Secondary Dataset de Dennis Wagner. C'est cet algorithme qui a servi à créer le lot de données de la classification multiclasse.*
+*Pour l'instant, l'algorithme est écrit et fonctionne, à partir des données primaires du Secondary Dataset de Dennis Wagner. C'est cet algorithme qui a servi à créer le lot de données de la classification multiclasse.*
 \paragraph*{}
 *Pour avoir mes propres lots de données, il ne me reste plus qu'à avoir mes propres données primaires, c'est à dire entrer manuellement les caractéristiques clés de mes 400+ champignons, un par un...*
 
@@ -317,16 +322,18 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 # Principes de l'apprentissage machine
 ## Jeux de données
 \paragraph*{}
-Le déroulement de l'apprentissage machine se décompose conceptuellement en trois étapes, mettant en jeu trois lots de données distincts :
+Le déroulement de l'apprentissage machine se décompose conceptuellement en trois étapes principales, mettant en jeu trois lots de données distincts :
 
 1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle.
 2. Validation : le modèle d'apprentissage développé à l'étape précédente, sera soumis à un *jeu de données de validation* (*validation data set*). Les prédictions (ex: comestibilité, espèce...) proposées par le modèle d'apprentissage sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...) sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances prédictives du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) -- idéalement en suivant un plan d'expériences -- à fins d'optimisation.
-3. Test : les performances du meilleur modèle, avec hyperparamètres optimaux, sélectionné à l'issue de l'étape de validation sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
+3. Test : les performances du meilleur modèle (avec hyperparamètres optimaux), sélectionné à l'issue de l'étape de validation, sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
 
 \paragraph*{}
-La séparation entre étapes d'optimisation et de test peut sembler artificielle. Le problème est en partie lié à un flou sémantique : si l'étape initiale d'entraînement ou d'apprentissage ne pose que peu de problèmes conceptuels, l'étape intermédiaire, dite de *validation* correspond en réalité à une étape d'*optimisation* du modèle et de ses hyperparamètres. Par ailleurs, l'étape finale de *test* est parfois qualifiée d'étape de *validation* dans la littérature.[@brownlee_what_2017]
+Certains contextes particuliers, tels que les tournois de *data science*, mettront en \oe{}uvre une quatrième fraction destinée au classement final des algorithmes (et des équipes). Certaines méthodes basées sur des plis multiples (*n-folds*) utilisent également une séparation flexible entre lots d'entraînement et de validation. Ces cas particuliers ne feront pas l'objet de cette étude.
 \paragraph*{}
-Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.
+La séparation entre étapes d'optimisation et de test peut sembler artificielle. Le problème est en partie lié à un flou sémantique : si l'étape initiale d'entraînement ou d'apprentissage ne pose que peu de problèmes conceptuels, l'étape intermédiaire, dite de *validation* correspond en réalité à une étape d'*optimisation* du modèle et de ses hyperparamètres. Par ailleurs, l'étape finale de *test* sera parfois qualifiée d'étape de *validation* dans la littérature, ce qui peut entretenir la confusion entre ces étapes.[@brownlee_what_2017]
+\paragraph*{}
+Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase pouvant parfois sembler superflue : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.
 \paragraph*{}
 Dans un souci de clarté, nous utiliserons les termes lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
 \paragraph*{}
