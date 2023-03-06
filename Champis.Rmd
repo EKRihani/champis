@@ -128,7 +128,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * OS : Xubuntu Linux 22.04.2 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * RStudio : version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`, bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
 
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
@@ -307,15 +307,6 @@ La génération des paramètres qualitatifs, tels que la couleur des spores ou l
 
 L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement parmi celles de ce vecteur pour caractériser chaque spécimen.
 
-## Développement d'un algorithme de génération de lot synthétique
-
-\paragraph*{}
-*Plus de détails concrets sur la méthode utilisée en pratique, avec extraits de code...*
-\paragraph*{}
-*Pour l'instant, l'algorithme est écrit et fonctionne, à partir des données primaires du Secondary Dataset de Dennis Wagner. C'est cet algorithme qui a servi à créer le lot de données de la classification multiclasse.*
-\paragraph*{}
-*Pour avoir mes propres lots de données, il ne me reste plus qu'à avoir mes propres données primaires, c'est à dire entrer manuellement les caractéristiques clés de mes 400+ champignons, un par un...*
-
 \newpage
 \FloatBarrier
 
@@ -487,22 +478,7 @@ kable(structure_dataset, caption = "Dataset structure")
 \paragraph*{}
 Le lot de données d'origine a été découpé deux fois avec un rapport 92/8, comme décrit dans la partie. (cf. § et p(ref!!!)) 
 \paragraph*{}
-Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles :
-
-```{r, eval = FALSE}
-for (n in 1:ncol(BI_lot_apprentissage)){
-  graph <- BI_lot_apprentissage %>%
-    ggplot(aes_string(x = colnames(BI_lot_apprentissage)[n]))
-  if(structure_dataset$Type[n] %in% c("integer", "numeric"))
-  {graph <- graph + geom_histogram()}
-  else
-  {graph <- graph + geom_bar()}
-  nom_graph <- paste0("distrib_", colnames(BI_lot_apprentissage)[n])
-  assign(nom_graph, graph)
-}
-```
-
-L'utilisation d'*aes_string* à la place de *aes* permet d'utiliser une chaîne de caractères en argument.
+Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles.
 \paragraph*{}
 Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (fig. REF), avec une longue queue à droite. Une transformation logarithmique (fig. REF) montre plus nettement la forme de cette queue.
 
@@ -949,8 +925,40 @@ texte
 \newpage
 # (APPENDIX) Appendix {-} 
 
-# Annexes A
-Les trucs de l'annexe A
+# Annexe : développement d'un algorithme de génération de lot synthétique
 
-# Annexes B
-Les trucs de l'annexe B
+\paragraph*{}
+*Plus de détails concrets sur la méthode utilisée en pratique, avec extraits de code...*
+\paragraph*{}
+*Pour l'instant, l'algorithme est écrit et fonctionne, à partir des données primaires du Secondary Dataset de Dennis Wagner. C'est cet algorithme qui a servi à créer le lot de données de la classification multiclasse.*
+\paragraph*{}
+*Pour avoir mes propres lots de données, il ne me reste plus qu'à avoir mes propres données primaires, c'est à dire entrer manuellement les caractéristiques clés de mes 400+ champignons, un par un...*
+
+\newpage
+
+# Annexe : outils d'analyse exploratoire des données (EDA)
+
+*Exemple de code...*
+\paragraph*{}
+```{r, eval = FALSE}
+for (n in 1:ncol(BI_lot_apprentissage)){
+  graph <- BI_lot_apprentissage %>%
+    ggplot(aes_string(x = colnames(BI_lot_apprentissage)[n]))
+  if(structure_dataset$Type[n] %in% c("integer", "numeric"))
+  {graph <- graph + geom_histogram()}
+  else
+  {graph <- graph + geom_bar()}
+  nom_graph <- paste0("distrib_", colnames(BI_lot_apprentissage)[n])
+  assign(nom_graph, graph)
+}
+```
+
+L'utilisation d'*aes_string* à la place de *aes* permet d'utiliser une chaîne de caractères en argument.
+
+
+\newpage
+
+
+# Annexe : développement des algorithmes d'apprentissage machine
+
+*Le gros du code...*
