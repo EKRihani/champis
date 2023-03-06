@@ -443,19 +443,30 @@ En l'espèce, l'index J de Youden pondéré nous permet donc de construire un in
 \paragraph*{}
 L'index J de Youden pondéré est donné par :[@rucker_summary_2010]
 $$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
-<!-- 0 \leq w \leq 1 $$ -->
+
 \paragraph*{}
-En posant la toxicité en tant que valeur positive, nous pouvons donc fixer arbitrairement $w$ afin d'obtenir un index de Youden pondéré accordant dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité. Ce critère nous permet d'établir $w = 10/11$.
+Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur toxicité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaîssant alors comme un critère relativement secondaire. En établissant arbitrairement un index de Youden pondéré accordant dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité, nous pouvons établir $w = 10/11$.
 <!-- x = 10/11 ou 1/11 ... -->
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
-Nous retiendrons ici le kappa de Cohen, calculé à partir de la matrice de confusion, et donné par :
-$$\kappa{} = \frac{p_{0}-p_{e}}{1-p_{e}}$$
+Nous retiendrons dans le cadre de notre étude le kappa de Cohen, calculé à partir de la matrice de confusion, et donné par :
+$$\kappa{} = \frac{\pi_{0}-\pi_{e}}{1-\pi_{e}}$$
 
-Avec $p_{0}$ la probabilité d'accord entre notre modèle et la classe réelle du champignon, et $p_{e}$ la probablité d'un même accord résultant du pur hasard.
-
+\paragraph*{}
+Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle du champignon, et $\pi_{e}$ la probablité d'un même accord résultant du pur hasard.
+\paragraph*{}
+Landis et Koch ont défini des
 [ INSERER SCHEMA MATRICE DE CONFUSION ]
+
+Source Kappa Cohen :
+https://journals-sagepub-com.ressources-electroniques.univ-lille.fr/doi/abs/10.1177/001316446002000104
+
+
+Grille validité Kappa Cohen (Landis & Koch) :
+https://www-jstor-org.ressources-electroniques.univ-lille.fr/stable/2529310?searchText=The+Measurement+of+Observer+Agreement+for+Categorical+Data&searchUri=%2Faction%2FdoBasicSearch%3FQuery%3DThe%2BMeasurement%2Bof%2BObserver%2BAgreement%2Bfor%2BCategorical%2BData&ab_segments=0%2Fbasic_search_gsv2%2Fcontrol&refreqid=fastly-default%3A60efe6a1ae467d1002cd4305a15de703
+
+
 
 \newpage
 
@@ -546,6 +557,8 @@ train(class ~ .,
       metric = 'Sens',
       tuneGrid = data.frame([PARAMETRES]))
 ```
+
+\paragraph*{}
 La fonction *set.seed* assure la reproductibilité.
 
 La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans cet exemple, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 10 blocs (*10-folds*).
