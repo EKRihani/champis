@@ -7,6 +7,8 @@ library(tidyverse)    # Outils génériques
 library(caret)        # Outils d'apprentissage machine
 library(DiceDesign)    # Hypercubes Latins
 library(DiceEval)       # Modélisation sur hypercubes latins
+#library(SPlit)          # Découpage équilibré des jeux de données
+library(twinning)       # Découpage équilibré des jeux de données
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
@@ -23,15 +25,21 @@ dataset$class <- relevel(dataset$class, ref = "toxique")
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION     #
 ####################################################################
 
-split1 <- 0.08
+# Creation lots d'entrainement/optimisation (92%) et d'évaluation (8%) (ratio 13:1)
+
+#split_ratio <- 0.08
+splitratio <- 13
 #split2 <- 0.08
-# Creation lots d'entrainement/optimisation (92%) et d'évaluation (8%)
 set.seed(007)
-index1 <- createDataPartition(y = dataset$cap.diameter, times = 1, p = split1, list = FALSE)
+index1 <- twin(data = dataset, r = splitratio)
+#index1 <- createDataPartition(y = dataset$cap.diameter, times = 1, p = split_ratio, list = FALSE)
 BI_lot_appr_opti <- dataset[-index1,]
 BI_lot_evaluation <- dataset[index1,]
 
-# Creation lots d'entrainement (92%) et validation (8%)
+#opti_split_ratio <- splitratio(x = dataset, y = class, method = "simple") # Split ratio d'après V.R. Joseph 2022
+
+
+# Creation lots d'entrainement (92%) et validation (8%)  # NOOOOOPE, optimisation via cross-validation !!!
 # set.seed(1337)
 # index2 <- createDataPartition(y = BI_lot_appr_opti$cap.diameter, times = 1, p = split2, list = FALSE)
 # BI_lot_apprentissage <- BI_lot_appr_opti[-index2,]
@@ -48,7 +56,7 @@ BI_lot_evaluation <- dataset[index1,]
 BI_w <- 10/11        # Ou 1/11
 BI_RatioSens <- 2*BI_w
 BI_RatioSpec <- 2*(1-BI_w)
-BI_n_folds <- 5
+BI_n_folds <- 12
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_modele){
    set.seed(1)

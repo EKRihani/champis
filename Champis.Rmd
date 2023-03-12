@@ -19,6 +19,7 @@ header-includes:
   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
   - \usepackage{placeins}   # pour bloquer ces %#@$§£ de floats
   - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
+  - \usepackage{svg}       # Pour schémas au format SVG
   - \linespread{1.15}
 #  - \setlength{\baselineskip}{24pt}      #MARCHE PAS !!!
 #  - \setlength{\parskip}{1.2ex plus 1pt}       # Espacements sans ajouter des\paragraph*{} partout      #MARCHE PAS
@@ -46,7 +47,8 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 
 \newpage
 # Liste des abréviations
-\begin{flushleft}
+\flushleft
+
 AI : *Artificial Intelligence* (intelligence artificielle)
 
 AUC : *Area Under Curve* (aire sous la courbe)
@@ -84,7 +86,8 @@ RF : *Random Forest* (forêt aléatoire)
 ROC : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
 
 XGB : *eXtreme Gradient Boosting*
-\end{flushleft}
+
+\endflushleft
 
 \newpage
 # Introduction
@@ -130,7 +133,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * OS : Xubuntu Linux 22.04.2 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * RStudio : version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), SPlit[@R-SPlit] (v`r packageVersion("SPlit")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), C50[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), e1071[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`) ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), ?C50?[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), ?e1071?[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
 
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
@@ -322,20 +325,24 @@ Le déroulement de l'apprentissage machine se décompose conceptuellement en tro
 3. Test : les performances du meilleur modèle (avec hyperparamètres optimaux), sélectionné à l'issue de l'étape de validation, sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
 
 \paragraph*{}
-Certains contextes particuliers, tels que les tournois de *data science*, mettront en \oe{}uvre une quatrième fraction destinée au classement final des algorithmes (et des équipes). Certaines méthodes basées sur des plis multiples (*n-folds*) utilisent également une séparation flexible entre lots d'entraînement et de validation. Ces cas particuliers ne feront pas l'objet de cette étude.
-\paragraph*{}
 La séparation entre étapes d'optimisation et de test peut sembler artificielle. Le problème est en partie lié à un flou sémantique : si l'étape initiale d'entraînement ou d'apprentissage ne pose que peu de problèmes conceptuels, l'étape intermédiaire, dite de *validation* correspond en réalité à une étape d'*optimisation* du modèle et de ses hyperparamètres. Par ailleurs, l'étape finale de *test* sera parfois qualifiée d'étape de *validation* dans la littérature, ce qui peut entretenir la confusion entre ces étapes.[@brownlee_what_2017]
 \paragraph*{}
 Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase pouvant parfois sembler superflue : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.
 \paragraph*{}
 Dans un souci de clarté, nous utiliserons les termes lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
 \paragraph*{}
-Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives du lot de données intial, avec des proportions variables :
+Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives (voir figure \@ref(fig:Split-jeux)) du lot de données intial, avec des proportions variables :
 
 1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement & optimisation d'autre part,
 2. Découpage du jeu de données entraînement & optimisation, en un jeu d'entraînement et un jeu d'optimisation.
 
-[Schéma Split Apprentissage/Optimisation/Validation]
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{Split-Jeux}
+  \caption{Principe de séparations successives d'un jeu de données initial en jeux d'apprentissage, d'optimisation et d'évaluation.}
+  \label{fig:Split-jeux}
+\end{figure}
 
 \paragraph*{}
 Le rapport de taille entre jeux de données entraînement, optimisation, évaluation de cette étude suit la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022]
@@ -353,7 +360,21 @@ R_{eval} = 8 \pm 1 \% \\
 \paragraph*{}
 Ce rapport 85:7:8 peut, dans la pratique, être obtenu par réalisation de deux découpages successifs suivant des rapports 92:8.
 \paragraph*{}
-Dans cette étude, la division de ces trois jeux de données utilise une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), basé sur un arbre Kd (*k-dimensional tree*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022]
+Dans cette étude, la division entre jeu d'entraînement/optimisation et jeu de test utilise une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), dont le fonctionnement est piloté par un arbre Kd (*k-dimensional tree*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
+\paragraph*{}
+Notre division entre jeu d'entraînement et d'optimisation utilisera quant à elle la méthode de validation croisée à $k$ blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une utilisation tournante de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \@ref(fig:Cross-validation)).
+\paragraph*{}
+Le jeu d'entraînement/optimisation est découpé, de façon aléatoire, en $k$ blocs de données de taille égale, dont $k-1$ sont utilisés pour l'entraînement du modèle prédictif et 1 pour son optimisation. Cette opération est répétée $k$ fois, en utilisant un jeu d'optimisation différent à chaque itération. L'évaluation de la performance globale s'effectue en évaluant la performance moyenne des $k$ itérations. Cette méthode permet de limiter les biais potentiels générés par la séparation des données d'entraînement et d'optimisation en exploitant la totalité des données du lot pour effectuer ces deux tâches.
+\paragraph*{}
+Une validation croisée *k-folds* avec $k = 12$ permet de s'approcher du ratio 92:8 souhaité.
+
+\paragraph*{}
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{Cross-Validation}
+  \caption{Principe de la validation croisée à k blocs (\emph{k-fold cross-validation}), pour \emph{k} = 4.}
+  \label{fig:Cross-validation}
+\end{figure}
 
 \FloatBarrier
 
@@ -421,10 +442,16 @@ plot(ggarrange(
 )
 ```
 
+Dans le cadre de cette étude, nous utiliserons des hypercubes latins quasi-orthogonaux, dont les propriétés nous permettront de modéliser de façon plus précise les performances de nos modèles en fonction de leurs paramètres de configuration (*hyperparamètres*).
+\paragraph*{}
+Le but des plans expérimentaux de cette étude ne sera pas l'obtention d'une prédictive exacte de la réponse, mais la recherche des facteurs permettant d'obtenir cette réponse optimale. A cet effet, la modélisation de la performance s'effectuera à l'aide d'un modèle quadratique, de formule générale :
+$$ Y = \beta_{0}  + \sum_{i = 1}^{k} \beta_{i}.X_{i} + \sum_{i <j}^{k} \sum_{j>1}^{k} \beta_{ij}.X_{i}.X_{j} + \sum_{i = 1}^{k} + \beta_{ii}.X_{i}^2 + \varepsilon$$
+Avec $\beta_{n}$ les coefficients des effets principaux et $X_{n}$ les facteurs réduits.
 \FloatBarrier
+
 ## Evaluation des performances des modèles
 
-L'optimisation des modèles ainsi que la comparaison des performances des modèles entre eux implique nécessairement de définir quel sera le critère vis-à-vis duquel cette performance sera évaluée.
+L'optimisation des modèles ainsi que la comparaison de leurs performances relatives implique nécessairement de définir quel sera le critère vis-à-vis duquel cette performance sera évaluée.
 \paragraph*{}
 De nombreux critères sont utilisables, en fonction du cahier des charges, mais également du type de tâche effectuée : régression, classification binaire, classification multiclasse.
 \paragraph*{}
@@ -443,21 +470,15 @@ Dans la classification binaire de cette étude, problème qui revient classiquem
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
-Nous retiendrons dans le cadre de notre étude le kappa de Cohen, calculé à partir de la matrice de confusion, et donné par :
+Nous retiendrons dans le cadre de notre étude le kappa de Cohen[@cohen_coefficient_1960], calculé à partir de la matrice de confusion, et donné par :
 $$\kappa{} = \frac{\pi_{0}-\pi_{e}}{1-\pi_{e}}$$
 
 \paragraph*{}
 Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle du champignon, et $\pi_{e}$ la probablité d'un même accord résultant du pur hasard.
 \paragraph*{}
-Landis et Koch ont défini des
+Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec un accord qualifié de *quasi-parfait* pour $\kappa{} > 0.80$.[@landis_measurement_1977] Nous considérerons donc que ce critère sera le minimum requis pour qu'un modèle de classifieur multiclasse élaboré au cours de cette étude puisse être considéré comme ayant des performances acceptables.
+
 [ INSERER SCHEMA MATRICE DE CONFUSION ]
-
-Source Kappa Cohen :
-https://journals-sagepub-com.ressources-electroniques.univ-lille.fr/doi/abs/10.1177/001316446002000104
-
-
-Grille validité Kappa Cohen (Landis & Koch) :
-https://www-jstor-org.ressources-electroniques.univ-lille.fr/stable/2529310?searchText=The+Measurement+of+Observer+Agreement+for+Categorical+Data&searchUri=%2Faction%2FdoBasicSearch%3FQuery%3DThe%2BMeasurement%2Bof%2BObserver%2BAgreement%2Bfor%2BCategorical%2BData&ab_segments=0%2Fbasic_search_gsv2%2Fcontrol&refreqid=fastly-default%3A60efe6a1ae467d1002cd4305a15de703
 
 
 
@@ -511,7 +532,7 @@ La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe
 La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx 10-15$mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 
 \newpage
-## Modèles de la librairie *caret* : optimisation et sélection
+## Optimisation et sélection des modèles
 \paragraph*{}
 La librairie *caret* fournit une plateforme très pratique et efficiente pour la modélisation de données et l'inférence par apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles. Les modèles sélectionnés sont de types variés :
 
@@ -527,7 +548,7 @@ La première étape est de construire une fonction d'évaluation et de régressi
 set.seed(1)
 tr_ctrl <- trainControl(classProbs = TRUE, 
                         summaryFunction = twoClassSummary, 
-                        method = "cv", number = 10)
+                        method = "cv", number = 12)
 train(class ~ .,
       method = [METHODE],
       data = BI_lot_appr_opti,
@@ -539,7 +560,7 @@ train(class ~ .,
 \paragraph*{}
 La fonction *set.seed* assure la reproductibilité.
 
-La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans cet exemple, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 10 blocs (*10-folds*).
+La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans cet exemple, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 12 blocs (*12-folds*).
 
 La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation, la métrique utilisée pour l'évaluation (sensibilité, spécificité, ROC...) ainsi que la grille des paramètres utilisés par le modèle.
 \paragraph*{}
@@ -781,7 +802,7 @@ kable(BI_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et
 \newpage
 # Apprentissage machine et classification multiclasse
 
-*Brouillon, le lot de données utilisé ici est un lot synthétique créé par moi-même, mais à partir des données primaires du Secondary Mushroom Dataset de D.Wagner.*
+*Brouillon, le lot de données utilisé ici est un lot synthétique créé par moi-même (avec algorithme de création fonctionnel), mais à partir des données primaires du Secondary Mushroom Dataset de D.Wagner.*
 \paragraph*{}
 Etant données des performances qu'ont montré les différents modèles lors de la classification binaire, seuls les modèles basés sur les arbres décisionnels et les forêts aléatoires seront évalués dans cette section.
 \FloatBarrier
