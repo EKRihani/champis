@@ -7,8 +7,7 @@ library(tidyverse)    # Outils génériques
 library(caret)        # Outils d'apprentissage machine
 library(DiceDesign)    # Hypercubes Latins
 library(DiceEval)       # Modélisation sur hypercubes latins
-#library(SPlit)          # Découpage équilibré des jeux de données
-library(twinning)       # Découpage équilibré des jeux de données
+library(twinning)       # Découpage équilibré des jeux de données (plus efficient que split!)
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
@@ -27,17 +26,15 @@ dataset$class <- relevel(dataset$class, ref = "toxique")
 
 # Creation lots d'entrainement/optimisation (92%) et d'évaluation (8%) (ratio 13:1)
 
-#split_ratio <- 0.08
-splitratio <- 13
-#split2 <- 0.08
+BI_n_champis <- nrow(dataset)
+BI_split_p <- sqrt(BI_n_champis)
+BI_split_facteur <- round(sqrt(BI_split_p)+1)
+
 set.seed(007)
-index1 <- twin(data = dataset, r = splitratio)
+index1 <- twin(data = dataset, r = BI_split_facteur)
 #index1 <- createDataPartition(y = dataset$cap.diameter, times = 1, p = split_ratio, list = FALSE)
 BI_lot_appr_opti <- dataset[-index1,]
 BI_lot_evaluation <- dataset[index1,]
-
-#opti_split_ratio <- splitratio(x = dataset, y = class, method = "simple") # Split ratio d'après V.R. Joseph 2022
-
 
 # Creation lots d'entrainement (92%) et validation (8%)  # NOOOOOPE, optimisation via cross-validation !!!
 # set.seed(1337)
@@ -56,14 +53,14 @@ BI_lot_evaluation <- dataset[index1,]
 BI_w <- 10/11        # Ou 1/11
 BI_RatioSens <- 2*BI_w
 BI_RatioSpec <- 2*(1-BI_w)
-BI_n_folds <- 12
+
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_modele){
    set.seed(1)
    tr_ctrl <- trainControl(classProbs = TRUE, 
                            summaryFunction = twoClassSummary, 
                            method = "cv", 
-                           number = BI_n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (n-fold)
+                           number = BI_split_facteur)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (n-fold)
    cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
                  fcn_modele[1], 
                  "', data = BI_lot_appr_opti, trControl = tr_ctrl, metric = 'Sens', ", 
@@ -315,7 +312,7 @@ BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", 
 # BI_fit_ranger_ET_sens_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, mtry, min.node.size, Sens, "G")
 # BI_fit_ranger_ET_jw_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, X1, X2, Jw, "D")
 
-BI_best_ranger <- which.max(BI_fit_ranger_results$Spec^BI_ratioSpec*BI_fit_ranger_results$Sens^BI_ratioSens)
+BI_best_ranger <- which.max(BI_fit_ranger_results$Spec*BI_RatioSpec+BI_fit_ranger_results$Sens*BI_RatioSens)
 BI_best_rangergrid <- data.frame(mtry = BI_fit_ranger_results[BI_best_ranger,]$mtry, min.node.size =BI_fit_ranger_results[BI_best_ranger,]$min.node.size, splitrule =BI_fit_ranger_results[BI_best_ranger,]$splitrule)
 BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_best_rangergrid"))
 BI_fit_ranger_best <- fit_test(BI_set_ranger_best)
@@ -336,7 +333,7 @@ BI_pred_Rborist <- cbind(BI_pred_Rborist, BI_pred_Rborist2)
 BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Spec", "F")
 BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Sens", "G")
 
-BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec^BI_ratioSpec*BI_fit_Rborist_results$Sens^BI_ratioSens)
+BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec*BI_RatioSpec+BI_fit_Rborist_results$Sens*BI_RatioSens)
 BI_best_Rboristgrid <- data.frame(predFixed = BI_fit_Rborist_results[BI_best_Rborist,]$predFixed, minNode =BI_fit_Rborist_results[BI_best_Rborist,]$minNode)
 BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_best_Rboristgrid"))
 BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
