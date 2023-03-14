@@ -7,6 +7,7 @@ library(tidyverse)    # Outils génériques
 library(caret)        # Outils d'apprentissage machine
 library(DiceDesign)    # Hypercubes Latins
 library(DiceEval)       # Modélisation sur hypercubes latins
+library(twinning)       # Découpage équilibré des jeux de données (plus efficient que split!)
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
@@ -21,25 +22,19 @@ dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = T
 ##############################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
 ##############################################################################
-# Masquage family/name/classe + renommage correct
-dataset$name <- NULL
-dataset$class <- NULL
-dataset$family <- str_replace_all(dataset$family, "[:space:]|-", "_")
+# Suppression family/name/classe + renommage correct
+dataset$class <- NULL      # Censé être inconnu !!!
+dataset$name <- NULL       # On y va mollo : d'abord les familles...
+dataset$family <- as.factor(str_replace_all(dataset$family, "[:space:]|-", "_"))
 
-split1 <- 0.08
-split2 <- 0.08
-# Creation lots d'entrainement/validation (92%) et MUL_evaluation (8%)
+MUL_n_champis <- nrow(dataset)
+MUL_split_p <- sqrt(MUL_n_champis)
+MUL_split_facteur <- round(sqrt(MUL_split_p)+1)
+
 set.seed(007)
-index1 <- createDataPartition(y = dataset$cap.diameter, times = 1, p = split1, list = FALSE)
+index1 <- twin(data = dataset, r = MUL_split_facteur)
 MUL_lot_appr_opti <- dataset[-index1,]
 MUL_lot_evaluation <- dataset[index1,]
-
-# Creation lots d'entrainement (92%) et validation (8%)
-set.seed(1337)
-index2 <- createDataPartition(y = MUL_lot_appr_opti$cap.diameter, times = 1, p = split2, list = FALSE)
-MUL_lot_apprentissage <- MUL_lot_appr_opti[-index2,]
-MUL_lot_evaluation <- MUL_lot_appr_opti[index2,]
-
 
 ##############################################################################
 #     ANALYSE DU LOT D'ENTRAINEMENT AVEC MODELES DE CARET, BICLASSIFIEUR     #
@@ -48,12 +43,15 @@ MUL_lot_evaluation <- MUL_lot_appr_opti[index2,]
 # names(getModelInfo())
 # getModelInfo(Rborist)
 
-MUL_ratioSpeSen <- 10
-MUL_n_folds <- 5
+#MUL_ratioSpeSen <- 10
+
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_model){
    set.seed(1)
-   tr_ctrl <- trainControl(classProbs = TRUE, summaryFunction = multiClassSummary, method = "cv", number = MUL_n_folds)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (10-fold)
+   tr_ctrl <- trainControl(classProbs = TRUE, 
+                           summaryFunction = multiClassSummary, 
+                           method = "cv", 
+                           number = MUL_split_facteur)   # Règle paramètres d'évaluation performance à multiClassSummary (kappa...), avec cross-validation
    cmd <- paste0("train(family ~ ., method = '",      # Construit commande, évaluation de performance
                  fcn_model[1], 
                  "', data = MUL_lot_appr_opti, trControl = tr_ctrl, ", 
@@ -62,31 +60,60 @@ fit_test <- function(fcn_model){
    fitting
 }
 
-# Parallélisation (A TESTER !!!)
-# library(doParallel)
-# cl <- makeCluster(spec = 5, type = "PSOCK")
-# registerDoParallel(cl)
-#[truc à tester]
-# stopCluster(cl)
+# Définition de fonction : graphique 2D
+# graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
+#    fcn_x <- enquo(fcn_x)
+#    fcn_y <- enquo(fcn_y)
+#    fcn_metrique <- enquo(fcn_metrique)
+#    ggplot() +
+#       geom_raster(data = BI_pred_rpartcost, aes(x = !!fcn_x, y = !!fcn_y, fill = !!fcn_metrique), interpolate = TRUE) +
+#       geom_tile(data = fcn_modele, aes(x = !!fcn_x, y = !!fcn_y, fill = !!fcn_metrique), color = "black", linewidth =.5) +
+#       scale_fill_viridis_c(option = fcn_couleur, direction = 1) +
+#       theme_bw() +
+#       theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+#       theme(legend.position = "bottom")
+# }
+graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
+   cmd <- paste0(fcn_donnees, " %>% ggplot() +
+   geom_raster(data =", fcn_donnees, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), interpolate = TRUE) +
+   geom_tile(data =", fcn_modele, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), color = 'black', linewidth =.5) +
+   scale_fill_viridis_c(option ='" , fcn_couleur, "', direction = 1) +
+   theme_bw() +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position='bottom')"
+   )
+   eval(parse(text = cmd))
+}
+
+# Définition de fonction : graphique nuage/ligne de kappa
+grapheKappa <- function(fcn_donnees, fcn_abcisse){
+   fcn_abcisse <- enquo(fcn_abcisse)
+   ggplot(data = fcn_donnees, aes(x = !!fcn_abcisse)) +
+      geom_line(aes(y = kappa)) +
+      geom_point(aes(y = kappa)) +
+      theme_bw()
+}
 
 # Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
 
 MUL_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 
 MUL_LHS <- nolhDesign(dimension = 2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
-MUL_grid_rpartcost <- data.frame(MUL_LHS)
+MUL_LHS <- data.frame(MUL_LHS)
+colnames(MUL_LHS) <- c("X1", "X2")
+MUL_grid_rpartcost <- MUL_LHS
 colnames(MUL_grid_rpartcost) <- c("cp", "Cost")
 MUL_grid_rpartcost$cp <- (MUL_grid_rpartcost$cp*1e-2+1e-5)
 MUL_grid_rpartcost$Cost <- MUL_grid_rpartcost$Cost*2.5+1e-3
 
 MUL_set_rpart_cp <- c("rpart", "tuneGrid  = MUL_grid_rpart_cp")
-MUL_set_rpartcost <- c("rpartCost", "tuneGrid  = MUL_grid_rpartcost")     # A TESTER !!!
+MUL_set_rpartcost <- c("rpartCost", "tuneGrid  = MUL_grid_rpartcost[c('cp', 'Cost')]")
 
 MUL_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
 MUL_set_c50tree <- c("C5.0Tree", "")
-system.time(fit_test(MUL_set_rpart_cp))    ####### CHRONO
+#system.time(fit_test(MUL_set_rpart_cp))    ####### CHRONO
 MUL_fit_rpart_cp <- fit_test(MUL_set_rpart_cp)
-MUL_fit_rpartcost <- fit_test(MUL_set_rpartcost)      # MARCHE PAS ????
+MUL_fit_rpartcost <- fit_test(MUL_set_rpartcost)      # NE MARCHE PAS ????
 MUL_fit_ctree_criterion <- fit_test(MUL_set_ctree_criterion)
 MUL_fit_c50tree <- fit_test(MUL_set_c50tree)    # NE MARCHE PAS ????
 
@@ -94,7 +121,7 @@ MUL_fit_c50tree <- fit_test(MUL_set_c50tree)    # NE MARCHE PAS ????
 MUL_fit_rpart_cp_results <- MUL_fit_rpart_cp$results
 MUL_fit_rpart_cp_graphe <- ggplot(data = MUL_fit_rpart_cp$results, aes(x = cp, y = Kappa)) + geom_point() +  scale_x_log10()
 
-MUL_fit_rpartcost_results <- MUL_fit_rpartcost$results
+MUL_fit_rpartcost_results <- MUL_fit_rpartcost$results      # NE MARCHE PAS ????
 MUL_mod_rpartcost_kappa <- modelFit(X=MUL_fit_rpartcost_results[,1:2], Y=MUL_fit_rpartcost_results$Kappa,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
 MUL_pred_rpartcost <- expand.grid(MUL_fit_rpartcost_results[,1:2])
 colnames(MUL_pred_rpartcost) <- c("Cost", "cp")
@@ -108,7 +135,7 @@ MUL_fit_rpartcost_kappa_graphe <- ggplot() +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
-MUL_fit_ctree_criterion_graphe <- ggplot(MUL_fit_ctree_criterion)
+MUL_fit_ctree_criterion_graphe <- ggplot(MUL_fit_ctree_criterion)b
 MUL_fit_ctree_criterion_results <- MUL_fit_ctree_criterion$results
 MUL_fit_c50tree_results <- MUL_fit_c50tree$results       # NE MARCHE PAS ???
 

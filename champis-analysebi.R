@@ -24,7 +24,7 @@ dataset$class <- relevel(dataset$class, ref = "toxique")
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION     #
 ####################################################################
 
-# Creation lots d'entrainement/optimisation (92%) et d'évaluation (8%) (ratio 13:1)
+# Creation lots d'entrainement/optimisation et d'évaluation
 
 BI_n_champis <- nrow(dataset)
 BI_split_p <- sqrt(BI_n_champis)
@@ -35,12 +35,6 @@ index1 <- twin(data = dataset, r = BI_split_facteur)
 #index1 <- createDataPartition(y = dataset$cap.diameter, times = 1, p = split_ratio, list = FALSE)
 BI_lot_appr_opti <- dataset[-index1,]
 BI_lot_evaluation <- dataset[index1,]
-
-# Creation lots d'entrainement (92%) et validation (8%)  # NOOOOOPE, optimisation via cross-validation !!!
-# set.seed(1337)
-# index2 <- createDataPartition(y = BI_lot_appr_opti$cap.diameter, times = 1, p = split2, list = FALSE)
-# BI_lot_apprentissage <- BI_lot_appr_opti[-index2,]
-# BI_lot_evaluation <- BI_lot_appr_opti[index2,]
 
 
 ##############################################################################
@@ -168,7 +162,7 @@ BI_set_rpartcost <- c("rpartCost", "tuneGrid  = BI_grid_rpartcost[c('cp', 'Cost'
 
 BI_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
 BI_set_c50tree <- c("C5.0Tree", "")
-system.time(fit_test(BI_set_rpart_cp))    ####### CHRONO
+#system.time(fit_test(BI_set_rpart_cp))    ####### CHRONO
 BI_fit_rpart_cp <- fit_test(BI_set_rpart_cp)
 BI_fit_rpartcost <- fit_test(BI_set_rpartcost)
 BI_fit_ctree_criterion <- fit_test(BI_set_ctree_criterion)
