@@ -135,11 +135,11 @@ MUL_fit_rpartcost_kappa_graphe <- ggplot() +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
-MUL_fit_ctree_criterion_graphe <- ggplot(MUL_fit_ctree_criterion)b
+MUL_fit_ctree_criterion_graphe <- ggplot(MUL_fit_ctree_criterion)
 MUL_fit_ctree_criterion_results <- MUL_fit_ctree_criterion$results
 MUL_fit_c50tree_results <- MUL_fit_c50tree$results       # NE MARCHE PAS ???
 
-# Meilleur modèle CART
+# Meilleur modèle CART      # RPARTCOST NE MARCHE PAS ???
 MUL_best_rpartcost <- which.max(MUL_fit_rpartcost_results$Spec^MUL_ratioSpeSen*MUL_fit_rpartcost_results$Sens)
 MUL_best_rpartcostgrid <- data.frame(Cost = MUL_fit_rpartcost_results[MUL_best_rpartcost,]$Cost, cp =MUL_fit_rpartcost_results[MUL_best_rpartcost,]$cp)
 MUL_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = MUL_best_rpartcostgrid"))
@@ -147,13 +147,11 @@ MUL_fit_rpartcost_best <- fit_test(MUL_set_rpartcost_best)
 MUL_fit_rpartcost_best_results <- MUL_fit_rpartcost_best$results
 
 
-# Modèles type Random Forest (RFERNS, RANGER, RBORIST)
-MUL_set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
-
+# Modèles type Random Forest (RANGER, RBORIST)
 MUL_grid_ranger <- data.frame(MUL_LHS)
 MUL_grid_ranger <- rbind(MUL_grid_ranger,MUL_grid_ranger)
 colnames(MUL_grid_ranger) <- c("mtry", "min.node.size")
-#colnames(MUL_grid_ranger) <- c("mtry", "min.node.size, num.trees")     # Pour num.treees, à tester
+#colnames(MUL_grid_ranger) <- c("mtry", "min.node.size, num.trees")     # Pour num.trees, à tester
 MUL_grid_ranger$splitrule <- c(rep("extratrees", 17), rep("gini", 17))
 MUL_grid_ranger$mtry <- round(1+MUL_grid_ranger$mtry*48,0)       # Si arrondi : prendre des multiples de 16 (car 17 points pour 2d)
 MUL_grid_ranger$min.node.size <- round(1+MUL_grid_ranger$min.node.size*32,0)
@@ -180,86 +178,87 @@ MUL_fit_Rborist_bestTune <- MUL_fit_Rborist$bestTune
 
 MUL_fit_ranger_GINI <- MUL_fit_ranger_results %>% filter (splitrule == "gini")
 MUL_fit_ranger_ET <- MUL_fit_ranger_results %>% filter (splitrule == "extratrees")
-MUL_mod_ranger_spec_GINI <- modelFit(X=MUL_fit_ranger_GINI[,1:2], Y=MUL_fit_ranger_GINI$Spec,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-MUL_mod_ranger_sens_GINI <- modelFit(X=MUL_fit_ranger_GINI[,1:2], Y=MUL_fit_ranger_GINI$Sens,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-MUL_mod_ranger_spec_ET <- modelFit(X=MUL_fit_ranger_ET[,1:2], Y=MUL_fit_ranger_ET$Spec,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
-MUL_mod_ranger_sens_ET <- modelFit(X=MUL_fit_ranger_ET[,1:2], Y=MUL_fit_ranger_ET$Sens,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+
+MUL_mod_ranger_kappa_GINI <- modelFit(X=MUL_fit_ranger_GINI[,1:2], Y=MUL_fit_ranger_GINI$Kappa,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+MUL_mod_ranger_accu_GINI <- modelFit(X=MUL_fit_ranger_GINI[,1:2], Y=MUL_fit_ranger_GINI$Accuracy,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+MUL_mod_ranger_kappa_ET <- modelFit(X=MUL_fit_ranger_ET[,1:2], Y=MUL_fit_ranger_ET$Kappa,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
+MUL_mod_ranger_accu_ET <- modelFit(X=MUL_fit_ranger_ET[,1:2], Y=MUL_fit_ranger_ET$Accuracy,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
 
 MUL_pred_ranger_GINI <- expand.grid(MUL_fit_ranger_GINI[,1:2])
 colnames(MUL_pred_ranger_GINI) <- c("mtry", "min.node.size")
 MUL_pred_ranger_GINI2 <- NULL
-MUL_pred_ranger_GINI2$Spec <- modelPredict(MUL_mod_ranger_spec_GINI, MUL_pred_ranger_GINI)
-MUL_pred_ranger_GINI2$Sens <- modelPredict(MUL_mod_ranger_sens_GINI, MUL_pred_ranger_GINI)
+MUL_pred_ranger_GINI2$Kappa <- modelPredict(MUL_mod_ranger_kappa_GINI, MUL_pred_ranger_GINI)
+MUL_pred_ranger_GINI2$Accuracy <- modelPredict(MUL_mod_ranger_accu_GINI, MUL_pred_ranger_GINI)
 MUL_pred_ranger_GINI <- cbind(MUL_pred_ranger_GINI, MUL_pred_ranger_GINI2)
 
 MUL_pred_ranger_ET <- expand.grid(MUL_fit_ranger_ET[,1:2])
 colnames(MUL_pred_ranger_ET) <- c("mtry", "min.node.size")
 MUL_pred_ranger_ET2 <- NULL
-MUL_pred_ranger_ET2$Spec <- modelPredict(MUL_mod_ranger_spec_ET, MUL_pred_ranger_ET)
-MUL_pred_ranger_ET2$Sens <- modelPredict(MUL_mod_ranger_sens_ET, MUL_pred_ranger_ET)
+MUL_pred_ranger_ET2$Kappa <- modelPredict(MUL_mod_ranger_kappa_ET, MUL_pred_ranger_ET)
+MUL_pred_ranger_ET2$Accuracy <- modelPredict(MUL_mod_ranger_accu_ET, MUL_pred_ranger_ET)
 MUL_pred_ranger_ET <- cbind(MUL_pred_ranger_ET, MUL_pred_ranger_ET2)
 
-MUL_fit_ranger_Gini_spec_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
+MUL_fit_ranger_Gini_kappa_graphe <- ggplot() +
+   geom_raster(data = MUL_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Kappa), interpolate = TRUE) +
+   geom_tile(data = MUL_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Kappa), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
-MUL_fit_ranger_Gini_sens_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
+MUL_fit_ranger_Gini_accu_graphe <- ggplot() +
+   geom_raster(data = MUL_pred_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Accuracy), interpolate = TRUE) +
+   geom_tile(data = MUL_fit_ranger_GINI, aes(x = mtry, y = min.node.size, fill = Accuracy), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
 
-MUL_fit_ranger_ET_spec_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Spec), color = "black", linewidth =.5) +
+MUL_fit_ranger_ET_kappa_graphe <- ggplot() +
+   geom_raster(data = MUL_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Kappa), interpolate = TRUE) +
+   geom_tile(data = MUL_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Kappa), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
-MUL_fit_ranger_ET_sens_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Sens), color = "black", linewidth =.5) +
+MUL_fit_ranger_ET_accu_graphe <- ggplot() +
+   geom_raster(data = MUL_pred_ranger_ET, aes(x = mtry, y = min.node.size, fill = Accuracy), interpolate = TRUE) +
+   geom_tile(data = MUL_fit_ranger_ET, aes(x = mtry, y = min.node.size, fill = Accuracy), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
 
-MUL_best_ranger <- which.max(MUL_fit_ranger_results$Spec^MUL_ratioSpeSen*MUL_fit_ranger_results$Sens)
+MUL_best_ranger <- which.max(MUL_fit_ranger_results$Kappa)
 MUL_best_rangergrid <- data.frame(mtry = MUL_fit_ranger_results[MUL_best_ranger,]$mtry, min.node.size =MUL_fit_ranger_results[MUL_best_ranger,]$min.node.size, splitrule =MUL_fit_ranger_results[MUL_best_ranger,]$splitrule)
 MUL_set_ranger_best <- c("ranger", paste0("tuneGrid  = MUL_best_rangergrid"))
 MUL_fit_ranger_best <- fit_test(MUL_set_ranger_best)
 MUL_fit_ranger_best_results <- MUL_fit_ranger_best$results
 
-MUL_mod_Rborist_spec <- modelFit(X=MUL_fit_Rborist_results[,1:2], Y=MUL_fit_Rborist_results$Spec,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-MUL_mod_Rborist_sens <-  modelFit(X=MUL_fit_Rborist_results[,1:2], Y=MUL_fit_Rborist_results$Sens,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+MUL_mod_Rborist_kappa <- modelFit(X=MUL_fit_Rborist_results[,1:2], Y=MUL_fit_Rborist_results$Kappa,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+MUL_mod_Rborist_accu <-  modelFit(X=MUL_fit_Rborist_results[,1:2], Y=MUL_fit_Rborist_results$Accuracy,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
 MUL_pred_Rborist <- expand.grid(MUL_fit_Rborist_results[,1:2])
 colnames(MUL_pred_Rborist) <- c("predFixed", "minNode")
 MUL_pred_Rborist2 <- NULL
-MUL_pred_Rborist2$Spec <- modelPredict(MUL_mod_Rborist_spec, MUL_pred_Rborist)
-MUL_pred_Rborist2$Sens <- modelPredict(MUL_mod_Rborist_sens, MUL_pred_Rborist)
+MUL_pred_Rborist2$Kappa <- modelPredict(MUL_mod_Rborist_kappa, MUL_pred_Rborist)
+MUL_pred_Rborist2$Accuracy <- modelPredict(MUL_mod_Rborist_accu, MUL_pred_Rborist)
 MUL_pred_Rborist <- cbind(MUL_pred_Rborist, MUL_pred_Rborist2)
 
-MUL_fit_Rborist_spec_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_Rborist, aes(x = predFixed, y = minNode, fill = Spec), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Spec), color = "black", linewidth =.5) +
+MUL_fit_Rborist_kappa_graphe <- ggplot() +
+   geom_raster(data = MUL_pred_Rborist, aes(x = predFixed, y = minNode, fill = Kappa), interpolate = TRUE) +
+   geom_tile(data = MUL_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Kappa), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
-MUL_fit_Rborist_sens_graphe <- ggplot() +
-   geom_raster(data = MUL_pred_Rborist, aes(x = predFixed, y = minNode, fill = Sens), interpolate = TRUE) +
-   geom_tile(data = MUL_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Sens), color = "black", linewidth =.5) +
+MUL_fit_Rborist_accu_graphe <- ggplot() +
+   geom_raster(data = MUL_pred_Rborist, aes(x = predFixed, y = minNode, fill = Accuracy), interpolate = TRUE) +
+   geom_tile(data = MUL_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Accuracy), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
 
-MUL_best_Rborist <- which.max(MUL_fit_Rborist_results$Spec^MUL_ratioSpeSen*MUL_fit_Rborist_results$Sens)
+MUL_best_Rborist <- which.max(MUL_fit_Rborist_results$Kappa)
 MUL_best_Rboristgrid <- data.frame(predFixed = MUL_fit_Rborist_results[MUL_best_Rborist,]$predFixed, minNode =MUL_fit_Rborist_results[MUL_best_Rborist,]$minNode)
 MUL_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MUL_best_Rboristgrid"))
 MUL_fit_Rborist_best <- fit_test(MUL_set_Rborist_best)
@@ -282,36 +281,32 @@ MUL_fit_Rborist_best_results <- MUL_fit_Rborist_best$results
 
 # Règle la liste de prédiction et lance la classification
 MUL_evaluation <- MUL_lot_evaluation
-MUL_evaluation$reference <- as.logical(as.character(recode_factor(MUL_evaluation$class, e = TRUE, p = FALSE))) # Bascule en booléen
-
-# Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
-MUL_evaluation$reference <- as.factor(MUL_evaluation$reference)
-
+MUL_evaluation$reference <- as.factor(MUL_evaluation$family)
 
 start_time <- Sys.time()     # Démarre chrono
-cmd <- paste0("train(class ~ ., method = 'ranger', data = MUL_lot_appr_opti,", MUL_set_ranger_best[2], ")") # Construction de la commande
+cmd <- paste0("train(family ~ ., method = 'ranger', data = MUL_lot_appr_opti,", MUL_set_ranger_best[2], ")") # Construction de la commande
 MUL_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
 MUL_pred_ranger_final <- predict(object = MUL_fit_ranger_final, newdata = MUL_lot_evaluation)
-MUL_CM_ranger_final <- confusionMatrix(data = MUL_pred_ranger_final, reference = MUL_lot_evaluation$class)
-MUL_resultats_ranger <- c(MUL_CM_ranger_final$byClass["Sensitivity"], MUL_CM_ranger_final$byClass["Specificity"], MUL_CM_ranger_final$byClass["F1"])
+MUL_CM_ranger_final <- confusionMatrix(data = MUL_pred_ranger_final, reference = MUL_lot_evaluation$family)
+MUL_resultats_ranger <- c(MUL_CM_ranger_final$byClass["Accuracy"], MUL_CM_ranger_final$byClass["Kappa"])
 end_time <- Sys.time()     # Stop chrono
 MUL_temps_ranger <- difftime(end_time, start_time)
 MUL_temps_ranger <- MUL_temps_ranger %>% as.numeric %>% round(.,2)
 
 start_time <- Sys.time()            # Démarre chrono
-cmd <- paste0("train(class ~ ., method = 'Rborist', data = MUL_lot_appr_opti,", MUL_set_Rborist_best[2], ")") # Construction de la commande
+cmd <- paste0("train(family ~ ., method = 'Rborist', data = MUL_lot_appr_opti,", MUL_set_Rborist_best[2], ")") # Construction de la commande
 MUL_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 MUL_pred_Rborist_final <- predict(object = MUL_fit_Rborist_final, newdata = MUL_lot_evaluation)
-MUL_CM_Rborist_final <- confusionMatrix(data = MUL_pred_Rborist_final, reference = MUL_lot_evaluation$class)
-MUL_resultats_Rborist <- c(MUL_CM_Rborist_final$byClass["Sensitivity"], MUL_CM_Rborist_final$byClass["Specificity"], MUL_CM_Rborist_final$byClass["F1"])
+MUL_CM_Rborist_final <- confusionMatrix(data = MUL_pred_Rborist_final, reference = MUL_lot_evaluation$family)
+MUL_resultats_Rborist <- c(MUL_CM_Rborist_final$byClass["Accuracy"], MUL_CM_Rborist_final$byClass["Kappa"])
 end_time <- Sys.time()              # Stop chrono
 MUL_temps_Rborist <- difftime(end_time, start_time)
 MUL_temps_Rborist <- MUL_temps_Rborist %>% as.numeric %>% round(.,2)
 
-MUL_resultat_Rborist <- c(MUL_CM_Rborist_final$byClass["Sensitivity"], MUL_CM_Rborist_final$byClass["Specificity"], MUL_CM_Rborist_final$byClass["F1"], MUL_temps_Rborist)
-MUL_resultat_ranger <- c(MUL_CM_ranger_final$byClass["Sensitivity"], MUL_CM_ranger_final$byClass["Specificity"], MUL_CM_ranger_final$byClass["F1"], MUL_temps_ranger)
+MUL_resultat_Rborist <- c(MUL_CM_Rborist_final$overall["Accuracy"], MUL_CM_Rborist_final$overall["Kappa"], MUL_temps_Rborist)
+MUL_resultat_ranger <- c(MUL_CM_ranger_final$overall["Accuracy"], MUL_CM_ranger_final$overall["Kappa"], MUL_temps_ranger)
 MUL_RF_resultat <- rbind(MUL_resultat_ranger, MUL_resultat_Rborist)
-colnames(MUL_RF_resultat) <- c("Sensibilité", "Spécificité", "F1 score", "Durée (min)")
+colnames(MUL_RF_resultat) <- c("Précision", "Kappa", "Durée (min)")
 rownames(MUL_RF_resultat) <- c("Ranger", "Rborist")
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
