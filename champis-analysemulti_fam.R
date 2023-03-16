@@ -309,10 +309,10 @@ colnames(MULFAM_RF_resultat) <- c("Précision", "Kappa", "Durée (min)")
 rownames(MULFAM_RF_resultat) <- c("Ranger", "Rborist")
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
-rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_apprentissage, MULFAM_lot_evaluation,
-   MULFAM_fit_rpart_cp, MULFAM_fit_rpartcost, MULFAM_fit_rpartcost_best, MULFAM_fit_ctree_criterion, MULFAM_fit_c50tree,
-   MULFAM_fit_Rborist, MULFAM_fit_Rborist_best, MULFAM_fit_Rborist_final,
-   MULFAM_fit_ranger, MULFAM_fit_ranger_best, MULFAM_fit_ranger_final)
+# rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_evaluation,
+#    MULFAM_fit_rpart_cp, MULFAM_fit_rpartcost, MULFAM_fit_rpartcost_best, MULFAM_fit_ctree_criterion, MULFAM_fit_c50tree,
+#    MULFAM_fit_Rborist, MULFAM_fit_Rborist_best, MULFAM_fit_Rborist_final,
+#    MULFAM_fit_ranger, MULFAM_fit_ranger_best, MULFAM_fit_ranger_final)
 
 save.image(file = "EKR-Champis-AnalyseMultiFam.RData")     # Sauvegarde données pour rapport
 load(file = "EKR-Champis-AnalyseMultiFam.RData")     # Chargement données pour rapport

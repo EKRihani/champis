@@ -33,7 +33,6 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
-load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats BROUILLON     MULTICLASSE
 load("EKR-Champis-AnalyseMultiFam.RData")       # Chargement des résultats CLASSIFICATION PAR FAMILLES
 
 library(ggpubr)   # Combiner graphes (ggarrange)
@@ -821,7 +820,7 @@ kable(MULFAM_fit_rpart_cp_resultats[,1:4], digits = 5, caption = "Performance du
 plot(MULFAM_fit_rpart_cp_graphe)
 ```
 *[A CORRIGER]*
-Le modèle CART le plus simple n'atteint jamais la sensibilité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(MUL_fit_rpart_cp_resultats["Sens"]),3)` et $Spec_{max} =$ `r round(max(MUL_fit_rpart_cp_resultats["Spec"]),3)`).
+Le modèle CART le plus simple donne de très bons résultats globaux, avec ($\kappa_{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Kappa"]),3)` et $Prec._{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Accuracy"]),3)`).
 
 <!-- Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). -->
 <!-- *NE FONCTIONNE PAS !!! * -->
@@ -829,16 +828,16 @@ Le modèle CART le plus simple n'atteint jamais la sensibilité requise $Spec = 
 <!-- ```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"} -->
 <!-- plot(ggarrange( -->
 <!--    ncol = 2, -->
-<!--    MUL_fit_rpartcost_sens_graphe, -->
-<!--    MUL_fit_rpartcost_spec_graphe -->
+<!--    MULFAM_fit_rpartcost_sens_graphe, -->
+<!--    MULFAM_fit_rpartcost_spec_graphe -->
 <!--    ) -->
 <!-- ) -->
 <!-- ``` -->
 
-<!-- Les performances maximales sont atteintes pour *cp =* `r MUL_best_rpartcostgrid['cp']` et *Cost = * `r MUL_best_rpartcostgrid['Cost']`. -->
+<!-- Les performances maximales sont atteintes pour *cp =* `r #MULFAM_best_rpartcostgrid['cp']` et *Cost = * `r #MULFAM_best_rpartcostgrid['Cost']`. -->
 
 <!-- ```{r, echo = FALSE} -->
-<!-- kable(MUL_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)") -->
+<!-- kable(MULFAM_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)") -->
 <!-- ``` -->
 
 <!-- Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise. -->
@@ -846,7 +845,7 @@ Le modèle CART le plus simple n'atteint jamais la sensibilité requise $Spec = 
 <!-- Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. -->
 
 <!-- ```{r, echo = FALSE} -->
-<!-- kable(MUL_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree") -->
+<!-- kable(MULFAM_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree") -->
 <!-- ``` -->
 
 <!-- De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Spec = 1$. -->
@@ -865,10 +864,10 @@ plot(ggarrange(
 )
 ```
 
-Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r MUL_best_rangergrid$min.node.size`, *mtry* = `r MUL_best_rangergrid$mtry` et *splitrule* = `r MUL_best_rangergrid$splitrule`) a donné d'excellents résultats.
+Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r MULFAM_best_rangergrid$min.node.size`, *mtry* = `r MULFAM_best_rangergrid$mtry` et *splitrule* = `r MULFAM_best_rangergrid$splitrule`) a donné d'excellents résultats.
 
 ```{r, echo = FALSE}
-kable(MULFAM_fit_ranger_best_resultats[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
+kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
 ```
 
 Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
@@ -882,11 +881,11 @@ plot(MULFAM_fit_Rborist_kappa_graphe)
 \paragraph*{}
 Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique.
 \paragraph*{}
-Avec des paramètres optimaux (*predFixed* = `r MUL_best_Rboristgrid$predFixed` et *minNode* = `r MUL_best_Rboristgrid$minNode`), la performance est estimée à :
+Avec des paramètres optimaux (*predFixed* = `r MULFAM_best_Rboristgrid$predFixed` et *minNode* = `r MULFAM_best_Rboristgrid$minNode`), la performance est estimée à :
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(MULFAM_fit_Rborist_best_resultats[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
+kable(MULFAM_fit_Rborist_best_resultats[c(1,2,6,7)], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
 ```
 \FloatBarrier
 \paragraph*{}
@@ -901,15 +900,15 @@ Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqué
 L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
 
 ```{r out.width = "100%", echo = FALSE}
-kable(MUL_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
+kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
 ```
 
-La précision finale est égale à `r round(MUL_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(MUL_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MUL_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r MUL_temps_ranger` min), preuve de sa grande efficience calculatoire.
+La précision finale est égale à `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r MULFAM_temps_ranger` min), preuve de sa grande efficience calculatoire.
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MUL_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MUL_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MUL_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r MUL_temps_Rborist` min).
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
 
 ```{r out.width = "100%", echo = FALSE}
-kable(MUL_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)")
+kable(MULFAM_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)")
 ```
 
 \FloatBarrier
