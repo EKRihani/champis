@@ -33,7 +33,8 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
-load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats CLASSIFICATION MULTICLASSE
+load("EKR-Champis-AnalyseMulti.RData")       # Chargement des résultats BROUILLON     MULTICLASSE
+load("EKR-Champis-AnalyseMultiFam.RData")       # Chargement des résultats CLASSIFICATION PAR FAMILLES
 
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(rmarkdown)
@@ -813,30 +814,35 @@ Etant données des performances qu'ont montré les différents modèles lors de 
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
 
 ```{r, echo = FALSE}
-kable(MUL_fit_rpart_cp_resultats[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
+kable(MULFAM_fit_rpart_cp_resultats[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
 ```
 
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle CART (rpart) en fonction du paramètre de complexité"}
+plot(MULFAM_fit_rpart_cp_graphe)
+```
+*[A CORRIGER]*
 Le modèle CART le plus simple n'atteint jamais la sensibilité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(MUL_fit_rpart_cp_resultats["Sens"]),3)` et $Spec_{max} =$ `r round(max(MUL_fit_rpart_cp_resultats["Spec"]),3)`).
 
-Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*).
+<!-- Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). -->
+<!-- *NE FONCTIONNE PAS !!! * -->
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
-plot(ggarrange(
-   ncol = 2,
-   MUL_fit_rpartcost_sens_graphe,
-   MUL_fit_rpartcost_spec_graphe
-   )
-)
-```
+<!-- ```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"} -->
+<!-- plot(ggarrange( -->
+<!--    ncol = 2, -->
+<!--    MUL_fit_rpartcost_sens_graphe, -->
+<!--    MUL_fit_rpartcost_spec_graphe -->
+<!--    ) -->
+<!-- ) -->
+<!-- ``` -->
 
-Les performances maximales sont atteintes pour *cp =* `r MUL_best_rpartcostgrid['cp']` et *Cost = * `r MUL_best_rpartcostgrid['Cost']`.
+<!-- Les performances maximales sont atteintes pour *cp =* `r MUL_best_rpartcostgrid['cp']` et *Cost = * `r MUL_best_rpartcostgrid['Cost']`. -->
 
-```{r, echo = FALSE}
-kable(MUL_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- kable(MUL_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)") -->
+<!-- ``` -->
 
-Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise.
-\paragraph*{}
+<!-- Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise. -->
+<!-- \paragraph*{} -->
 <!-- Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. -->
 
 <!-- ```{r, echo = FALSE} -->
@@ -850,20 +856,11 @@ Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'
 \paragraph*{}
 Le premier modèle de forêt aléatoire évalué dans cette partie est le modèle ranger, qui possède trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger, en fonction de ses 2 hyperparamètres (algorithme de scission : gini à gauche, extratrees à droite)"}
 plot(ggarrange(
    ncol = 2,
-   MUL_fit_ranger_Gini_sens_graphe,
-   MUL_fit_ranger_Gini_spec_graphe
-   )
-)
-```
-
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
-plot(ggarrange(
-   ncol = 2,
-   MUL_fit_ranger_ET_sens_graphe,
-   MUL_fit_ranger_ET_spec_graphe
+   MULFAM_fit_ranger_Gini_kappa_graphe,
+   MULFAM_fit_ranger_ET_kappa_graphe
    )
 )
 ```
@@ -871,20 +868,15 @@ plot(ggarrange(
 Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r MUL_best_rangergrid$min.node.size`, *mtry* = `r MUL_best_rangergrid$mtry` et *splitrule* = `r MUL_best_rangergrid$splitrule`) a donné d'excellents résultats.
 
 ```{r, echo = FALSE}
-kable(MUL_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
+kable(MULFAM_fit_ranger_best_resultats[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
 ```
 
 Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
-plot(ggarrange(
-   ncol = 2,
-   MUL_fit_Rborist_sens_graphe,
-   MUL_fit_Rborist_spec_graphe
-   )
-)
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(MULFAM_fit_Rborist_kappa_graphe)
 ```
 
 \paragraph*{}
@@ -894,21 +886,13 @@ Avec des paramètres optimaux (*predFixed* = `r MUL_best_Rboristgrid$predFixed` 
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(MUL_fit_Rborist_best_results[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
+kable(MULFAM_fit_Rborist_best_resultats[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
 ```
 \FloatBarrier
 \paragraph*{}
 Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger, avec une sensibilité et une spécificité excellentes.
 \paragraph*{}
 Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
-\paragraph*{}
-La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code R peut facilement être mesurée par :
-```{r, eval = FALSE}
-temps_debut <- Sys.time()
-[Code à évaluer]
-temps_fin <- Sys.time()
-duree <- difftime(temps_fin, temps_debut)
-```
 
 ### Résultats
 Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqués précédemment.

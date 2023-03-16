@@ -89,8 +89,8 @@ graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_co
 grapheKappa <- function(fcn_donnees, fcn_abcisse){
    fcn_abcisse <- enquo(fcn_abcisse)
    ggplot(data = fcn_donnees, aes(x = !!fcn_abcisse)) +
-      geom_line(aes(y = kappa)) +
-      geom_point(aes(y = kappa)) +
+      geom_line(aes(y = Kappa)) +
+      geom_point(aes(y = Kappa)) +
       theme_bw()
 }
 
@@ -117,33 +117,34 @@ MULFAM_fit_ctree_criterion <- fit_test(MULFAM_set_ctree_criterion)
 # MULFAM_fit_c50tree <- fit_test(MULFAM_set_c50tree)    # NE MARCHE PAS ????
 
 # Extraire résultats d'intérêt : graphes et resultats
-MULFAM_fit_rpart_cp_results <- MULFAM_fit_rpart_cp$results
-MULFAM_fit_rpart_cp_graphe <- ggplot(data = MULFAM_fit_rpart_cp$results, aes(x = cp, y = Kappa)) + geom_point() +  scale_x_log10()
+MULFAM_fit_rpart_cp_resultats <- MULFAM_fit_rpart_cp$results
+MULFAM_fit_rpart_cp_graphe <- grapheKappa(MULFAM_fit_rpart_cp_resultats, cp)+ scale_x_log10()
 
-# MULFAM_fit_rpartcost_results <- MULFAM_fit_rpartcost$results      # NE MARCHE PAS ????
-# MULFAM_mod_rpartcost_kappa <- modelFit(X=MULFAM_fit_rpartcost_results[,1:2], Y=MULFAM_fit_rpartcost_results$Kappa,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-# MULFAM_pred_rpartcost <- expand.grid(MULFAM_fit_rpartcost_results[,1:2])
+# MULFAM_fit_rpartcost_resultats <- MULFAM_fit_rpartcost$results      # NE MARCHE PAS ????
+# MULFAM_mod_rpartcost_kappa <- modelFit(X=MULFAM_fit_rpartcost_resultats[,1:2], Y=MULFAM_fit_rpartcost_resultats$Kappa,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+# MULFAM_pred_rpartcost <- expand.grid(MULFAM_fit_rpartcost_resultats[,1:2])
 # colnames(MULFAM_pred_rpartcost) <- c("Cost", "cp")
 # MULFAM_pred_rpartcost2 <- NULL
 # MULFAM_pred_rpartcost2$Kappa <- modelPredict(MULFAM_mod_rpartcost_spec, MULFAM_pred_rpartcost)
 # MULFAM_pred_rpartcost <- cbind(MULFAM_pred_rpartcost, MULFAM_pred_rpartcost2)
 # MULFAM_fit_rpartcost_kappa_graphe <- ggplot() +
 #    geom_raster(data = MULFAM_pred_rpartcost, aes(x = Cost, y = cp, fill = Kappa), interpolate = TRUE) +
-#    geom_tile(data = MULFAM_fit_rpartcost_results, aes(x = Cost, y = cp, fill = Kappa), color = "black", linewidth =.5) +
+#    geom_tile(data = MULFAM_fit_rpartcost_resultats, aes(x = Cost, y = cp, fill = Kappa), color = "black", linewidth =.5) +
 #    scale_fill_viridis_c(option = "F", direction = 1) +
 #    theme_bw() +
 #    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
 
-MULFAM_fit_ctree_criterion_graphe <- ggplot(MULFAM_fit_ctree_criterion)
-MULFAM_fit_ctree_criterion_results <- MULFAM_fit_ctree_criterion$results
-# MULFAM_fit_c50tree_results <- MULFAM_fit_c50tree$results       # NE MARCHE PAS ???
+MULFAM_fit_ctree_criterion_resultats <- MULFAM_fit_ctree_criterion$results
+MULFAM_fit_ctree_criterion_graphe <- grapheKappa(MULFAM_fit_ctree_criterion_resultats, mincriterion)
+# MULFAM_fit_c50tree_resultats <- MULFAM_fit_c50tree$results       # NE MARCHE PAS ???
+
 
 # Meilleur modèle CART      # RPARTCOST NE MARCHE PAS ???
-# MULFAM_best_rpartcost <- which.max(MULFAM_fit_rpartcost_results$Spec^MULFAM_ratioSpeSen*MULFAM_fit_rpartcost_results$Sens)
-# MULFAM_best_rpartcostgrid <- data.frame(Cost = MULFAM_fit_rpartcost_results[MULFAM_best_rpartcost,]$Cost, cp =MULFAM_fit_rpartcost_results[MULFAM_best_rpartcost,]$cp)
+# MULFAM_best_rpartcost <- which.max(MULFAM_fit_rpartcost_resultats$Spec^MULFAM_ratioSpeSen*MULFAM_fit_rpartcost_resultats$Sens)
+# MULFAM_best_rpartcostgrid <- data.frame(Cost = MULFAM_fit_rpartcost_resultats[MULFAM_best_rpartcost,]$Cost, cp =MULFAM_fit_rpartcost_resultats[MULFAM_best_rpartcost,]$cp)
 # MULFAM_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = MULFAM_best_rpartcostgrid"))
 # MULFAM_fit_rpartcost_best <- fit_test(MULFAM_set_rpartcost_best)
-# MULFAM_fit_rpartcost_best_results <- MULFAM_fit_rpartcost_best$results
+# MULFAM_fit_rpartcost_best_resultats <- MULFAM_fit_rpartcost_best$results
 
 
 # Modèles type Random Forest (RANGER, RBORIST)
@@ -169,13 +170,13 @@ MULFAM_fit_ranger <- fit_test(MULFAM_set_ranger)
 MULFAM_fit_Rborist <- fit_test(MULFAM_set_Rborist)
 
 # Extraire résultats d'intérêt : graphes et resultats
-MULFAM_fit_ranger_results <- MULFAM_fit_ranger$results
+MULFAM_fit_ranger_resultats <- MULFAM_fit_ranger$results
 MULFAM_fit_ranger_bestTune <- MULFAM_fit_ranger$bestTune
-MULFAM_fit_Rborist_results <- MULFAM_fit_Rborist$results
+MULFAM_fit_Rborist_resultats <- MULFAM_fit_Rborist$results
 MULFAM_fit_Rborist_bestTune <- MULFAM_fit_Rborist$bestTune
 
-MULFAM_fit_ranger_GINI <- MULFAM_fit_ranger_results %>% filter (splitrule == "gini")
-MULFAM_fit_ranger_ET <- MULFAM_fit_ranger_results %>% filter (splitrule == "extratrees")
+MULFAM_fit_ranger_GINI <- MULFAM_fit_ranger_resultats %>% filter (splitrule == "gini")
+MULFAM_fit_ranger_ET <- MULFAM_fit_ranger_resultats %>% filter (splitrule == "extratrees")
 
 MULFAM_mod_ranger_kappa_GINI <- modelFit(X=MULFAM_fit_ranger_GINI[,1:2], Y=MULFAM_fit_ranger_GINI$Kappa,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
 MULFAM_mod_ranger_accu_GINI <- modelFit(X=MULFAM_fit_ranger_GINI[,1:2], Y=MULFAM_fit_ranger_GINI$Accuracy,  type="Kriging", formula=Y~mtry+min.node.size+mtry:min.node.size+I(mtry^2)+I(min.node.size^2))
@@ -226,15 +227,15 @@ MULFAM_fit_ranger_ET_accu_graphe <- ggplot() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
 
-MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_results$Kappa)
-MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_results[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_results[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_results[MULFAM_best_ranger,]$splitrule)
+MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_resultats$Kappa)
+MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$splitrule)
 MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid"))
 MULFAM_fit_ranger_best <- fit_test(MULFAM_set_ranger_best)
-MULFAM_fit_ranger_best_results <- MULFAM_fit_ranger_best$results
+MULFAM_fit_ranger_best_resultats <- MULFAM_fit_ranger_best$results
 
-MULFAM_mod_Rborist_kappa <- modelFit(X=MULFAM_fit_Rborist_results[,1:2], Y=MULFAM_fit_Rborist_results$Kappa,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-MULFAM_mod_Rborist_accu <-  modelFit(X=MULFAM_fit_Rborist_results[,1:2], Y=MULFAM_fit_Rborist_results$Accuracy,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-MULFAM_pred_Rborist <- expand.grid(MULFAM_fit_Rborist_results[,1:2])
+MULFAM_mod_Rborist_kappa <- modelFit(X=MULFAM_fit_Rborist_resultats[,1:2], Y=MULFAM_fit_Rborist_resultats$Kappa,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+MULFAM_mod_Rborist_accu <-  modelFit(X=MULFAM_fit_Rborist_resultats[,1:2], Y=MULFAM_fit_Rborist_resultats$Accuracy,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+MULFAM_pred_Rborist <- expand.grid(MULFAM_fit_Rborist_resultats[,1:2])
 colnames(MULFAM_pred_Rborist) <- c("predFixed", "minNode")
 MULFAM_pred_Rborist2 <- NULL
 MULFAM_pred_Rborist2$Kappa <- modelPredict(MULFAM_mod_Rborist_kappa, MULFAM_pred_Rborist)
@@ -243,34 +244,34 @@ MULFAM_pred_Rborist <- cbind(MULFAM_pred_Rborist, MULFAM_pred_Rborist2)
 
 MULFAM_fit_Rborist_kappa_graphe <- ggplot() +
    geom_raster(data = MULFAM_pred_Rborist, aes(x = predFixed, y = minNode, fill = Kappa), interpolate = TRUE) +
-   geom_tile(data = MULFAM_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Kappa), color = "black", linewidth =.5) +
+   geom_tile(data = MULFAM_fit_Rborist_resultats, aes(x = predFixed, y = minNode, fill = Kappa), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "F", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
 MULFAM_fit_Rborist_accu_graphe <- ggplot() +
    geom_raster(data = MULFAM_pred_Rborist, aes(x = predFixed, y = minNode, fill = Accuracy), interpolate = TRUE) +
-   geom_tile(data = MULFAM_fit_Rborist_results, aes(x = predFixed, y = minNode, fill = Accuracy), color = "black", linewidth =.5) +
+   geom_tile(data = MULFAM_fit_Rborist_resultats, aes(x = predFixed, y = minNode, fill = Accuracy), color = "black", linewidth =.5) +
    scale_fill_viridis_c(option = "G", direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position="bottom")
 
-MULFAM_best_Rborist <- which.max(MULFAM_fit_Rborist_results$Kappa)
-MULFAM_best_Rboristgrid <- data.frame(predFixed = MULFAM_fit_Rborist_results[MULFAM_best_Rborist,]$predFixed, minNode =MULFAM_fit_Rborist_results[MULFAM_best_Rborist,]$minNode)
+MULFAM_best_Rborist <- which.max(MULFAM_fit_Rborist_resultats$Kappa)
+MULFAM_best_Rboristgrid <- data.frame(predFixed = MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$predFixed, minNode =MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$minNode)
 MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristgrid"))
 MULFAM_fit_Rborist_best <- fit_test(MULFAM_set_Rborist_best)
-MULFAM_fit_Rborist_best_results <- MULFAM_fit_Rborist_best$results
+MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results
 
 # Lance modèle RANGER optimal
 MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid, num.trees = 6"))
 MULFAM_fit_ranger_best <- fit_test(MULFAM_set_ranger_best)
-MULFAM_fit_ranger_best_results <- MULFAM_fit_ranger_best$results
+MULFAM_fit_ranger_best_resultats <- MULFAM_fit_ranger_best$results
 
 # Lance modèle RBORIST optimal
 MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristgrid, ntrees = 2"))
 MULFAM_fit_Rborist_best <- fit_test(MULFAM_set_Rborist_best)
-MULFAM_fit_Rborist_best_results <- MULFAM_fit_Rborist_best$results
+MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results
 
 
 #########################################################
