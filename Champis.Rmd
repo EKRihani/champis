@@ -15,15 +15,12 @@ output:
       before_body: couverture.tex
       after_body: quatrieme.tex
 header-includes:
-  - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc
+  - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
   - \usepackage{placeins}   # pour bloquer ces %#@$§£ de floats
   - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
   - \usepackage{svg}       # Pour schémas au format SVG
   - \linespread{1.15}
-#  - \setlength{\baselineskip}{24pt}      #MARCHE PAS !!!
-#  - \setlength{\parskip}{1.2ex plus 1pt}       # Espacements sans ajouter des\paragraph*{} partout      #MARCHE PAS
-#  - \setlength{\abovecaptionskip}{-10pt plus 3pt minus 2pt}    # Espacement des légendes (above/below) POUR WINDOWS
 indent: true
 bibliography: [packages.bib, Champis.bib]
 csl: https://www.zotero.org/styles/vancouver-superscript
@@ -135,7 +132,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * OS : Xubuntu Linux 22.04.2 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * IDE : RStudio version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
-* VCS : git version [INSERER VERSION GIT !!!]
+* VCS : `r system("git --version", intern = TRUE)`
 * Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`) ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), ?C50?[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), ?e1071?[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
 
 \FloatBarrier
@@ -319,11 +316,13 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 
 # Principes de l'apprentissage machine
 ## Jeux de données
+
+Les jeux de données dédiés à l'apprentissage machine sont tous construits sur la base de couples données-résultats. Selon l'étape de l'apprentissage machine, le résultat peut être fourni à la machine oului être caché, le but étant dans le premier cas de permettre à la machine d'effectuer son apprentissage, et dans le second cas d'évaluer les performances de la prédiction par rapport au résultat réel.
 \paragraph*{}
 Le déroulement de l'apprentissage machine se décompose conceptuellement en trois étapes principales, mettant en jeu trois lots de données distincts :
 
-1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle.
-2. Validation : le modèle d'apprentissage développé à l'étape précédente, sera soumis à un *jeu de données de validation* (*validation data set*). Les prédictions (ex: comestibilité, espèce...) proposées par le modèle d'apprentissage sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...) sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances prédictives du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) -- idéalement en suivant un plan d'expériences -- à fins d'optimisation.
+1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle. Cette phase est la phase d'apprentissage du modèle.
+2. Validation : le modèle d'apprentissage machine développé à l'étape précédente, est ici soumis à un *jeu de données de validation* (*validation data set*) et tentera d'apporter des prédictions quant à une variable d'intérêt considérée comme le résultat (ex: comestibilité, espèce...), sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...). Ces prédictions sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances prédictives du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) -- idéalement en suivant un plan d'expériences -- à fins d'optimisation.
 3. Test : les performances du meilleur modèle (avec hyperparamètres optimaux), sélectionné à l'issue de l'étape de validation, sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
 
 \paragraph*{}
@@ -331,12 +330,12 @@ La séparation entre étapes d'optimisation et de test peut sembler artificielle
 \paragraph*{}
 Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase pouvant parfois sembler superflue : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.
 \paragraph*{}
-Dans un souci de clarté, nous utiliserons les termes lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
+Dans un souci de clarté, nous utiliserons les termes de lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
 \paragraph*{}
 Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives (voir figure \@ref(fig:Split-jeux)) du lot de données intial, avec des proportions variables :
 
-1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement & optimisation d'autre part,
-2. Découpage du jeu de données entraînement & optimisation, en un jeu d'entraînement et un jeu d'optimisation.
+1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement + optimisation d'autre part,
+2. Découpage du jeu de données entraînement + optimisation, en un jeu d'entraînement et un jeu d'optimisation.
 
 
 \begin{figure}
@@ -359,11 +358,11 @@ En pratique, pour notre lot de données contenant $N_{u} =$  `r BI_n_champis` sp
 \paragraph*{}
 Les méthodes de division mises en \oe{}uvre dans cette étude appellent quelques précisions, car elles apportent quelques améliorations par rapport à l'utilisation de deux scissions successives effectuées de manière aléatoire.
 \paragraph*{}
-La première division, entre jeu d'entraînement/optimisation et jeu de test, utilise une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
+La première division, entre jeu d'entraînement/optimisation et jeu d'évaluation, met en \oe{}uvre une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
 \paragraph*{}
-Notre seconde division, entre jeu d'entraînement et d'optimisation, utilisera quant à elle la méthode de validation croisée à $k$ blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une utilisation tournante de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \@ref(fig:Cross-validation)).
+Notre seconde division, entre jeu d'entraînement et d'optimisation, exploite quant à elle la méthode de validation croisée à $k$ blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une utilisation tournante de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \@ref(fig:Cross-validation)).
 \paragraph*{}
-Le jeu d'entraînement/optimisation est découpé, de façon aléatoire, en $k$ blocs de données de taille égale, dont $k-1$ sont utilisés pour l'entraînement du modèle prédictif et 1 pour son optimisation. Cette opération est répétée $k$ fois, en utilisant un jeu d'optimisation différent à chaque itération. L'évaluation de la performance globale s'effectue en évaluant la performance moyenne des $k$ itérations. Cette méthode permet de limiter les biais potentiels générés par la séparation des données d'entraînement et d'optimisation en exploitant la totalité des données du lot pour effectuer ces deux tâches.
+Le jeu d'entraînement/optimisation est découpé, de façon aléatoire, en $k$ blocs de données de taille égale, dont $k-1$ sont utilisés pour l'entraînement du modèle prédictif et $1$ pour son optimisation. Cette opération est répétée $k$ fois, en utilisant un jeu d'optimisation différent à chaque itération. L'évaluation de la performance globale s'effectue en évaluant la performance moyenne des $k$ itérations. Cette méthode permet de limiter les biais potentiels générés par une simple dichotomie des données d'entraînement et d'optimisation en exploitant la totalité des données du lot afin d'effectuer ces deux tâches.
 \paragraph*{}
 Comme démontré précédemment, une validation croisée *k-folds* avec $k =$ `r BI_split_facteur` permettrait d'optimiser l'apprentissage et l'optimisation des modèles de cette étude.[@joseph_optimal_2022]
 
