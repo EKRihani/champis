@@ -85,6 +85,8 @@ RF : *Random Forest* (forêt aléatoire)
 
 ROC : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
 
+VCS : *Version Control System* (logiciel de contrôle des versions)
+
 XGB : *eXtreme Gradient Boosting*
 
 \endflushleft
@@ -132,7 +134,8 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * SSD : Crucial P5 M2 NVMe
 * OS : Xubuntu Linux 22.04.2 LTS
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
-* RStudio : version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
+* IDE : RStudio version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
+* VCS : git version [INSERER VERSION GIT !!!]
 * Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`) ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), ?C50?[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), ?e1071?[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
 
 \FloatBarrier
@@ -287,7 +290,7 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-La dispersion ainsi créée permet ainsi de créer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale comme ilustré par la figure \@ref(fig:Lots-DispersionDensite)). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnélles maximales généralement admises par la littérature.
+La dispersion ainsi créée permet ainsi de créer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale comme ilustré par la figure \@ref(fig:Lots-DispersionDensite). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
 
 [faire calcul sur R pour relier aux chiffres]
 
@@ -298,7 +301,6 @@ plot(densite2d)
 \paragraph*{}
 Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r taux_supergros_diam` %.
 \paragraph*{}
-##### CALCULS A REVERIFIER, PAS COHERENT.... #####
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
 plot(distrib_diametre)
@@ -310,7 +312,7 @@ plot(distrib_diametre)
 \paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
 
-L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement parmi celles de ce vecteur pour caractériser chaque spécimen.
+L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement parmi celles contenues dans ce vecteur pour caractériser le paramètre en question pour chaque spécimen.
 
 \newpage
 \FloatBarrier
