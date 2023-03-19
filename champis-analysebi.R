@@ -121,11 +121,11 @@ system.time(fit_test(BI_set_pda_lambda))  #### CHRONO
 # Extraire résultats d'intérêt : graphes et resultats
 BI_fit_lda2_dim_resultats <- BI_fit_lda2_dim$results
 BI_fit_lda2_dim_resultats <- BI_fit_lda2_dim_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_lda2_dim_graphe <- grapheSpeSenJw(BI_fit_lda2_dim_resultats, "dimen")
+BI_fit_lda2_dim_graphe <- grapheSpeSenJw(BI_fit_lda2_dim_resultats, dimen)
 
 BI_fit_pda_lambda_resultats <- BI_fit_pda_lambda$results
 BI_fit_pda_lambda_resultats <- BI_fit_pda_lambda_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_pda_lambda_graphe <- grapheSpeSenJw(BI_fit_pda_lambda_resultats, "lambda")
+BI_fit_pda_lambda_graphe <- grapheSpeSenJw(BI_fit_pda_lambda_resultats, lambda)
 
 ## Fin parallélisation (A TESTER !!!)
 # stopCluster(cl)
@@ -139,11 +139,11 @@ BI_fit_gamLoess_degree <- fit_test(BI_set_gamLoess_degree)
 # Extraire résultats d'intérêt : graphes et resultats
 BI_fit_gamLoess_span_resultats <- BI_fit_gamLoess_span$results
 BI_fit_gamLoess_span_resultats <- BI_fit_gamLoess_span_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_gamLoess_span_graphe <- grapheSpeSenJw(BI_fit_gamLoess_span_resultats, "span")
+BI_fit_gamLoess_span_graphe <- grapheSpeSenJw(BI_fit_gamLoess_span_resultats, span)
 
 BI_fit_gamLoess_degree_resultats <- BI_fit_gamLoess_degree$results
 BI_fit_gamLoess_degree_resultats <- BI_fit_gamLoess_degree_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_gamLoess_degree_graphe <- grapheSpeSenJw(BI_fit_gamLoess_degree_resultats, "degree")
+BI_fit_gamLoess_degree_graphe <- grapheSpeSenJw(BI_fit_gamLoess_degree_resultats, degree)
 
 
 # Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
@@ -193,8 +193,6 @@ BI_pred_rpartcost <- cbind(BI_pred_rpartcost, BI_pred_rpartcost2)
 
 # Graphes 2D
 # BI_fit_rpartcost_spec_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Spec, "F")
-# BI_fit_rpartcost_sens_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Sens, "G")
-# BI_fit_rpartcost_jw_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, X2, X1, Jw, "D")
 BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
 BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
 BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "X2", "X1", "Jw", "D")
@@ -245,7 +243,6 @@ BI_fit_rFerns_depth_resultats <- BI_fit_rFerns_depth$results
 BI_fit_rFerns_depth_resultats <-BI_fit_rFerns_depth_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_rFerns_depth_graphe <- grapheSpeSenJw(BI_fit_rFerns_depth_resultats, depth)
 
-
 BI_fit_ranger_resultats <- BI_fit_ranger$results
 BI_fit_ranger_bestTune <- BI_fit_ranger$bestTune
 BI_fit_Rborist_resultats <- BI_fit_Rborist$results
@@ -292,6 +289,7 @@ BI_pred_ranger_ET2$Jw <- modelPredict(BI_mod_ranger_jw_ET, BI_pred_ranger_ET[,c(
 BI_pred_ranger_ET <- cbind(BI_pred_ranger_ET, BI_pred_ranger_ET2)
 
 # Graphes 2D
+# BI_fit_ranger_Gini_spec_graphe <- graphe2D(BI_pred_ranger_GINI, BI_fit_ranger_GINI, mtry, min.node.size, Spec, "F")
 BI_fit_ranger_Gini_spec_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Spec", "F")
 BI_fit_ranger_Gini_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
 BI_fit_ranger_Gini_jw_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "X1", "X2", "Jw", "D")
@@ -299,12 +297,6 @@ BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET"
 BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
 BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "X1", "X2", "Jw", "D")
 
-# BI_fit_ranger_Gini_spec_graphe <- graphe2D(BI_pred_ranger_GINI, BI_fit_ranger_GINI, mtry, min.node.size, Spec, "F")
-# BI_fit_ranger_Gini_sens_graphe <- graphe2D(BI_pred_ranger_GINI, BI_fit_ranger_GINI, mtry, min.node.size, Sens, "G")
-# BI_fit_ranger_Gini_jw_graphe <- graphe2D(BI_pred_ranger_GINI, BI_fit_ranger_GINI, X1, X2, Jw, "D")
-# BI_fit_ranger_ET_spec_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, mtry, min.node.size, Spec, "F")
-# BI_fit_ranger_ET_sens_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, mtry, min.node.size, Sens, "G")
-# BI_fit_ranger_ET_jw_graphe <- graphe2D(BI_pred_ranger_ET, BI_fit_ranger_ET, X1, X2, Jw, "D")
 
 BI_best_ranger <- which.max(BI_fit_ranger_results$Spec*BI_RatioSpec+BI_fit_ranger_results$Sens*BI_RatioSens)
 BI_best_rangergrid <- data.frame(mtry = BI_fit_ranger_results[BI_best_ranger,]$mtry, min.node.size =BI_fit_ranger_results[BI_best_ranger,]$min.node.size, splitrule =BI_fit_ranger_results[BI_best_ranger,]$splitrule)

@@ -333,7 +333,7 @@ Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimi
 \paragraph*{}
 Dans un souci de clarté, nous utiliserons les termes de lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
 \paragraph*{}
-Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives (voir figure \@ref(fig:Split-jeux)) du lot de données intial, avec des proportions variables :
+Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives (voir figure \@ref(fig:Split-jeux)) du lot de données intial, avec des proportions pouvant être variables d'une scission à l'autre :
 
 1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement + optimisation d'autre part,
 2. Découpage du jeu de données entraînement + optimisation, en un jeu d'entraînement et un jeu d'optimisation.
@@ -346,21 +346,26 @@ Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un
   \label{fig:Split-jeux}
 \end{figure}
 
-\paragraph*{} \label{paragraphe:split}
-Le rapport de taille entre jeux de données entraînement, optimisation, évaluation de cette étude suit la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle. Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de colonnes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons du lot de données.[@joseph_optimal_2022]
+\paragraph*{} \label{paragraphe:split_ratio}
+Les rapports de taille entre jeux de données entraînement, optimisation, évaluation de cette étude suivront la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022] 
+\paragraph*{} 
+Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de colonnes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons du lot de données.[@joseph_optimal_2022]
 \paragraph*{}
-Un rapide calcul nous montre qu'il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première dichotomie entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu de test d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier lot, une taille représentant la fraction du lot total :
+Un rapide calcul nous montre qu'il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première scission entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu d'évaluation d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier, une taille représentant la fraction du lot total :
 $$f_{test}= \frac{\sqrt{p}+1}{p+2\sqrt{p}+1} = \frac{1}{\sqrt{p}+1} $$
 \paragraph*{}
 Cette première dichotomie peut être suivie par une seconde dichotomie entre jeu d'entraînement (de taille relative $p$) et jeu d'optimisation (de taille relative $\sqrt{p}$), de fraction :
 $$ f_{opti} = \frac{\sqrt{p}}{p + \sqrt{p}} = \frac{1}{\sqrt{p}+1} $$
+
 \paragraph*{}
 En pratique, pour notre lot de données contenant $N_{u} =$  `r BI_n_champis` spécimens, nous pouvons calculer $p \approx$ `r round(BI_split_p,1)`, soit deux dichotomies successives de ratio `r BI_split_facteur-1`:1.
-\paragraph*{}
-Les méthodes de division mises en \oe{}uvre dans cette étude appellent quelques précisions, car elles apportent quelques améliorations par rapport à l'utilisation de deux scissions successives effectuées de manière aléatoire.
+
+## Méthodes de construction des jeux de données  {#chapitre:split_methodes}
+
+Les méthodes de division mises en \oe{}uvre dans cette étude appellent quelques précisions, car elles apportent certaines améliorations par rapport à l'utilisation de deux scissions successives effectuées de manière aléatoire.
 \paragraph*{}
 La première division, entre jeu d'entraînement/optimisation et jeu d'évaluation, met en \oe{}uvre une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
-\paragraph*{}
+\paragraph*{} \label{paragraphe:crossvalid}
 Notre seconde division, entre jeu d'entraînement et d'optimisation, exploite quant à elle la méthode de validation croisée à $k$ blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une utilisation tournante de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \@ref(fig:Cross-validation)).
 \paragraph*{}
 Le jeu d'entraînement/optimisation est découpé, de façon aléatoire, en $k$ blocs de données de taille égale, dont $k-1$ sont utilisés pour l'entraînement du modèle prédictif et $1$ pour son optimisation. Cette opération est répétée $k$ fois, en utilisant un jeu d'optimisation différent à chaque itération. L'évaluation de la performance globale s'effectue en évaluant la performance moyenne des $k$ itérations. Cette méthode permet de limiter les biais potentiels générés par une simple dichotomie des données d'entraînement et d'optimisation en exploitant la totalité des données du lot afin d'effectuer ces deux tâches.
@@ -379,34 +384,48 @@ Comme démontré précédemment, une validation croisée *k-folds* avec $k =$ `r
 
 ## Modèles utilisés
 ### Analyses discriminantes
-[discriminant correspondence analysis???]
 
-https://rpubs.com/markloessi/505575
+*Développements théoriques sur les modèles d'analyse discriminante linéaire, pénalisée, quadratique*
 
-https://en.wikipedia.org/wiki/Altman_Z-score
+[A FAIRE]
 
-https://towardsdatascience.com/linear-discriminant-analysis-explained-f88be6c1e00b
+<!-- [discriminant correspondence analysis???] -->
 
-https://scikit-learn.org/stable/modules/lda_qda.html
-\paragraph*{}
-Cette étude propose plusieurs classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante :
+<!-- https://rpubs.com/markloessi/505575 -->
 
-* un modèle basé sur l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA),
-* un modèle basé sur l'analyse discriminante pénalisée (*Penalized Discriminant Analysis*, PDA).
+<!-- https://en.wikipedia.org/wiki/Altman_Z-score -->
 
-\paragraph*{}
-L'analyse linéaire discriminante (LDA) est une méthode utilisée en statistiques et en data science pour trouver une combinaison linéaire d'éléments qui caractérisent des éléments, afin de créer un classifieur linéaire, ou d'effectuer des réductions de dimensionnalité. Cet algorithme fonctionne en créant des combinaisons linéaires (fonctions discriminantes) de prédicteurs. [A FINIR]
-\paragraph*{}
-L'analyse discriminante pénalisée [A FINIR]
+<!-- https://towardsdatascience.com/linear-discriminant-analysis-explained-f88be6c1e00b -->
+
+<!-- https://scikit-learn.org/stable/modules/lda_qda.html -->
+<!-- \paragraph*{} -->
+<!-- Cette étude propose plusieurs classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante : -->
+
+<!-- * un modèle basé sur l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA), -->
+<!-- * un modèle basé sur l'analyse discriminante pénalisée (*Penalized Discriminant Analysis*, PDA). -->
+
+<!-- \paragraph*{} -->
+<!-- L'analyse linéaire discriminante (LDA) est une méthode utilisée en statistiques et en data science pour trouver une combinaison linéaire d'éléments qui caractérisent des éléments, afin de créer un classifieur linéaire, ou d'effectuer des réductions de dimensionnalité. Cet algorithme fonctionne en créant des combinaisons linéaires (fonctions discriminantes) de prédicteurs. [A FINIR] -->
+<!-- \paragraph*{} -->
+<!-- L'analyse discriminante pénalisée [A FINIR] -->
 
 ### Modèle additif généralisé
-gamLoess
+<!-- gamLoess -->
+*Développements théoriques sur les modèles GAM...*
+
+[A FAIRE]
 
 ### Arbres de décision
-rpart, Ctree???, c50tree, Rpartcost
+<!-- rpart, Ctree???, c50tree, Rpartcost -->
+*Développements théoriques sur les arbres décisionnels...*
+
+[A FAIRE]
 
 ### Forêts aléatoires
-rFerns, Rborist, ranger
+<!-- rFerns, Rborist, ranger -->
+*Développements théoriques sur les modèles de forêts aléatoires...*
+
+[A FAIRE]
 
 ## Optimisation par plans d'expérience (DOE) {#chapitre:doe}
 
@@ -469,15 +488,24 @@ Dans la classification binaire de cette étude, problème qui revient classiquem
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
-Nous retiendrons dans le cadre de notre étude le kappa de Cohen,[@cohen_coefficient_1960] calculé à partir de la matrice de confusion, et donné par :
+Nous retiendrons dans le cadre de notre étude le kappa de Cohen,[@cohen_coefficient_1960] calculé à partir de la matrice de confusion (cf. figure \ref{fig:Matrice-Confusion}), et donné par :
 $$\kappa{} = \frac{\pi_{0}-\pi_{e}}{1-\pi_{e}}$$
-
 \paragraph*{}
 Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle du champignon, et $\pi_{e}$ la probabilité d'un même accord résultant du pur hasard.
 \paragraph*{}
-Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec un accord qualifié de *quasi-parfait* pour $\kappa{} > 0.80$.[@landis_measurement_1977] Nous considérerons donc que ce critère sera le minimum requis pour qu'un modèle de classifieur multiclasse élaboré au cours de cette étude puisse être considéré comme ayant des performances acceptables.
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{Matrice-Confusion}
+  \caption{Extrait d'une matrice de confusion, pour une classification multiclasse}
+  \label{fig:Matrice-Confusion}
+\end{figure}
 
-[ INSERER SCHEMA MATRICE DE CONFUSION ]
+\paragraph*{}
+Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec un accord qualifié de *quasi-parfait* pour $\kappa{} > 0.80$.[@landis_measurement_1977] Nous considérerons donc que ce critère sera le minimum requis pour qu'un modèle de classifieur multiclasse élaboré au cours de cette étude puisse être considéré comme ayant des performances acceptables.
+\paragraph*{}
+L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette étude la complétera parfois par la précision (*accuracy*), métrique moins robuste en présence de données non-équilibrées (i.e. lors d'une surreprésentation de certaines classes dans le lot de données), mais présentant l'avantage d'être plus intuitive, car représentant le pourcentage de prédictions exactes.
+\paragraph*{}
+
 
 
 
@@ -500,7 +528,7 @@ kable(structure_dataset, caption = "Structure du lot de données initial")
 \paragraph*{}
 Le lot de données d'origine contient `r EDA_n_champis` variétés de champignons, caractérisées par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumé dans le tableau \@ref(tab:EDA-structure).
 \paragraph*{}
-Le lot de données d'origine a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split}.}
+Le lot de données d'origine a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur-1`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.}
 \paragraph*{}
 Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles.
 \paragraph*{}
@@ -544,44 +572,20 @@ Il existe une grande variété de modèles exploitables pour bâtir un système 
 
 ### Stratégie d'optimisation
 
-L'algorithme développé au cours de cette étude met en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
+L'algorithme d'apprentissage machine développé au cours de cette étude met en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
 
-* Apprentissage sur le jeu d'entraînement, avec exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux\footnote{\label{note:doe}cf. section \ref{chapitre:doe}}
+* Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}},
+* Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à $k$ blocs, avec adaptation du nombre de blocs à la taille du lot de données,\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}},
+* Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux\footnote{\label{note:doe}cf. section \ref{chapitre:doe}},
 * Mesure des performances en exploitant une métrique adaptée\footnote{cf. section \ref{chapitre:perf}}
-* Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions\footnotemark[\value{footnote}]
-* Sélection des hyperparamètres permettant d'optimiser les performances du modèle.
-
-
-
-\paragraph*{}
-La première étape est de construire une fonction d'évaluation et de régression, afin de rationaliser notre travail. En effet, l'évaluation et la régression seront effectuées très fréquemment au cours de cette étude, il est donc souhaitable d'assigner une fonction dédiée à ces tâches. La librairie caret permet de la définir très simplement par :  
-
-```{r, eval = FALSE}
-set.seed(1)
-tr_ctrl <- trainControl(classProbs = TRUE, 
-                        summaryFunction = twoClassSummary, 
-                        method = "cv", number = 12)
-train(class ~ .,
-      method = [METHODE],
-      data = BI_lot_appr_opti,
-      trControl = tr_ctrl,
-      metric = 'Sens',
-      tuneGrid = data.frame([PARAMETRES]))
-```
-
-\paragraph*{}
-La fonction *set.seed* assure la reproductibilité.
-
-La fonction *trainControl* permet de contrôler divers paramètres d'entraînement et de validation à fins d'optimisation ; dans cet exemple, d'utiliser un critère tel que le ROC, la sensibilité ou la spécificité, et d'utiliser une validation croisée (*cross validation*) à 12 blocs (*12-folds*).
-
-La fonction *train* lance le processus d'apprentissage et d'évaluation, tout en permettant l'utilisation de différents paramaètres tels que la méthode de sélection des jeux d'entraînement et de validation, la métrique utilisée pour l'évaluation (sensibilité, spécificité, ROC...) ainsi que la grille des paramètres utilisés par le modèle.
-\paragraph*{}
-Ce bloc de code a été inclus dans une fonction pour facilité l'accessiblité du code et la reproductibilité. Cette fonction renvoie une liste qui peut ensuite être utilisée pour générer un graphique, ou pour extraire différentes données d'intérêt, contenues dans .\$results (pour une classification binaire : AUC de ROC, sensibilité, spécificité), .\$bestTune (paramètres donnant la meilleure performance sur la métrique utilisée) et .\$finalModel  (informations diverses pouvant parfois être utilisées dans des graphiques, tels que des arbres décisionnels).
-\FloatBarrier
+* Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions\footnotemark[\value{footnote}],
+* Sélection des hyperparamètres permettant d'optimiser les performances du modèle,
+* Mesure des performances de chaque modèle avec les hyperparamètres optimaux,
+* Pour les modèles les plus performants : prédiction et mesure finale des performances contre le lot d'évaluation.
 
 ### Modèles d'analyse discriminante linéaire
 \paragraph*{}
-Les deux modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
+Les modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(
