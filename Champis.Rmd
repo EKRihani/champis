@@ -134,7 +134,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * IDE : RStudio version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
 * VCS : `r system("git --version", intern = TRUE)`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`) ?mda?[@R-mda] (v`r packageVersion("mda")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?plyr?[@R-plyr] (v`r packageVersion("plyr")`), ?C50?[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), ?e1071?[@R-e1071] (v`r packageVersion("e1071")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), plyr[@R-plyr] (v`r packageVersion("plyr")`), ?C50?[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
 
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
@@ -244,7 +244,7 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence[@johnson_continuous_1995], la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de :[@johnson_continuous_1995;@r_core_team_r_2021]
+En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence,[@johnson_continuous_1995] la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de :[@johnson_continuous_1995;@r_core_team_r_2021]
 $$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \chi^{2}_{2 \beta}}$$
 
 Avec, comme paramètres définis empiriquement pour cette étude : 
@@ -275,7 +275,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 \right.$$
 
 \paragraph*{}
-L'impact de la dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
+L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
 \paragraph*{}
 
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
@@ -288,7 +288,7 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-La dispersion ainsi créée permet ainsi de créer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale comme ilustré par la figure \@ref(fig:Lots-DispersionDensite). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
+La dispersion ainsi créée permet ainsi de créer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \@ref(fig:Lots-DispersionDensite)). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
 
 [faire calcul sur R pour relier aux chiffres]
 
@@ -297,7 +297,7 @@ plot(densite2d)
 ```
 
 \paragraph*{}
-Une simulation de Monte Carlo unidimensionnelle effectuée sur `r  n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r taux_supergros_diam` %.
+Une simulation de Monte Carlo unidimensionnelle effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
 \paragraph*{}
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
@@ -316,7 +316,7 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 \FloatBarrier
 
 # Principes de l'apprentissage machine
-## Jeux de données
+## Jeux de données {#chapitre:split}
 
 Les jeux de données dédiés à l'apprentissage machine sont tous construits sur la base de couples données-résultats. Selon l'étape de l'apprentissage machine, le résultat peut être fourni à la machine oului être caché, le but étant dans le premier cas de permettre à la machine d'effectuer son apprentissage, et dans le second cas d'évaluer les performances de la prédiction par rapport au résultat réel.
 \paragraph*{}
@@ -346,7 +346,7 @@ Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un
   \label{fig:Split-jeux}
 \end{figure}
 
-\paragraph*{}
+\paragraph*{} \label{paragraphe:split}
 Le rapport de taille entre jeux de données entraînement, optimisation, évaluation de cette étude suit la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle. Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de colonnes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons du lot de données.[@joseph_optimal_2022]
 \paragraph*{}
 Un rapide calcul nous montre qu'il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première dichotomie entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu de test d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier lot, une taille représentant la fraction du lot total :
@@ -469,7 +469,7 @@ Dans la classification binaire de cette étude, problème qui revient classiquem
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
-Nous retiendrons dans le cadre de notre étude le kappa de Cohen[@cohen_coefficient_1960], calculé à partir de la matrice de confusion, et donné par :
+Nous retiendrons dans le cadre de notre étude le kappa de Cohen,[@cohen_coefficient_1960] calculé à partir de la matrice de confusion, et donné par :
 $$\kappa{} = \frac{\pi_{0}-\pi_{e}}{1-\pi_{e}}$$
 
 \paragraph*{}
@@ -493,18 +493,20 @@ Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec u
 \paragraph*{}
 La structure du lot de données est la suivante :
 
-```{r out.width = "90%", echo = FALSE}
-kable(structure_dataset, caption = "Dataset structure")
+```{r EDA-structure, out.width = "90%", echo = FALSE}
+kable(structure_dataset, caption = "Structure du lot de données initial")
 ```
 
 \paragraph*{}
-Le lot de données d'origine a été découpé deux fois avec un rapport 92/8, comme décrit dans la partie. (cf. § et p(ref!!!)) 
+Le lot de données d'origine contient `r EDA_n_champis` variétés de champignons, caractérisées par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumé dans le tableau \@ref(tab:EDA-structure).
+\paragraph*{}
+Le lot de données d'origine a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split}.}
 \paragraph*{}
 Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles.
 \paragraph*{}
-Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (fig. REF), avec une longue queue à droite. Une transformation logarithmique (fig. REF) montre plus nettement la forme de cette queue.
+Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (figure \@ref(fig:EDA-distrib)), avec une longue queue à droite. Une transformation logarithmique (figure \@ref(fig:EDA-distrib-log)) montre plus nettement la forme de cette queue.
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe"}
+```{r EDA-distrib, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe"}
 plot(ggarrange(
    ncol = 3,
    study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
@@ -514,7 +516,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe (échelle log en Y)"}
+```{r EDA-distrib-log, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe (échelle logarithmique en ordonnée)"}
 plot(ggarrange(
    ncol = 3,
    study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
@@ -546,10 +548,10 @@ L'algorithme développé au cours de cette étude met en \oe{}uvre les méthodes
 
 * Apprentissage sur le jeu d'entraînement, avec exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux\footnote{\label{note:doe}cf. section \ref{chapitre:doe}}
 * Mesure des performances en exploitant une métrique adaptée\footnote{cf. section \ref{chapitre:perf}}
-* Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions 
+* Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions\footnotemark[\value{footnote}]
 * Sélection des hyperparamètres permettant d'optimiser les performances du modèle.
 
-<!-- \footnotemark[\ref{note:doe}] -->
+
 
 \paragraph*{}
 La première étape est de construire une fonction d'évaluation et de régression, afin de rationaliser notre travail. En effet, l'évaluation et la régression seront effectuées très fréquemment au cours de cette étude, il est donc souhaitable d'assigner une fonction dédiée à ces tâches. La librairie caret permet de la définir très simplement par :  

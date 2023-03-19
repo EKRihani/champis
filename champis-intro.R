@@ -119,8 +119,8 @@ lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
 ###############################
 
 set.seed(1337)       # Pour reproductibilité
-n_champis <- 1e5      # Nombre de champignons
-n_reduit <- 2e4      # Nombre réduit (pour nuyages de points 2D)
+INTRO_n_champis <- 1e5      # Nombre de champignons
+n_reduit <- 2e4      # Nombre réduit (pour nuages de points 2D)
 f_crois <- 2          # Facteur de croissance
 
 Chap.Diam <- 10
@@ -128,24 +128,24 @@ Pied.Haut <- 8
 Pied.Large <- 2
 
 Champi_demo <- NULL
-Champi_demo$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)
-Champi_demo$Chapeau.Diametre <- Chap.Diam*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05) # sd=.1?
-Champi_demo$Pied.Hauteur <- Pied.Haut*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05)
-Champi_demo$Pied.Largeur <- Pied.Large*Champi_demo$FacteurTaille*rnorm(n = n_champis, mean = 1, sd = .05)
+Champi_demo$FacteurTaille <- rbeta(n = INTRO_n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)
+Champi_demo$Chapeau.Diametre <- Chap.Diam*Champi_demo$FacteurTaille*rnorm(n = INTRO_n_champis, mean = 1, sd = .05) # sd=.1?
+Champi_demo$Pied.Hauteur <- Pied.Haut*Champi_demo$FacteurTaille*rnorm(n = INTRO_n_champis, mean = 1, sd = .05)
+Champi_demo$Pied.Largeur <- Pied.Large*Champi_demo$FacteurTaille*rnorm(n = INTRO_n_champis, mean = 1, sd = .05)
 Champi_demo <- as.data.frame(Champi_demo)
 
-taux_gros_diam <- round(mean(Champi_demo$Chapeau.Diametre > Chap.Diam)*100 , 1)
-taux_supergros_diam <- round(mean(Champi_demo$Chapeau.Diametre > (1.1*Chap.Diam) )+0.00005,4)*100
+INTRO_taux_gros_diam <- round(mean(Champi_demo$Chapeau.Diametre > Chap.Diam)*100 , 1)
+INTRO_taux_supergros_diam <- round(mean(Champi_demo$Chapeau.Diametre > (1.1*Chap.Diam) )+0.00005,4)*100
 
 nuage_avecdispersion <- ggplot(data = Champi_demo[1:n_reduit,], aes(x = Chapeau.Diametre, y = Pied.Hauteur)) +
-  geom_point(shape = 20, alpha = 2e3/n_champis, size = .5) +
+  geom_point(shape = 20, alpha = 2e3/INTRO_n_champis, size = .5) +
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
   geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red") +
   ylab(NULL) + xlab("Diamètre du chapeau (Dc)")
 
 nuage_sansdispersion <-ggplot(data = Champi_demo[1:n_reduit,], aes(x = Chapeau.Diametre, y = Chapeau.Diametre*.8)) +
-  geom_point(shape = 20, alpha = 2e3/n_champis, size= .5) +
+  geom_point(shape = 20, alpha = 2e3/INTRO_n_champis, size= .5) +
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
   geom_hline(yintercept = Chap.Diam*.8, linetype = "dotted", color = "red") +
@@ -250,8 +250,8 @@ densite2d                  # Graphique de densité 2D des tailles/diamètres
 # orca() pour export en image ???
 
 distrib_diametre    # Distribution du diamètre
-taux_gros_diam       # % de diamètres hors-norme (> 100% max)
-taux_supergros_diam    # % de diamètres super-hors-norme (>110% max), arrondi par excès au 0.1%
+INTRO_taux_gros_diam       # % de diamètres hors-norme (> 100% max)
+INTRO_taux_supergros_diam    # % de diamètres super-hors-norme (>110% max), arrondi par excès au 0.1%
 
 # Nettoyage données et sauvegarde
 
