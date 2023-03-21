@@ -202,7 +202,8 @@ BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion$results
 BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_ctree_criterion_graphe <- grapheSpeSenJw(BI_fit_ctree_criterion_resultats, mincriterion)
 
-BI_fit_c50tree_results <- BI_fit_c50tree$results
+BI_fit_c50tree_resultats <- BI_fit_c50tree$results
+BI_fit_c50tree_resultats <- BI_fit_c50tree_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
 
 # Meilleur modèle CART
@@ -303,6 +304,7 @@ BI_best_rangergrid <- data.frame(mtry = BI_fit_ranger_results[BI_best_ranger,]$m
 BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_best_rangergrid"))
 BI_fit_ranger_best <- fit_test(BI_set_ranger_best)
 BI_fit_ranger_best_results <- BI_fit_ranger_best$results
+BI_fit_ranger_best_results <- BI_fit_ranger_best_results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
 BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_results[,1:2], Y=BI_fit_Rborist_results$Spec,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
 BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_results[,1:2], Y=BI_fit_Rborist_results$Sens,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
@@ -324,6 +326,7 @@ BI_best_Rboristgrid <- data.frame(predFixed = BI_fit_Rborist_results[BI_best_Rbo
 BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_best_Rboristgrid"))
 BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
 BI_fit_Rborist_best_results <- BI_fit_Rborist_best$results
+BI_fit_Rborist_best_results <- BI_fit_Rborist_best_results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
 # Lance modèle RANGER optimal
 BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_best_rangergrid, num.trees = 6"))

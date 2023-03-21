@@ -20,6 +20,8 @@ header-includes:
   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
   - \usepackage{placeins}   # pour bloquer ces %#@$§£ de floats
   - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
+  - \usepackage{sfmath}    # Maths sans serif
+#  - \usepackage{sansmathaccent}    # Pour tidles/chapeaux mal alignés avec maths sans accent...
   - \usepackage{svg}       # Pour schémas au format SVG
   - \linespread{1.15}
 indent: true
@@ -28,6 +30,7 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
+load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
@@ -170,15 +173,15 @@ En première approximation, nous pouvons considérer que toutes ces valeurs sont
 
 $$\left \{
 \begin{array}{l}
-L_{S} = L_{Smax}.F_{Ls} \\
-D_{S} = D_{Smax}.F_{Ds} \\
-D_{C} = D_{Cmax}.F_{Dc} \\
+L_{S} = L_{S_{max}}.F_{Ls} \\
+D_{S} = D_{S_{max}}.F_{Ds} \\
+D_{C} = D_{C_{max}}.F_{Dc} \\
 \end{array}
 \right.$$
 
 Avec :
 
-* $L_{Smax}$, $D_{Smax}$ et $D_{Cmax}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété de champignon, extraites de la littérature, 
+* $L_{S_{max}}$, $D_{S_{max}}$ et $D_{C_{max}}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété de champignon, extraites de la littérature, 
 * $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle $\left] 0 ; 1 \right]$, et représentatives de la croissance du spécimen.
 
 \paragraph*{}
@@ -358,19 +361,19 @@ Cette première dichotomie peut être suivie par une seconde dichotomie entre je
 $$ f_{opti} = \frac{\sqrt{p}}{p + \sqrt{p}} = \frac{1}{\sqrt{p}+1} $$
 
 \paragraph*{}
-En pratique, pour notre lot de données contenant $N_{u} =$  `r BI_n_champis` spécimens, nous pouvons calculer $p \approx$ `r round(BI_split_p,1)`, soit deux dichotomies successives de ratio `r BI_split_facteur-1`:1.
+En pratique, pour notre lot de données contenant $N_{u} = `r BI_n_champis`$ spécimens, nous pouvons calculer $p \approx `r round(BI_split_p,1)`$, soit deux dichotomies successives de ratio `r BI_split_facteur-1`:1.
 
 ## Méthodes de construction des jeux de données  {#chapitre:split_methodes}
 
 Les méthodes de division mises en \oe{}uvre dans cette étude appellent quelques précisions, car elles apportent certaines améliorations par rapport à l'utilisation de deux scissions successives effectuées de manière aléatoire.
 \paragraph*{}
-La première division, entre jeu d'entraînement/optimisation et jeu d'évaluation, met en \oe{}uvre une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
+La première division, entre jeu d'entraînement/optimisation et jeu d'évaluation, mettra en \oe{}uvre une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (NN : *Nearest Neighbour*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
 \paragraph*{} \label{paragraphe:crossvalid}
-Notre seconde division, entre jeu d'entraînement et d'optimisation, exploite quant à elle la méthode de validation croisée à $k$ blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une utilisation tournante de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \@ref(fig:Cross-validation)).
+Notre seconde division, entre jeu d'entraînement et d'optimisation, exploitera quant à elle la méthode de validation croisée à k blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une utilisation tournante de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \@ref(fig:Cross-validation)).
 \paragraph*{}
-Le jeu d'entraînement/optimisation est découpé, de façon aléatoire, en $k$ blocs de données de taille égale, dont $k-1$ sont utilisés pour l'entraînement du modèle prédictif et $1$ pour son optimisation. Cette opération est répétée $k$ fois, en utilisant un jeu d'optimisation différent à chaque itération. L'évaluation de la performance globale s'effectue en évaluant la performance moyenne des $k$ itérations. Cette méthode permet de limiter les biais potentiels générés par une simple dichotomie des données d'entraînement et d'optimisation en exploitant la totalité des données du lot afin d'effectuer ces deux tâches.
+Le jeu d'entraînement/optimisation est découpé, de façon aléatoire, en k blocs de données de taille égale, dont k-1 sont utilisés pour l'entraînement du modèle prédictif et 1 pour son optimisation. Cette opération est répétée k fois, en utilisant un jeu d'optimisation différent à chaque itération. L'évaluation de la performance globale s'effectue en évaluant la performance moyenne des k itérations. Cette méthode permet de limiter les biais potentiels générés par une simple dichotomie des données d'entraînement et d'optimisation en exploitant la totalité des données du lot afin d'effectuer ces deux tâches.
 \paragraph*{}
-Comme démontré précédemment, une validation croisée *k-folds* avec $k =$ `r BI_split_facteur` permettrait d'optimiser l'apprentissage et l'optimisation des modèles de cette étude.[@joseph_optimal_2022]
+Comme démontré précédemment, une validation croisée *k-folds* avec $k = `r BI_split_facteur`$ permettrait d'optimiser l'apprentissage et l'optimisation des modèles de cette étude.[@joseph_optimal_2022]
 
 \paragraph*{}
 \begin{figure}
@@ -440,7 +443,7 @@ En effet, l'optimisation des paramètres d'un modèle informatique présente que
 \paragraph*{}
 Ces particularités imposent d'explorer de manière méthodique la totalité de l'espace expérimental. Il existe une multitude de méthodes permettant de générer des plans expérimentaux, dits SFD (*Space Filling Design*), permettant d'optimiser l'occupation de l'espace expérimental. La méthode retenue pour cette étude sera celle des hypercubes latins, en raison de son utilisation répandue[@santiago_construction_2012] et de sa simplicité conceptuelle.
 \paragraph*{}
-La méthode des hypercubes latins est une extension du principe des carrés latins. Un carré latin est une grille $n \times n$, remplie de $n$ éléments distincts arrangés de sorte que chaque ligne et chaque colonne ne contienne qu’un seul exemplaire de chacun des $n$ éléments. Dans le domaine des plans d'expériences, l'application des carrés latins revient à diviser un domaine expérimental bidimensionnel en une grille $n \times n$, et à placer une expérience et une seule sur chaque ligne et chaque colonne.
+La méthode des hypercubes latins est une extension du principe des carrés latins. Un carré latin est une grille $n \times n$, remplie de n éléments distincts arrangés de sorte que chaque ligne et chaque colonne ne contienne qu’un seul exemplaire de chacun des n éléments. Dans le domaine des plans d'expériences, l'application des carrés latins revient à diviser un domaine expérimental bidimensionnel en une grille $n \times n$, et à placer une expérience et une seule sur chaque ligne et chaque colonne.
 \paragraph*{}
 L'application du concept de carré latin dans un domaine expérimental à trois dimensions aboutit au cube latin. La généralisation dans un espace n-dimensionnel mène au concept d'hypercube latin.
 \paragraph*{}
@@ -483,8 +486,16 @@ L'index J de Youden pondéré est donné par :[@rucker_summary_2010]
 $$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
 
 \paragraph*{}
-Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur toxicité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index de Youden pondéré accordant dix ordres de grandeur entre l'importance accordée à la sensibilité et à la spécificité, nous pouvons établir $w = 10/11$.
-<!-- x = 10/11 ou 1/11 ... -->
+Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur toxicité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
+\paragraph*{}
+Le problème de classification binaire étant relativement simple (*comestible* ou *non-comestible*), nous fixerons arbitrairement le critère de performance minimum à atteindre à $J_{w} \geq `r Jw_min`$, soit :
+$$\left \{
+\begin{array}{l}
+Sen_{max} = 1 \Leftrightarrow Spe_{min} = `r Jw_Spec_min` \\
+Spe_{max} = 1 \Leftrightarrow Sen_{min} = `r Jw_Sens_min` \\
+\end{array}
+\right.$$
+
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
@@ -501,7 +512,7 @@ Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle
 \end{figure}
 
 \paragraph*{}
-Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec un accord qualifié de *quasi-parfait* pour $\kappa{} > 0.80$.[@landis_measurement_1977] Nous considérerons donc que ce critère sera le minimum requis pour qu'un modèle de classifieur multiclasse élaboré au cours de cette étude puisse être considéré comme ayant des performances acceptables.
+Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec un accord qualifié de *quasi-parfait* pour $\kappa > 0.80$.[@landis_measurement_1977] Nous considérerons donc que ce critère sera le minimum requis pour qu'un modèle de classifieur multiclasse élaboré au cours de cette étude puisse être considéré comme ayant des performances acceptables.
 \paragraph*{}
 L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette étude la complétera parfois par la précision (*accuracy*), métrique moins robuste en présence de données non-équilibrées (i.e. lors d'une surreprésentation de certaines classes dans le lot de données), mais présentant l'avantage d'être plus intuitive, car représentant le pourcentage de prédictions exactes.
 \paragraph*{}
@@ -517,18 +528,19 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 
 ## Analyse exploratoire des données (EDA)
 
+*A voir si cette partie mérite d'être conservée et/ou nécessite un éventuel approfondissement vers une EDA sur un lot biclasse ou multiclasse...*
+
 \FloatBarrier
 \paragraph*{}
-La structure du lot de données est la suivante :
 
 ```{r EDA-structure, out.width = "90%", echo = FALSE}
 kable(structure_dataset, caption = "Structure du lot de données initial")
 ```
 
 \paragraph*{}
-Le lot de données d'origine contient `r EDA_n_champis` variétés de champignons, caractérisées par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumé dans le tableau \@ref(tab:EDA-structure).
+Le lot de données d'origine contient `r EDA_n_champis` spécimens de champignons, caractérisés par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumé dans le tableau \@ref(tab:EDA-structure).
 \paragraph*{}
-Le lot de données d'origine a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur-1`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.}
+Ce lot de données original a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur-1`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.}
 \paragraph*{}
 Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles.
 \paragraph*{}
@@ -554,11 +566,11 @@ plot(ggarrange(
 )
 ```
 
-La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx 50~cm$. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@courtecuisse_champignons_2013]
+La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5 cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx$ 50 cm. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@courtecuisse_champignons_2013]
 \paragraph*{}
-La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en clochavec une longue queue à droite, un mode principal à 5 cm et un mode secondaire à 0 cm. Cette valeur peut également sembler surprenante, mais certains champignons n'ont pas de stipe, ce qui explique cette valeur.
+La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en cloche avec une longue queue à droite, un mode principal à 5 cm et un mode secondaire à 0 cm. Cette valeur peut également sembler surprenante, mais certains champignons du lot n'ont pas de pied, ce qui explique cette valeur.
 \paragraph*{}
-La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx 10-15$mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
+La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 
 \newpage
 ## Optimisation et sélection des modèles
@@ -574,20 +586,20 @@ Il existe une grande variété de modèles exploitables pour bâtir un système 
 
 L'algorithme d'apprentissage machine développé au cours de cette étude met en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
 
-* Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}},
-* Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à $k$ blocs, avec adaptation du nombre de blocs à la taille du lot de données,\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}},
-* Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux\footnote{\label{note:doe}cf. section \ref{chapitre:doe}},
-* Mesure des performances en exploitant une métrique adaptée\footnote{cf. section \ref{chapitre:perf}}
-* Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions\footnotemark[\value{footnote}],
-* Sélection des hyperparamètres permettant d'optimiser les performances du modèle,
-* Mesure des performances de chaque modèle avec les hyperparamètres optimaux,
-* Pour les modèles les plus performants : prédiction et mesure finale des performances contre le lot d'évaluation.
+1. Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}},
+2. Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à k blocs, avec adaptation du nombre de blocs à la taille du lot de données\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}},
+3. Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux\footnote{\label{note:doe}cf. section \ref{chapitre:doe}},
+4. Mesure des performances en exploitant une métrique adaptée\footnote{cf. section \ref{chapitre:perf}}
+5. Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions\footnotemark[\value{footnote}],
+6. Sélection des hyperparamètres permettant d'optimiser les performances du modèle,
+7. Mesure des performances de chaque modèle avec les hyperparamètres optimaux,
+8. Pour les modèles les plus performants : prédiction et mesure finale des performances contre le lot d'évaluation.
 
-### Modèles d'analyse discriminante linéaire
+### Modèles d'analyse discriminante{#chapitre:BI_lda}
 \paragraph*{}
 Les modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
+```{r, lda_pda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_lda2_dim_graphe,
@@ -595,18 +607,29 @@ plot(ggarrange(
    )
 )
 ```
+\paragraph*{}
+Comme l'illustre la figure \ref{fig:lda_pda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
+\paragraph*{}
+Le paramètre *dimen* du modèle lda2 ne semble en effet pas avoir d'effet significatif sur ses performances, avec un index J de Youden pondéré relativement constant ($\bar{J_{w}} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). 
+\paragraph*{}
+De même, le paramètre *lambda* du modèle pda n'impacte ses performances que de matière très marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($J_{w_{max}} = `r round(max(BI_fit_pda_lambda_resultats["Jw"]),3)`$).
+\paragraph*{}
+Toutefois, les performances de ces deux modèles restent malheureusement insuffisante pour notre étude, aussi bien en sensibilité qu'en spécificité :
+$$\left \{
+\begin{array}{l}
+Sen \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambda_resultats[,"Sens"])),3)` \\
+Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambda_resultats[,"Spec"])),3)` \\
+\end{array}
+\right.$$
 
 \paragraph*{}
-Le paramètre *dimen* du modèle lda2 ne semble pas avoir d'effet significatif sur la sensibilité ($Sens =$ `r round(mean(BI_fit_lda2_dim_resultats[,"Sens"]), 3)`). 
-\paragraph*{}
-Le paramètre *lambda* du modèle pda impacte sa sensibilité de façon marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($Sens_{max} =$ `r round(max(BI_fit_pda_lambda_resultats["Sens"]),3)`).
-\paragraph*{}
-Toutefois, la sensibilité de ces deux modèles reste malheureusement très insuffisante pour notre étude ($Sens \approx$ `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Sens)),2)`), et leurs spécificités n'ont rien de remarquable non plus ($Spec \approx$ `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
-\paragraph*{}
-Ces performances médiocres s'expliquent par le fonctionnement même des modèles LDA qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple :
+Ces performances médiocres s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple :
 
 * Données binaires ou booléennes
 * Données catégorielles basées sur des données numériques
+
+\paragraph*{}
+L'inclusion de ces modèles, présentant ici des performances très modestes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, afin d'en connaître les limites ou d'évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
 
 \FloatBarrier
 ### Modèle additif généralisé  
@@ -623,16 +646,18 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-L'hyperparamètre *degree* du modèle gamLoess ne semble pas avoir d'effet significatif sur la sensibilité, avec $\Delta Sens =$ `r round(max(BI_fit_gamLoess_degree_resultats[,"Sens"]) - min(BI_fit_gamLoess_degree_resultats[,"Sens"]), 3)`. 
+L'hyperparamètre *degree* du modèle gamLoess a un impact mineur sur ses performances, avec un écart entre indices de Jouden maximal et minimal de $\Delta J_{w} = `r round(max(BI_fit_gamLoess_degree_resultats[,"Jw"]) - min(BI_fit_gamLoess_degree_resultats[,"Jw"]), 3)`$.
 \paragraph*{}
-L'hyerparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de *span* = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Sens"]), "span"]`, aboutissant à une sensibilité maximale de $Sens_{max} =$ `r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)`.
+L'hyerparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de $span = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Jw"]), "span"]`$, aboutissant à un indice de Youden maximal de $J_{w_{max}} = `r round(max(BI_fit_gamLoess_span_resultats["Jw"]), 3)`$.
 \paragraph*{}
-La sensibilité de ce modèle n'atteint pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
+Les performances de ce modèle n'atteingnent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
+\paragraph*{}
+Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante (cf. section \ref{chapitre:BI_lda})
 
 \FloatBarrier
 ### Modèles d'arbres de décision
 \paragraph*{}
-Les modèles basés sur des arbres de décision ont un intérêt tout particulier pour cette étude, pour ceux raisons majeures :
+Les modèles basés sur des arbres de décision ont un intérêt tout particulier pour cette étude, pour deux raisons majeures :
 
 * La logique en arbre de décision est habituellement usitée pour la classification manuelle des champignons,
 * Les arbres de décision obtenus peuvent être tracés, et facilement interprétés par l'humain.
@@ -640,19 +665,29 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 \paragraph*{}
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART le plus simple proposé dans notre étude (rpart) ne dispose que d'un seul hyperparamètre  : *cp* (complexité).
 \FloatBarrier
+\paragraph*{}
 
 ```{r, echo = FALSE}
-kable(BI_fit_rpart_cp_resultats[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
+kable(BI_fit_rpart_cp_resultats[,c("cp","Jw", "Sens", "Spec", "ROC")], digits = 5, caption = "Performance du modèle CART (rpart)")
 ```
 
-Le modèle CART le plus simple n'atteint jamais la sensibilité requise $Spec = 1$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec ($Sens_{max} =$ `r round(max(BI_fit_rpart_cp_resultats["Sens"]),3)` et $Spec_{max} =$ `r round(max(BI_fit_rpart_cp_resultats["Spec"]),3)`).
+\paragraph*{}
+Le modèle CART le plus simple n'atteint jamais les performances requises sensibilité requise $Jw \geq `r Jw_min`$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec :
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),3)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"],3)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"],3)` \\
+\end{array}
+\right.$$
+
 \FloatBarrier
 \paragraph*{}
-Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp \geq 0,05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et inversement.
+Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp \geq 0.05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et inversement.
 \paragraph*{}
-En pratique, pour $cp \geq 0,05$, notre modèle d'IA basé sur ce type d'arbre de décision se montrera soit excessivement sévère, rejetant un nombre considérable de champignons comestibles (quadrant supérieur gauche, $cost \leq 1,5$), soit au contraire excessivement laxiste, admettant un nombre important de champignons non-comestibles (quadrant supérieur droit, $cost \geq 1,5$).
+En pratique, pour $cp \geq 0.05$, notre modèle d'IA basé sur ce type d'arbre de décision se montrera soit excessivement sévère, rejetant un nombre considérable de champignons comestibles (quadrant supérieur gauche, $cost \leq 1.5$), soit au contraire excessivement laxiste, admettant un nombre important de champignons non-comestibles (quadrant supérieur droit, $cost \geq 1.5$).
 \paragraph*{}
-C'est dans la section inférieure de ces graphiques ($cp \leq 0,025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
+C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
 
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
@@ -669,7 +704,7 @@ plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
 ```
 
 \paragraph*{}
-Les performances maximales seront ici atteintes pour *cp =* `r BI_best_rpartcostgrid['cp']` et *Cost = * `r BI_best_rpartcostgrid['Cost']`.
+Les performances maximales seront ici atteintes pour $cp = `r BI_best_rpartcostgrid["cp"]`$ et $Cost = `r BI_best_rpartcostgrid["Cost"]`$.
 
 ```{r, echo = FALSE}
 kable(BI_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
@@ -681,11 +716,11 @@ Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne d
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(BI_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree")
+kable(BI_fit_c50tree_resultats[,c("Jw", "Sens", "Spec", "ROC")], digits = 5, caption = "Performance du modèle C5.0 tree")
 ```
 
 \paragraph*{}
-De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Sens = 1$.
+De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $J_w \geq `r Jw_min`$.
 
 ### Forêts aléatoires
 \paragraph*{}
@@ -697,7 +732,14 @@ BI_fit_rFerns_depth_graphe + theme_bw()
 ```
 
 \paragraph*{}
-Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec une sensibilité maximale de $Sens_{max} =$ `r round(max(BI_fit_rFerns_depth_resultats["Sens"]), 3)`. La spécificité maximale n'est pas très élevée non plus ($Spec_{max} =$ `r round(max(BI_fit_rFerns_depth_resultats["Spec"]), 3)`).
+Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec :
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(max(BI_fit_rFerns_depth_resultats["Jw"]),3)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_rFerns_depth_resultats[which.max(BI_fit_rFerns_depth_resultats[,"Jw"]),"Spec"],3)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_rFerns_depth_resultats[which.max(BI_fit_rFerns_depth_resultats[,"Jw"]),"Sens"],3)` \\
+\end{array}
+\right.$$
 \FloatBarrier
 \paragraph*{}
 Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
@@ -724,15 +766,18 @@ $$ Y = \beta _{0} + \beta _{1}.X_{1} + \beta _{2}.X_{2} + \beta _{12}.X_{1}.X_{2
 \paragraph*{}
 Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteinte sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
 \paragraph*{}
-Avec des paramètres optimaux (*predFixed* = `r BI_best_Rboristgrid$predFixed` et *minNode* = `r BI_best_Rboristgrid$minNode`), la performance est estimée à :
-\FloatBarrier
-```{r, echo = FALSE}
-kable(BI_fit_Rborist_best_results[1:5], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
-```
+Avec des paramètres optimaux ($predFixed = `r BI_best_Rboristgrid["predFixed"]`$ et $minNode = `r BI_best_Rboristgrid["minNode"]`$), la performance est estimée à :
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(BI_fit_Rborist_best_results["Jw"],5)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_Rborist_best_results["Spec"],5)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_Rborist_best_results["Sens"],5)` \\
+\end{array}
+\right.$$
 \FloatBarrier
 Ce modèle s'est comporté de façon excellente, donnant une sensibilité et une spécificité remarquables dans cette phrase d'évaluation.
 \paragraph*{}
-Le derier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
+Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
@@ -763,7 +808,14 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r BI_best_rangergrid$min.node.size`, *mtry* = `r BI_best_rangergrid$mtry` et *splitrule* = `r BI_best_rangergrid$splitrule`) a donné d'excellents résultats.
+Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres ($min.node.size = `r BI_best_rangergrid["min.node.size"]`$, $mtry = `r BI_best_rangergrid["mtry"]`$ et $splitrule = `r BI_best_rangergrid["splitrule"]`$) a donné d'excellents résultats :
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(BI_fit_ranger_best_results["Jw"],5)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_ranger_best_results["Spec"],5)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_results["Sens"],5)` \\
+\end{array}
+\right.$$
 
 ```{r, echo = FALSE}
 kable(BI_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
@@ -772,29 +824,19 @@ kable(BI_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du mo
 \paragraph*{}
 Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité et une spécificité excellentes.
 \paragraph*{}
-Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides et ont pu être retenus pour notre étude.
-\paragraph*{}
-La vitesse des algorithmes sera l'objet de la section suivante. La durée d'exécution de n'importe quelle portion de code R pouvant facilement être mesurée par :
-```{r, eval = FALSE}
-temps_debut <- Sys.time()
-[Code à évaluer]
-temps_fin <- Sys.time()
-duree <- difftime(temps_fin, temps_debut)
-```
+Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires se sont également montrés extrêmement inefficients sur le plan calculatoire et ont été écartés pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
+
 
 ## Résultats
 ### Protocole d'évaluation
 \paragraph*{}
-Les modèles ayant atteint le critère de spécificité ($Spec = 1$) lors de l'étape d'optimisation ont été choisis pour l'évaluation. Les deux modèles choisis sont deux forêts aléatoires :
+Les modèles ayant atteint les performances requises ($J_{w} \geq `r Jw_min`$) lors de l'étape d'optimisation ont été choisis pour l'évaluation. Les deux modèles retenus sont deux modèles de type forêt aléatoire :
 
-* Forêt aléatoire de type Ranger,
-* Forêt aléatoire de type Rborist.
+* Forêt aléatoire avec algorithme de type Ranger,
+* Forêt aléatoire avec algorithme de type Rborist.
 
 \paragraph*{}
-Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, réglés avec les meilleurs hyperparamètres obtenus par mesure des performances face au jeu de données d'optimisation. Leurs performances face au jeu de données d'évaluation seront analysées avec les mêmes critères que précédemment :
-
-* La sensibilité *doit* être supérieure à 0,9999.
-* La spécificité doit être la plus haute possible.
+Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, réglés avec les meilleurs hyperparamètres obtenus par mesure des performances face au jeu de données d'optimisation. Leurs performances face au jeu de données d'évaluation seront analysées avec le même critère que précédemment : $J_{w} \geq `r Jw_min`$
 
 ### Performances des modèles de forêts aléatoires  
 
@@ -830,10 +872,6 @@ Etant données des performances qu'ont montré les différents modèles lors de 
 
 \paragraph*{}
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
-
-```{r, echo = FALSE}
-kable(MULFAM_fit_rpart_cp_resultats[,1:4], digits = 5, caption = "Performance du modèle CART (rpart)")
-```
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle CART (rpart) en fonction du paramètre de complexité"}
 plot(MULFAM_fit_rpart_cp_graphe)
