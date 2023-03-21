@@ -262,8 +262,9 @@ BI_mod_ranger_jw_ET <- modelFit(X=BI_fit_ranger_ET[,c("X1", "X2")], Y=BI_fit_ran
 BI_mod_ranger_jw <-  modelFit(X=BI_fit_ranger_resultats[,c("X1", "X2", "X3")], 
                               Y=BI_fit_ranger_resultats$Jw,  
                               type="Kriging", 
-                              formula=Y~X1+X2+X3+X1:X2+X2:X3+I(X1^2)+I(X2^2)+I(X3^2)) # BUGGGG ????#
+                              formula=Y~X1+X2+X3+X1:X2+X2:X3+I(X1^2)+I(X2^2)) # BUGGGG ????#
 
+# A REFAIRE AVEC RBORIST ??????
 
 BI_pred_ranger_GINI <- expand.grid(BI_fit_ranger_GINI[,1:2])
 BI_pred_ranger_GINI$splitrule <- "gini"
@@ -317,9 +318,10 @@ BI_pred_Rborist <- cbind(BI_pred_Rborist, BI_pred_Rborist2)
 
 # Graphes 2D
 # BI_fit_Rborist_spec_graphe <- graphe2D(BI_pred_Rborist, BI_fit_Rborist_results, predFixed, minNode, Spec, "F")
-# BI_fit_Rborist_sens_graphe <- graphe2D(BI_pred_Rborist, BI_fit_Rborist_results, predFixed, minNode, Sens, "G")
 BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Spec", "F")
 BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Sens", "G")
+
+#BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "X1", "X2", "Jw", "D")
 
 BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec*BI_RatioSpec+BI_fit_Rborist_results$Sens*BI_RatioSens)
 BI_best_Rboristgrid <- data.frame(predFixed = BI_fit_Rborist_results[BI_best_Rborist,]$predFixed, minNode =BI_fit_Rborist_results[BI_best_Rborist,]$minNode)

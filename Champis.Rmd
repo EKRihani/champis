@@ -455,6 +455,7 @@ De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être 
 
 ```{r Carres-Latins, echo = FALSE, fig.height = 2.5, fig.cap = "Carré latin aléatoire (à gauche), carré latin avec optimisation évolutive ESE maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
 plot(ggarrange(
+   widths = c(1.05,1,1),
    ncol = 3,
    graphe_LHS + ylab("X2"),
    graphe_optiLHS,
@@ -486,7 +487,7 @@ L'index J de Youden pondéré est donné par :[@rucker_summary_2010]
 $$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
 
 \paragraph*{}
-Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur toxicité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
+Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur toxicité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index J de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
 \paragraph*{}
 Le problème de classification binaire étant relativement simple (*comestible* ou *non-comestible*), nous fixerons arbitrairement le critère de performance minimum à atteindre à $J_{w} \geq `r Jw_min`$, soit :
 $$\left \{
@@ -599,18 +600,18 @@ L'algorithme d'apprentissage machine développé au cours de cette étude met en
 \paragraph*{}
 Les modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 
-```{r, lda_pda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
-plot(ggarrange(
+```{r, lda-pda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
+plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
-   BI_fit_lda2_dim_graphe,
-   BI_fit_pda_lambda_graphe + theme_bw()
+   BI_fit_lda2_dim_graphe + theme(legend.position="none"),
+   BI_fit_pda_lambda_graphe
    )
 )
 ```
 \paragraph*{}
-Comme l'illustre la figure \ref{fig:lda_pda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
+Comme l'illustre la figure \ref{fig:lda-pda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
 \paragraph*{}
-Le paramètre *dimen* du modèle lda2 ne semble en effet pas avoir d'effet significatif sur ses performances, avec un index J de Youden pondéré relativement constant ($\bar{J_{w}} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). 
+Le paramètre *dimen* du modèle lda2 ne semble en effet pas avoir d'effet significatif sur ses performances, avec un index J de Youden pondéré relativement constant ($J_{w_{moy}} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). 
 \paragraph*{}
 De même, le paramètre *lambda* du modèle pda n'impacte ses performances que de matière très marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($J_{w_{max}} = `r round(max(BI_fit_pda_lambda_resultats["Jw"]),3)`$).
 \paragraph*{}
@@ -637,20 +638,20 @@ L'inclusion de ces modèles, présentant ici des performances très modestes, a 
 Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en fonction du span (gauche) and du degré (droite)"}
-plot(ggarrange(
+plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
-   BI_fit_gamLoess_span_graphe,
+   BI_fit_gamLoess_span_graphe + theme(legend.position="none"),
    BI_fit_gamLoess_degree_graphe
    )
 )
 ```
 
 \paragraph*{}
-L'hyperparamètre *degree* du modèle gamLoess a un impact mineur sur ses performances, avec un écart entre indices de Jouden maximal et minimal de $\Delta J_{w} = `r round(max(BI_fit_gamLoess_degree_resultats[,"Jw"]) - min(BI_fit_gamLoess_degree_resultats[,"Jw"]), 3)`$.
+L'hyperparamètre *degree* du modèle gamLoess a un impact mineur sur ses performances, avec un écart entre indices J de Youden maximal et minimal de $\Delta J_{w} = `r round(max(BI_fit_gamLoess_degree_resultats[,"Jw"]) - min(BI_fit_gamLoess_degree_resultats[,"Jw"]), 3)`$.
 \paragraph*{}
-L'hyerparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de $span = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Jw"]), "span"]`$, aboutissant à un indice de Youden maximal de $J_{w_{max}} = `r round(max(BI_fit_gamLoess_span_resultats["Jw"]), 3)`$.
+L'hyperparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de $span = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Jw"]), "span"]`$, aboutissant à un index J de Youden maximal de $J_{w_{max}} = `r round(max(BI_fit_gamLoess_span_resultats["Jw"]), 3)`$.
 \paragraph*{}
-Les performances de ce modèle n'atteingnent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
+Les performances de ce modèle n'atteignent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
 \paragraph*{}
 Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante (cf. section \ref{chapitre:BI_lda})
 
@@ -666,18 +667,18 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART le plus simple proposé dans notre étude (rpart) ne dispose que d'un seul hyperparamètre  : *cp* (complexité).
 \FloatBarrier
 \paragraph*{}
-
-```{r, echo = FALSE}
-kable(BI_fit_rpart_cp_resultats[,c("cp","Jw", "Sens", "Spec", "ROC")], digits = 5, caption = "Performance du modèle CART (rpart)")
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle rpart en fonction du paramètre de complexité (cp)"}
+plot(BI_fit_rpart_cp_graphe)
 ```
 
+
 \paragraph*{}
-Le modèle CART le plus simple n'atteint jamais les performances requises sensibilité requise $Jw \geq `r Jw_min`$. Toutefois, ce modèle s'en approche, et donne de très bons résultats globaux, avec :
+Le modèle CART le plus simple n'atteint jamais les performances requises, le critère étant $Jw \geq `r Jw_min`$. Toutefois, ce modèle s'en approche, et donne de bons résultats globaux, avec :
 $$\left \{
 \begin{array}{l}
-J_{w_{max}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),3)` \\
-Spe_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"],3)` \\
-Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"],3)` \\
+J_{w_{max}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),4)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"],4)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"],4)` \\
 \end{array}
 \right.$$
 
@@ -699,33 +700,47 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances (index de Youden pondéré 10:1) de rpartCost en fonction des paramètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances (index J de Youden pondéré 10:1) de rpartCost en fonction des paramètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
 ```
 
-\paragraph*{}
-Les performances maximales seront ici atteintes pour $cp = `r BI_best_rpartcostgrid["cp"]`$ et $Cost = `r BI_best_rpartcostgrid["Cost"]`$.
-
-```{r, echo = FALSE}
-kable(BI_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)")
-```
-\paragraph*{}
-Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la sensibilité requise.
-\paragraph*{}
-Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre.
 \FloatBarrier
+\paragraph*{}
+Les performances maximales seront ici atteintes pour $cp = `r BI_best_rpartcostgrid["cp"]`$ et $Cost = `r BI_best_rpartcostgrid["Cost"]`$, pour lesquelles nous obtenons :
 
-```{r, echo = FALSE}
-kable(BI_fit_c50tree_resultats[,c("Jw", "Sens", "Spec", "ROC")], digits = 5, caption = "Performance du modèle C5.0 tree")
-```
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(max(BI_fit_rpartcost_resultats["Jw"]),4)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Spec"],4)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Sens"],4)` \\
+\end{array}
+\right.$$
 
 \paragraph*{}
-De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $J_w \geq `r Jw_min`$.
+Les performances du modèle rpartCost, bien qu'excellentes, ne permettent pas d'atteindre l'index J de Youden requis.
+\paragraph*{}
+Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. \paragraph*{}
+Les performances obtenues sont :
+$$\left \{
+\begin{array}{l}
+J_{w} = `r round(BI_fit_c50tree_resultats["Jw"],4)` \\
+Spe = `r round(BI_fit_c50tree_resultats["Spec"],4)` \\
+Sen = `r round(BI_fit_c50tree_resultats["Sens"],4)` \\
+\end{array}
+\right.$$
+\paragraph*{}
+De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans aucune optimisation nécessaire. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $J_w \geq `r Jw_min`$.
+\paragraph*{}
+Les modèles d'arbres de classification sont particulièrement adaptés aux problèmes de classification avec variables qualitatives et surtout quantitatives, et ont pu s'illustrer dans cette étude en fournissant des résultats très acceptables ($Spe \geq `r round(min(BI_fit_c50tree_resultats["Spec"], 
+    BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Spec"], 
+    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),3)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
+    BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Sens"], 
+    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),3)`$), mais n'atteignant pas pour autant les exigences imposées par le critère de performance que nous avons défini pour les classifieurs binaires de notre étude.
 
 ### Forêts aléatoires
 \paragraph*{}
 \FloatBarrier
-Le premier modèle de forêt aléatoire évalué dans cette étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
+Le premier modèle de forêt aléatoire évalué dans notre étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle de fougères aléatoires"}
 BI_fit_rFerns_depth_graphe + theme_bw()
@@ -741,6 +756,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rFerns_depth_resultats[which.max(BI_fit_rFerns_
 \end{array}
 \right.$$
 \FloatBarrier
+
 \paragraph*{}
 Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
@@ -752,6 +768,11 @@ plot(ggarrange(
    )
 )
 ```
+
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(BI_fit_Rborist_sens_graphe)
+```
+
 
 \paragraph*{}
 En posant comme facteurs réduits :
@@ -816,10 +837,6 @@ Spe_{Jw_{max}} = `r round(BI_fit_ranger_best_results["Spec"],5)` \\
 Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_results["Sens"],5)` \\
 \end{array}
 \right.$$
-
-```{r, echo = FALSE}
-kable(BI_fit_ranger_best_results[1:6], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
-```
 
 \paragraph*{}
 Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité et une spécificité excellentes.

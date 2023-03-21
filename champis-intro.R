@@ -159,7 +159,7 @@ densite2d <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre, y = Pied.Haute
   theme_bw() +
   geom_vline(xintercept = Chap.Diam, linetype = "dotted", color = "red") +
   geom_hline(yintercept = Pied.Haut, linetype = "dotted", color = "red") +
-  ylab(NULL) + xlab("Diamètre du chapeau (Dc)")
+  ylab("Longueur du stipe (Ls)") + xlab("Diamètre du chapeau (Dc)")
 
 distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
   geom_density(bw = .2, fill = "grey", alpha = .2) +
@@ -255,10 +255,10 @@ INTRO_taux_supergros_diam    # % de diamètres super-hors-norme (>110% max), arr
 
 # Nettoyage données et sauvegarde
 
-rm(valeurs_beta, valeurs_binomiale, valeurs_normale, valeurs_poisson, valeurs_uniforme, valeurs_weibull,
-  temps_beta, temps_binomiale, temps_normale, temps_poisson, temps_uniforme, temps_weibull,
-  fonction_beta, fonction_binomiale, fonction_normale, fonction_poisson, fonction_uniforme, fonction_weibull,
-  beta, loi_beta, chrono_fonctions, Champi_demo)
+# rm(valeurs_beta, valeurs_binomiale, valeurs_normale, valeurs_poisson, valeurs_uniforme, valeurs_weibull,
+#   temps_beta, temps_binomiale, temps_normale, temps_poisson, temps_uniforme, temps_weibull,
+#   fonction_beta, fonction_binomiale, fonction_normale, fonction_poisson, fonction_uniforme, fonction_weibull,
+#   beta, loi_beta, chrono_fonctions, Champi_demo)
 
 save.image(file = "EKR-Champis-Intro.RData")
-#load("EKR-Champis-Intro.RData")
+load("EKR-Champis-Intro.RData")
