@@ -332,15 +332,18 @@ BI_fit_Rborist <- fit_test(BI_set_Rborist)
 
 BI_fit_Rborist_resultats <- BI_fit_Rborist$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)     # Calcul du Jw
 
-BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_results[,1:2], 
+BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_results[,c("predFixed", "minNode")], 
                                 Y=BI_fit_Rborist_results$Spec,  
                                 type="Kriging", 
                                 formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_results[,1:2], 
+BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_results[,c("predFixed", "minNode")], 
                                  Y=BI_fit_Rborist_results$Sens,  
                                  type="Kriging", 
                                  formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-BI_mod_Rborist_Jw <-  modelFit(X=BI_fit_Rborist_results[,1:2], Y=BI_fit_Rborist_results$Sens,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+BI_mod_Rborist_Jw <-  modelFit(X=BI_fit_Rborist_results[,c("X1", "X2")], 
+                               Y=BI_fit_Rborist_results$Sens,  
+                               type="Kriging", 
+                               formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
 
 BI_pred_Rborist <- expand.grid(BI_fit_Rborist_results[,1:2])
@@ -363,10 +366,7 @@ BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
 BI_fit_Rborist_best_results <- BI_fit_Rborist_best$results
 BI_fit_Rborist_best_results <- BI_fit_Rborist_best_results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
-# Lance modèle RANGER optimal
-BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_best_rangergrid, num.trees = 6"))
-BI_fit_ranger_best <- fit_test(BI_set_ranger_best)
-BI_fit_ranger_best_results <- BI_fit_ranger_best$results
+
 
 # Lance modèle RBORIST optimal
 BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_best_Rboristgrid, ntrees = 2"))
