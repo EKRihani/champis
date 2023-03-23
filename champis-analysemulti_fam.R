@@ -94,7 +94,7 @@ grapheKappa <- function(fcn_donnees, fcn_abcisse){
       theme_bw()
 }
 
-# Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
+# Modèles types arbres (RPART, RPARTCOST, C50TREE)
 
 MULFAM_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 

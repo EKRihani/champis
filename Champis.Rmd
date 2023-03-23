@@ -706,13 +706,37 @@ plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
 
 \FloatBarrier
 \paragraph*{}
-Les performances maximales seront ici atteintes pour $cp = `r BI_best_rpartcostgrid["cp"]`$ et $Cost = `r BI_best_rpartcostgrid["Cost"]`$, pour lesquelles nous obtenons :
+La modélisation selon le modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}} donne le modèle suivant :
+$$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
+Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé au paramètre de complexité (*cp*), $X_{2}$ le facteur réduit associé au paramètre de coût (*Cost*) et $\beta_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
 
 $$\left \{
 \begin{array}{l}
-J_{w_{max}} = `r round(max(BI_fit_rpartcost_resultats["Jw"]),4)` \\
-Spe_{Jw_{max}} = `r round(BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Spec"],4)` \\
-Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Sens"],4)` \\
+b_{0} = `r round(BI_mod_rpartcost_jw$model@trend.coef[1],4)` \\
+b_{1} = `r round(BI_mod_rpartcost_jw$model@trend.coef[2],4)` \\
+b_{2} = `r round(BI_mod_rpartcost_jw$model@trend.coef[3],4)` \\
+b_{12} = `r round(BI_mod_rpartcost_jw$model@trend.coef[6],4)` \\
+b_{11} = `r round(BI_mod_rpartcost_jw$model@trend.coef[4],4)` \\
+b_{22} = `r round(BI_mod_rpartcost_jw$model@trend.coef[5],4)` \\
+\end{array}
+\right.$$
+
+\paragraph*{}
+Les performances maximales seront ici atteintes pour :
+
+$$\left \{
+\begin{array}{lcl}
+X_{1} = `r BI_modelquad_rpartcost_top["X1"]` & soit & cp = `r BI_modelquad_rpartcost_top["cp"]` \\
+X_{2} = `r BI_modelquad_rpartcost_top["X2"]` & soit & Cost = `r round(BI_modelquad_rpartcost_top["Cost"],2)` \\
+\end{array}
+\right.$$
+
+Ces hyperparamètres optimaux permettent au modèle d'atteindre :
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(BI_fit_rpartcost_best_resultats["Jw"],4)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Spec"],4)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Sens"],4)` \\
 \end{array}
 \right.$$
 
@@ -800,7 +824,7 @@ Ce modèle s'est comporté de façon excellente, donnant une sensibilité et une
 \paragraph*{}
 Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_Gini_sens_graphe,
@@ -809,7 +833,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+```{r, BI-ranger-ET, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_sens_graphe,
@@ -819,7 +843,7 @@ plot(ggarrange(
 ```
 
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des paramètres réduits : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des paramètres réduits : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_jw_graphe,
@@ -828,13 +852,35 @@ plot(ggarrange(
 )
 ```
 
+\FloatBarrier
 \paragraph*{}
-Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres ($min.node.size = `r BI_best_rangergrid["min.node.size"]`$, $mtry = `r BI_best_rangergrid["mtry"]`$ et $splitrule = `r BI_best_rangergrid["splitrule"]`$) a donné d'excellents résultats :
+Nous pouvons proposer pour ce modèle la modélisation quadratique suivante
+$$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
+Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans l'intervalle [0;1] associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{2}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $\beta_{n}$ les coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
+\paragraph*{}
+La modélisation permet de calculer les effets suivants:
+
 $$\left \{
 \begin{array}{l}
-J_{w_{max}} = `r round(BI_fit_ranger_best_results["Jw"],5)` \\
-Spe_{Jw_{max}} = `r round(BI_fit_ranger_best_results["Spec"],5)` \\
-Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_results["Sens"],5)` \\
+b_{0} = `r round(BI_mod_ranger_jw$model@trend.coef[1],4)` \\
+b_{1} = `r round(BI_mod_ranger_jw$model@trend.coef[2],4)` \\
+b_{2} = `r round(BI_mod_ranger_jw$model@trend.coef[3],4)` \\
+b_{3} = `r round(BI_mod_ranger_jw$model@trend.coef[4],4)` \\
+b_{12} = `r round(BI_mod_ranger_jw$model@trend.coef[7],4)` \\
+b_{23} = `r round(BI_mod_ranger_jw$model@trend.coef[8],4)` \\
+b_{13} = `r round(BI_mod_ranger_jw$model@trend.coef[9],4)` \\
+b_{11} = `r round(BI_mod_ranger_jw$model@trend.coef[5],4)` \\
+b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
+\end{array}
+\right.$$
+
+\paragraph*{}
+Le modèle ranger semble déjà, par simple interprétation graphique (voir figures \@ref(fig:BI-ranger-gini), \@ref(fig:BI-ranger-ET) et \@ref(fig:BI-ranger-Jw)), donner de bons résultats sur une très large plage de l'espace expérimental de ses hyperparamètres, même avec un nombre réduit d'arbres ($n=6$). Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top["splitrule"]`$) a donné d'excellents résultats :
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(BI_fit_ranger_best_resultats["Jw"],5)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_ranger_best_resultats["Spec"],5)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_resultats["Sens"],5)` \\
 \end{array}
 \right.$$
 
