@@ -148,40 +148,56 @@ BI_fit_gamLoess_degree_graphe <- grapheSpeSenJw(BI_fit_gamLoess_degree_resultats
 #     BICLASSIFIEUR : ARBRES DECISIONNELS     #
 ###############################################
 
-# Modèles types arbres (RPART, RPARTCOST, CTREE, C50TREE)
-
-BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
-
+# Définition de l'hypercube latin quasi-orthogonal (NOLH)
 BI_LHS <- nolhDesign(dimension = 2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
 BI_LHS <- data.frame(BI_LHS)
 colnames(BI_LHS) <- c("X1", "X2")
+
+# CTREE
+#BI_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
+#BI_fit_ctree_criterion <- fit_test(BI_set_ctree_criterion)
+# BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+# BI_fit_ctree_criterion_graphe <- grapheSpeSenJw(BI_fit_ctree_criterion_resultats, mincriterion)
+
+# C 5.0 TREE
+BI_set_c50tree <- c("C5.0Tree", "")
+BI_fit_c50tree <- fit_test(BI_set_c50tree)
+BI_fit_c50tree_resultats <- BI_fit_c50tree$results
+BI_fit_c50tree_resultats <- BI_fit_c50tree_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+
+# RPART
+BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
+BI_set_rpart_cp <- c("rpart", "tuneGrid  = BI_grid_rpart_cp")
+BI_fit_rpart_cp <- fit_test(BI_set_rpart_cp)
+#system.time(fit_test(BI_set_rpart_cp))    ####### CHRONO
+BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_x_log10()
+
+
+# RPARTCOST
 BI_grid_rpartcost <- BI_LHS
 BI_grid_rpartcost <- BI_grid_rpartcost %>%
    mutate(cp = X1*1e-2+1e-5) %>%
    mutate(Cost = X2*2.5+1e-3)
-
-BI_set_rpart_cp <- c("rpart", "tuneGrid  = BI_grid_rpart_cp")
 BI_set_rpartcost <- c("rpartCost", "tuneGrid  = BI_grid_rpartcost[c('cp', 'Cost')]")
-
-#BI_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
-BI_set_c50tree <- c("C5.0Tree", "")
-#system.time(fit_test(BI_set_rpart_cp))    ####### CHRONO
-BI_fit_rpart_cp <- fit_test(BI_set_rpart_cp)
 BI_fit_rpartcost <- fit_test(BI_set_rpartcost)
-#BI_fit_ctree_criterion <- fit_test(BI_set_ctree_criterion)
-BI_fit_c50tree <- fit_test(BI_set_c50tree)
-
-# Extraire résultats d'intérêt : graphes et resultats
-BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_x_log10()
 
 # Modèle quadratique
 BI_fit_rpartcost_resultats <- BI_fit_rpartcost$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)     # Calcul du Jw
 BI_fit_rpartcost_resultats <- left_join(BI_fit_rpartcost_resultats, BI_grid_rpartcost, by = c("Cost", "cp"))      # Ajout des facteurs réduits
 
-BI_mod_rpartcost_spec <- modelFit(X=BI_fit_rpartcost_resultats[,c("cp", "Cost")], Y=BI_fit_rpartcost_resultats$Spec,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-BI_mod_rpartcost_sens <-  modelFit(X=BI_fit_rpartcost_resultats[,c("cp", "Cost")], Y=BI_fit_rpartcost_resultats$Sens,  type="Kriging", formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-BI_mod_rpartcost_jw <-  modelFit(X=BI_fit_rpartcost_resultats[,c("X1", "X2")], Y=BI_fit_rpartcost_resultats$Jw,  type="Kriging", formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
+BI_mod_rpartcost_spec <- modelFit(X=BI_fit_rpartcost_resultats[,c("cp", "Cost")], 
+                                  Y=BI_fit_rpartcost_resultats$Spec,  
+                                  type="Kriging", 
+                                  formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+BI_mod_rpartcost_sens <-  modelFit(X=BI_fit_rpartcost_resultats[,c("cp", "Cost")], 
+                                   Y=BI_fit_rpartcost_resultats$Sens,  
+                                   type="Kriging", 
+                                   formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
+BI_mod_rpartcost_jw <-  modelFit(X=BI_fit_rpartcost_resultats[,c("X1", "X2")], 
+                                 Y=BI_fit_rpartcost_resultats$Jw,  
+                                 type="Kriging", 
+                                 formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
 BI_pred_rpartcost <- expand.grid(BI_fit_rpartcost_resultats[,c("X1", "X2")]) %>%
    mutate(cp = X1*1e-2+1e-5) %>%
@@ -190,19 +206,15 @@ BI_pred_rpartcost <- expand.grid(BI_fit_rpartcost_resultats[,c("X1", "X2")]) %>%
    mutate(Sens = modelPredict(BI_mod_rpartcost_sens, .[,c("cp", "Cost")])) %>%
    mutate(Jw =  modelPredict(BI_mod_rpartcost_jw, .[,c("X1", "X2")]))
 
-
 # Graphes 2D
 # BI_fit_rpartcost_spec_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Spec, "F")
 BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
 BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
 BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "X2", "X1", "Jw", "D")
 
-# ctree pas dans le rapport ?????
-# BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-# BI_fit_ctree_criterion_graphe <- grapheSpeSenJw(BI_fit_ctree_criterion_resultats, mincriterion)
 
-BI_fit_c50tree_resultats <- BI_fit_c50tree$results
-BI_fit_c50tree_resultats <- BI_fit_c50tree_resultats %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+
+
 
 # Modélisation quadratique rpartcost
 BI_modelquad_rpartcost <- expand.grid(X1 = seq(from = 0, to = 1, by = 0.01), X2 = seq(from = 0, to = 1, by = 0.01))
@@ -333,9 +345,16 @@ BI_fit_ranger_best_resultats <- BI_fit_ranger_best$results %>% mutate(Jw = Sens*
 BI_fit_Rborist_resultats <- BI_fit_Rborist$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)     # Calcul du Jw
 #BI_fit_Rborist_bestTune <- BI_fit_Rborist$bestTune
 
-BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_results[,1:2], Y=BI_fit_Rborist_results$Spec,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_results[,1:2], Y=BI_fit_Rborist_results$Sens,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_results[,1:2], 
+                                Y=BI_fit_Rborist_results$Spec,  
+                                type="Kriging", 
+                                formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_results[,1:2], 
+                                 Y=BI_fit_Rborist_results$Sens,  
+                                 type="Kriging", 
+                                 formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
 BI_mod_Rborist_Jw <-  modelFit(X=BI_fit_Rborist_results[,1:2], Y=BI_fit_Rborist_results$Sens,  type="Kriging", formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+
 
 BI_pred_Rborist <- expand.grid(BI_fit_Rborist_results[,1:2])
 colnames(BI_pred_Rborist) <- c("predFixed", "minNode")
