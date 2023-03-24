@@ -708,7 +708,7 @@ plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
 \paragraph*{}
 La modélisation selon le modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}} donne le modèle suivant :
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé au paramètre de complexité (*cp*), $X_{2}$ le facteur réduit associé au paramètre de coût (*Cost*) et $\beta_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
+Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé au paramètre de complexité (*cp*), $X_{2}$ le facteur réduit associé au paramètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
 
 $$\left \{
 \begin{array}{l}
@@ -793,34 +793,43 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
-plot(BI_fit_Rborist_sens_graphe)
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right'))
 ```
 
-
+\FloatBarrier
 \paragraph*{}
 En posant comme facteurs réduits :
 
 * $X_{1} \in [0;1]$ pour le paramètre *minNode*,
 * $X_{2} \in [0;1]$ pour le paramètre *predFixed*,
 
-Nous pouvons modéliser la réponse avec un modèle quadratique
-$$ Y = \beta _{0} + \beta _{1}.X_{1} + \beta _{2}.X_{2} + \beta _{12}.X_{1}.X_{2} + \beta _{11}.X_{1}^{2} + \beta _{22}.X_{2}^{2}$$
-
-
-\paragraph*{}
-Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteinte sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique. 
-\paragraph*{}
-Avec des paramètres optimaux ($predFixed = `r BI_best_Rboristgrid["predFixed"]`$ et $minNode = `r BI_best_Rboristgrid["minNode"]`$), la performance est estimée à :
+Nous pouvons modéliser la réponse par un modèle quadratique avec interaction :
+$$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
+Avec pour estimation des effets :
 $$\left \{
 \begin{array}{l}
-J_{w_{max}} = `r round(BI_fit_Rborist_best_results["Jw"],5)` \\
-Spe_{Jw_{max}} = `r round(BI_fit_Rborist_best_results["Spec"],5)` \\
-Sen_{Jw_{max}} = `r round(BI_fit_Rborist_best_results["Sens"],5)` \\
+b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
+b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
+b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
+b_{12} = `r round(BI_mod_Rborist_jw$model@trend.coef[6],4)` \\
+b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
+b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \end{array}
 \right.$$
-\FloatBarrier
-Ce modèle s'est comporté de façon excellente, donnant une sensibilité et une spécificité remarquables dans cette phrase d'évaluation.
+
+\paragraph*{}
+Ce modèle quadratique avec interactions permet d'évaluer les hyperparamètres optimaux permettant de maximiser ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. Les performances obtenues sont excellentes :
+
+$$\left \{
+\begin{array}{l}
+J_{w_{max}} = `r round(BI_fit_Rborist_best_resultats["Jw"],5)` \\
+Spe_{Jw_{max}} = `r round(BI_fit_Rborist_best_resultats["Spec"],5)` \\
+Sen_{Jw_{max}} = `r round(BI_fit_Rborist_best_resultats["Sens"],5)` \\
+\end{array}
+\right.$$
+
+
 \paragraph*{}
 Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
@@ -856,7 +865,7 @@ plot(ggarrange(
 \paragraph*{}
 Nous pouvons proposer pour ce modèle la modélisation quadratique suivante
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans l'intervalle [0;1] associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{2}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $\beta_{n}$ les coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
+Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans l'intervalle [0;1] associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{2}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
 \paragraph*{}
 La modélisation permet de calculer les effets suivants:
 
@@ -887,7 +896,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_resultats["Sens"],5)` \\
 \paragraph*{}
 Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité et une spécificité excellentes.
 \paragraph*{}
-Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires se sont également montrés extrêmement inefficients sur le plan calculatoire et ont été écartés pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
+Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires ont montré de grandes disparités d'efficience sur le plan calculatoire, ce qui nous a conduit à écarter certains modèles pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
 
 
 ## Résultats
@@ -899,7 +908,7 @@ Les modèles ayant atteint les performances requises ($J_{w} \geq `r Jw_min`$) l
 * Forêt aléatoire avec algorithme de type Rborist.
 
 \paragraph*{}
-Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, réglés avec les meilleurs hyperparamètres obtenus par mesure des performances face au jeu de données d'optimisation. Leurs performances face au jeu de données d'évaluation seront analysées avec le même critère que précédemment : $J_{w} \geq `r Jw_min`$
+Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus par modélisation quadratique avec interactions des performances, face au jeu de données d'optimisation. Les performances de nos modèle face au jeu de données d'évaluation seront évaluées avec le même critère que précédemment : $J_{w} \geq `r Jw_min`$
 
 ### Performances des modèles de forêts aléatoires  
 
@@ -994,8 +1003,8 @@ Ce modèle s'est comporté de façon excellente, donnant une spécificité et un
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
-plot(MULFAM_fit_Rborist_kappa_graphe)
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right'))
 ```
 
 \paragraph*{}

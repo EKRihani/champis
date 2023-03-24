@@ -248,12 +248,11 @@ BI_fit_rFerns_depth_resultats <- BI_fit_rFerns_depth$results %>% mutate(Jw = Sen
 BI_fit_rFerns_depth_graphe <- grapheSpeSenJw(BI_fit_rFerns_depth_resultats, depth)
 
 ### RANGER ###
-BI_grid_ranger <- BI_LHS
-BI_grid_ranger <- rbind(BI_grid_ranger,BI_grid_ranger)
-BI_grid_ranger$X3 <- c(rep(0, 17), rep(1, 17))
-BI_grid_ranger$mtry <- round(1+BI_grid_ranger$X1*48,0)       # Si arrondi : prendre des multiples de 16 (car 17 points pour 2d)
-BI_grid_ranger$min.node.size <- round(1+BI_grid_ranger$X2*32,0)
-BI_grid_ranger$splitrule <- recode_factor(BI_grid_ranger$X3, "0" = "gini", "1" = "extratrees")
+BI_grid_ranger <- rbind(BI_LHS,BI_LHS) %>%
+   mutate(X3 = c(rep(0, 17), rep(1, 17))) %>%
+   mutate(mtry = round(1+X1*48,0)) %>%    # Prendre des multiples de 16 (car 17 points pour 2d)
+   mutate(min.node.size = round(1+X2*32,0)) %>%
+   mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees"))
 BI_set_ranger <- c("ranger", "tuneGrid  = BI_grid_ranger[c('mtry', 'min.node.size', 'splitrule')], num.trees = 6") # OK
 BI_fit_ranger <- fit_test(BI_set_ranger)
 
@@ -279,11 +278,10 @@ BI_pred_ranger <- expand(BI_fit_ranger_resultats[,c("X1","X2","X3")], X1, X2, X3
    data.frame() %>%
    mutate(mtry = round(1+X1*48,0)) %>%
    mutate(min.node.size = round(1+X2*32,0)) %>%
-   mutate(splitrule = X3) %>%
+   mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees")) %>%
    mutate(Spec = modelPredict(BI_mod_ranger_spec, .[,c("mtry", "min.node.size", "X3")])) %>%
    mutate(Sens = modelPredict(BI_mod_ranger_sens, .[,c("mtry", "min.node.size", "X3")])) %>%
    mutate(Jw = modelPredict(BI_mod_ranger_jw, .[,c("X1","X2","X3")]))
-BI_pred_ranger$splitrule <- recode_factor(BI_pred_ranger$splitrule, "0" = "gini", "1" = "extratrees")
 
 BI_pred_ranger_ET <- BI_pred_ranger %>% filter(splitrule == "extratrees")
 BI_pred_ranger_GINI <- BI_pred_ranger %>% filter(splitrule == "gini")
@@ -298,14 +296,12 @@ BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET"
 BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
 BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "X1", "X2", "Jw", "D")
 
-# Optimisation quadratique pour Ranger
+# Optimisation quadratique
 BI_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))
 BI_modelquad_ranger <- BI_modelquad_ranger %>% 
    mutate(mtry = round(1+X1*48,0)) %>%
    mutate(min.node.size = round(1+X2*32,0)) %>%
-   mutate(splitrule = X3)
-BI_modelquad_ranger$splitrule <- recode_factor(BI_modelquad_ranger$splitrule, "0" = "gini", "1" = "extratrees")
-BI_modelquad_ranger <- BI_modelquad_ranger %>%
+   mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees")) %>%
    mutate(Jw = BI_mod_ranger_jw$model@trend.coef[1] +
              BI_mod_ranger_jw$model@trend.coef[2]*X1 +
              BI_mod_ranger_jw$model@trend.coef[3]*X2 +
@@ -323,55 +319,55 @@ BI_fit_ranger_best_resultats <- BI_fit_ranger_best$results %>% mutate(Jw = Sens*
 
 
 ### RBORIST ###
-BI_grid_Rborist <- data.frame(BI_LHS)
-colnames(BI_grid_Rborist) <- c("predFixed", "minNode")
-BI_grid_Rborist$predFixed <- round(1+BI_grid_Rborist$predFixed*32,0)
-BI_grid_Rborist$minNode <- round(1+BI_grid_Rborist$minNode*16,0)
-BI_set_Rborist <- c("Rborist", "tuneGrid  = BI_grid_Rborist")
+BI_grid_Rborist <- data.frame(BI_LHS) %>%
+   mutate(predFixed = round(1+X1*16,0)) %>%
+   mutate(minNode = round(1+X2*16,0))
+BI_set_Rborist <- c("Rborist", "tuneGrid  = BI_grid_Rborist[c('predFixed', 'minNode')]")
 BI_fit_Rborist <- fit_test(BI_set_Rborist)
 
-BI_fit_Rborist_resultats <- BI_fit_Rborist$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)     # Calcul du Jw
+BI_fit_Rborist_resultats <- BI_fit_Rborist$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1) %>%   # Calcul du Jw
+   left_join(., BI_grid_Rborist, by = c("predFixed", "minNode"))   # Ajout des facteurs réduits
 
-BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_results[,c("predFixed", "minNode")], 
-                                Y=BI_fit_Rborist_results$Spec,  
+BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_resultats[,c("predFixed", "minNode")], 
+                                Y=BI_fit_Rborist_resultats$Spec,  
                                 type="Kriging", 
                                 formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_results[,c("predFixed", "minNode")], 
-                                 Y=BI_fit_Rborist_results$Sens,  
+BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_resultats[,c("predFixed", "minNode")], 
+                                 Y=BI_fit_Rborist_resultats$Sens,  
                                  type="Kriging", 
                                  formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-BI_mod_Rborist_Jw <-  modelFit(X=BI_fit_Rborist_results[,c("X1", "X2")], 
-                               Y=BI_fit_Rborist_results$Sens,  
+BI_mod_Rborist_jw <-  modelFit(X=BI_fit_Rborist_resultats[,c("X1", "X2")], 
+                               Y=BI_fit_Rborist_resultats$Sens,  
                                type="Kriging", 
                                formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
-
-BI_pred_Rborist <- expand.grid(BI_fit_Rborist_results[,1:2])
-colnames(BI_pred_Rborist) <- c("predFixed", "minNode")
-BI_pred_Rborist2 <- NULL
-BI_pred_Rborist2$Spec <- modelPredict(BI_mod_Rborist_spec, BI_pred_Rborist)
-BI_pred_Rborist2$Sens <- modelPredict(BI_mod_Rborist_sens, BI_pred_Rborist)
-BI_pred_Rborist <- cbind(BI_pred_Rborist, BI_pred_Rborist2)
+BI_pred_Rborist <- expand.grid(BI_fit_Rborist_resultats[,c("X1","X2")]) %>%
+   mutate(predFixed = round(1+X1*16,0)) %>%
+   mutate(minNode = round(1+X2*16,0)) %>%
+   mutate(Spec = modelPredict(BI_mod_Rborist_spec, .[,c("predFixed", "minNode")])) %>%
+   mutate(Sens = modelPredict(BI_mod_Rborist_sens, .[,c("predFixed", "minNode")])) %>%
+   mutate(Jw = modelPredict(BI_mod_Rborist_jw, .[,c("X1","X2")]))
 
 # Graphes 2D
-BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Spec", "F")
-BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "predFixed", "minNode", "Sens", "G")
-#BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_results", "X1", "X2", "Jw", "D")
+BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Spec", "F")
+BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Sens", "G")
+BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "X1", "X2", "Jw", "D")
 
-# A VERIFIER/NETTOYER
-BI_best_Rborist <- which.max(BI_fit_Rborist_results$Spec*BI_RatioSpec+BI_fit_Rborist_results$Sens*BI_RatioSens)
-BI_best_Rboristgrid <- data.frame(predFixed = BI_fit_Rborist_results[BI_best_Rborist,]$predFixed, minNode =BI_fit_Rborist_results[BI_best_Rborist,]$minNode)
-BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_best_Rboristgrid"))
+# Optimisation quadratique
+BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), X2 = seq(from = 0, to = 1, length.out = 9)) %>% 
+   mutate(predFixed = round(1+X1*16,0)) %>%  #16 ou 32
+   mutate(minNode = round(1+X2*16,0)) %>%
+   mutate(Jw = BI_mod_Rborist_jw$model@trend.coef[1] +
+             BI_mod_Rborist_jw$model@trend.coef[2]*X1 +
+             BI_mod_Rborist_jw$model@trend.coef[3]*X2 +
+             BI_mod_Rborist_jw$model@trend.coef[4]*X1^2 +
+             BI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
+             BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
+
+BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),c("predFixed", "minNode")]
+BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_modelquad_Rborist_top, ntrees = 3"))
 BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
-BI_fit_Rborist_best_results <- BI_fit_Rborist_best$results
-BI_fit_Rborist_best_results <- BI_fit_Rborist_best_results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-
-
-
-# Lance modèle RBORIST optimal
-BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_best_Rboristgrid, ntrees = 2"))
-BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
-BI_fit_Rborist_best_results <- BI_fit_Rborist_best$results
+BI_fit_Rborist_best_resultats <- BI_fit_Rborist_best$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
 
 #########################################################
@@ -379,38 +375,46 @@ BI_fit_Rborist_best_results <- BI_fit_Rborist_best$results
 #########################################################
 
 # Règle la liste de prédiction et lance la classification
-BI_evaluation <- BI_lot_evaluation
+BI_evaluation <- BI_lot_evaluation %>%
+   mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, class == "comestible" ~ FALSE)))
+   
+
 BI_evaluation$reference <- as.logical(as.character(recode_factor(BI_evaluation$class, toxique = TRUE, comestible = FALSE))) # Bascule en booléen
 
 # Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
 BI_evaluation$reference <- as.factor(BI_evaluation$reference)
 
 
-start_time <- Sys.time()     # Démarre chrono
-cmd <- paste0("train(class ~ ., method = 'ranger', data = BI_lot_appr_opti,", BI_set_ranger_best[2], ")") # Construction de la commande
-BI_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
+start_time <- Sys.time()
+cmd <- paste0("train(class ~ ., method = 'ranger', data = BI_lot_appr_opti,", BI_set_ranger_best[2], ")")
+BI_fit_ranger_final <- eval(parse(text = cmd)) 
 BI_pred_ranger_final <- predict(object = BI_fit_ranger_final, newdata = BI_lot_evaluation)
 BI_CM_ranger_final <- confusionMatrix(data = BI_pred_ranger_final, reference = BI_lot_evaluation$class)
-BI_resultats_ranger <- c(BI_CM_ranger_final$byClass["Sensitivity"], BI_CM_ranger_final$byClass["Specificity"], BI_CM_ranger_final$byClass["F1"])
-end_time <- Sys.time()     # Stop chrono
-BI_temps_ranger <- difftime(end_time, start_time)
-BI_temps_ranger <- BI_temps_ranger %>% as.numeric %>% round(.,2)
+end_time <- Sys.time()
+BI_temps_ranger <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
+BI_resultats_ranger <- BI_CM_ranger_final$byClass %>% 
+   t(.) %>% as.data.frame(.) %>% 
+   select(c(Sensitivity, Specificity)) %>% 
+   mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
+   mutate(temps = BI_temps_ranger)
 
-start_time <- Sys.time()            # Démarre chrono
+start_time <- Sys.time()
 cmd <- paste0("train(class ~ ., method = 'Rborist', data = BI_lot_appr_opti,", BI_set_Rborist_best[2], ")") # Construction de la commande
 BI_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 BI_pred_Rborist_final <- predict(object = BI_fit_Rborist_final, newdata = BI_lot_evaluation)
 BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, reference = BI_lot_evaluation$class)
-BI_resultats_Rborist <- c(BI_CM_Rborist_final$byClass["Sensitivity"], BI_CM_Rborist_final$byClass["Specificity"], BI_CM_Rborist_final$byClass["F1"])
-end_time <- Sys.time()              # Stop chrono
-BI_temps_Rborist <- difftime(end_time, start_time)
-BI_temps_Rborist <- BI_temps_Rborist %>% as.numeric %>% round(.,2)
+end_time <- Sys.time()
+BI_temps_Rborist <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
+BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>% 
+   t(.) %>% as.data.frame(.) %>% 
+   select(c(Sensitivity, Specificity)) %>% 
+   mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
+   mutate(temps = BI_temps_Rborist)
 
-BI_resultat_Rborist <- c(BI_CM_Rborist_final$byClass["Sensitivity"], BI_CM_Rborist_final$byClass["Specificity"], BI_CM_Rborist_final$byClass["F1"], BI_temps_Rborist)
-BI_resultat_ranger <- c(BI_CM_ranger_final$byClass["Sensitivity"], BI_CM_ranger_final$byClass["Specificity"], BI_CM_ranger_final$byClass["F1"], BI_temps_ranger)
-BI_RF_resultat <- rbind(BI_resultat_ranger, BI_resultat_Rborist)
-colnames(BI_RF_resultat) <- c("Sensibilité", "Spécificité", "F1 score", "Durée (min)")
+BI_RF_resultat <- rbind(BI_resultats_ranger, BI_resultats_Rborist)
 rownames(BI_RF_resultat) <- c("Ranger", "Rborist")
+colnames(BI_RF_resultat) <- c("Sensibilité", "Spécificité", "J de Youden", "Durée (min)")
+
 
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
