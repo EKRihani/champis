@@ -8,22 +8,23 @@ fontsize: 12pt          # Imposé par la fac
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: float
+    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "sfmath" ]
     toc: yes
     toc_depth: 3
     includes:
       before_body: couverture.tex
       after_body: quatrieme.tex
 header-includes:
-  - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
-  - \renewcommand{\thefootnote}{\alph{footnote}}      # Pieds de page en lettres minuscules (autres: Roman, Alph)
-  - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
-  - \usepackage{placeins}   # pour bloquer ces %#@$§£ de floats
-  - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
-  - \usepackage{sfmath}    # Maths sans serif
+   - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
+   - \renewcommand{\thefootnote}{\alph{footnote}}      # Pieds de page en lettres minuscules (autres: Roman, Alph)
+#   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
+#   - \usepackage{float}    # Pour placer ces %#@$§£ de floats
+#   - \usepackage{placeins}   # Pour BLOQUER ces %#@$§£ de floats
+#   - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
+#   - \usepackage{sfmath}    # Maths sans serif
 #  - \usepackage{sansmathaccent}    # Pour tidles/chapeaux mal alignés avec maths sans accent...
-  - \usepackage{svg}       # Pour schémas au format SVG
-  - \linespread{1.15}
+#   - \usepackage{svg}       # Pour schémas au format SVG
+   - \linespread{1.15}
 indent: true
 bibliography: [packages.bib,Champis.bib]
 csl: https://www.zotero.org/styles/vancouver-superscript
@@ -143,7 +144,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
-### Principes généraux{#generation-data}
+### Principes généraux{#chapitre:lotsynth}
 \paragraph*{}
 Un lot de données synthétiques est un lot de données généré par un algorithme, par opposition aux lots de données issus d'une collecte effectuée en "vie réelle". 
 \paragraph*{}
@@ -292,6 +293,7 @@ plot(ggarrange(
 )
 ```
 
+
 \paragraph*{}
 La dispersion ainsi créée permet ainsi de créer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \@ref(fig:Lots-DispersionDensite)). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
 <!-- [FAIRE CALCULS SUR R POUR RELIER AUTOMATIQUEMENT AUX CHIFFRES ?] -->
@@ -327,7 +329,7 @@ Les jeux de données dédiés à l'apprentissage machine sont tous construits su
 \paragraph*{}
 Le déroulement de l'apprentissage machine se décompose conceptuellement en trois étapes principales, mettant en jeu trois lots de données distincts :
 
-1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(generation-data)) des données auquel le modèle sera exposé en utilisation réelle. Cette phase est la phase d'apprentissage du modèle.
+1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(chapitre:lotsynth)) des données auquel le modèle sera exposé en utilisation réelle. Cette phase est la phase d'apprentissage du modèle.
 2. Validation : le modèle d'apprentissage machine élaboré à l'étape précédente, est ici soumis à un *jeu de données de validation* (*validation data set*) et tentera d'apporter des prédictions quant à une variable d'intérêt considérée comme le résultat (ex: comestibilité, espèce...), sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...). Ces prédictions sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances prédictives du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) à fins d'optimisation.
 3. Test : les performances du meilleur modèle (avec hyperparamètres optimaux), sélectionné à l'issue de l'étape de validation, sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
 
@@ -354,7 +356,7 @@ Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un
 \paragraph*{} \label{paragraphe:split_ratio}
 Les rapports de taille entre jeux de données d'entraînement, d'optimisation et d'évaluation de cette étude suivront la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022] 
 \paragraph*{} 
-Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de colonnes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons contenu dans le lot de données.[@joseph_optimal_2022]
+Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de lignes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons contenus dans le lot de données.[@joseph_optimal_2022]
 \paragraph*{}
 Un rapide calcul nous montre qu'il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première scission entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu d'évaluation d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier, une taille représentant la fraction du lot total :
 $$f_{test}= \frac{\sqrt{p}+1}{p+2\sqrt{p}+1} = \frac{1}{\sqrt{p}+1} $$
@@ -439,7 +441,7 @@ Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afi
 En effet, l'optimisation des paramètres d'un modèle informatique présente quelques particularités notables ayant un impact sur l'utilisation des plans d'expérience :
 
 * La réalisation d'une expérience supplémentaire a un coût faible,
-* Plusieurs métriques relatives aux performances peuvent coexister,\footnote{cf. section \ref{chapitre:perf}
+* Plusieurs métriques relatives aux performances peuvent coexister,\footnote{cf. section \ref{chapitre:perf}}
 * La fonction de réponse peut s'avérer relativement complexe.
 
 \paragraph*{}
@@ -527,11 +529,13 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 
 # Apprentissage machine et classification binaire
 
-*Brouillon, le lot de données utilisé ici est le Secondary Mushroom Dataset de D.Wagner.*
+*BROUILLON, le lot de données utilisé ici est le Secondary Mushroom Dataset de D.Wagner.*
 
 ## Analyse exploratoire des données (EDA)
 
-*A voir si cette partie mérite d'être conservée et/ou nécessite un éventuel approfondissement vers une EDA sur un lot biclasse ou multiclasse...*
+*Partie permettant de présenter globalement le lot de données synthétiques créé dans cette étude (cf. section \@ref(chapitre:lotsynth)) avant utilisation des IA.*
+
+*La génération du lot de données fonctionne, la génération des graphiques aussi, mais le texte sera à retravailler en fonction du lot de données synthétiques obtenu...*
 
 \FloatBarrier
 \paragraph*{}
@@ -589,20 +593,21 @@ Les modèles sélectionnés pour cette étude sont de types variés :
 
 ### Stratégie d'optimisation
 
-L'algorithme d'apprentissage machine développé au cours de cette étude met en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
+Les algorithme d'apprentissage machine développés au cours de cette étude mettent en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
 
-1. Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}},
-2. Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à k blocs, avec adaptation du nombre de blocs à la taille du lot de données\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}},
-3. Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux\footnote{\label{note:doe}cf. section \ref{chapitre:doe}},
-4. Mesure des performances en exploitant une métrique adaptée\footnote{cf. section \ref{chapitre:perf}}
-5. Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions\footnotemark[\value{footnote}],
+1. Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial,\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}}
+2. Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à k blocs, avec adaptation du nombre de blocs à la taille du lot de données,\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}}
+3. Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux,\footnote{\label{note:doe}cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}
+4. Mesure des performances en exploitant une métrique adaptée,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}
+5. Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions,\footnotemark[\value{footnote}]
 6. Sélection des hyperparamètres permettant d'optimiser les performances du modèle,
 7. Mesure des performances de chaque modèle avec les hyperparamètres optimaux,
-8. Pour les modèles les plus performants : prédiction et mesure finale des performances contre le lot d'évaluation.
+8. Sélection des modèles les plus performants pour prédiction et mesure finale des performances contre le lot d'évaluation,
+9. Génération, sauvegarde et insertion automatique de tous les graphiques et données numériques dans le texte de la présente étude.
 
 ### Modèles d'analyse discriminante{#chapitre:BI_lda}
 \paragraph*{}
-Les modèles d'analyse discriminante linéaire (LDA) choisis pour cette étude sont lda2 (*Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
+Les modèles d'analyse discriminante choisis pour cette étude sont lda2 (LDA : *Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un seul hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 
 ```{r, lda-pda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
@@ -619,7 +624,7 @@ Le paramètre *dimen* du modèle lda2 ne semble en effet pas avoir d'effet signi
 \paragraph*{}
 De même, le paramètre *lambda* du modèle pda n'impacte ses performances que de matière très marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($J_{w_{max}} = `r round(max(BI_fit_pda_lambda_resultats["Jw"]),3)`$).
 \paragraph*{}
-Toutefois, les performances de ces deux modèles restent malheureusement insuffisante pour notre étude, aussi bien en sensibilité qu'en spécificité :
+Toutefois, les performances de ces deux modèles restent malheureusement insuffisantes pour notre étude, aussi bien en sensibilité qu'en spécificité :
 $$\left \{
 \begin{array}{l}
 Sen \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambda_resultats[,"Sens"])),3)` \\
@@ -630,16 +635,16 @@ Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambd
 \paragraph*{}
 Ces performances médiocres s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple :
 
-* Données binaires ou booléennes
-* Données catégorielles basées sur des données numériques
+* Données binaires ou booléennes,
+* Données catégorielles basées sur des données quantitatives.
 
 \paragraph*{}
-L'inclusion de ces modèles, présentant ici des performances très modestes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, afin d'en connaître les limites ou d'évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
+L'inclusion de ces modèles, présentant ici des performances très modestes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
 
 \FloatBarrier
 ### Modèle additif généralisé  
 \paragraph*{}
-Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). La documentation de la librairie indique que le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
+Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). Le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
 
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(widths = c(1, 1.5),
@@ -657,7 +662,7 @@ L'hyperparamètre *span* affecte marginalement la sensibilité de gamLoess, avec
 \paragraph*{}
 Les performances de ce modèle n'atteignent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
 \paragraph*{}
-Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante (cf. section \ref{chapitre:BI_lda})
+Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante.\footnote{cf. section \ref{chapitre:BI_lda})
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -671,7 +676,7 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART le plus simple proposé dans notre étude (rpart) ne dispose que d'un seul hyperparamètre  : *cp* (complexité).
 \FloatBarrier
 \paragraph*{}
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle rpart en fonction du paramètre de complexité (cp)"}
+```{r, BIrpart, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle rpart en fonction du paramètre de complexité (cp)"}
 plot(BI_fit_rpart_cp_graphe)
 ```
 
@@ -688,14 +693,14 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_re
 
 \FloatBarrier
 \paragraph*{}
-Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres illustrent bien, dans leur partie supérieure ($cp \geq 0.05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et inversement.
+Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres (figure  \ref{fig:BIrpartcostSenSpe}) illustrent bien, dans leur partie supérieure ($cp \geq 0.05$) la notion classique de compromis entre sensibilité et spécificité : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et réciproquement.
 \paragraph*{}
 En pratique, pour $cp \geq 0.05$, notre modèle d'IA basé sur ce type d'arbre de décision se montrera soit excessivement sévère, rejetant un nombre considérable de champignons comestibles (quadrant supérieur gauche, $cost \leq 1.5$), soit au contraire excessivement laxiste, admettant un nombre important de champignons non-comestibles (quadrant supérieur droit, $cost \geq 1.5$).
 \paragraph*{}
 C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
 
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_rpartcost_sens_graphe,
@@ -704,15 +709,22 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances (index J de Youden pondéré 10:1) de rpartCost en fonction des paramètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = paste0("Performances (index J de Youden pondéré ", Jw_ratio,":1) de rpartCost en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)")}
 plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
 ```
 
 \FloatBarrier
 \paragraph*{}
-La modélisation selon le modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}} donne le modèle suivant :
+En posant comme facteurs réduits :
+
+* $X_{1} \in [0;1]$ pour le paramètre *minNode*,
+* $X_{2} \in [0;1]$ pour le paramètre *predFixed*,
+
+Nous pouvons modéliser la réponse Y ($J_{w}$) par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}} :
+
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé au paramètre de complexité (*cp*), $X_{2}$ le facteur réduit associé au paramètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
+Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de complexité (*cp*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
 
 $$\left \{
 \begin{array}{l}
@@ -759,13 +771,13 @@ Sen = `r round(BI_fit_c50tree_resultats["Sens"],4)` \\
 \paragraph*{}
 De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans aucune optimisation nécessaire. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $J_w \geq `r Jw_min`$.
 \paragraph*{}
-Les modèles d'arbres de classification sont particulièrement adaptés aux problèmes de classification avec variables qualitatives et surtout quantitatives, et ont pu s'illustrer dans cette étude en fournissant des résultats très acceptables ($Spe \geq `r round(min(BI_fit_c50tree_resultats["Spec"], 
+Les modèles d'arbres de classification sont particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette étude en fournissant des résultats très acceptables ($Spe \geq `r round(min(BI_fit_c50tree_resultats["Spec"], 
     BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Spec"], 
     BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),3)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
     BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Sens"], 
     BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),3)`$), mais n'atteignant pas pour autant les exigences imposées par le critère de performance que nous avons défini pour les classifieurs binaires de notre étude.
 
-### Forêts aléatoires
+### Forêts aléatoires {#chapitre:BI-RF}
 \paragraph*{}
 \FloatBarrier
 Le premier modèle de forêt aléatoire évalué dans notre étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
@@ -797,20 +809,18 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en fonction de ses deux hyperparamètres réduits de nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right'))
 ```
 
 \FloatBarrier
 \paragraph*{}
-En posant comme facteurs réduits :
-
-* $X_{1} \in [0;1]$ pour le paramètre *minNode*,
-* $X_{2} \in [0;1]$ pour le paramètre *predFixed*,
-
-Nous pouvons modéliser la réponse par un modèle quadratique avec interaction :
+Nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}} :
 $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-Avec pour estimation des effets :
+\paragraph*{}
+Avec $Y$ l'indice J de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
+\paragraph*{}
+Le calcul numérique nous permet d'obtenir les estimation des effets :
 $$\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
@@ -823,7 +833,7 @@ b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \right.$$
 
 \paragraph*{}
-Ce modèle quadratique avec interactions permet d'évaluer les hyperparamètres optimaux permettant de maximiser ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. Les performances obtenues sont excellentes :
+Ce modèle quadratique avec interactions permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice J de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. Les performances obtenues sont excellentes :
 
 $$\left \{
 \begin{array}{l}
@@ -835,7 +845,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_Rborist_best_resultats["Sens"],5)` \\
 
 
 \paragraph*{}
-Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. La documentation de la librairie caret mentionne trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
+Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. Celui-ci dispose de trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
 ```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
@@ -856,7 +866,7 @@ plot(ggarrange(
 ```
 
 
-```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des paramètres réduits : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des hyperparamètres réduits : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_jw_graphe,
@@ -867,11 +877,11 @@ plot(ggarrange(
 
 \FloatBarrier
 \paragraph*{}
-Nous pouvons proposer pour ce modèle la modélisation quadratique suivante
+Nous pouvons proposer pour ce modèle la modélisation quadratique suivante :
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans l'intervalle [0;1] associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{2}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
+Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{2}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
 \paragraph*{}
-La modélisation permet de calculer les effets suivants:
+La modélisation permet de calculer les effets suivants :
 
 $$\left \{
 \begin{array}{l}
@@ -888,7 +898,7 @@ b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
 \right.$$
 
 \paragraph*{}
-Le modèle ranger semble déjà, par simple interprétation graphique (voir figures \@ref(fig:BI-ranger-gini), \@ref(fig:BI-ranger-ET) et \@ref(fig:BI-ranger-Jw)), donner de bons résultats sur une très large plage de l'espace expérimental de ses hyperparamètres, même avec un nombre réduit d'arbres ($n=6$). Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top["splitrule"]`$) a donné d'excellents résultats :
+Le modèle ranger semble déjà, par simple interprétation graphique (voir figures \@ref(fig:BI-ranger-gini), \@ref(fig:BI-ranger-ET) et \@ref(fig:BI-ranger-Jw)), donner de bons résultats sur une très large plage de l'espace expérimental de ses hyperparamètres, même avec un nombre réduit d'arbres ($n=6$). Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(BI_fit_ranger_best_resultats["Jw"],5)` \\
@@ -898,7 +908,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_resultats["Sens"],5)` \\
 \right.$$
 
 \paragraph*{}
-Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité et une spécificité excellentes.
+Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité, une spécificité et un indice de Youden excellents.
 \paragraph*{}
 Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires ont montré de grandes disparités d'efficience sur le plan calculatoire, ce qui nous a conduit à écarter certains modèles pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
 
@@ -912,23 +922,26 @@ Les modèles ayant atteint les performances requises ($J_{w} \geq `r Jw_min`$) l
 * Forêt aléatoire avec algorithme de type Rborist.
 
 \paragraph*{}
-Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus par modélisation quadratique avec interactions des performances, face au jeu de données d'optimisation. Les performances de nos modèle face au jeu de données d'évaluation seront évaluées avec le même critère que précédemment : $J_{w} \geq `r Jw_min`$
+Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus précédemment\footnote{cf. section \ref{chapitre:BI-RF}} par modélisation des performances via un modèle quadratique avec interactions. Les performances de nos modèles face au jeu de données d'évaluation, auquel ils n'ont encore jamais été exposés\footnote{cf. section \ref{chapitre:split_methodes}, \pageref{chapitre:split_methodes}}, seront évaluées avec le même critère que précédemment : $J_{w} \geq `r Jw_min`$
 
 ### Performances des modèles de forêts aléatoires  
 
+La matrice de confusion du modèle ranger (table \ref{tab:BI-CM}) donne les résultats détaillés de ses prédictions.
 \FloatBarrier
-L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
 
-```{r out.width = "100%", echo = FALSE}
-kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
+```{r BI-CM, out.width = "100%", echo = FALSE}
+kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, références en haut)")
 ```  
 
-La précision finale est égale à `r round(BI_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(BI_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r BI_temps_ranger` min), preuve de sa grande efficience calculatoire.
+\FloatBarrier
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r BI_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(BI_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r BI_temps_Rborist` min).
+La forêt aléatoire de type Ranger a donné d'excellents résultats, sa précision finale étant égale à `r round(BI_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(BI_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_ranger_final$overall["AccuracyUpper"], 4)`], le tout en un temps raisonnable ($`r BI_temps_ranger` min$), preuve de son efficience calculatoire.
+\paragraph*{}
+La forêt aléatoire de type Rborist a donné des résultats similaires, atteignant une précision finale égale à `r BI_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(BI_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est de plus avéré extrêmement efficient sur le plan calculatoire ($`r BI_temps_Rborist` min$).
+\FloatBarrier
 
-```{r out.width = "100%", echo = FALSE}
-kable(BI_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)")
+```{r out.width = "100%", echo = FALSE, fig.pos="H!"}
+kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et Rborist (jeu d'évaluation)")
 ```
 
 \FloatBarrier
@@ -955,33 +968,6 @@ plot(MULFAM_fit_rpart_cp_graphe)
 *[A CORRIGER]*
 Le modèle CART le plus simple donne de très bons résultats globaux, avec ($\kappa_{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Kappa"]),3)` et $Prec._{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Accuracy"]),3)`).
 
-<!-- Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). -->
-<!-- *NE FONCTIONNE PAS !!! * -->
-
-<!-- ```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"} -->
-<!-- plot(ggarrange( -->
-<!--    ncol = 2, -->
-<!--    MULFAM_fit_rpartcost_sens_graphe, -->
-<!--    MULFAM_fit_rpartcost_spec_graphe -->
-<!--    ) -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- Les performances maximales sont atteintes pour *cp =* `r #MULFAM_best_rpartcostgrid['cp']` et *Cost = * `r #MULFAM_best_rpartcostgrid['Cost']`. -->
-
-<!-- ```{r, echo = FALSE} -->
-<!-- kable(MULFAM_fit_rpartcost_best_results[,c(1:2,4:5)], digits = 5, caption = "Performance du modèle CART (rpartCost)") -->
-<!-- ``` -->
-
-<!-- Les performances du modèle rpartCost, quoi qu'excellentes, ne permettent pas d'atteindre la spécificité requise. -->
-<!-- \paragraph*{} -->
-<!-- Le dernier modèle d'arbre décisionnel est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. -->
-
-<!-- ```{r, echo = FALSE} -->
-<!-- kable(MULFAM_fit_c50tree_results[,2:4], digits = 5, caption = "Performance du modèle C5.0 tree") -->
-<!-- ``` -->
-
-<!-- De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans optimisation nécessaire, avec de très hautes sensibilité et spécificité. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $Spec = 1$. -->
 
 ### Forêts aléatoires
 

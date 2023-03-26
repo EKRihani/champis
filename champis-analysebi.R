@@ -117,7 +117,7 @@ grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
 # stopCluster(cl)
 
 ### LDA2 ###
-BI_grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 52, by = 3))
+BI_grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 51, by = 6))
 BI_set_lda2_dim <- c("lda2", "tuneGrid  = BI_grid_lda_dimen")
 BI_fit_lda2_dim <- fit_test(BI_set_lda2_dim)
 #system.time(fit_test(BI_set_lda2_dim))      #### CHRONO
@@ -126,16 +126,25 @@ BI_fit_lda2_dim_graphe <- grapheSpeSenJw(BI_fit_lda2_dim_resultats, dimen)
 
 
  ### PDA ###
-BI_grid_pda_lambda <- data.frame(lambda = seq(from = 1, to = 61, by = 3))
+BI_grid_pda_lambda <- data.frame(lambda = seq(from = 1, to = 65, by = 8))
 BI_set_pda_lambda <- c("pda", "tuneGrid  = BI_grid_pda_lambda")
 BI_fit_pda_lambda <- fit_test(BI_set_pda_lambda)
-#system.time(fit_test(BI_set_pda_lambda))  #### CHRONO
 BI_fit_pda_lambda_resultats <- BI_fit_pda_lambda$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_pda_lambda_graphe <- grapheSpeSenJw(BI_fit_pda_lambda_resultats, lambda)
 
 
 ### GAMLOESS ###   [A RATIONNALISER AVEC DoE ADAPTE]
-BI_set_gamLoess_span <-  c("gamLoess", "tuneGrid  = data.frame(span = seq(from = 0.01, to = 1, by = 0.24), degree = 1)")
+#BI_set_gamLoess <- expand.grid(span = seq(from = 0.01, to = 1, by = 0.19), degree = c(0,1))
+BI_grid_gamLoess <- data.frame(degree = rep(c(0,1), times = 3), span = 2^(1:6)/2^6) #10/5
+BI_set_gamLoess <- c("gamLoess", "tuneGrid  = BI_grid_gamLoess")
+BI_fit_gamLoess <- fit_test(BI_set_gamLoess_span)
+BI_fit_gamLoess_resultats <- BI_fit_gamLoess$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+
+ggplot(data = BI_fit_gamLoess_resultats, aes(x = span)) +
+   geom_point(aes(y = Sens, shape = as.factor(degree)))
+
+
+BI_set_gamLoess_span <-  c("gamLoess", "tuneGrid  = data.frame(span = 2^(1:8)/2^8, degree = 1)") #seq(from = 0.01, to = 1, by = 0.11)
 BI_set_gamLoess_degree <-  c("gamLoess", "tuneGrid  = data.frame(degree = c(0, 1), span = 0.5)")
 BI_fit_gamLoess_span <- fit_test(BI_set_gamLoess_span)
 BI_fit_gamLoess_degree <- fit_test(BI_set_gamLoess_degree)
