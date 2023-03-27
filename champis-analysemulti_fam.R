@@ -25,7 +25,8 @@ dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = T
 # Suppression family/name/classe + renommage correct
 dataset$class <- NULL      # Censé être inconnu !!!
 dataset$name <- NULL       # On y va mollo : d'abord les familles...
-dataset$family <- as.factor(str_replace_all(dataset$family, "[:space:]|-", "_"))
+dataset$family <- dataset$family %>% str_replace_all(., "[:space:]|-", "_") %>% str_remove_all(., "_Family") %>% as.factor(.)
+#dataset$family <- as.factor(str_replace_all(dataset$family, "[:space:]|-", "_"))
 
 MULFAM_n_champis <- nrow(dataset)
 MULFAM_split_p <- sqrt(MULFAM_n_champis)

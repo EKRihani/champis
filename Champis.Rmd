@@ -1343,7 +1343,7 @@ BI_grid_Rborist <- data.frame(BI_LHS) %>%
 \normalsize
 \FloatBarrier
 
-```{r, out.width = "80%", echo = FALSE}
+```{r, echo = FALSE}
 kable(BI_grid_Rborist, caption = "Plan d'expériences d'entraînement et optimisation du modèle Rborist")
 ```
 
@@ -1421,9 +1421,9 @@ BI_pred_Rborist %>% ggplot() +
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Points expérimentaux (à gauche), modélisation (au centre) et superposition (à droite) des résultats obtenus avec Rborist"}
 plot(ggarrange(
    ncol = 3, widths = c(1.05,1,1),
-   Code_Rborist_graphe_tiles + theme(legend.position = "none"),
+   Code_Rborist_graphe_tiles,
    Code_Rborist_graphe_raster + ylab(NULL),
-   Code_Rborist_graphe_full + ylab(NULL) + theme(legend.position = "none")))
+   Code_Rborist_graphe_full + ylab(NULL)))
 ```
 
 \FloatBarrier

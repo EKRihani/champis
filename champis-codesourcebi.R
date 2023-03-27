@@ -108,7 +108,7 @@ CodBI_fit_Rborist <- train(class ~ .,
                          method = "Rborist",
                          data = CodBI_lot_appr_opti,
                          trControl = tr_ctrl,
-                         tuneGrid  = CodBI_grid_Rborist[c('predFixed', 'minNode')], nTree = 30)     # nTree pas dans le rapport !
+                         tuneGrid  = CodBI_grid_Rborist[c('predFixed', 'minNode')])
 
 
 CodBI_fit_Rborist_resultats <- CodBI_fit_Rborist$results %>% 
