@@ -42,9 +42,9 @@ BI_lot_evaluation <- dataset[index1,]
 # getModelInfo(Rborist)
 
 # Définition index de Youden
-BI_w <- 10/11        # Ou 1/11
-BI_RatioSens <- 2*BI_w
-BI_RatioSpec <- 2*(1-BI_w)
+BI_w <- 10
+BI_RatioSens <- 2*BI_w/(BI_w+1)
+BI_RatioSpec <- 2*(1-BI_w/(BI_w+1))
 
 
 # Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
@@ -56,7 +56,7 @@ fit_test <- function(fcn_modele){
                            number = BI_split_facteur)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (n-fold)
    cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
                  fcn_modele[1], 
-                 "', data = BI_lot_appr_opti, trControl = tr_ctrl, metric = 'Sens', ", 
+                 "', data = BI_lot_appr_opti, trControl = tr_ctrl, ", 
                  fcn_modele[2],")")
    fitting <- eval(parse(text = cmd))        # Lance commande
    fitting
@@ -117,7 +117,7 @@ grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
 # stopCluster(cl)
 
 ### LDA2 ###
-BI_grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 51, by = 6))
+BI_grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 50, by = 6))
 BI_set_lda2_dim <- c("lda2", "tuneGrid  = BI_grid_lda_dimen")
 BI_fit_lda2_dim <- fit_test(BI_set_lda2_dim)
 #system.time(fit_test(BI_set_lda2_dim))      #### CHRONO
@@ -346,7 +346,7 @@ BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_resultats[,c("predFixed", "min
                                  type="Kriging", 
                                  formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
 BI_mod_Rborist_jw <-  modelFit(X=BI_fit_Rborist_resultats[,c("X1", "X2")], 
-                               Y=BI_fit_Rborist_resultats$Sens,  
+                               Y=BI_fit_Rborist_resultats$Jw,  
                                type="Kriging", 
                                formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
@@ -406,6 +406,12 @@ BI_resultats_ranger <- BI_CM_ranger_final$byClass %>%
    select(c(Sensitivity, Specificity)) %>% 
    mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
    mutate(temps = BI_temps_ranger)
+
+# Test Matrice de confusion plus belle... A TESTER/FINIR
+# BI_CM <- BI_CM_ranger_final$table %>%
+#    as.data.frame(.) %>%
+#    pivot_wider(., names_from = Reference, values_from= Freq) %>%
+#    as.data.frame(.)
 
 start_time <- Sys.time()
 cmd <- paste0("train(class ~ ., method = 'Rborist', data = BI_lot_appr_opti,", BI_set_Rborist_best[2], ")") # Construction de la commande

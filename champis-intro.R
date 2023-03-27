@@ -120,7 +120,7 @@ lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
 
 set.seed(1337)       # Pour reproductibilité
 INTRO_n_champis <- 1e5      # Nombre de champignons
-n_reduit <- 2e4      # Nombre réduit (pour nuages de points 2D)
+n_reduit <- 5e4      # Nombre réduit (pour nuages de points 2D)
 f_crois <- 2          # Facteur de croissance
 
 Chap.Diam <- 10
@@ -247,7 +247,7 @@ densite2d                  # Graphique de densité 2D des tailles/diamètres
 #graphe3D_sansdispersion      # Graphique de densité 3D des diamètres/diamètres (sans dispersion)
 #nuage3D_avecdispersion           # Nuage de points 3D des tailles/diamètres
 #nuage3D_sansdispersion           # Nuage de points 3D des tailles/diamètres (sans dispersion)
-# orca() pour export en image ???
+# orca() pour export en image ??????
 
 distrib_diametre    # Distribution du diamètre
 INTRO_taux_gros_diam       # % de diamètres hors-norme (> 100% max)

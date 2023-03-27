@@ -17,13 +17,7 @@ output:
 header-includes:
    - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
    - \renewcommand{\thefootnote}{\alph{footnote}}      # Pieds de page en lettres minuscules (autres: Roman, Alph)
-#   - \usepackage{pdfpages}   # Pour ajout PDF listes des profs / disclaimer
-#   - \usepackage{float}    # Pour placer ces %#@$§£ de floats
-#   - \usepackage{placeins}   # Pour BLOQUER ces %#@$§£ de floats
-#   - \usepackage{amssymb}   # Symboles mathématiques (loi normale...)
-#   - \usepackage{sfmath}    # Maths sans serif
 #  - \usepackage{sansmathaccent}    # Pour tidles/chapeaux mal alignés avec maths sans accent...
-#   - \usepackage{svg}       # Pour schémas au format SVG
    - \linespread{1.15}
 indent: true
 bibliography: [packages.bib,Champis.bib]
@@ -31,13 +25,16 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
+load("EKR-Champis-CodeSourceBi.RData")   # Chargement des données du code source (graphiques)
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
 load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
 load("EKR-Champis-AnalyseMultiFam.RData")       # Chargement des résultats CLASSIFICATION PAR FAMILLES
+load("EKR-Champis-CodeSourceBi.RData")   # Chargement des données du code source (graphiques)
 
 library(ggpubr)   # Combiner graphes (ggarrange)
+library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
 library(rmarkdown)
 library(knitr)
 library(tidyverse)
@@ -50,10 +47,9 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 \newpage
 # Liste des abréviations
 
-<!-- PROBLEMES D'ALIGNEMENT RECURRENTS -->
-<!-- \flushleft -->
-\paragraph*{}
-AI : *Artificial Intelligence* (intelligence artificielle)
+\begingroup
+\flushleft
+AI : \emph{Artificial Intelligence} (intelligence artificielle)
 
 AUC : *Area Under Curve* (aire sous la courbe)
 
@@ -71,15 +67,11 @@ GAM : *Generalized Additive Model* (modèle additif généralisé)
 
 IA : Intelligence Artificielle  
 
-<!-- Kd-tree : *K-dimensional tree* (arbre k-dimensionel) -->
-
 LDA : *Linear Discriminant Analysis* (analyse linéaire discriminante)
 
 LHS : *Latin Hypercube Sample* (échantillonnage par hypercube latin)
 
 LOESS : *LOcally Estimated Scatterplot Smoothing* (régression locale)
-
-<!-- NN : *Nearest Neighbour* (plus proche voisin) -->
 
 NOLH : *Nearly Orthogonal Latin Hypercube* (hypercube latin quasi orthogonal)
 
@@ -93,7 +85,8 @@ VCS : *Version Control System* (logiciel de contrôle des versions)
 
 XGB : *eXtreme Gradient Boosting*
 
-<!-- \endflushleft -->
+\endflushleft
+\endgroup
 
 \newpage
 # Introduction
@@ -121,7 +114,7 @@ Le troisième problème est le critère principal de la classification. Ce crit�
 \paragraph*{}
 Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques. Le but de cette étude est notamment de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies de classification.
 
-## Etat de l'art des lots de données mycologiques
+## État de l'art des lots de données mycologiques
 Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987]
 \paragraph*{}
 Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@wagner_mushroom_2021] et mis en libre accès sous le nom de *Secondary Mushroom Dataset*.
@@ -284,7 +277,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
 \paragraph*{}
 
-```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "png", dpi = 300, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
    ncol = 2,
    nuage_sansdispersion,
@@ -475,7 +468,7 @@ $$ Y = \beta_{0}  + \sum_{i = 1}^{k} \beta_{i}.X_{i} + \sum_{i <j}^{k} \sum_{j>1
 Avec $\beta_{n}$ les coefficients des effets principaux et $X_{n}$ les facteurs réduits.
 \FloatBarrier
 
-## Evaluation des performances des modèles {#chapitre:perf}
+## Évaluation des performances des modèles {#chapitre:perf}
 
 L'optimisation des modèles ainsi que la comparaison de leurs performances relatives implique nécessairement de définir quel sera le critère vis-à-vis duquel cette performance sera évaluée.
 \paragraph*{}
@@ -502,7 +495,7 @@ Spe_{max} = 1 \Leftrightarrow Sen_{min} = `r Jw_Sens_min` \\
 \right.$$
 
 \paragraph*{}
-Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*"accuracy"*), mais aussi la sensibilité et la spécificité moyennes.
+Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*, ou précision), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
 Nous retiendrons dans le cadre de notre étude le kappa de Cohen,[@cohen_coefficient_1960] calculé à partir de la matrice de confusion (cf. figure \ref{fig:Matrice-Confusion}), et donné par :
 $$\kappa{} = \frac{\pi_{0}-\pi_{e}}{1-\pi_{e}}$$
@@ -519,7 +512,7 @@ Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle
 \paragraph*{}
 Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec un accord qualifié de *quasi-parfait* pour $\kappa > 0.80$.[@landis_measurement_1977] Nous considérerons donc que ce critère sera le minimum requis pour qu'un modèle de classifieur multiclasse élaboré au cours de cette étude puisse être considéré comme ayant des performances acceptables.
 \paragraph*{}
-L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette étude la complétera parfois par la précision (*accuracy*), métrique moins robuste en présence de données non-équilibrées\footnote{Ce cas se présente habituellement lors d'une surreprésentation de certaines classes dans les jeux de données.}, mais présentant l'avantage d'être de compréhension plus aisée, car représentant le pourcentage de prédictions exactes.
+L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette étude la complétera parfois par l'indice de Rand $R$, métrique moins robuste en présence de données non-équilibrées\footnote{Ce cas se présente habituellement lors d'une surreprésentation de certaines classes dans les jeux de données.}, mais présentant l'avantage d'être de compréhension plus aisée, car représentant le pourcentage de prédictions exactes.
 \paragraph*{}
 
 
@@ -724,20 +717,29 @@ En posant comme facteurs réduits :
 Nous pouvons modéliser la réponse Y ($J_{w}$) par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}} :
 
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
+
 Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de complexité (*cp*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
 
+\begin{minipage}{0.4 \textwidth}
 $$\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_rpartcost_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_rpartcost_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_rpartcost_jw$model@trend.coef[3],4)` \\
+\end{array}
+\right.$$
+\end{minipage}
+\begin{minipage}{0.4 \textwidth}
+$$\left \{
+\begin{array}{l}
 b_{12} = `r round(BI_mod_rpartcost_jw$model@trend.coef[6],4)` \\
 b_{11} = `r round(BI_mod_rpartcost_jw$model@trend.coef[4],4)` \\
 b_{22} = `r round(BI_mod_rpartcost_jw$model@trend.coef[5],4)` \\
 \end{array}
 \right.$$
+\end{minipage}
 
-\paragraph*{}
+  \paragraph*{}
 Les performances maximales seront ici atteintes pour :
 
 $$\left \{
@@ -821,16 +823,25 @@ $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^
 Avec $Y$ l'indice J de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants:
 \paragraph*{}
 Le calcul numérique nous permet d'obtenir les estimation des effets :
+
+\begin{minipage}{0.4 \textwidth}
 $$\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
+\end{array}
+\right.$$
+\end{minipage}
+\begin{minipage}{0.4 \textwidth}
+$$\left \{
+\begin{array}{l}
 b_{12} = `r round(BI_mod_Rborist_jw$model@trend.coef[6],4)` \\
 b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
 b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \end{array}
 \right.$$
+\end{minipage}
 
 \paragraph*{}
 Ce modèle quadratique avec interactions permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice J de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. Les performances obtenues sont excellentes :
@@ -883,12 +894,19 @@ Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit associé au pa
 \paragraph*{}
 La modélisation permet de calculer les effets suivants :
 
+\begin{minipage}{0.4 \textwidth}
 $$\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_ranger_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_ranger_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_ranger_jw$model@trend.coef[3],4)` \\
 b_{3} = `r round(BI_mod_ranger_jw$model@trend.coef[4],4)` \\
+\end{array}
+\right.$$
+\end{minipage}
+\begin{minipage}{0.4 \textwidth}
+$$\left \{
+\begin{array}{l}
 b_{12} = `r round(BI_mod_ranger_jw$model@trend.coef[7],4)` \\
 b_{23} = `r round(BI_mod_ranger_jw$model@trend.coef[8],4)` \\
 b_{13} = `r round(BI_mod_ranger_jw$model@trend.coef[9],4)` \\
@@ -896,6 +914,8 @@ b_{11} = `r round(BI_mod_ranger_jw$model@trend.coef[5],4)` \\
 b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
 \end{array}
 \right.$$
+\end{minipage}
+
 
 \paragraph*{}
 Le modèle ranger semble déjà, par simple interprétation graphique (voir figures \@ref(fig:BI-ranger-gini), \@ref(fig:BI-ranger-ET) et \@ref(fig:BI-ranger-Jw)), donner de bons résultats sur une très large plage de l'espace expérimental de ses hyperparamètres, même avec un nombre réduit d'arbres ($n=6$). Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats :
@@ -930,7 +950,8 @@ La matrice de confusion du modèle ranger (table \ref{tab:BI-CM}) donne les rés
 \FloatBarrier
 
 ```{r BI-CM, out.width = "100%", echo = FALSE}
-kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, références en haut)")
+kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, référence en haut)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```  
 
 \FloatBarrier
@@ -938,10 +959,12 @@ kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Range
 La forêt aléatoire de type Ranger a donné d'excellents résultats, sa précision finale étant égale à `r round(BI_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(BI_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_ranger_final$overall["AccuracyUpper"], 4)`], le tout en un temps raisonnable ($`r BI_temps_ranger` min$), preuve de son efficience calculatoire.
 \paragraph*{}
 La forêt aléatoire de type Rborist a donné des résultats similaires, atteignant une précision finale égale à `r BI_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(BI_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est de plus avéré extrêmement efficient sur le plan calculatoire ($`r BI_temps_Rborist` min$).
+
 \FloatBarrier
 
-```{r out.width = "100%", echo = FALSE, fig.pos="H!"}
-kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et Rborist (jeu d'évaluation)")
+```{r out.width = "100%", echo = FALSE, fig.pos="H"}
+kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et Rborist (jeu d'évaluation)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
 \FloatBarrier
@@ -951,28 +974,31 @@ kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et
 
 *Brouillon, le lot de données utilisé ici est un lot synthétique créé par moi-même (avec algorithme de création fonctionnel), mais à partir des données primaires du Secondary Mushroom Dataset de D.Wagner.*
 \paragraph*{}
-Etant données des performances qu'ont montré les différents modèles lors de la classification binaire, seuls les modèles basés sur les arbres décisionnels et les forêts aléatoires seront évalués dans cette section.
+Étant données les performances qu'ont montré les différents modèles lors de la classification binaire, seuls les modèles basés sur les arbres décisionnels et les forêts aléatoires seront évalués dans cette section.
 \FloatBarrier
 
 ## Classification par familles
 
 ### Modèles d'arbres de décision
-\paragraph*{}
+
+*Brouillon, à étoffer et finir, peut-être avec plus de modèles.*
 
 \paragraph*{}
-Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART basique (rpart) n'a qu'un hyperparamètre  : *cp* (complexité).
+Le modèle d'arbre de décision présenté dans cette partie est rpart, le plus simple des modèles CART.
 
+\FloatBarrier
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle CART (rpart) en fonction du paramètre de complexité"}
 plot(MULFAM_fit_rpart_cp_graphe)
 ```
-*[A CORRIGER]*
-Le modèle CART le plus simple donne de très bons résultats globaux, avec ($\kappa_{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Kappa"]),3)` et $Prec._{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Accuracy"]),3)`).
 
+Ce modèle, pourtant très simple, donne déjà de très bons résultats globaux, avec ($\kappa_{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Kappa"]),3)` et une précision $R_{max} =$ `r round(max(MULFAM_fit_rpart_cp_resultats["Accuracy"]),3)`).
+
+\FloatBarrier
 
 ### Forêts aléatoires
 
 \paragraph*{}
-Le premier modèle de forêt aléatoire évalué dans cette partie est le modèle ranger, qui possède trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
+Le premier modèle de forêt aléatoire évalué dans cette partie est ranger, que nous avons déjà présenté précédemment. Les graphiques des performances en fonction des hyperparamètres laissent entrevoir d'excellentes caractéristiques sur une large plage d'hyperparamètres.
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger, en fonction de ses 2 hyperparamètres (algorithme de scission : gini à gauche, extratrees à droite)"}
 plot(ggarrange(
@@ -983,60 +1009,89 @@ plot(ggarrange(
 )
 ```
 
-Les étapes préliminaires de l'optimisation du modèle se sont avérées prometteuses : même avec un très faible nombre d'arbres (*n* = 6), la spécificité requise était déjà atteinte à plusieurs reprises lors de l'optimisation uniparamètre. L'optimisation de la totalité des hyperparamètres (*min.node.size* = `r MULFAM_best_rangergrid$min.node.size`, *mtry* = `r MULFAM_best_rangergrid$mtry` et *splitrule* = `r MULFAM_best_rangergrid$splitrule`) a donné d'excellents résultats.
+Après optimisation des hyperparamètres (*min.node.size* = `r MULFAM_best_rangergrid$min.node.size`, *mtry* = `r MULFAM_best_rangergrid$mtry` et *splitrule* = `r MULFAM_best_rangergrid$splitrule`), ce modèle a donné d'excellents résultats.
 
 ```{r, echo = FALSE}
-kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)")
+kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
-Ce modèle s'est comporté de façon excellente, donnant une spécificité et une sensibilité remarquables dans cette phrase d'évaluation.
 \paragraph*{}
-Le dernier modèle de forêt aléatoire est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
+Le dernier modèle de forêt aléatoire est Rborist.
 
 ```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right'))
 ```
 
 \paragraph*{}
-Ici encore, les étapes d'optimisation ont montré des résultats prometteurs : sur ce modèle également, la spécificité requise a été atteintes sur plusieurs occurences, en utilisant seulement une optimisation monoparamétrique.
-\paragraph*{}
 Avec des paramètres optimaux (*predFixed* = `r MULFAM_best_Rboristgrid$predFixed` et *minNode* = `r MULFAM_best_Rboristgrid$minNode`), la performance est estimée à :
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(MULFAM_fit_Rborist_best_resultats[c(1,2,6,7)], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)")
+kable(MULFAM_fit_Rborist_best_resultats[c(1,2,6,7)], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 \FloatBarrier
 \paragraph*{}
-Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger, avec une sensibilité et une spécificité excellentes.
-\paragraph*{}
-Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres modèles de forêts aléatoires disponibles dans la librairie caret se sont également montrés extrêmement inefficients sur le plan calculatoire, alors que d'autres se sont avérés sensiblement plus rapides.
+Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger, avec d'excellentes performances.
+
 
 ### Résultats
 Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqués précédemment.
 
 \FloatBarrier
-L'évaluation finale du modèle ranger donne la matrice de confusion suivante :
+L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}.
 
-```{r out.width = "100%", echo = FALSE}
-kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger")
+```{r FAM-CM, out.width = "40%", echo = FALSE}
+kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F, font_size = 6) %>%
+  row_spec(0, angle = -90)
 ```
 
-La précision finale est égale à `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très contenu (`r MULFAM_temps_ranger` min), preuve de sa grande efficience calculatoire.
+La précision finale est égale à $R = `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré extrêmement efficient sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré plutôt efficient sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
+\paragraph*{}
+Nous pouvons noter que le modèle ranger s'est ici avéré plus rapide que Rborist.
 
 ```{r out.width = "100%", echo = FALSE}
-kable(MULFAM_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)")
+kable(MULFAM_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+
 ```
 
 \FloatBarrier
 
 ## Classification par espèce
 
+*A faire, en reprenant les recettes de la classification par familles...*
+
 \newpage
 # Robustesse de la classification
-texte
+
+*Partie facultative, assez ambitieux, voir si cette partie est compatible (en temps) avec la création du lot de données, qui va être assez chronophage...*
+
+*Evaluation de la robustesse, avec deux stratégies envisageables : *
+
+*1. Robustesse "intrinsèque" : lot d'entraînement standard, lot d'évaluation avec variations. Robustesse des modèles seuls.*
+
+*2. Robustesse "intégrée" : intégration de la robustesse dès le départ, avec lot d'entraînement intégrant des variations représentatives du lot d'évaluation.*
+
+## Robustesse face aux déviations
+
+*Robustesse face à des données hors-normes, sans être extrêmes pour autant.*
+
+*Facile à coder pour valeurs quantitatives (simplement augmenter la SD du générateur...)*
+
+*DIFFICILE à coder pour les valeurs qualitatives (i.e. trouver des proximités, soit manuellement, soit via clustering / KNN)*
+
+*Robustesse "intrinsèque" et "intégrée" *
+
+## Robustesse face aux erreurs
+
+*Robustesse face à des données complètement aberrantes.*
+
+*Facile à coder. Robustesse "intrinsèque" uniquement. *
 
 \FloatBarrier
 \newpage
@@ -1058,23 +1113,28 @@ texte
 \paragraph*{} 
 La seule bibliothèque utilisée lors de la création du lot de données synthétique est le *tidyverse*[@R-tidyverse], collection de bibliothèques spécialisées dans le domaine de la *data science* et notamment dédiées au traitement, au nettoyage et à la visualisation de données.
 
+\small
 ```{r, eval = FALSE}
 library(tidyverse)
 ```
+\normalsize
 
-Nous chargeons ensuite le fichier zip, incluant le fichier csv contenant les caractéristiques typiques des macromycètes (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.), qui est lu et attribué à un *dataframe*. Les lignes commentées correspondent à l'utilisation d'un fichier identique hébergé à distance sur un dépôt GitHub.
+Notre algorithme charge ensuite le fichier zip, incluant le fichier csv contenant les caractéristiques typiques des macromycètes (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.), qui est lu et attribué à un *dataframe*. Les lignes commentées correspondent à l'utilisation d'un fichier identique hébergé à distance sur un dépôt GitHub.
 
+\small
 ```{r, eval = FALSE}
 fichier_data <- tempfile()
 #URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"
 #download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/MushroomDataset.zip"       # Fichier local
+fichier_data <- "~/projects/champis/MushroomDataset.zip"
 fichier_data <- unzip(fichier_data, "MushroomDataset/primary_data.csv")
 data_champis <- read.csv(fichier_data, 
                          header = TRUE, 
                          sep = ";", 
                          stringsAsFactors = TRUE)
 ```
+\normalsize
+
 
 etc etc.
 
@@ -1082,14 +1142,12 @@ etc etc.
 
 # Annexe : outils d'analyse exploratoire des données (EDA)
 
-*Code EDA...*
+*Code EDA... A développer une fois le jeu de données primaires créé...*
 
 \newpage
 
 
 # Annexe : développement des algorithmes d'apprentissage machine
-
-*Le gros du code...*
 
 \paragraph*{}
 Nous détaillerons ici principalement les algorithmes utilisés pour le classifieur binaire. Les particularités d'intérêt des classifieurs multiples seront évoquées brièvement lors des développements de cette section.
@@ -1103,17 +1161,22 @@ Les bibliothèques utilisées lors des étapes d'apprentissage machine sont :
 * DiceDesign[@R-DiceDesign], bibliothèque spécialisée dans la création de plans d'expériences hypercubiques,
 * DiceEval[@R-DiceEval], bibliothèque spécialisée dans la modélisation des résultats de plans d'expériences hypercubiques,
 * caret[@R-caret], collection d'outils dédiés à l'apprentissage machine.
+* twinning[@R-twinning], outils dédiés à la génération de jeux de données d'entraînement, optimisation, validation équilibrés.
 
+\small
 ```{r, eval = FALSE}
 library(tidyverse)
 library(DiceDesign)
 library(DiceEval)
 library(caret)
+library(twinning)
 ```
+\normalsize
 
 \paragraph*{}
-Le chargement des données s'effectue de la même façon que lors des sections précédentes. Dans le cadre d'une classification binaire, nous attribuons arbitrairement, à l'aide de la fonction *relevel*, la valeur positive à la classe *"toxique"*.
+Le chargement des données s'effectue de la même façon que lors des sections précédentes. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction *relevel*, la classe *"toxique"* comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
 
+\small
 ```{r, eval = FALSE}
 fichier_data <- tempfile()
 fichier_data <- "~/projects/champis/MushroomDataset.zip"
@@ -1122,20 +1185,252 @@ dataset <- read.csv(fichier_data,
                     header = TRUE, 
                     sep = ";", 
                     stringsAsFactors = TRUE)
+dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")   
+# /!\ recode utilisé uniquement pour le Wagner !!!
 dataset$class <- relevel(dataset$class, ref = "toxique")
 ```
+\normalsize
 
 ## Création des jeux d'entraînement, optimisation et évaluation
 
-La création du jeu d'évaluation s'effectue par dichotomie du jeu de données avec un ratio 92/8.
+La création du jeu d'évaluation s'effectue en deux étapes. La première est la définition des rapports des dichotomies entre jeux d'entraînement et optimisation d'une part, et d'évaluation d'autre part. Cette définition implique l'évaluation du nombre d'individus, le calcul du nombre de coefficients $p$, puis du rapport de dichotomie $f = \sqrt(p) +1$.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.}
 
+\small
+```{r, eval = FALSE}
+BI_n_champis <- nrow(dataset)
+BI_split_p <- sqrt(BI_n_champis)
+BI_split_facteur <- round(sqrt(BI_split_p)+1)
+```
+\normalsize
+
+La seconde partie consiste à effectuer la scission proprement dite. Cette scission implique la définition d'une liste d'index, de fraction $1:f$ du nombre d'individus, qui servira via inclusion (jeu d'évaluation) ou exclusion (jeu d'apprentissage et d'évaluation) booléennes des lignes correspondantes, à de constituer chaque jeu de données. La fonction *set.seed* assure la reproductibilité.
+\small
 ```{r, eval = FALSE}
 set.seed(7)
-split1 <- 0.08
-index1 <- createDataPartition(y = dataset$cap.diameter, 
-                              times = 1, 
-                              p = split1, 
-                              list = FALSE)
+index1 <- twin(data = dataset, r = BI_split_facteur)
 BI_lot_appr_opti <- dataset[-index1,]
 BI_lot_evaluation <- dataset[index1,]
 ```
+\normalsize
+Les lots ainsi obtenus seront ensuite utilisés pour l'entraînement, l'optimisation et l'évaluation finale des performances des modèles.
+
+## Entraînement et optimisation des modèles
+
+Cette partie ne prétend pas à l'exhaustivité, elle se limitera à la présentation de l'entraînement, l'optimisation et la génération de graphiques pour deux modèles : un modèle CART (rpart) et un modèle RF (Rborist). Un certain nombre de tâches telles que l'entraînement du modèle ou la génération de graphiques sont en réalité attribuées à des fonctions créées *adhoc* dans le but de clarifier l'organisation du code de l'algorithme, car elles sont effectuées à de nombreuses reprises. Nous décrirons ici le code source sans faire appel à ces fonctions.
+
+### Arbre de classification et régression {#chapitre:code-CART}
+
+La première étape est de définir l'indice J de Youden,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}} et les pondérations respectives de la sensibilité et de la spécificité, par :
+\small
+```{r, eval = FALSE}
+BI_w <- 10
+BI_RatioSens <- 2*BI_w/(BI_w+1)
+BI_RatioSpec <- 2*(1-BI_w/(BI_w+1))
+```
+\normalsize
+La seconde définition à préciser est celle de l'espace expérimental des hyperparamètres. En l'espèce le seul hyperparamètre du modèle rpart est la variable *cp*.
+\small
+```{r, eval = FALSE}
+BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
+```
+\normalsize
+
+\label{paragraphe:train-CART}
+L'étape suivante est de définir les paramètres d'entraînement et d'évaluation des performances du modèle en vue de son optimisation. La fonction *trainControl* permet ici de préciser les principaux paramètres régissant cette étape :
+
+* *classProbs*, *[TRUE indispensable au fonctionnement...]*
+* *summaryFunction*, afin d'indiquer que les métriques de performance à utiliser sont celles d'un classifieur binaire (l'argument *multiClassSummary* sera utilisé pour un classifieur multiclasse)
+* *method*, afin de préciser la méthode de construction des jeux d'entraînement et d'optimisation, ici validation croisée (*CV: cross-validation*)
+* *number*, afin d'indiquer le nombre de blocs de la validation croisée, calculé précédemment.
+
+\paragraph*{}
+Ici aussi, la fonction *set.seed* assure la reproductibilité du processus.
+\small
+```{r, eval = FALSE}
+set.seed(1)
+tr_ctrl <- trainControl(classProbs = TRUE,
+                        summaryFunction = twoClassSummary,
+                        method = "cv",
+                        number = BI_split_facteur)
+```
+\normalsize
+
+L'entraînement du modèle peut avoir lieu. En l'espèce, le modèle mathématique retenu est l'attribution d'une prédiction sur *class* en fonction de toutes les autres variables (*class ~ .*). Les arguments *data*, *trControl*, *tuneGrid* font appel aux éléments décrits dans les paragraphes qui précèdent.
+
+\small
+```{r, eval = FALSE}
+BI_fit_rpart_cp <- train(class ~ .,
+                         method = "rpart",
+                         data = BI_lot_appr_opti,
+                         trControl = tr_ctrl,
+                         tuneGrid  = BI_grid_rpart_cp)
+```
+\normalsize
+
+L'objet résultant est d'une structure relativement complexe. Notre algorithme peut notamment en extraire les résultats relatifs aux performances du modèle, et y adjoindre le calcul du J de Youden pondéré $J_{w}$. Dans le cadre des classifieurs multiclasses, ce calcul est inutile, l'objet généré à l'étape précédente contenant déjà les indicateurs de performance que nous utilisons : kappa et indice de Rand (*accuracy*).
+
+\small
+```{r, eval = FALSE}
+BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>% 
+   mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+```
+\normalsize
+
+L'objet de type *dataframe* ainsi créé peut être appelé afin d'en extraire des résultats d'intérêt ou d'en inclure le tableau dans le rapport :
+
+\small
+```{r, out.width = "60%", echo = FALSE}
+kable(BI_fit_rpart_cp_resultats, caption = "Tableau des résultats de l'entraînement de rpart") %>%
+  kable_styling(font_size = 10)
+```
+\normalsize
+
+L'algorithme génère également un graphique synthétisant les performances du modèle (sensibilité, spécificité, $J_{w}$) en fonction de son hyperparamètre :
+
+* *ggplot* est la fonction de génération du graphique, et permet d'appeler l'objet servant à générer le graphique, ainsi que certains paramètres complémentaires via *aes*. Ici, la variable servant d’abscisse.
+* *geom_point* permet de tracer le nuage de points. Ici encore, *aes* permet de préciser, pour chaque nuage de points, la variable d'ordonnée (*Sens*, *Spec* ou *Jw*), ainsi que la légende associée à la couleur des points (*Sensibilité*, *Spécificité* ou *Jw*).
+* *geom_line* permet de tracer les lignes correspondant au nuage de points.
+* *labs* permet de légender correctement l'attribut *color* de notre légende.
+* *ylab* permet de définir la légende l'axe des ordonnées. Ici, de la supprimer, car nous avons trois variables différentes en ordonnées.
+* *scale_x_log10* nous permet ici de définir un axe logarithmique décimal en abscisse.
+* *theme_bw* attribue le thème(couleur de fond, d'axes, grilles) de type *bw* (*black and white*) à notre graphique.
+
+\small
+```{r, eval = FALSE}
+BI_fit_rpart_cp_graphe <- ggplot(data = BI_fit_rpart_cp_resultats, aes(x = cp)) +
+   geom_point(aes(y = Sens, color = "Sensibilité")) +
+   geom_line(aes(y = Sens, color = "Sensibilité")) +
+   geom_point(aes(y = Spec, color = "Spécificité")) +
+   geom_line(aes(y = Spec, color = "Spécificité")) +
+   geom_point(aes(y = Jw, color = "Jw")) +
+   geom_line(aes(y = Jw, color = "Jw")) +
+   labs(color = "Performance") + 
+   ylab(NULL) + 
+   scale_x_log10() +
+   theme_bw()
+```
+\normalsize
+
+Le graphique ainsi généré peut être intégré dans notre rapport :
+\FloatBarrier
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 4, fig.cap = "Graphique des performances de rpart"}
+plot(BI_fit_rpart_cp_graphe)
+```
+
+\FloatBarrier
+
+### Rborist
+
+La première étape est, comme précédemment, de définir l'espace expérimental. Ici, s'agissant d'un modèle à plusieurs hyperparamètres, l'algorithme utilisera un plan d'expériences basé sur les hypercubes latins. La fonction *nolhDesign* permet de créer un hypercube latin quasi-orthogonal (NOLH : *Near Orthogonal Latin Hypercube*), ici paramétré avec 2 dimensions, dans l'espace $[0;1]^{2}$. Le plan d'expérience en est extrait, puis inséré dans un objet de type *dataframe*, avec colonnes nommées d'après nos variables réduites $X_{1}$ et $X_{2}$.
+
+\small
+```{r, eval = FALSE}
+BI_LHS <- nolhDesign(dimension = 2, range = c(0, 1))$design 
+BI_LHS <- data.frame(BI_LHS)
+colnames(BI_LHS) <- c("X1", "X2")
+```
+\normalsize
+
+L'hypercube latin des hyperparamètres (*predFixed* et *minNode*) est généré à partir de l'hypercube latin des paramètres réduits. Ces hyperparamètres sont des valeurs entières. L'hypercube latin quasi-orthogonal de dimension 2 possédant 17 expériences équitablement réparties dans l'espace $[0;1]^{2}$, il apparaît souhaitable, pour des raisons d'homogénéité dans l'espace expérimental, que $F_{n} = k \times X_{n}$ avec $k$ multiple de 16. En pratique, nous n'avons jamais rencontré d'erreurs d'arrondi lors de cette étape mais l'usage de la fonction *round* constitue une précaution supplémentaire garantissant que le produit sera bien un entier.
+
+\small
+```{r, eval = FALSE}
+BI_grid_Rborist <- data.frame(BI_LHS) %>%
+   mutate(predFixed = round(1+X1*16,0)) %>%
+   mutate(minNode = round(1+X2*16,0))
+```
+\normalsize
+\FloatBarrier
+
+```{r, out.width = "80%", echo = FALSE}
+kable(BI_grid_Rborist, caption = "Plan d'expériences d'entraînement et optimisation du modèle Rborist")
+```
+
+\FloatBarrier
+L'entraînement du modèle se déroule de la même façon que pour le modèle rpart.\footnote{cf. section \ref{chapitre:code-CART}, page \pageref{paragraphe:train-CART}.}
+
+\small
+```{r, eval = FALSE}
+set.seed(1)
+tr_ctrl <- trainControl(classProbs = TRUE,
+                        summaryFunction = twoClassSummary,
+                        method = "cv",
+                        number = BI_split_facteur)
+BI_fit_Rborist <- train(class ~ .,
+                         method = "Rborist",
+                         data = BI_lot_appr_opti,
+                         trControl = tr_ctrl,
+                         tuneGrid  = BI_grid_Rborist[c('predFixed', 'minNode')])
+```
+\normalsize
+
+L'algorithme extrait les résultats relatifs aux performances du modèle et y adjoint le calcul de $J_{w}$, comme précédemment. L'objet obtenu ne contenant que les facteurs expérimentaux (non réduits) des hyperparamètres, il convient d'y adjoindre les facteurs réduits. La table *BI_grid_Rborist* générée précédemment contient toutes les informations qui permettent, via une jonction, de lier facteurs réduits et facteurs expérimentaux.
+
+\small
+```{r, eval = FALSE}
+BI_fit_Rborist_resultats <- BI_fit_Rborist$results %>% 
+   mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1) %>%
+   left_join(x = .,
+             y = BI_grid_Rborist,
+             by = c("predFixed", "minNode"))
+```
+\normalsize
+
+Nous chargeons ensuite notre algorithme de calculer le modèle quadratique avec interactions permettant d'évaluer, à partir des résultats obtenus suite à l'entraînement, la réponse $J_{w}$ en fonction des $X_{1}$ et $X_{2}$, suivant la formule :
+$$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
+
+\small
+```{r, eval = FALSE}
+BI_mod_Rborist_jw <-  modelFit(X = BI_fit_Rborist_resultats[,c("X1", "X2")], 
+                               Y = BI_fit_Rborist_resultats$Jw,  
+                               type="Kriging", 
+                               formula= Y ~ X1 + X2 + X1:X2 + I(X1^2) + I(X2^2))
+```
+\normalsize
+
+Ces résultats permettent notamment de modéliser les performances sur la totalité de l'espace expérimental des hyperparamètres. A cette fin, l'algorithme est chargé de générer l'ensemble des couples de valeurs $(X_{1},X_{2})$ possibles, à l'aide de la fonction *expand.grid*, avant de calculer la valeur $J_{w}$ correspondante à chaque couple de points.
+
+\small
+```{r, eval = FALSE}
+CodBI_pred_Rborist <- expand.grid(CodBI_fit_Rborist_resultats[,c("X1","X2")]) %>%
+   mutate(Jw = modelPredict(CodBI_mod_Rborist_jw, .[,c("X1","X2")]))
+```
+\normalsize
+
+L'ensemble des données expérimentales et modélisées obtenues permettent de générer un graphique bidimensionnel des performances en fonction des hyperparamètres. Pour des raisons didactiques, nous séparerons ici le graphique résultant de l'expérimentation de celui résultant de la modélisation quadratique.
+\paragraph*{}
+La génération du graphique reprend des principes similaires à ceux présentés précédemment pour le graphique des performances de rpart, notamment au niveau des arguments utilisés dans *aes*. Les seules fonctions appelant à commentaires sont l'utilisation de *geom_raster* pour la modélisation, à laquelle nous superposons le graphique généré via *geom_tile* pour les points expérimentaux. L'utilisation de la gamme de couleurs proposée par *viridis* permet une visualisation plus aisée des résultats obtenus.
+
+\small
+```{r, eval = FALSE}
+BI_pred_Rborist %>% ggplot() +
+   geom_raster(data = BI_pred_Rborist,
+               aes(x = X1, y = X2, fill = Jw), interpolate = TRUE) +
+   geom_tile(data = BI_fit_Rborist_resultats,
+             aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
+   scale_fill_viridis_c(option = "D", direction = 1) +
+   theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(legend.position='bottom') +
+   theme_bw()
+```
+\normalsize
+
+\FloatBarrier
+
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Points expérimentaux (à gauche), modélisation (au centre) et superposition (à droite) des résultats obtenus avec Rborist"}
+plot(ggarrange(
+   ncol = 3, widths = c(1.05,1,1),
+   Code_Rborist_graphe_tiles + theme(legend.position = "none"),
+   Code_Rborist_graphe_raster + ylab(NULL),
+   Code_Rborist_graphe_full + ylab(NULL) + theme(legend.position = "none")))
+```
+
+\FloatBarrier
+
+*Finir prédictions de performances...*
+
+## Évaluation des performances des modèles
+*A faire...*
+
+\newpage
