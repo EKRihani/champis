@@ -363,8 +363,8 @@ BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_result
 BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "X1", "X2", "Jw", "D")
 
 # Optimisation quadratique
-BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), X2 = seq(from = 0, to = 1, length.out = 9)) %>% 
-   mutate(predFixed = round(1+X1*16,0)) %>%  #16 ou 32
+BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), X2 = seq(from = 0, to = 1, length.out = 17)) %>% 
+   mutate(predFixed = round(1+X1*16,0)) %>%
    mutate(minNode = round(1+X2*16,0)) %>%
    mutate(Jw = BI_mod_Rborist_jw$model@trend.coef[1] +
              BI_mod_Rborist_jw$model@trend.coef[2]*X1 +
@@ -386,13 +386,12 @@ BI_fit_Rborist_best_resultats <- BI_fit_Rborist_best$results %>% mutate(Jw = Sen
 # Règle la liste de prédiction et lance la classification
 BI_evaluation <- BI_lot_evaluation %>%
    mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, class == "comestible" ~ FALSE)))
-   
 
-BI_evaluation$reference <- as.logical(as.character(recode_factor(BI_evaluation$class, toxique = TRUE, comestible = FALSE))) # Bascule en booléen
-
-# Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
-BI_evaluation$reference <- as.factor(BI_evaluation$reference)
-
+# A SUPPRIMER ???
+# BI_evaluation$reference <- as.logical(as.character(recode_factor(BI_evaluation$class, toxique = TRUE, comestible = FALSE))) # Bascule en booléen
+# 
+# # Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
+# BI_evaluation$reference <- as.factor(BI_evaluation$reference)
 
 start_time <- Sys.time()
 cmd <- paste0("train(class ~ ., method = 'ranger', data = BI_lot_appr_opti,", BI_set_ranger_best[2], ")")

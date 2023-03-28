@@ -533,7 +533,7 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 \FloatBarrier
 \paragraph*{}
 
-```{r EDA-structure, out.width = "90%", echo = FALSE}
+```{r EDA-structure, echo = FALSE}
 kable(structure_dataset, caption = "Structure du lot de données initial")
 ```
 
@@ -949,7 +949,7 @@ Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, 
 La matrice de confusion du modèle ranger (table \ref{tab:BI-CM}) donne les résultats détaillés de ses prédictions.
 \FloatBarrier
 
-```{r BI-CM, out.width = "100%", echo = FALSE}
+```{r BI-CM, echo = FALSE}
 kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, référence en haut)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```  
@@ -962,9 +962,9 @@ La forêt aléatoire de type Rborist a donné des résultats similaires, atteign
 
 \FloatBarrier
 
-```{r out.width = "100%", echo = FALSE, fig.pos="H"}
+```{r, echo = FALSE, fig.pos="H"}
 kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et Rborist (jeu d'évaluation)") %>%
-   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+   kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
 ```
 
 \FloatBarrier
@@ -1042,9 +1042,9 @@ Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqué
 \FloatBarrier
 L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}.
 
-```{r FAM-CM, out.width = "40%", echo = FALSE}
+```{r FAM-CM, echo = FALSE}
 kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger") %>%
-   kable_styling(latex_options = c("striped", "hold_position"),full_width = F, font_size = 6) %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F, font_size = 5) %>%
   row_spec(0, angle = -90)
 ```
 
@@ -1054,7 +1054,7 @@ La forêt aléatoire de type Rborist a donné des résultats similaires, avec un
 \paragraph*{}
 Nous pouvons noter que le modèle ranger s'est ici avéré plus rapide que Rborist.
 
-```{r out.width = "100%", echo = FALSE}
+```{r, echo = FALSE}
 kable(MULFAM_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 
@@ -1174,7 +1174,7 @@ library(twinning)
 \normalsize
 
 \paragraph*{}
-Le chargement des données s'effectue de la même façon que lors des sections précédentes. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction *relevel*, la classe *"toxique"* comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
+Le chargement des données s'effectue de la même façon que lors des sections précédentes. L'argument *stringsAsFactors = TRUE* revêt une importance particulière, car la classe *factor* est essentielle au bon fonctionnement des classifieurs. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction *relevel*, la classe *"toxique"* comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
 
 \small
 ```{r, eval = FALSE}
@@ -1220,7 +1220,7 @@ Cette partie ne prétend pas à l'exhaustivité, elle se limitera à la présent
 
 ### Arbre de classification et régression {#chapitre:code-CART}
 
-La première étape est de définir l'indice J de Youden,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}} et les pondérations respectives de la sensibilité et de la spécificité, par :
+La première étape est de définir l'indice J de Youden,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}} et les pondérations respectives de la sensibilité et de la spécificité. Cette définition n'est pas nécessaire pour les classifieurs multiclasse, le kappa ($\kappa$) et l'indice de Rand ($R$) étant des métriques évaluées nativement par la librairie *caret*.
 \small
 ```{r, eval = FALSE}
 BI_w <- 10
@@ -1267,7 +1267,7 @@ BI_fit_rpart_cp <- train(class ~ .,
 ```
 \normalsize
 
-L'objet résultant est d'une structure relativement complexe. Notre algorithme peut notamment en extraire les résultats relatifs aux performances du modèle, et y adjoindre le calcul du J de Youden pondéré $J_{w}$. Dans le cadre des classifieurs multiclasses, ce calcul est inutile, l'objet généré à l'étape précédente contenant déjà les indicateurs de performance que nous utilisons : kappa et indice de Rand (*accuracy*).
+L'objet résultant est d'une structure relativement complexe. Notre algorithme peut notamment en extraire les résultats relatifs aux performances du modèle, et y adjoindre le calcul du J de Youden pondéré $J_{w}$. Dans le cadre des classifieurs multiclasses, ce calcul est inutile, l'objet généré à l'étape précédente contenant déjà les indicateurs de performance que nous utilisons : kappa ($\kappa$) et indice de Rand ($R$, *accuracy*).
 
 \small
 ```{r, eval = FALSE}
@@ -1279,13 +1279,13 @@ BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>%
 L'objet de type *dataframe* ainsi créé peut être appelé afin d'en extraire des résultats d'intérêt ou d'en inclure le tableau dans le rapport :
 
 \small
-```{r, out.width = "60%", echo = FALSE}
+```{r, echo = FALSE}
 kable(BI_fit_rpart_cp_resultats, caption = "Tableau des résultats de l'entraînement de rpart") %>%
   kable_styling(font_size = 10)
 ```
 \normalsize
 
-L'algorithme génère également un graphique synthétisant les performances du modèle (sensibilité, spécificité, $J_{w}$) en fonction de son hyperparamètre :
+L'algorithme génère également un graphique synthétisant les performances du modèle (sensibilité, spécificité, $J_{w}$, $\kappa$, $R$ ou autre indicateur d'intérêt) en fonction de son hyperparamètre :
 
 * *ggplot* est la fonction de génération du graphique, et permet d'appeler l'objet servant à générer le graphique, ainsi que certains paramètres complémentaires via *aes*. Ici, la variable servant d’abscisse.
 * *geom_point* permet de tracer le nuage de points. Ici encore, *aes* permet de préciser, pour chaque nuage de points, la variable d'ordonnée (*Sens*, *Spec* ou *Jw*), ainsi que la légende associée à la couleur des points (*Sensibilité*, *Spécificité* ou *Jw*).
@@ -1365,7 +1365,7 @@ BI_fit_Rborist <- train(class ~ .,
 ```
 \normalsize
 
-L'algorithme extrait les résultats relatifs aux performances du modèle et y adjoint le calcul de $J_{w}$, comme précédemment. L'objet obtenu ne contenant que les facteurs expérimentaux (non réduits) des hyperparamètres, il convient d'y adjoindre les facteurs réduits. La table *BI_grid_Rborist* générée précédemment contient toutes les informations qui permettent, via une jonction, de lier facteurs réduits et facteurs expérimentaux.
+L'algorithme extrait les résultats relatifs aux performances du modèle et y adjoint le calcul de $J_{w}$ (ou $\kappa$ pour les classifieurs multiclasses), comme précédemment. L'objet obtenu ne contenant que les facteurs expérimentaux (non réduits) des hyperparamètres, il convient d'y adjoindre les facteurs réduits. La table *BI_grid_Rborist* générée précédemment contient toutes les informations qui permettent, via une jonction, de lier facteurs réduits et facteurs expérimentaux.
 
 \small
 ```{r, eval = FALSE}
@@ -1421,12 +1421,42 @@ BI_pred_Rborist %>% ggplot() +
 ```{r, echo = FALSE, fig.height = 3, fig.cap = "Points expérimentaux (à gauche), modélisation (au centre) et superposition (à droite) des résultats obtenus avec Rborist"}
 plot(ggarrange(
    ncol = 3, widths = c(1.05,1,1),
-   Code_Rborist_graphe_tiles,
-   Code_Rborist_graphe_raster + ylab(NULL),
-   Code_Rborist_graphe_full + ylab(NULL)))
+   CodBI_Rborist_graphe_tiles,
+   CodBI_Rborist_graphe_raster + ylab(NULL),
+   CodBI_Rborist_graphe_full + ylab(NULL)))
 ```
 
 \FloatBarrier
+
+L'étape suivante est d'exploiter ce modèle quadratique pour évaluer les hyperparamètres permettant de maximiser $J_{w}$. A cet effet, une table de l'ensemble des points de l'espace expérimental des facteurs réduits est générée, puis la fonction quadratique évaluée précédemment est appliquée, afin d'obtenir une prédiction approximative de $J_{w}$. Les hyperparamètres sont également calculés, afin de pouvoir être appliqués par la suite.
+
+\small
+```{r, eval = FALSE}
+BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
+                                    X2 = seq(from = 0, to = 1, length.out = 17)) %>%
+   mutate(Jw = BI_mod_Rborist_jw$model@trend.coef[1] +
+             BI_mod_Rborist_jw$model@trend.coef[2]*X1 +
+             BI_mod_Rborist_jw$model@trend.coef[3]*X2 +
+             BI_mod_Rborist_jw$model@trend.coef[4]*X1^2 +
+             BI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
+             BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2) %>%
+   mutate(predFixed = round(1+X1*16,0)) %>%
+   mutate(minNode = round(1+X2*16,0))
+```
+\normalsize
+
+Le $J_{w}$ théorique maximal est ensuite évalué, ainsi que les hyperparamètres qui y sont associés.
+\small
+```{r, eval = FALSE}
+BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),c("predFixed", "minNode")]
+```
+
+
+
+\normalsize
+
+
+
 
 *Finir prédictions de performances...*
 

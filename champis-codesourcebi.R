@@ -128,7 +128,7 @@ CodBI_pred_Rborist <- expand.grid(CodBI_fit_Rborist_resultats[,c("X1","X2")]) %>
    mutate(Jw = modelPredict(CodBI_mod_Rborist_jw, .[,c("X1","X2")]))
 
 
-Code_Rborist_graphe_raster <- CodBI_pred_Rborist %>% ggplot() +
+CodBI_Rborist_graphe_raster <- CodBI_pred_Rborist %>% ggplot() +
    geom_raster(data = CodBI_pred_Rborist,
                aes(x = X1, y = X2, fill = Jw), interpolate = TRUE) +
    scale_fill_viridis_c(option = "D", direction = 1) +
@@ -136,7 +136,7 @@ Code_Rborist_graphe_raster <- CodBI_pred_Rborist %>% ggplot() +
    theme(legend.position='bottom') +
    theme_bw()
 
-Code_Rborist_graphe_tiles <- CodBI_pred_Rborist %>% ggplot() +
+CodBI_Rborist_graphe_tiles <- CodBI_pred_Rborist %>% ggplot() +
    geom_tile(data = CodBI_fit_Rborist_resultats,
              aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
    scale_fill_viridis_c(option = "D", direction = 1) +
@@ -144,7 +144,7 @@ Code_Rborist_graphe_tiles <- CodBI_pred_Rborist %>% ggplot() +
    theme(legend.position='bottom') +
    theme_bw()
 
-Code_Rborist_graphe_full <- CodBI_pred_Rborist %>% ggplot() +
+CodBI_Rborist_graphe_full <- CodBI_pred_Rborist %>% ggplot() +
    geom_raster(data = CodBI_pred_Rborist,
                aes(x = X1, y = X2, fill = Jw), interpolate = TRUE) +
    geom_tile(data = CodBI_fit_Rborist_resultats,
@@ -153,6 +153,49 @@ Code_Rborist_graphe_full <- CodBI_pred_Rborist %>% ggplot() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position='bottom') +
    theme_bw()
+
+
+CodBI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), 
+                                    X2 = seq(from = 0, to = 1, length.out = 17)) %>% 
+   mutate(Jw = CodBI_mod_Rborist_jw$model@trend.coef[1] +
+             CodBI_mod_Rborist_jw$model@trend.coef[2]*X1 +
+             CodBI_mod_Rborist_jw$model@trend.coef[3]*X2 +
+             CodBI_mod_Rborist_jw$model@trend.coef[4]*X1^2 +
+             CodBI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
+             CodBI_mod_Rborist_jw$model@trend.coef[6]*X1*X2) %>%
+   mutate(predFixed = round(1+X1*16,0)) %>%
+   mutate(minNode = round(1+X2*16,0))
+
+
+CodBI_modelquad_Rborist_top <- CodBI_modelquad_Rborist[which.max(CodBI_modelquad_Rborist$Jw),c("predFixed", "minNode")]
+
+
+
+# A rationnaliser et insérer dans le rapport
+CodBI_evaluation <- CodBI_lot_evaluation %>%
+   mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, class == "comestible" ~ FALSE)))
+
+start_time <- Sys.time()
+CodBI_fit_Rborist_final <- train(class ~ ., 
+                              method = 'Rborist', 
+                              data = CodBI_lot_appr_opti,
+                              trControl = tr_ctrl,
+                              tuneGrid  = CodBI_modelquad_Rborist_top, ntrees = 3) #ntrees à virer...
+CodBI_pred_Rborist_final <- predict(object = CodBI_fit_Rborist_final, newdata = CodBI_lot_evaluation)
+end_time <- Sys.time()
+
+
+CodBI_temps_Rborist <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
+
+CodBI_CM_Rborist_final <- confusionMatrix(data = CodBI_pred_Rborist_final, reference = CodBI_lot_evaluation$class)
+
+CodBI_resultats_Rborist <- CodBI_CM_Rborist_final$byClass %>% 
+   t(.) %>% as.data.frame(.) %>% 
+   select(c(Sensitivity, Specificity)) %>% 
+   mutate(Jw = Sensitivity*CodBI_RatioSens + Specificity*CodBI_RatioSpec - 1) %>%
+   mutate(temps = CodBI_temps_Rborist)
+
+CodBI_CM_Rborist_final$table
 
 
 save.image(file = "EKR-Champis-CodeSourceBi.RData")
