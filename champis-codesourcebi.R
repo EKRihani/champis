@@ -169,23 +169,38 @@ CodBI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 1
 
 CodBI_modelquad_Rborist_top <- CodBI_modelquad_Rborist[which.max(CodBI_modelquad_Rborist$Jw),c("predFixed", "minNode")]
 
+################################### A tester
+
+set.seed(1)
+CodBI_fit_Rborist_best <- train(class ~ .,
+                         method = "Rborist",
+                         data = CodBI_lot_appr_opti,
+                         trControl = tr_ctrl,
+                         tuneGrid  = CodBI_modelquad_Rborist_top[c('predFixed', 'minNode')])
+
+CodBI_fit_Rborist_best_resultats <- CodBI_fit_Rborist_best$results %>% mutate(Jw = Sens*CodBI_RatioSens + Spec*CodBI_RatioSpec - 1)
+
 
 
 # A rationnaliser et insérer dans le rapport
 CodBI_evaluation <- CodBI_lot_evaluation %>%
    mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, class == "comestible" ~ FALSE)))
 
-start_time <- Sys.time()
+chrono_debut <- Sys.time()
 CodBI_fit_Rborist_final <- train(class ~ ., 
                               method = 'Rborist', 
                               data = CodBI_lot_appr_opti,
                               trControl = tr_ctrl,
                               tuneGrid  = CodBI_modelquad_Rborist_top, ntrees = 3) #ntrees à virer...
 CodBI_pred_Rborist_final <- predict(object = CodBI_fit_Rborist_final, newdata = CodBI_lot_evaluation)
-end_time <- Sys.time()
+chrono_fin <- Sys.time()
+
+##### Tester GROSSE POSSIBILITE DE RATIONNALISER !!! ##### (MAIS PAS DE CHRONO : INTEGRER CHRONO DANS ETAPES ANTERIEURES...)
+CodBI_pred_Rborist_final <- predict(object = CodBI_fit_Rborist_best, newdata = CodBI_lot_evaluation)
 
 
-CodBI_temps_Rborist <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
+
+CodBI_temps_Rborist <- difftime(chrono_fin, chrono_debut) %>% as.numeric %>% round(.,2)
 
 CodBI_CM_Rborist_final <- confusionMatrix(data = CodBI_pred_Rborist_final, reference = CodBI_lot_evaluation$class)
 
