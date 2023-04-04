@@ -1519,4 +1519,15 @@ BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>%
 ```
 \normalsize
 
+Enfin, les objets les plus volumineux n'ayant pas vocation à être exploités par la suite -- c'est-à-dire les jeux de données ainsi que les objets issus des fonctions *train* -- sont retirés de l'environnement, qui est ensuite sauvegardé. Cette sauvegarde contient les graphiques, tableaux et valeurs d'intérêt, à fins d'insertion automatisée dans le fichier Rmarkdown qui constitue le corps de texte de cette thèse.
+
+\small
+```{r, eval = FALSE}
+rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_evaluation, 
+   BI_fit_rpart_cp, BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final)
+
+save.image(file = "EKR-Champis-CodeSourceBi.RData")
+```
+\normalsize
+
 \newpage
