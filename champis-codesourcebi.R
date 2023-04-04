@@ -191,16 +191,18 @@ CodBI_fit_Rborist_final <- train(class ~ .,
                               method = 'Rborist', 
                               data = CodBI_lot_appr_opti,
                               trControl = tr_ctrl,
-                              tuneGrid  = CodBI_modelquad_Rborist_top, ntrees = 3) #ntrees à virer...
+                              tuneGrid  = CodBI_modelquad_Rborist_top[c('predFixed', 'minNode')], ntrees = 3) #ntrees à virer...
 CodBI_pred_Rborist_final <- predict(object = CodBI_fit_Rborist_final, newdata = CodBI_lot_evaluation)
 chrono_fin <- Sys.time()
 
 ##### Tester GROSSE POSSIBILITE DE RATIONNALISER !!! ##### (MAIS PAS DE CHRONO : INTEGRER CHRONO DANS ETAPES ANTERIEURES...)
+### POSSIBILITE DE MICROBENCHMARK ??? VOIR LE TEMPS NECESSAIRE....###
+
 CodBI_pred_Rborist_final <- predict(object = CodBI_fit_Rborist_best, newdata = CodBI_lot_evaluation)
 
-
-
 CodBI_temps_Rborist <- difftime(chrono_fin, chrono_debut) %>% as.numeric %>% round(.,2)
+
+#############################################
 
 CodBI_CM_Rborist_final <- confusionMatrix(data = CodBI_pred_Rborist_final, reference = CodBI_lot_evaluation$class)
 
