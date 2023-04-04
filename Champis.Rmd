@@ -1481,13 +1481,42 @@ BI_evaluation <- BI_lot_evaluation %>%
 \normalsize
 
 
-Version 2 : seulement la prédiction (beaucoup plus efficient...)
+Les performances du modèle peuvent être évaluées, en termes d'efficience calculatoire, par son temps d'éxécution. Un moyen de mesurer le temps d'éxécution de n'importe quelle portion de code est de mesurer l'heure de début et de fin d'éxécution du code à l'aide de *Sys.time*, puis d'en mesurer la différence via la fonction *difftime*.
+\paragraph{}
+Le code éxécuté correspond ici à l'entraînement du modèle (cf. *supra*) et à la prédiction sur le lot d'évaluation, enregistré dans un objet dédié.
+
 \small
 ```{r, eval = FALSE}
-BI_pred_Rborist_final <- predict(object = BI_fit_Rborist_best, newdata = BI_lot_evaluation)
+chrono_debut <- Sys.time()
+BI_fit_Rborist_final <- train(class ~ .,
+                              method = 'Rborist',
+                              data = BI_lot_appr_opti,
+                              trControl = tr_ctrl,
+                              tuneGrid  = BI_modelquad_Rborist_top[c('predFixed', 'minNode')])
+BI_pred_Rborist_final <- predict(object = BI_fit_Rborist_final, newdata = BI_lot_evaluation)
+chrono_fin <- Sys.time()
+CodBI_temps_Rborist <- difftime(chrono_fin, chrono_debut) %>% as.numeric %>% round(.,2)
 ```
 \normalsize
 
-*Finir prédictions de performances...*
+L'objet correspondant aux prédictions est ensuite comparé aux valeurs références que notre modèle devait prédire, ce qui permet notamment d'obtenir la matrice de confusion associée aux prédictions.
+
+\small
+```{r, eval = FALSE}
+BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, reference = BI_lot_evaluation$class)
+BI_CM_Rborist_final$table
+```
+\normalsize
+
+Nous pouvons également extraire de cette comparaison des indicateurs de performances : sensibilité, spécificité, $J_{w}$ dans le cas d'une classification binaire, kappa et indice de Rand pour la classification multiclasse, ainsi que le temps de calcul.
+\small
+```{r, eval = FALSE}
+BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>% 
+   t(.) %>% as.data.frame(.) %>% 
+   select(c(Sensitivity, Specificity)) %>% 
+   mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
+   mutate(temps = BI_temps_Rborist)
+```
+\normalsize
 
 \newpage
