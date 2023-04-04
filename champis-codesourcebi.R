@@ -133,16 +133,16 @@ CodBI_Rborist_graphe_raster <- CodBI_pred_Rborist %>% ggplot() +
                aes(x = X1, y = X2, fill = Jw), interpolate = TRUE) +
    scale_fill_viridis_c(option = "D", direction = 1) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position='bottom') +
-   theme_bw()
+   theme_bw() +
+   theme(legend.position='bottom')
 
 CodBI_Rborist_graphe_tiles <- CodBI_pred_Rborist %>% ggplot() +
    geom_tile(data = CodBI_fit_Rborist_resultats,
              aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
    scale_fill_viridis_c(option = "D", direction = 1) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position='bottom') +
-   theme_bw()
+   theme_bw() +
+   theme(legend.position='bottom')
 
 CodBI_Rborist_graphe_full <- CodBI_pred_Rborist %>% ggplot() +
    geom_raster(data = CodBI_pred_Rborist,
@@ -151,8 +151,8 @@ CodBI_Rborist_graphe_full <- CodBI_pred_Rborist %>% ggplot() +
              aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
    scale_fill_viridis_c(option = "D", direction = 1) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position='bottom') +
-   theme_bw()
+   theme_bw() +
+   theme(legend.position='bottom')
 
 
 CodBI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), 
@@ -215,8 +215,8 @@ CodBI_resultats_Rborist <- CodBI_CM_Rborist_final$byClass %>%
 CodBI_CM_Rborist_final$table
 
 
-rm(dataset, CodBI_evaluation, CodBI_lot_appr_opti, CodBI_lot_evaluation, 
-   CodBI_fit_rpart_cp, CodBI_fit_Rborist, CodBI_fit_Rborist_best, CodBI_fit_Rborist_final)
+# rm(dataset, CodBI_evaluation, CodBI_lot_appr_opti, CodBI_lot_evaluation, 
+#    CodBI_fit_rpart_cp, CodBI_fit_Rborist, CodBI_fit_Rborist_best, CodBI_fit_Rborist_final)
 save.image(file = "EKR-Champis-CodeSourceBi.RData")
 
 load(file = "EKR-Champis-CodeSourceBi.RData")     # Chargement données pour rapport

@@ -1411,8 +1411,8 @@ BI_pred_Rborist %>% ggplot() +
              aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
    scale_fill_viridis_c(option = "D", direction = 1) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position='bottom') +
-   theme_bw()
+   theme_bw() +
+   theme(legend.position='bottom')
 ```
 \normalsize
 
@@ -1433,7 +1433,7 @@ L'étape suivante est d'exploiter ce modèle quadratique pour évaluer les hyper
 \small
 ```{r, eval = FALSE}
 BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
-                                    X2 = seq(from = 0, to = 1, length.out = 17)) %>%
+                                  X2 = seq(from = 0, to = 1, length.out = 17)) %>%
    mutate(Jw = BI_mod_Rborist_jw$model@trend.coef[1] +
              BI_mod_Rborist_jw$model@trend.coef[2]*X1 +
              BI_mod_Rborist_jw$model@trend.coef[3]*X2 +
@@ -1448,24 +1448,26 @@ BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
 Le $J_{w}$ théorique maximal est ensuite évalué, ainsi que les hyperparamètres qui y sont associés.
 \small
 ```{r, eval = FALSE}
-BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),c("predFixed", "minNode")]
+BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),
+                                                 c("predFixed", "minNode")]
 ```
 \normalsize
 
 *Suite du code : A TESTER !*
+
 Il est ensuite possible de relancer un entraînement, comme précédemment, avec les paramètres optimisés, et en extraire les indicateurs de performances ($J_{w}$).
 
 \small
 ```{r, eval = FALSE}
 set.seed(1)
 BI_fit_Rborist_best <- train(class ~ .,
-                         method = "Rborist",
-                         data = BI_lot_appr_opti,
-                         trControl = tr_ctrl,
-                         tuneGrid  = BI_modelquad_Rborist_top[c('predFixed', 'minNode')])
+                 method = "Rborist",
+                 data = BI_lot_appr_opti,
+                 trControl = tr_ctrl,                                    
+                 tuneGrid  = BI_modelquad_Rborist_top[c('predFixed', 'minNode')])
 
 BI_fit_Rborist_best_resultats <- BI_fit_Rborist_best$results %>% 
-  mutate(Jw = Sens*CodBI_RatioSens + Spec*CodBI_RatioSpec - 1)
+      mutate(Jw = Sens*CodBI_RatioSens + Spec*CodBI_RatioSpec - 1)
 ```
 \normalsize
 
@@ -1476,7 +1478,8 @@ L'étape finale est celle de l'évaluation des performances du modèle, ici pré
 \small
 ```{r, eval = FALSE}
 BI_evaluation <- BI_lot_evaluation %>%
-   mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, class == "comestible" ~ FALSE)))
+   mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, 
+                                          class == "comestible" ~ FALSE)))
 ```
 \normalsize
 
@@ -1489,13 +1492,16 @@ Le code éxécuté correspond ici à l'entraînement du modèle (cf. *supra*) et
 ```{r, eval = FALSE}
 chrono_debut <- Sys.time()
 BI_fit_Rborist_final <- train(class ~ .,
-                              method = 'Rborist',
-                              data = BI_lot_appr_opti,
-                              trControl = tr_ctrl,
-                              tuneGrid  = BI_modelquad_Rborist_top[c('predFixed', 'minNode')])
-BI_pred_Rborist_final <- predict(object = BI_fit_Rborist_final, newdata = BI_lot_evaluation)
+                  method = 'Rborist',
+                  data = BI_lot_appr_opti,
+                  trControl = tr_ctrl,
+                  tuneGrid  = BI_modelquad_Rborist_top[c('predFixed', 'minNode')])
+BI_pred_Rborist_final <- predict(object = BI_fit_Rborist_final, 
+                                 newdata = BI_lot_evaluation)
 chrono_fin <- Sys.time()
-CodBI_temps_Rborist <- difftime(chrono_fin, chrono_debut) %>% as.numeric %>% round(.,2)
+CodBI_temps_Rborist <- difftime(chrono_fin, chrono_debut) %>% 
+   as.numeric %>% 
+   round(.,2)
 ```
 \normalsize
 
@@ -1503,7 +1509,8 @@ L'objet correspondant aux prédictions est ensuite comparé aux valeurs référe
 
 \small
 ```{r, eval = FALSE}
-BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, reference = BI_lot_evaluation$class)
+BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, 
+                                       reference = BI_lot_evaluation$class)
 BI_CM_Rborist_final$table
 ```
 \normalsize
@@ -1512,14 +1519,15 @@ Nous pouvons également extraire de cette comparaison des indicateurs de perform
 \small
 ```{r, eval = FALSE}
 BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>% 
-   t(.) %>% as.data.frame(.) %>% 
+   t(.) %>% 
+   as.data.frame(.) %>% 
    select(c(Sensitivity, Specificity)) %>% 
    mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
    mutate(temps = BI_temps_Rborist)
 ```
 \normalsize
 
-Enfin, les objets les plus volumineux n'ayant pas vocation à être exploités par la suite -- c'est-à-dire les jeux de données ainsi que les objets issus des fonctions *train* -- sont retirés de l'environnement, qui est ensuite sauvegardé. Cette sauvegarde contient les graphiques, tableaux et valeurs d'intérêt, à fins d'insertion automatisée dans le fichier Rmarkdown qui constitue le corps de texte de cette thèse.
+Enfin, les principaux objets volumineux qui n'ont pas vocation à être exploités par la suite -- c'est-à-dire les jeux de données, ainsi que les objets issus des fonctions *train* -- sont retirés de l'environnement, qui est ensuite sauvegardé. Cette sauvegarde contient les graphiques, tableaux et valeurs d'intérêt, à fins d'insertion automatisée dans le fichier Rmarkdown qui constitue le corps de texte de cette thèse.
 
 \small
 ```{r, eval = FALSE}
