@@ -117,6 +117,7 @@ grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
 # stopCluster(cl)
 
 ### LDA2 ###
+set.seed(362)
 BI_grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 50, by = 6))
 BI_set_lda2_dim <- c("lda2", "tuneGrid  = BI_grid_lda_dimen")
 BI_fit_lda2_dim <- fit_test(BI_set_lda2_dim)
@@ -126,6 +127,7 @@ BI_fit_lda2_dim_graphe <- grapheSpeSenJw(BI_fit_lda2_dim_resultats, dimen)
 
 
  ### PDA ###
+set.seed(67)
 BI_grid_pda_lambda <- data.frame(lambda = seq(from = 1, to = 65, by = 8))
 BI_set_pda_lambda <- c("pda", "tuneGrid  = BI_grid_pda_lambda")
 BI_fit_pda_lambda <- fit_test(BI_set_pda_lambda)
@@ -134,6 +136,7 @@ BI_fit_pda_lambda_graphe <- grapheSpeSenJw(BI_fit_pda_lambda_resultats, lambda)
 
 
 ### GAMLOESS ###   [A RATIONNALISER AVEC DoE ADAPTE]
+set.seed(36)
 #BI_set_gamLoess <- expand.grid(span = seq(from = 0.01, to = 1, by = 0.19), degree = c(0,1))
 BI_grid_gamLoess <- data.frame(degree = rep(c(0,1), times = 3), span = 2^(1:6)/2^6) #10/5
 BI_set_gamLoess <- c("gamLoess", "tuneGrid  = BI_grid_gamLoess")
@@ -165,6 +168,7 @@ BI_LHS <- data.frame(BI_LHS)
 colnames(BI_LHS) <- c("X1", "X2")
 
 ### CTREE ###
+set.seed(32)
 #BI_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
 #BI_fit_ctree_criterion <- fit_test(BI_set_ctree_criterion)
 # BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
@@ -172,12 +176,14 @@ colnames(BI_LHS) <- c("X1", "X2")
 
 
 ### C 5.0 TREE ###
+set.seed(62)
 BI_set_c50tree <- c("C5.0Tree", "")
 BI_fit_c50tree <- fit_test(BI_set_c50tree)
 BI_fit_c50tree_resultats <- BI_fit_c50tree$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
 
 ### RPART ###
+set.seed(262)
 BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 BI_set_rpart_cp <- c("rpart", "tuneGrid  = BI_grid_rpart_cp")
 BI_fit_rpart_cp <- fit_test(BI_set_rpart_cp)
@@ -187,6 +193,7 @@ BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_
 
 
 ### RPARTCOST ###
+set.seed(3)
 BI_grid_rpartcost <- BI_LHS
 BI_grid_rpartcost <- BI_grid_rpartcost %>%
    mutate(cp = X1*1e-2+1e-5) %>%
@@ -251,12 +258,14 @@ BI_fit_rpartcost_best_resultats <- BI_fit_rpartcost_best$results %>% mutate(Jw =
 #############################################
 
 ### RFERNS ###
+set.seed(6945)
 BI_set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
 BI_fit_rFerns_depth <- fit_test(BI_set_rFerns_depth)
 BI_fit_rFerns_depth_resultats <- BI_fit_rFerns_depth$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_rFerns_depth_graphe <- grapheSpeSenJw(BI_fit_rFerns_depth_resultats, depth)
 
 ### RANGER ###
+set.seed(694)
 BI_grid_ranger <- rbind(BI_LHS,BI_LHS) %>%
    mutate(X3 = c(rep(0, 17), rep(1, 17))) %>%
    mutate(mtry = round(1+X1*48,0)) %>%    # Prendre des multiples de 16 (car 17 points pour 2d)
@@ -321,6 +330,7 @@ BI_modelquad_ranger <- BI_modelquad_ranger %>%
              BI_mod_ranger_jw$model@trend.coef[8]*X2*X3 +
              BI_mod_ranger_jw$model@trend.coef[9]*X1*X3)
 
+set.seed(945)
 BI_modelquad_ranger_top <- BI_modelquad_ranger[which.max(BI_modelquad_ranger$Jw),c("mtry", "min.node.size", "splitrule")]
 BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_modelquad_ranger_top"))
 BI_fit_ranger_best <- fit_test(BI_set_ranger_best)
@@ -328,6 +338,7 @@ BI_fit_ranger_best_resultats <- BI_fit_ranger_best$results %>% mutate(Jw = Sens*
 
 
 ### RBORIST ###
+set.seed(645)
 BI_grid_Rborist <- data.frame(BI_LHS) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
    mutate(minNode = round(1+X2*16,0))
@@ -373,6 +384,7 @@ BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
              BI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
              BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
 
+set.seed(65)
 BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),c("predFixed", "minNode")]
 BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_modelquad_Rborist_top, ntrees = 3"))
 BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
@@ -393,6 +405,7 @@ BI_evaluation <- BI_lot_evaluation %>%
 # # Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
 # BI_evaluation$reference <- as.factor(BI_evaluation$reference)
 
+set.seed(695)
 start_time <- Sys.time()
 cmd <- paste0("train(class ~ ., method = 'ranger', data = BI_lot_appr_opti,", BI_set_ranger_best[2], ")")
 BI_fit_ranger_final <- eval(parse(text = cmd)) 
@@ -412,6 +425,7 @@ BI_resultats_ranger <- BI_CM_ranger_final$byClass %>%
 #    pivot_wider(., names_from = Reference, values_from= Freq) %>%
 #    as.data.frame(.)
 
+set.seed(45)
 start_time <- Sys.time()
 cmd <- paste0("train(class ~ ., method = 'Rborist', data = BI_lot_appr_opti,", BI_set_Rborist_best[2], ")") # Construction de la commande
 BI_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
