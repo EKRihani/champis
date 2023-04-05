@@ -1482,8 +1482,8 @@ BI_evaluation <- BI_lot_evaluation %>%
 
 
 Les performances du modèle peuvent être évaluées, en termes d'efficience calculatoire, par son temps d'éxécution. Un moyen de mesurer le temps d'éxécution de n'importe quelle portion de code est de mesurer l'heure de début et de fin d'éxécution du code à l'aide de *Sys.time*, puis d'en mesurer la différence via la fonction *difftime*.
-\paragraph{}
-Le code éxécuté correspond ici à l'entraînement du modèle (cf. *supra*) et à la prédiction sur le lot d'évaluation, enregistré dans un objet dédié.
+\paragraph*{}
+Le code exécuté correspond ici à l'entraînement du modèle (cf. *supra*) et à la prédiction sur le lot d'évaluation, enregistré dans un objet dédié.
 
 \small
 ```{r, eval = FALSE}
