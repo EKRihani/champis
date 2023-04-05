@@ -1411,8 +1411,7 @@ BI_pred_Rborist %>% ggplot() +
              aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
    scale_fill_viridis_c(option = "D", direction = 1) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme_bw() +
-   theme(legend.position='bottom')
+   theme_bw()
 ```
 \normalsize
 
@@ -1452,8 +1451,6 @@ BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$
                                                  c("predFixed", "minNode")]
 ```
 \normalsize
-
-*Suite du code : A TESTER !*
 
 Il est ensuite possible de relancer un entraînement, comme précédemment, avec les paramètres optimisés, et en extraire les indicateurs de performances ($J_{w}$).
 
