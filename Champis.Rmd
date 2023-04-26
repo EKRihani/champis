@@ -406,7 +406,7 @@ avec $S$ la variance et $S_{pq}$ la somme des produits des caractéristiques pou
 La maximisation du rapport entre différences des moyennes interclasses et écart-type intraclasse revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation, pour chaque $\lambda{}$ :
 $$\frac{d}{d\lambda{}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}} - D \frac{\partial{}S}{\partial{}\lambda{}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}} $$
 
-$S/D$ étant un facteur constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système \boldmath$S.\lambda = D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}$\unboldmath, celui des coefficients $\lambda_{i}$.
+$S/D$ étant un facteur constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système \boldmath$S.\lambda = D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
 \paragraph*{}
 
 <!-- L'analyse discriminante pénalisée [A FINIR] -->
