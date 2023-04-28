@@ -416,18 +416,19 @@ $$- \textrm{ la population (1) si : } \mathbf{b}^\intercal \mathbf{x} > \frac{\m
 
 $$ - \textrm{ la population (2) si : } \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$
 
-#### Approche non-matriciel...
+#### Approche non-matricielle...
 \paragraph*{}
 Pour un classifieur binaire, la LDA vise ainsi à définir la fonction linéaire :
 
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
-avec $n$ le nombre de paramètres, $x_{i}$ les caractéristiques mesurées pour chaque paramètre $i$ et $\lambda{}_{i}$ des coefficients à déterminer, telle que $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et l'écart-type intraclasse, définis par :
+avec $n$ le nombre de paramètres, $x_{i}$ les caractéristiques mesurées pour chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à déterminer, telle que $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par :
+
 \paragraph*{}
 
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
 avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre $i$, et
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
-avec $S$ la somme des carrés intraclasse de $X$ (proportionnelle à la variance intraclasse) et $S_{pq}$ la somme des produits des caractéristiques pour chaque combinaison de paramètres $p$ et $q$.
+avec $S$ la somme des carrés intraclasse de $X$ (proportionnelle à la variance intraclasse) et $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
 \paragraph*{}
 La maximisation du rapport entre distances des moyennes interclasses et variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation, pour chaque $\lambda{}_{i}$ :
 $$\frac{d}{d\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
