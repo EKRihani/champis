@@ -476,7 +476,7 @@ L'application du concept de carré latin dans un domaine expérimental à trois 
 De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être générés. Nous pouvons citer principalement trois types d'hypercubes latins :
 
 * Aléatoires,
-* Optimisés, afin d'optimiser l'occupation spatiale,
+* Optimisés, afin d'améliorer l'occupation spatiale,
 * Orthogonaux, visant à minimiser la corrélation des estimateurs des effets principaux.
 
 ```{r Carres-Latins, echo = FALSE, fig.height = 2.5, fig.cap = "Carré latin aléatoire (à gauche), carré latin avec optimisation évolutive ESE maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
