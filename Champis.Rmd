@@ -389,12 +389,26 @@ Comme démontré précédemment, une validation croisée *k-folds* avec $k = `r 
 
 \paragraph*{}
 Cette étude proposera plusieurs classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA).
+
+\FloatBarrier
+
 \paragraph*{}
-L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de minimiser la variance intraclasse et de maximiser la distance entre les moyennes projetées des différentes classes. Cet hyperplan de projection peut être utilisé à fins de classification, mais aussi pour effectuer des réductions de dimensionalité ou encore pour l'interprétation de l'importance de certaines caractéristiques.
+L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \@ref(fig:Principe-LDA))[@hastie_elements_2016]. La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore pour l'interprétation de l'importance de certaines caractéristiques.
+
 \paragraph*{}
-En pratique, cette technique de classification consiste à déterminer le meilleur ensemble de caractéristiques séparant deux classes, en réduisant la dimensionalité du problème (nombre de caractéristiques) par construction d'un sous-espace de dimensionalité réduite, dans lequel les points du problème originel deviennent "séparables".
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{LDA}
+  \caption{Séparation par distance maximale des moyennes interclasses (à gauche), et par projection sur l'hyperplan optimal tenant compte des variances intraclasses (LDA, à droite)}
+  \label{fig:Principe-LDA}
+\end{figure}
+
+\FloatBarrier
 
 #### Approche matricielle...
+
+\paragraph*{}
+En pratique, la LDA consiste à déterminer le meilleur ensemble de caractéristiques séparant deux classes, en réduisant la dimensionalité du problème (nombre de caractéristiques) par construction d'un sous-espace de dimensionalité réduite, dans lequel les points du problème originel deviennent "séparables".
 \paragraph*{}
 Considérons deux échantillons $\mathbf{x}_{1}^{(1)}, \,...\,, \mathbf{x}_{n_{1}}^{(1)}$ et $\mathbf{x}_{1}^{(2)}, \,...\,, \mathbf{x}_{n_{2}}^{(2)}$, issus de deux distributions multivariées. La LDA pose implicitement l'hypothèse que ces distributions ont une matrice de covariance commune. Il est possible de définir la différence $\mathbf{d}$ entre les moyennes des deux échantillons (correspondant à la notion de distance interclasse) par :
 $$ \mathbf{d} = \mathbf{\overline{x}}^{(1)} - \mathbf{\overline{x}}^{(2)} $$ et de calculer la somme des carrés intragroupes $\mathbf{A}$ telle que :
@@ -412,11 +426,14 @@ $$ \mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)} = \mathbf{b}^\inter
 L'objectif de la LDA est d'optimiser cette combinaison linéaire $X$ en maximisant le rapport entre le carré de la distance interclasse (écart des moyennes) et la dispersion intraclasse (variance intraclasse) par rapport à $\mathbf{b}$  c'est à dire de maximiser le rapport :
 $$\frac{\left(\mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)}\right)^{2}}{\mathrm{Var}(X)} = \frac{\left(\mathbf{b}^\intercal\mathbf{d}\right)^{2}}{\mathbf{b}^\intercal\mathbf{S}\mathbf{b}} $$
 Une solution algébrique est $\mathbf{b} = \mathbf{S}^{-1}\mathbf{d}$. La fonction linéaire optimale ainsi obtenue, $\mathbf{X} = \mathbf{b}^\intercal \mathbf{x}$ est alors la fonction discriminante linéaire, et peut être utilisée pour classifier une future observation comme venant de :
-$$- \textrm{ la population (1) si : } \mathbf{b}^\intercal \mathbf{x} > \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2} $$
+$$- \mathrm{\;la \; population \; (1) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} > \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2} $$
 
-$$ - \textrm{ la population (2) si : } \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$
+$$ - \mathrm{\; la \; population \; (2) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$
 
 #### Approche non-matricielle...
+
+\paragraph*{}
+En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables".
 \paragraph*{}
 Pour un classifieur binaire, la LDA vise ainsi à définir la fonction linéaire :
 
