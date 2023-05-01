@@ -193,9 +193,6 @@ MULFAM_fit_ranger_ET_accu_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fi
 
 MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_resultats$Kappa)
 MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$splitrule)
-MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid"))
-MULFAM_fit_ranger_best <- fit_test(MULFAM_set_ranger_best)
-MULFAM_fit_ranger_best_resultats <- MULFAM_fit_ranger_best$results
 
 # Lance modèle RANGER optimal
 MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid, num.trees = 6"))
@@ -280,11 +277,12 @@ MULFAM_RF_resultat <- rbind(MULFAM_resultat_ranger, MULFAM_resultat_Rborist)
 colnames(MULFAM_RF_resultat) <- c("Précision", "Kappa", "Durée (min)")
 rownames(MULFAM_RF_resultat) <- c("Ranger", "Rborist")
 
-# Suppression gros fichiers intermédiaires, avant sauvegarde
-# rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_evaluation,
-#    MULFAM_fit_rpart_cp, MULFAM_fit_rpartcost, MULFAM_fit_rpartcost_best, MULFAM_fit_ctree_criterion, MULFAM_fit_c50tree,
-#    MULFAM_fit_Rborist, MULFAM_fit_Rborist_best, MULFAM_fit_Rborist_final,
-#    MULFAM_fit_ranger, MULFAM_fit_ranger_best, MULFAM_fit_ranger_final)
-
 save.image(file = "EKR-Champis-AnalyseMultiFam.RData")     # Sauvegarde données pour rapport
+# Suppression gros fichiers intermédiaires, avant sauvegarde
+rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_evaluation,
+   MULFAM_fit_rpart_cp, MULFAM_fit_ctree_criterion,
+   MULFAM_fit_Rborist, MULFAM_fit_Rborist_best, MULFAM_fit_Rborist_final,
+   MULFAM_fit_ranger, MULFAM_fit_ranger_best, MULFAM_fit_ranger_final)
+
+save.image(file = "EKR-Champis-AnalyseMultiFam-Light.RData")     # Sauvegarde données pour rapport
 load(file = "EKR-Champis-AnalyseMultiFam.RData")     # Chargement données pour rapport

@@ -255,10 +255,11 @@ INTRO_taux_supergros_diam    # % de diamètres super-hors-norme (>110% max), arr
 
 # Nettoyage données et sauvegarde
 
-# rm(valeurs_beta, valeurs_binomiale, valeurs_normale, valeurs_poisson, valeurs_uniforme, valeurs_weibull,
-#   temps_beta, temps_binomiale, temps_normale, temps_poisson, temps_uniforme, temps_weibull,
-#   fonction_beta, fonction_binomiale, fonction_normale, fonction_poisson, fonction_uniforme, fonction_weibull,
-#   beta, loi_beta, chrono_fonctions, Champi_demo)
-
 save.image(file = "EKR-Champis-Intro.RData")
+rm(valeurs_beta, valeurs_binomiale, valeurs_normale, valeurs_poisson, valeurs_uniforme, valeurs_weibull,
+  temps_beta, temps_binomiale, temps_normale, temps_poisson, temps_uniforme, temps_weibull,
+  fonction_beta, fonction_binomiale, fonction_normale, fonction_poisson, fonction_uniforme, fonction_weibull,
+  beta, loi_beta, chrono_fonctions, Champi_demo)
+
+save.image(file = "EKR-Champis-Intro-Light.RData")
 load("EKR-Champis-Intro.RData")

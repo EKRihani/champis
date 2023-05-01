@@ -444,13 +444,16 @@ rownames(BI_RF_resultat) <- c("Ranger", "Rborist")
 colnames(BI_RF_resultat) <- c("Sensibilité", "Spécificité", "J de Youden", "Durée (min)")
 
 
+save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données pour rapport
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
-# rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
-#    BI_fit_pda_lambda, BI_fit_lda2_dim, BI_fit_gamLoess_degree, BI_fit_gamLoess_span,
-#    BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
-#    BI_fit_ctree_criterion, BI_fit_c50tree, BI_fit_rFerns_depth, 
-#    BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
-#    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
-save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données pour rapport
+rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
+   BI_fit_pda_lambda, BI_fit_lda2_dim, 
+   BI_fit_gamLoess_degree, BI_fit_gamLoess_span, BI_fit_gamLoess,
+   BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
+   BI_fit_ctree_criterion, BI_fit_c50tree, BI_fit_rFerns_depth,
+   BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
+   BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
+
+save.image(file = "EKR-Champis-AnalyseBi-Light.RData")     # Sauvegarde données pour rapport
 load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données pour rapport

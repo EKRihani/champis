@@ -25,13 +25,13 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
-load("EKR-Champis-CodeSourceBi.RData")   # Chargement des données du code source (graphiques)
+load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
-load("EKR-Champis-Intro.RData")      # Chargement des résultats INTRO
+load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
-load("EKR-Champis-AnalyseBi.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
-load("EKR-Champis-AnalyseMultiFam.RData")       # Chargement des résultats CLASSIFICATION PAR FAMILLES
-load("EKR-Champis-CodeSourceBi.RData")   # Chargement des données du code source (graphiques)
+load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
+load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
+load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float

@@ -214,9 +214,10 @@ CodBI_resultats_Rborist <- CodBI_CM_Rborist_final$byClass %>%
 
 CodBI_CM_Rborist_final$table
 
-
-# rm(dataset, CodBI_evaluation, CodBI_lot_appr_opti, CodBI_lot_evaluation, 
-#    CodBI_fit_rpart_cp, CodBI_fit_Rborist, CodBI_fit_Rborist_best, CodBI_fit_Rborist_final)
 save.image(file = "EKR-Champis-CodeSourceBi.RData")
+
+rm(dataset, CodBI_evaluation, CodBI_lot_appr_opti, CodBI_lot_evaluation,
+   CodBI_fit_rpart_cp, CodBI_fit_Rborist, CodBI_fit_Rborist_best, CodBI_fit_Rborist_final)
+save.image(file = "EKR-Champis-CodeSourceBi-Light.RData")
 
 load(file = "EKR-Champis-CodeSourceBi.RData")     # Chargement données pour rapport
