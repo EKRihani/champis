@@ -1139,7 +1139,7 @@ Comme précédemment, le modèle d'arbre de décision retenu pour la classificat
 plot(MULESP_fit_rpart_cp_graphe)
 ```
 
-Ce modèle, bien que relativement simple, donne encore des résultats très honorables, avec un kappa ($\kappa_{max} =$ `r round(max(MULESP_fit_rpart_cp_resultats["Kappa"]),3)` et une précision $R_{max} =$ `r round(max(MULESP_fit_rpart_cp_resultats["Accuracy"]),3)`).
+Ce modèle, bien que relativement simple, donne encore des résultats honorables, bien que le kappa ($\kappa_{max} =$ `r round(max(MULESP_fit_rpart_cp_resultats["Kappa"]),3)`) comme la une précision ($R_{max} =$ `r round(max(MULESP_fit_rpart_cp_resultats["Accuracy"]),3)`) n'atteignent pas les objectifs de cette étude.
 
 \FloatBarrier
 
