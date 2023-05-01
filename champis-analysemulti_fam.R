@@ -67,7 +67,8 @@ graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_co
    scale_fill_viridis_c(option ='" , fcn_couleur, "', direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position='bottom')"
+   theme(legend.position='bottom') + 
+   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0))"
    )
    eval(parse(text = cmd))
 }
@@ -277,7 +278,7 @@ MULFAM_RF_resultat <- rbind(MULFAM_resultat_ranger, MULFAM_resultat_Rborist)
 colnames(MULFAM_RF_resultat) <- c("Précision", "Kappa", "Durée (min)")
 rownames(MULFAM_RF_resultat) <- c("Ranger", "Rborist")
 
-save.image(file = "EKR-Champis-AnalyseMultiFam.RData")     # Sauvegarde données pour rapport
+save.image(file = "EKR-Champis-AnalyseMultiFam.RData")     # Sauvegarde données complètes
 # Suppression gros fichiers intermédiaires, avant sauvegarde
 rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_evaluation,
    MULFAM_fit_rpart_cp, MULFAM_fit_ctree_criterion,
@@ -285,4 +286,4 @@ rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_evaluation,
    MULFAM_fit_ranger, MULFAM_fit_ranger_best, MULFAM_fit_ranger_final)
 
 save.image(file = "EKR-Champis-AnalyseMultiFam-Light.RData")     # Sauvegarde données pour rapport
-load(file = "EKR-Champis-AnalyseMultiFam.RData")     # Chargement données pour rapport
+load(file = "EKR-Champis-AnalyseMultiFam.RData")     # Chargement données complètes

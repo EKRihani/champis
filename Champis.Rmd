@@ -31,6 +31,7 @@ load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
 load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
+load("EKR-Champis-AnalyseMultiEsp-Light.RData")       # Chargement des résultats CLASSIF PAR ESPECES
 load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 
 library(ggpubr)   # Combiner graphes (ggarrange)
@@ -311,8 +312,9 @@ plot(distrib_diametre)
 ### Principes de génération des paramètres qualitatifs
 \paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
-
+\paragraph*{}
 L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question pour chaque spécimen.
+\paragraph*{}
 
 \newpage
 \FloatBarrier
@@ -450,7 +452,7 @@ avec $S$ la somme des carrés intraclasse de $X$ (proportionnelle à la variance
 La maximisation du rapport entre distances des moyennes interclasses et variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation, pour chaque $\lambda{}_{i}$ :
 $$\frac{d}{d\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
 
-Le rapport $S/D$ étant un facteur constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système \boldmath$S.\lambda = D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
+Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système \boldmath$S.\lambda = D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
 \paragraph*{}
 
 <!-- L'analyse discriminante pénalisée [A FINIR] -->
@@ -618,7 +620,10 @@ La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe
 \paragraph*{}
 La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 
+\paragraph*{}
+
 \newpage
+
 ## Optimisation et sélection des modèles
 \paragraph*{}
 Il existe une grande variété de modèles exploitables pour bâtir un système d'apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles, ainsi que pour l'exploration de l'espace de leurs hyperparamètres à fins d'optimisation et la mesure de leurs performances. 
@@ -648,7 +653,7 @@ Les algorithme d'apprentissage machine développés au cours de cette étude met
 \paragraph*{}
 Les modèles d'analyse discriminante choisis pour cette étude sont lda2 (LDA : *Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un seul hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 
-```{r, lda-pda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite)"}
+```{r, lda-pda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite), dans une tâche de classification binaire"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
    BI_fit_lda2_dim_graphe + theme(legend.position="none"),
@@ -685,7 +690,7 @@ L'inclusion de ces modèles, présentant ici des performances très modestes, a 
 \paragraph*{}
 Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). Le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en fonction du span (gauche) and du degré (droite)"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en classification binaire, en fonction du span (gauche) and du degré (droite)"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
    BI_fit_gamLoess_span_graphe + theme(legend.position="none"),
@@ -715,7 +720,7 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART le plus simple proposé dans notre étude (rpart) ne dispose que d'un seul hyperparamètre  : *cp* (complexité).
 \FloatBarrier
 \paragraph*{}
-```{r, BIrpart, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle rpart en fonction du paramètre de complexité (cp)"}
+```{r, BIrpart, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle rpart en classification binaire, en fonction du paramètre de complexité (cp)"}
 plot(BI_fit_rpart_cp_graphe)
 ```
 
@@ -739,7 +744,7 @@ En pratique, pour $cp \geq 0.05$, notre modèle d'IA basé sur ce type d'arbre d
 C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
 
 
-```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en classification binaire, en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_rpartcost_sens_graphe,
@@ -749,8 +754,8 @@ plot(ggarrange(
 ```
 
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = paste0("Performances (index J de Youden pondéré ", Jw_ratio,":1) de rpartCost en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)")}
-plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right'))
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = paste0("Performances (index J de Youden pondéré ", Jw_ratio,":1) de rpartCost en classification binaire, en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)")}
+plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
 \FloatBarrier
@@ -824,13 +829,16 @@ Les modèles d'arbres de classification sont particulièrement adaptés aux prob
     BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),3)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
     BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Sens"], 
     BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),3)`$), mais n'atteignant pas pour autant les exigences imposées par le critère de performance que nous avons défini pour les classifieurs binaires de notre étude.
+\paragraph*{}
+
+\newpage
 
 ### Forêts aléatoires {#chapitre:BI-RF}
 \paragraph*{}
 \FloatBarrier
 Le premier modèle de forêt aléatoire évalué dans notre étude est le modèle de fougères aléatoires rFerns (*Random Ferns*). Ce modèle ne possède qu'un seul hyperparamètre, la profondeur (*depth*).
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle de fougères aléatoires"}
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle de fougères aléatoires, en classification binaire"}
 BI_fit_rFerns_depth_graphe + theme_bw()
 ```
 
@@ -848,7 +856,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rFerns_depth_resultats[which.max(BI_fit_rFerns_
 \paragraph*{}
 Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_Rborist_sens_graphe,
@@ -857,8 +865,8 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en fonction de ses deux hyperparamètres réduits de nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
-plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right'))
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres réduits de nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
 \FloatBarrier
@@ -904,7 +912,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_Rborist_best_resultats["Sens"],5)` \\
 \paragraph*{}
 Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. Celui-ci dispose de trois hyperparamètres : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
 
-```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
+```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission : gini)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_Gini_sens_graphe,
@@ -913,7 +921,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, BI-ranger-ET, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
+```{r, BI-ranger-ET, echo = FALSE, fig.height = 4, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission : extratrees)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_sens_graphe,
@@ -923,7 +931,7 @@ plot(ggarrange(
 ```
 
 
-```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des hyperparamètres réduits : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger en classification binaire, en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des hyperparamètres réduits : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_jw_graphe,
@@ -977,7 +985,9 @@ Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_resultats["Sens"],5)` \\
 Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité, une spécificité et un indice de Youden excellents.
 \paragraph*{}
 Ces résultats soulignent un fait intéressant : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires ont montré de grandes disparités d'efficience sur le plan calculatoire, ce qui nous a conduit à écarter certains modèles pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
+\paragraph*{}
 
+\newpage
 
 ## Résultats
 ### Protocole d'évaluation
@@ -1015,7 +1025,10 @@ kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et
 
 \FloatBarrier
 
+\paragraph*{}
+
 \newpage
+
 # Apprentissage machine et classification multiclasse
 
 *Brouillon, le lot de données utilisé ici est un lot synthétique créé par moi-même (avec algorithme de création fonctionnel), mais à partir des données primaires du Secondary Mushroom Dataset de D.Wagner.*
@@ -1033,7 +1046,7 @@ kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et
 Le modèle d'arbre de décision présenté dans cette partie est rpart, le plus simple des modèles CART.
 
 \FloatBarrier
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle CART (rpart) en fonction du paramètre de complexité"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle CART (rpart) dans une classification par familles, en fonction du paramètre de complexité"}
 plot(MULFAM_fit_rpart_cp_graphe)
 ```
 
@@ -1046,7 +1059,7 @@ Ce modèle, pourtant très simple, donne déjà de très bons résultats globaux
 \paragraph*{}
 Le premier modèle de forêt aléatoire évalué dans cette partie est ranger, que nous avons déjà présenté précédemment. Les graphiques des performances en fonction des hyperparamètres laissent entrevoir d'excellentes caractéristiques sur une large plage d'hyperparamètres.
 
-```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger, en fonction de ses 2 hyperparamètres (algorithme de scission : gini à gauche, extratrees à droite)"}
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger dans une classification par familles, en fonction de ses 2 hyperparamètres (algorithme de scission : gini à gauche, extratrees à droite)"}
 plot(ggarrange(
    ncol = 2,
    MULFAM_fit_ranger_Gini_kappa_graphe,
@@ -1065,8 +1078,8 @@ kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist.
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances du modèle Rborist en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
-plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right'))
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
 \paragraph*{}
@@ -1089,7 +1102,7 @@ Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqué
 L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}.
 
 ```{r FAM-CM, echo = FALSE}
-kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger") %>%
+kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, références en haut)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F, font_size = 5) %>%
   row_spec(0, angle = -90)
 ```
@@ -1108,11 +1121,104 @@ kable(MULFAM_RF_resultat, digits = 5, caption = "Performances des modèles Range
 
 \FloatBarrier
 
-## Classification par espèce
-
-*A faire, en reprenant les recettes de la classification par familles...*
+\paragraph*{}
 
 \newpage
+
+## Classification par espèce
+
+Dans cette partie, la difficulté de la classification augmente sensiblement, les modèles ne sont plus chargés de classifier les champignons par familles, mais de déterminer précisément l'espèce de chaque spécimen du lot de données. Les modèles utilisés dans cette partie sont les mêmes que ceux de la classification par familles.
+
+### Modèles d'arbres de décision
+
+\paragraph*{}
+Comme précédemment, le modèle d'arbre de décision retenu pour la classification par espèces est rpart.
+
+\FloatBarrier
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle CART (rpart) dans une classification par espèces, en fonction du paramètre de complexité"}
+plot(MULESP_fit_rpart_cp_graphe)
+```
+
+Ce modèle, bien que relativement simple, donne encore des résultats très honorables, avec un kappa ($\kappa_{max} =$ `r round(max(MULESP_fit_rpart_cp_resultats["Kappa"]),3)` et une précision $R_{max} =$ `r round(max(MULESP_fit_rpart_cp_resultats["Accuracy"]),3)`).
+
+\FloatBarrier
+
+### Forêts aléatoires
+
+\paragraph*{}
+Comme lors de la classification par familles, notre premier modèle de forêt aléatoire évalué dans cette partie est ranger. L'exploration de l'espace expérimental des hyperparamètres de ce modèle laisse entrevoir de très bonnes performances sur une large plage d'hyperparamètres.
+
+```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger dans une classification par espèces, en fonction de ses 2 hyperparamètres (algorithme de scission : gini à gauche, extratrees à droite)"}
+plot(ggarrange(
+   ncol = 2,
+   MULESP_fit_ranger_Gini_kappa_graphe,
+   MULESP_fit_ranger_ET_kappa_graphe
+   )
+)
+```
+
+Après optimisation des hyperparamètres (*min.node.size* = `r MULESP_best_rangergrid$min.node.size`, *mtry* = `r MULESP_best_rangergrid$mtry` et *splitrule* = `r MULESP_best_rangergrid$splitrule`), ce modèle a donné, comme lors des tests précédents, d'excellents résultats, malgré la complexité accrue du problème.
+
+```{r, echo = FALSE}
+kable(MULESP_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+```
+
+\paragraph*{}
+Le dernier modèle de forêt aléatoire exploité dans cette tâche de classification par espèces est Rborist.
+
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+plot(MULESP_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
+```
+
+\paragraph*{}
+Avec des paramètres optimaux (*predFixed* = `r MULESP_best_Rboristgrid$predFixed` et *minNode* = `r MULESP_best_Rboristgrid$minNode`), la performance est estimée à :
+\FloatBarrier
+
+```{r, echo = FALSE}
+kable(MULESP_fit_Rborist_best_resultats[c(1,2,6,7)], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+```
+\FloatBarrier
+\paragraph*{}
+Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger, avec d'excellentes performances en phase d'apprentissage et optimisation.
+
+
+### Résultats
+Les critères et le protocole de l'évaluation sont les mêmes que ceux mentionnés pour les autres tâches de classification.
+
+La précision finale du modèle Ranger est égale à $R = `r round(MULESP_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULESP_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).
+\paragraph*{}
+
+\FloatBarrier
+La matrice de confusion, ne reprenant ici que les espèces ayant posé problème à notre modèle (`r MULESP_erreur_ranger`:`r MULESP_n_eval`), est résumée par la table \ref{tab:ESP-CM-Ranger}.
+
+
+```{r ESP-CM-Ranger, echo = FALSE}
+kable(MULESP_CMerreurs_ranger, caption = "Matrice de confusion des erreurs de Ranger, (prédictions à g., références en h.)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F) %>%
+  row_spec(0, angle = -90)
+```
+
+\FloatBarrier
+
+\paragraph*{}
+La forêt aléatoire de type Rborist a donné des résultats très proches de ceux obtenus par le modèle ranger, avec un taux d'erreur de `r MULESP_erreur_Rborist`:`r MULESP_n_eval`.
+\paragraph*{}
+La précision finale de Rborist est ainsi égale à `r round(MULESP_CM_Rborist_final$overall["Accuracy"],4)`, avec un intervalle de confiance à 95% de [`r round(MULESP_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULESP_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats proches à Ranger, s'est de plus avéré assez efficient sur le plan calculatoire (`r MULESP_temps_Rborist` min).
+\paragraph*{}
+Nous pouvons noter que si Rborist affiche des performances marginalement supérieures, le modèle ranger s'est encore une fois avéré sensiblement plus rapide que Rborist sur des problèmes complexes.
+
+```{r, echo = FALSE}
+kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+
+```
+
+\paragraph*{}
+
+\newpage
+
 # Robustesse de la classification
 
 *Partie facultative, assez ambitieux, voir si cette partie est compatible (en temps) avec la création du lot de données, qui va être assez chronophage...*

@@ -66,7 +66,8 @@ graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_co
    scale_fill_viridis_c(option ='" , fcn_couleur, "', direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position='bottom')"
+   theme(legend.position='bottom') + 
+   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0))"
    )
    eval(parse(text = cmd))
 }
@@ -253,6 +254,8 @@ MULESP_evaluation <- MULESP_lot_evaluation
 MULESP_evaluation$reference <- as.factor(MULESP_evaluation$name)
 save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")
 
+MULESP_n_eval <- nrow(MULESP_evaluation)
+
 start_time <- Sys.time()     # Démarre chrono
 cmd <- paste0("train(name ~ ., method = 'ranger', data = MULESP_lot_appr_opti,", MULESP_set_ranger_best[2], ")") # Construction de la commande
 MULESP_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
@@ -281,7 +284,23 @@ MULESP_RF_resultat <- rbind(MULESP_resultat_ranger, MULESP_resultat_Rborist)
 colnames(MULESP_RF_resultat) <- c("Précision", "Kappa", "Durée (min)")
 rownames(MULESP_RF_resultat) <- c("Ranger", "Rborist")
 
-save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")     # Sauvegarde données pour rapport
+MULESP_erreur_ranger <- MULESP_n_eval*(1-MULESP_CM_ranger_final$overall["Accuracy"])
+MULESP_erreur_Rborist <- MULESP_n_eval*(1-MULESP_CM_Rborist_final$overall["Accuracy"])
+
+# A DEBUGUER !
+MULESP_erreurs_ranger <- which(MULESP_CM_ranger_final$byClass[,'Precision'] != 1)
+#MULESP_CM_ranger_final$byClass[MULESP_erreurs_ranger,]
+MULESP_CMerreurs_ranger <- MULESP_CM_ranger_final$table[MULESP_erreurs_ranger,]
+MULESP_CMerreurs_ranger <- MULESP_CMerreurs_ranger[,colSums(MULESP_CMerreurs_ranger) > 0]
+
+MULESP_erreurs_Rborist <- which(MULESP_CM_Rborist_final$byClass[,'Precision'] != 1)
+#MULESP_CM_Rborist_final$byClass[MULESP_erreurs_Rborist,]
+MULESP_CMerreurs_Rborist <- MULESP_CM_Rborist_final$table[MULESP_erreurs_Rborist,]
+index <- which(apply(matrix(MULESP_CMerreurs_Rborist),1,sum) !=0)
+MULESP_CMerreurs_Rborist <- MULESP_CMerreurs_Rborist[, index]
+
+
+save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")     # Sauvegarde données complètes
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
 rm(dataset, MULESP_evaluation, MULESP_lot_appr_opti, MULESP_lot_evaluation,
@@ -290,4 +309,4 @@ rm(dataset, MULESP_evaluation, MULESP_lot_appr_opti, MULESP_lot_evaluation,
    MULESP_fit_ranger, MULESP_fit_ranger_best, MULESP_fit_ranger_final)
 save.image(file = "EKR-Champis-AnalyseMultiEsp-Light.RData")     # Sauvegarde données pour rapport
 
-load(file = "EKR-Champis-AnalyseMultiEsp.RData")     # Chargement données pour rapport
+load(file = "EKR-Champis-AnalyseMultiEsp.RData")     # Chargement données complètes

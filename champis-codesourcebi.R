@@ -131,28 +131,31 @@ CodBI_pred_Rborist <- expand.grid(CodBI_fit_Rborist_resultats[,c("X1","X2")]) %>
 CodBI_Rborist_graphe_raster <- CodBI_pred_Rborist %>% ggplot() +
    geom_raster(data = CodBI_pred_Rborist,
                aes(x = X1, y = X2, fill = Jw), interpolate = TRUE) +
-   scale_fill_viridis_c(option = "D", direction = 1, begin = 0.79, end = 1.01) +
+   scale_fill_viridis_c(option = "D", direction = 1, limits = c(0.76, 1.03)) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme_bw() +
-   theme(legend.position='bottom')
+   theme(legend.position='bottom') + 
+   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0))
 
 CodBI_Rborist_graphe_tiles <- CodBI_pred_Rborist %>% ggplot() +
    geom_tile(data = CodBI_fit_Rborist_resultats,
              aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
-   scale_fill_viridis_c(option = "D", direction = 1, begin = 0.79, end = 1.01) +
+   scale_fill_viridis_c(option = "D", direction = 1, limits = c(0.76, 1.03)) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme_bw() +
-   theme(legend.position='bottom')
+   theme(legend.position='bottom') + 
+   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0))
 
 CodBI_Rborist_graphe_full <- CodBI_pred_Rborist %>% ggplot() +
    geom_raster(data = CodBI_pred_Rborist,
                aes(x = X1, y = X2, fill = Jw), interpolate = TRUE) +
    geom_tile(data = CodBI_fit_Rborist_resultats,
              aes(x = X1, y = X2, fill = Jw), color = 'black', linewidth =.5) +
-   scale_fill_viridis_c(option = "D", direction = 1, begin = 0.79, end = 1.01) +
+   scale_fill_viridis_c(option = "D", direction = 1, limits = c(0.76, 1.03)) +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme_bw() +
-   theme(legend.position='bottom')
+   theme(legend.position='bottom') + 
+   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0))
 
 
 CodBI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), 

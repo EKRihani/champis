@@ -71,7 +71,8 @@ graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_co
    scale_fill_viridis_c(option ='" , fcn_couleur, "', direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-   theme(legend.position='bottom')"
+   theme(legend.position='bottom') + 
+   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0))"
    )
    eval(parse(text = cmd))
 }
@@ -444,7 +445,7 @@ rownames(BI_RF_resultat) <- c("Ranger", "Rborist")
 colnames(BI_RF_resultat) <- c("Sensibilité", "Spécificité", "J de Youden", "Durée (min)")
 
 
-save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données pour rapport
+save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données complètes
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
 rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
@@ -456,4 +457,4 @@ rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evalua
    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
 
 save.image(file = "EKR-Champis-AnalyseBi-Light.RData")     # Sauvegarde données pour rapport
-load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données pour rapport
+load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données complètes
