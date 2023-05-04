@@ -407,32 +407,24 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 
 \FloatBarrier
 
-#### Approche matricielle...
+<!-- #### Approche matricielle... -->
 
-\paragraph*{}
-En pratique, la LDA consiste à déterminer le meilleur ensemble de caractéristiques séparant deux classes, en réduisant la dimensionalité du problème (nombre de caractéristiques) par construction d'un sous-espace de dimensionalité réduite, dans lequel les points du problème originel deviennent "séparables".
-\paragraph*{}
-Considérons deux échantillons $\mathbf{x}_{1}^{(1)}, \,...\,, \mathbf{x}_{n_{1}}^{(1)}$ et $\mathbf{x}_{1}^{(2)}, \,...\,, \mathbf{x}_{n_{2}}^{(2)}$, issus de deux distributions multivariées. La LDA pose implicitement l'hypothèse que ces distributions ont une matrice de covariance commune. Il est possible de définir la différence $\mathbf{d}$ entre les moyennes des deux échantillons (correspondant à la notion de distance interclasse) par :
-$$ \mathbf{d} = \mathbf{\overline{x}}^{(1)} - \mathbf{\overline{x}}^{(2)} $$ et de calculer la somme des carrés intragroupes $\mathbf{A}$ telle que :
-
-$$\mathbf{A} = \sum^{2}_{i=1} \sum^{n_{i}}_{j=1} \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) ^\intercal$$
-
-d'où la matrice de covariance : 
-
-$$\mathbf{S} = \frac{1}{ddl}\,\mathbf{A}, \; \; \; \mathrm{avec} \; ddl = n_{1} + n_{2} - 2$$
-
-Soit une combinaison linéaire arbitraire des variables observées : $\mathbf{X} = \mathbf{b}^{T}\mathbf{x}$. Alors les différences de moyennes interclasses de cette combinaison linéaire et la variance intraclasse de X se définissent respectivement par : 
-
-$$ \mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)} = \mathbf{b}^\intercal\mathbf{d} \; \; \mathrm{et \; Var}(X) = \mathbf{b}^\intercal\mathbf{S}\mathbf{b} $$
-
-L'objectif de la LDA est d'optimiser cette combinaison linéaire $X$ en maximisant le rapport entre le carré de la distance interclasse (écart des moyennes) et la dispersion intraclasse (variance intraclasse) par rapport à $\mathbf{b}$  c'est à dire de maximiser le rapport :
-$$\frac{\left(\mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)}\right)^{2}}{\mathrm{Var}(X)} = \frac{\left(\mathbf{b}^\intercal\mathbf{d}\right)^{2}}{\mathbf{b}^\intercal\mathbf{S}\mathbf{b}} $$
-Une solution algébrique est $\mathbf{b} = \mathbf{S}^{-1}\mathbf{d}$. La fonction linéaire optimale ainsi obtenue, $\mathbf{X} = \mathbf{b}^\intercal \mathbf{x}$ est alors la fonction discriminante linéaire, et peut être utilisée pour classifier une future observation comme venant de :
-$$- \mathrm{\;la \; population \; (1) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} > \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2} $$
-
-$$ - \mathrm{\; la \; population \; (2) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$
-
-#### Approche non-matricielle...
+<!--\paragraph*{} -->
+<!--En pratique, la LDA consiste à déterminer le meilleur ensemble de caractéristiques séparant deux classes, en réduisant la dimensionalité du problème (nombre de caractéristiques) par construction d'un sous-espace de dimensionalité réduite, dans lequel les points du problème originel deviennent "séparables". -->
+<!--\paragraph*{} -->
+<!--Considérons deux échantillons $\mathbf{x}_{1}^{(1)}, \,...\,, \mathbf{x}_{n_{1}}^{(1)}$ et $\mathbf{x}_{1}^{(2)}, \,...\,, \mathbf{x}_{n_{2}}^{(2)}$, issus de deux distributions multivariées. La LDA pose implicitement l'hypothèse que ces distributions ont une matrice de covariance commune. Il est possible de définir la différence $\mathbf{d}$ entre les moyennes des deux échantillons (correspondant à la notion de distance interclasse) par : -->
+<!--$$ \mathbf{d} = \mathbf{\overline{x}}^{(1)} - \mathbf{\overline{x}}^{(2)} $$ et de calculer la somme des carrés intragroupes $\mathbf{A}$ telle que : -->
+<!--$$\mathbf{A} = \sum^{2}_{i=1} \sum^{n_{i}}_{j=1} \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) ^\intercal$$ -->
+<!--d'où la matrice de covariance :  -->
+<!--$$\mathbf{S} = \frac{1}{ddl}\,\mathbf{A}, \; \; \; \mathrm{avec} \; ddl = n_{1} + n_{2} - 2$$ -->
+<!--Soit une combinaison linéaire arbitraire des variables observées : $\mathbf{X} = \mathbf{b}^{T}\mathbf{x}$. Alors les différences de moyennes interclasses de cette combinaison linéaire et la variance intraclasse de X se définissent respectivement par :  -->
+<!--$$ \mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)} = \mathbf{b}^\intercal\mathbf{d} \; \; \mathrm{et \; Var}(X) = \mathbf{b}^\intercal\mathbf{S}\mathbf{b} $$ -->
+<!--L'objectif de la LDA est d'optimiser cette combinaison linéaire $X$ en maximisant le rapport entre le carré de la distance interclasse (écart des moyennes) et la dispersion intraclasse (variance intraclasse) par rapport à $\mathbf{b}$  c'est à dire de maximiser le rapport : -->
+<!--$$\frac{\left(\mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)}\right)^{2}}{\mathrm{Var}(X)} = \frac{\left(\mathbf{b}^\intercal\mathbf{d}\right)^{2}}{\mathbf{b}^\intercal\mathbf{S}\mathbf{b}} $$ -->
+<!--Une solution algébrique est $\mathbf{b} = \mathbf{S}^{-1}\mathbf{d}$. La fonction linéaire optimale ainsi obtenue, $\mathbf{X} = \mathbf{b}^\intercal \mathbf{x}$ est alors la fonction discriminante linéaire, et peut être utilisée pour classifier une future observation comme venant de : -->
+<!--$$- \mathrm{\;la \; population \; (1) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} > \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2} $$ -->
+<!--$$ - \mathrm{\; la \; population \; (2) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$ -->
+<!-- #### Approche non-matricielle... -->
 
 \paragraph*{}
 En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables".
@@ -457,11 +449,10 @@ Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients 
 
 <!-- L'analyse discriminante pénalisée [A FINIR] -->
 
-### Modèle additif généralisé
+<!-- ### Modèle additif généralisé -->
 <!-- gamLoess -->
-*Développements théoriques sur les modèles GAM...*
-
-[A FAIRE]
+<!-- *Développements théoriques sur les modèles GAM...* -->
+<!-- [ANNULE] -->
 
 ### Arbres de décision
 <!-- rpart, Ctree???, c50tree, Rpartcost -->
