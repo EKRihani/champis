@@ -27,6 +27,7 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 ```{r setup, include = FALSE, warning=FALSE}
 load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
+load(file = "EKR-Champis-Iris.RData")  # Chargement des exemples Iris
 load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
@@ -427,13 +428,12 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 <!-- #### Approche non-matricielle... -->
 
 \paragraph*{}
-En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables".
+En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* et *Iris setosa*.
 \paragraph*{}
-Pour un classifieur binaire, la LDA vise ainsi à définir la fonction linéaire :
+Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire :
 
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
-avec $n$ le nombre de paramètres, $x_{i}$ les caractéristiques mesurées pour chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à déterminer, telle que $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par :
-
+avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par :
 \paragraph*{}
 
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
@@ -441,18 +441,52 @@ avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètr
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
 avec $S$ la somme des carrés intraclasse de $X$ (proportionnelle à la variance intraclasse) et $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
 \paragraph*{}
+L'application sur les espèces *iris versicolor* et *iris setosa* nous donne :
+
+```{r, echo = FALSE}
+kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+```
+
+```{r, echo = FALSE}
+kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor (S)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+```
+
+\paragraph*{}
 La maximisation du rapport entre distances des moyennes interclasses et variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation, pour chaque $\lambda{}_{i}$ :
 $$\frac{d}{d\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
 
-Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système \boldmath$S.\lambda = D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
+Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système :
+$$\left \{
+\begin{array}{l}
+d_{1} = S_{11}\lambda_{1} + S_{12}\lambda_{2} + S_{13}\lambda_{3} + S_{14}\lambda_{4} \\
+d_{2} = S_{21}\lambda_{1} + S_{22}\lambda_{2} + S_{23}\lambda_{3} + S_{24}\lambda_{4} \\
+d_{3} = S_{31}\lambda_{1} + S_{32}\lambda_{2} + S_{33}\lambda_{3} + S_{34}\lambda_{4} \\
+d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambda_{4} \\
+\end{array}
+\right.$$
+
+soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$. Nous obtenons donc :
 \paragraph*{}
+$$\left \{
+\begin{array}{l}
+\lambda_{1} = `r iris_Coeffs[1]`  \\
+\lambda_{2} = `r iris_Coeffs[2]` \\
+\lambda_{3} = `r iris_Coeffs[3]` \\
+\lambda_{4} = `r iris_Coeffs[4]` \\
+\end{array}
+\right.$$
+soit, après normalisation sur le facteur $\lambda_{1}$,
+$$left \{
+\begin{array}{l}
+\lambda_{1} = `r iris_CoeffsNorm[1]`  \\
+\lambda_{2} = `r iris_CoeffsNorm[2]` \\
+\lambda_{3} = `r iris_CoeffsNorm[3]` \\
+\lambda_{4} = `r iris_CoeffsNorm[4]` \\
+\end{array}
+\right.$$
 
-<!-- L'analyse discriminante pénalisée [A FINIR] -->
-
-<!-- ### Modèle additif généralisé -->
-<!-- gamLoess -->
-<!-- *Développements théoriques sur les modèles GAM...* -->
-<!-- [ANNULE] -->
 
 ### Arbres de décision
 <!-- rpart, Ctree???, c50tree, Rpartcost -->
