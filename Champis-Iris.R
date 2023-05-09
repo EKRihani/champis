@@ -26,15 +26,14 @@ rownames(iris_M) <- c("setosa", "versicolor", "diff.")
 iris_delta <- iris %>%
    filter(Species %in% c("versicolor", "setosa")) %>%
    group_by(Species) %>% 
-   reframe(S.l = Sepal.Length - mean(Sepal.Length),
+   mutate(S.l = Sepal.Length - mean(Sepal.Length),
            S.w = Sepal.Width - mean(Sepal.Width),
            P.l = Petal.Length - mean(Petal.Length),
            P.w = Petal.Width - mean(Petal.Width))
 
 # Produits des carrés : 2. Carrés des différences (table III)
-iris_deltas <- iris_delta %>% 
-   select(S.l:P.w) %>%
-   as.matrix()
+iris_deltas <-as.matrix(iris_delta[,c("S.l","S.w","P.l","P.w")])
+
 iris_prods <- rbind(iris_deltas[,1] %*% iris_deltas,
                     iris_deltas[,2] %*% iris_deltas,
                     iris_deltas[,3] %*% iris_deltas,

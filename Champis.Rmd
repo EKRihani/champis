@@ -471,16 +471,17 @@ soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath
 \paragraph*{}
 $$\left \{
 \begin{array}{l}
-\lambda_{1} = `r iris_Coeffs[1]`  \\
+\lambda_{1} = `r iris_Coeffs[1]` \\
 \lambda_{2} = `r iris_Coeffs[2]` \\
 \lambda_{3} = `r iris_Coeffs[3]` \\
 \lambda_{4} = `r iris_Coeffs[4]` \\
 \end{array}
 \right.$$
-soit, après normalisation sur le facteur $\lambda_{1}$,
-$$left \{
+soit, après normalisation sur le facteur $\lambda_{1}$, 
+
+$$\left \{
 \begin{array}{l}
-\lambda_{1} = `r iris_CoeffsNorm[1]`  \\
+\lambda_{1} = `r iris_CoeffsNorm[1]` \\
 \lambda_{2} = `r iris_CoeffsNorm[2]` \\
 \lambda_{3} = `r iris_CoeffsNorm[3]` \\
 \lambda_{4} = `r iris_CoeffsNorm[4]` \\
