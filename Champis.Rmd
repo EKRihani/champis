@@ -42,7 +42,7 @@ library(knitr)
 library(tidyverse)
 library(bookdown)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
-knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "C50", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown", "twinning"), "packages.bib")
+knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown", "twinning"), "packages.bib")
 ```
 \pagestyle{plain}
 
@@ -137,7 +137,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * IDE : RStudio version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
 * VCS : `r system("git --version", intern = TRUE)`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), ?C50?[@R-C50] (v`r packageVersion("C50")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
 
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
@@ -455,9 +455,9 @@ kable(iris_prods, caption = "Produits des différences à la moyenne des 4 param
 
 \paragraph*{}
 La maximisation du rapport entre distances des moyennes interclasses et variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation, pour chaque $\lambda{}_{i}$ :
-$$\frac{d}{d\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
+$$\frac{\partial}{\partial{}\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
 
-Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système :
+En supposant que les distributions des classes soient unimodales, cette équation admet une solution unique. Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système :
 $$\left \{
 \begin{array}{l}
 d_{1} = S_{11}\lambda_{1} + S_{12}\lambda_{2} + S_{13}\lambda_{3} + S_{14}\lambda_{4} \\
@@ -467,7 +467,15 @@ d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambd
 \end{array}
 \right.$$
 
-soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$. Nous obtenons donc :
+soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$. 
+
+En indiçant les facteurs :
+* $i = 1$ pour la longueur de sépale,
+* $i = 2$ pour la largeur de sépale,
+* $i = 3$ pour la longueur de pétale,
+* $i = 4$ pour la largeur de pétale.
+
+Nous pouvons calculer les coefficients :
 \paragraph*{}
 $$\left \{
 \begin{array}{l}
@@ -477,17 +485,34 @@ $$\left \{
 \lambda_{4} = `r iris_Coeffs[4]` \\
 \end{array}
 \right.$$
-soit, après normalisation sur le facteur $\lambda_{1}$, 
+Soit, après normalisation sur le facteur $\lambda_{1}$ :
 
 $$\left \{
 \begin{array}{l}
 \lambda_{1} = `r iris_CoeffsNorm[1]` \\
-\lambda_{2} = `r iris_CoeffsNorm[2]` \\
-\lambda_{3} = `r iris_CoeffsNorm[3]` \\
-\lambda_{4} = `r iris_CoeffsNorm[4]` \\
+\lambda_{2} = `r round(iris_CoeffsNorm[2],3)` \\
+\lambda_{3} = `r round(iris_CoeffsNorm[3],3)` \\
+\lambda_{4} = `r round(iris_CoeffsNorm[4],3)` \\
 \end{array}
 \right.$$
 
+\paragraph*{}
+La valeur absolue de ces coefficients indique leur pondération dans l'indice $X$ qui permet une réduction de dimensionalité garantissant une séparation optimale, ainsi que l'illustre la figure \@ref(fig:LDA-MinMax).
+
+```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques"}
+plot(ggarrange(
+   ncol = 2,
+   iris_grapheMAX,
+   iris_grapheMin
+   )
+)
+```
+\paragraph*{}
+Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, illustrées par certains développements de cette section :
+
+* Les modèles LDA ne sont adaptés qu'à des données quantitatives ou qualitatives ordinales,
+* La séparation entre les différentes classes est basée sur la construction d'un indice synthétique purement linéaire : dans l'hyperplan de projection, la séparation entre "territoires" des différentes classes sera toujours une droite,
+* La plupart des modèles d'analyse discriminante se basent sur des hypothèses tacites concernant les distributions des spécimens, notamment normalité et homoscédasticité.
 
 ### Arbres de décision
 <!-- rpart, Ctree???, c50tree, Rpartcost -->

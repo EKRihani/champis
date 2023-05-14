@@ -7,8 +7,11 @@ data(iris)
 ###############################
 
 # Moyennes intraclasses
-iris_moyennes <- iris %>%
-   filter(Species %in% c("versicolor", "setosa")) %>%
+iris_lot <- iris %>%
+   filter(Species %in% c("versicolor", "setosa")) %>% 
+   droplevels()
+
+iris_moyennes <- iris_lot %>%
    group_by(Species) %>% 
    summarise(across(where(is.numeric), mean)) %>%
    data.frame()
@@ -23,8 +26,7 @@ rownames(iris_M) <- c("setosa", "versicolor", "diff.")
 
 
 # Produits des carrés : 1. Différences avec moyennes
-iris_delta <- iris %>%
-   filter(Species %in% c("versicolor", "setosa")) %>%
+iris_delta <- iris_lot %>%
    group_by(Species) %>% 
    mutate(S.l = Sepal.Length - mean(Sepal.Length),
            S.w = Sepal.Width - mean(Sepal.Width),
@@ -65,16 +67,35 @@ iris_L_ver <- iris_moyennes %>%
 
 
 # LDA avec package MASS
-iris_SV <- iris %>% filter(Species %in% c("setosa", "versicolor") ) %>% droplevels()
-
 iris_lda <- lda(formula = Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
-                data = iris_SV)
+                data = iris_lot)
 iris_lda
 
 iris_lda$means
 iris_moyennes
 iris_lda$scaling/iris_lda$scaling[1,1]
 iris_CoeffsNorm
+
+iris_grapheMAX <- iris_lot %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
+   labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
+   geom_point() +
+   theme_bw()
+
+iris_grapheMin <- iris_lot %>% ggplot(aes(x = Sepal.Width, y = Sepal.Length, color= Species)) +
+   labs(x = "Largeur Sépale", y = "Longueur Sépale", color = "Variété") +
+   geom_point() +
+   theme_bw()
+
+iris_grapheX <- iris_lot %>% mutate(X = Sepal.Length*iris_CoeffsNorm[1] +
+                        Sepal.Width*iris_CoeffsNorm[2] +
+                        Petal.Length*iris_CoeffsNorm[3] +
+                        Petal.Width*iris_CoeffsNorm[4]) %>%
+   ggplot(aes(x = X, fill = Species, color = Species)) +
+   labs(x = "X", y = "Nombre", color = "Variété", fill = "Variété") +   
+   geom_histogram(alpha = .6) +
+   ylim(0, 15) +
+   theme_bw()
+
 
 save.image(file = "EKR-Champis-Iris.RData")
 load(file = "EKR-Champis-Iris.RData")
