@@ -76,25 +76,49 @@ iris_moyennes
 iris_lda$scaling/iris_lda$scaling[1,1]
 iris_CoeffsNorm
 
+iris_totale <- iris_lot %>% mutate(X = Sepal.Length*iris_CoeffsNorm[1] +
+                       Sepal.Width*iris_CoeffsNorm[2] +
+                       Petal.Length*iris_CoeffsNorm[3] +
+                       Petal.Width*iris_CoeffsNorm[4])
+
 iris_grapheMAX <- iris_lot %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
    labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
    geom_point() +
+   scale_color_viridis_d(end = .75, option = "D") +
    theme_bw()
 
 iris_grapheMin <- iris_lot %>% ggplot(aes(x = Sepal.Width, y = Sepal.Length, color= Species)) +
    labs(x = "Largeur Sépale", y = "Longueur Sépale", color = "Variété") +
    geom_point() +
+   scale_color_viridis_d(end = .75, option = "D") +
    theme_bw()
 
-iris_grapheX <- iris_lot %>% mutate(X = Sepal.Length*iris_CoeffsNorm[1] +
-                        Sepal.Width*iris_CoeffsNorm[2] +
-                        Petal.Length*iris_CoeffsNorm[3] +
-                        Petal.Width*iris_CoeffsNorm[4]) %>%
-   ggplot(aes(x = X, fill = Species, color = Species)) +
-   labs(x = "X", y = "Nombre", color = "Variété", fill = "Variété") +   
-   geom_histogram(alpha = .6) +
+iris_grapheX <- iris_totale %>%
+   ggplot(aes(x = X, fill = Species)) +
+   labs(x = "X", y = "Nombre", fill = "Variété") +   
+   geom_histogram(alpha = .8, color = "black") +
+#   geom_vline(xintercept = mean(iris_totale$X), color = "red", linetype = "dashed", alpha = .8) +
+   scale_fill_viridis_d(end = .75, option = "D") +
    ylim(0, 15) +
    theme_bw()
+
+iris_norm <- iris_totale %>%
+   mutate(Ls = scale(Sepal.Length),
+          ls = scale(Sepal.Width),
+          lp = scale(Petal.Width),
+          Lp = scale(Petal.Length),
+          X = scale(X))
+
+iris_norm <-pivot_longer(data = iris_norm, cols = c("Ls", "ls", "lp", "Lp", "X"))  
+
+iris_grapheTotale <- iris_norm %>%
+   ggplot(aes(x = name, y = value, fill = Species, color = Species)) +
+   labs(x = NULL, y = "Valeur", color = "Variété", fill = "Variété") +   
+   geom_boxplot(alpha = .8, color = "black") +
+   scale_fill_viridis_d(end = .75, option = "D") +
+   theme_bw()
+
+
 
 
 save.image(file = "EKR-Champis-Iris.RData")

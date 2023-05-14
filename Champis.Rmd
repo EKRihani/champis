@@ -470,10 +470,10 @@ d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambd
 soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$. 
 
 En indiçant les facteurs :
-* $i = 1$ pour la longueur de sépale,
-* $i = 2$ pour la largeur de sépale,
-* $i = 3$ pour la longueur de pétale,
-* $i = 4$ pour la largeur de pétale.
+* $i = 1$ pour la longueur de sépale $L_{s}$,
+* $i = 2$ pour la largeur de sépale $\ell_{s}$,
+* $i = 3$ pour la longueur de pétale $L_{p}$,
+* $i = 4$ pour la largeur de pétale  $\ell_{p}$.
 
 Nous pouvons calculer les coefficients :
 \paragraph*{}
@@ -496,17 +496,31 @@ $$\left \{
 \end{array}
 \right.$$
 
-\paragraph*{}
-La valeur absolue de ces coefficients indique leur pondération dans l'indice $X$ qui permet une réduction de dimensionalité garantissant une séparation optimale, ainsi que l'illustre la figure \@ref(fig:LDA-MinMax).
+$$ X = L_{s} + `r round(iris_CoeffsNorm[2],3)`.\ell_{s} `r round(iris_CoeffsNorm[3],3)`.L_{p} `r round(iris_CoeffsNorm[4],3)`.\ell_{p} $$
 
-```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques"}
-plot(ggarrange(
+Le seuil de séparation est alors défini par : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
+\paragraph*{}
+La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \@ref(fig:LDA-MinMax) et \@ref(fig:LDA-Separation).
+
+```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
+plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
-   iris_grapheMAX,
+   iris_grapheMAX + theme(legend.position = "none"),
    iris_grapheMin
    )
 )
 ```
+
+```{r LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction des espèces"}
+plot(ggarrange(widths = c(1, 1.5),
+   ncol = 2,
+   iris_grapheX + theme(legend.position = "none"),
+   iris_grapheTotale
+   )
+)
+```
+
+
 \paragraph*{}
 Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, illustrées par certains développements de cette section :
 
@@ -682,7 +696,7 @@ Il existe une grande variété de modèles exploitables pour bâtir un système 
 Les modèles sélectionnés pour cette étude sont de types variés :
 
 * Analyse discriminante linéaire (LDA) : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
-* Modèle additif généralisé (GAM) : *Generalized Additive Model using LOESS* (gamLoess)
+<!-- * Modèle additif généralisé (GAM) : *Generalized Additive Model using LOESS* (gamLoess) -->
 * Modèle arborescent : *Classification And Regression Tree* (CART) (rpart, rpartCost), *Single C5.0 Tree* (ctree)
 * Forêt aléatoire : *Random Ferns* (rferns), *Random Forest* (ranger, Rborist)
 
@@ -737,27 +751,27 @@ Ces performances médiocres s'expliquent par le fonctionnement même des modèle
 L'inclusion de ces modèles, présentant ici des performances très modestes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
 
 \FloatBarrier
-### Modèle additif généralisé  
-\paragraph*{}
-Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). Le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
+<!-- ### Modèle additif généralisé   -->
+<!-- \paragraph*{} -->
+<!-- Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). Le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation). -->
 
-```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en classification binaire, en fonction du span (gauche) and du degré (droite)"}
-plot(ggarrange(widths = c(1, 1.5),
-   ncol = 2,
-   BI_fit_gamLoess_span_graphe + theme(legend.position="none"),
-   BI_fit_gamLoess_degree_graphe
-   )
-)
-```
+<!-- ```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en classification binaire, en fonction du span (gauche) and du degré (droite)"} -->
+<!-- plot(ggarrange(widths = c(1, 1.5), -->
+<!--    ncol = 2, -->
+<!--    BI_fit_gamLoess_span_graphe + theme(legend.position="none"), -->
+<!--    BI_fit_gamLoess_degree_graphe -->
+<!--    ) -->
+<!-- ) -->
+<!-- ``` -->
 
-\paragraph*{}
-L'hyperparamètre *degree* du modèle gamLoess a un impact mineur sur ses performances, avec un écart entre indices J de Youden maximal et minimal de $\Delta J_{w} = `r round(max(BI_fit_gamLoess_degree_resultats[,"Jw"]) - min(BI_fit_gamLoess_degree_resultats[,"Jw"]), 3)`$.
-\paragraph*{}
-L'hyperparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de $span = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Jw"]), "span"]`$, aboutissant à un index J de Youden maximal de $J_{w_{max}} = `r round(max(BI_fit_gamLoess_span_resultats["Jw"]), 3)`$.
-\paragraph*{}
-Les performances de ce modèle n'atteignent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
-\paragraph*{}
-Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante.\footnote{cf. section \ref{chapitre:BI_lda})
+<!-- \paragraph*{} -->
+<!-- L'hyperparamètre *degree* du modèle gamLoess a un impact mineur sur ses performances, avec un écart entre indices J de Youden maximal et minimal de $\Delta J_{w} = `r round(max(BI_fit_gamLoess_degree_resultats[,"Jw"]) - min(BI_fit_gamLoess_degree_resultats[,"Jw"]), 3)`$. -->
+<!-- \paragraph*{} -->
+<!-- L'hyperparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de $span = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Jw"]), "span"]`$, aboutissant à un index J de Youden maximal de $J_{w_{max}} = `r round(max(BI_fit_gamLoess_span_resultats["Jw"]), 3)`$. -->
+<!-- \paragraph*{} -->
+<!-- Les performances de ce modèle n'atteignent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`). -->
+<!-- \paragraph*{} -->
+<!-- Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante.\footnote{cf. section \ref{chapitre:BI_lda}) -->
 
 \FloatBarrier
 ### Modèles d'arbres de décision
