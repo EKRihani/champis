@@ -1,5 +1,6 @@
 library(MASS)
 library(tidyverse)
+library(caret)
 data(iris)
 
 ###############################
@@ -76,10 +77,13 @@ iris_moyennes
 iris_lda$scaling/iris_lda$scaling[1,1]
 iris_CoeffsNorm
 
+
+# Coeffs et graphiques LDA
+
 iris_totale <- iris_lot %>% mutate(X = Sepal.Length*iris_CoeffsNorm[1] +
-                       Sepal.Width*iris_CoeffsNorm[2] +
-                       Petal.Length*iris_CoeffsNorm[3] +
-                       Petal.Width*iris_CoeffsNorm[4])
+                                      Sepal.Width*iris_CoeffsNorm[2] +
+                                      Petal.Length*iris_CoeffsNorm[3] +
+                                      Petal.Width*iris_CoeffsNorm[4])
 
 iris_grapheMAX <- iris_lot %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
    labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
@@ -97,7 +101,7 @@ iris_grapheX <- iris_totale %>%
    ggplot(aes(x = X, fill = Species)) +
    labs(x = "X", y = "Nombre", fill = "Variété") +   
    geom_histogram(alpha = .8, color = "black") +
-#   geom_vline(xintercept = mean(iris_totale$X), color = "red", linetype = "dashed", alpha = .8) +
+   #   geom_vline(xintercept = mean(iris_totale$X), color = "red", linetype = "dashed", alpha = .8) +
    scale_fill_viridis_d(end = .75, option = "D") +
    ylim(0, 15) +
    theme_bw()
@@ -119,7 +123,33 @@ iris_grapheTotale <- iris_norm %>%
    theme_bw()
 
 
+# rpart avec caret
+n_iris <- nrow(iris)
+iris_split_p <- sqrt(n_iris)
+iris_split_facteur <- round(sqrt(iris_split_p)+1)
 
+iris_grid_rpart_cp <- data.frame(cp = 10^seq(from = -11, to = -1, by = 2))
+
+set.seed(1)
+tr_ctrl <- trainControl(classProbs = TRUE,
+                        summaryFunction = multiClassSummary,     # multiClassSummary, twoClassSummary
+                        method = "cv",
+                        number = iris_split_facteur)
+
+
+iris_rpart <- train(Species ~ .,
+                  method = "rpart",
+                  data =  iris,
+                  trControl = tr_ctrl,
+                  tuneGrid  = iris_grid_rpart_cp)
+
+
+
+plot(iris_rpart$finalModel)
+text(iris_rpart$finalModel)
+
+library(rpart.plot)
+rpart.plot(x = iris_rpart$finalModel, type = 4, extra = 8, branch = 1.0, under = TRUE, box.palette = "Blues")
 
 save.image(file = "EKR-Champis-Iris.RData")
 load(file = "EKR-Champis-Iris.RData")
