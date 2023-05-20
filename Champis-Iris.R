@@ -1,6 +1,6 @@
 library(MASS)
-library(tidyverse)
 library(caret)
+library(tidyverse)
 data(iris)
 
 ###############################
@@ -117,7 +117,7 @@ iris_norm <-pivot_longer(data = iris_norm, cols = c("Ls", "ls", "lp", "Lp", "X")
 
 iris_grapheTotale <- iris_norm %>%
    ggplot(aes(x = name, y = value, fill = Species, color = Species)) +
-   labs(x = NULL, y = "Valeur", color = "Variété", fill = "Variété") +   
+   labs(x = "", y = "Valeur", color = "Variété", fill = "Variété") +   
    geom_boxplot(alpha = .8, color = "black") +
    scale_fill_viridis_d(end = .75, option = "D") +
    theme_bw()
@@ -145,11 +145,25 @@ iris_rpart <- train(Species ~ .,
 
 
 
-plot(iris_rpart$finalModel)
-text(iris_rpart$finalModel)
-
 library(rpart.plot)
+pdf("IrisCARTArbre.pdf", width = 3, height = 3, pointsize = 16)
 rpart.plot(x = iris_rpart$finalModel, type = 4, extra = 8, branch = 1.0, under = TRUE, box.palette = "Blues")
+dev.off()
+
+iris_graphe_arbre <- iris %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
+   labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
+   xlim(0,2.5) + ylim(1,7) +
+   geom_point(size = 1) +
+   scale_color_viridis_d(end = .75, option = "D") +
+   geom_hline(yintercept = 2.5, linetype = "dotted", colour = "black", linewidth= .3) +
+   geom_segment(aes(x =1.8, y=2.5, xend=1.8, yend=7), linetype = "dotted", colour = "black", linewidth= .3) +
+   theme_bw()
+   
+
+pdf("IrisCARTGraphe.pdf", width = 3.5, height = 3, pointsize = 5)
+iris_graphe_arbre
+dev.off()
+
 
 save.image(file = "EKR-Champis-Iris.RData")
 load(file = "EKR-Champis-Iris.RData")

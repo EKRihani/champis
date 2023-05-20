@@ -41,8 +41,9 @@ library(rmarkdown)
 library(knitr)
 library(tidyverse)
 library(bookdown)
+library(rpart.plot) # Arbres de classification (à tester !)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
-knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown", "twinning"), "packages.bib")
+knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown", "twinning", "rpart.plot"), "packages.bib")
 ```
 \pagestyle{plain}
 
@@ -137,7 +138,7 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * R : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
 * IDE : RStudio version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
 * VCS : `r system("git --version", intern = TRUE)`
-* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
+* Librairies : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), ?GGally?[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), rpart.plot[@R-rpart.plot] (v`r packageVersion("rpart.plot")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
 
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
@@ -408,24 +409,23 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 
 \FloatBarrier
 
-<!-- #### Approche matricielle... -->
+<!-- #### Approche matricielle...
 
-<!--\paragraph*{} -->
-<!--En pratique, la LDA consiste à déterminer le meilleur ensemble de caractéristiques séparant deux classes, en réduisant la dimensionalité du problème (nombre de caractéristiques) par construction d'un sous-espace de dimensionalité réduite, dans lequel les points du problème originel deviennent "séparables". -->
-<!--\paragraph*{} -->
-<!--Considérons deux échantillons $\mathbf{x}_{1}^{(1)}, \,...\,, \mathbf{x}_{n_{1}}^{(1)}$ et $\mathbf{x}_{1}^{(2)}, \,...\,, \mathbf{x}_{n_{2}}^{(2)}$, issus de deux distributions multivariées. La LDA pose implicitement l'hypothèse que ces distributions ont une matrice de covariance commune. Il est possible de définir la différence $\mathbf{d}$ entre les moyennes des deux échantillons (correspondant à la notion de distance interclasse) par : -->
-<!--$$ \mathbf{d} = \mathbf{\overline{x}}^{(1)} - \mathbf{\overline{x}}^{(2)} $$ et de calculer la somme des carrés intragroupes $\mathbf{A}$ telle que : -->
-<!--$$\mathbf{A} = \sum^{2}_{i=1} \sum^{n_{i}}_{j=1} \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) ^\intercal$$ -->
-<!--d'où la matrice de covariance :  -->
-<!--$$\mathbf{S} = \frac{1}{ddl}\,\mathbf{A}, \; \; \; \mathrm{avec} \; ddl = n_{1} + n_{2} - 2$$ -->
-<!--Soit une combinaison linéaire arbitraire des variables observées : $\mathbf{X} = \mathbf{b}^{T}\mathbf{x}$. Alors les différences de moyennes interclasses de cette combinaison linéaire et la variance intraclasse de X se définissent respectivement par :  -->
-<!--$$ \mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)} = \mathbf{b}^\intercal\mathbf{d} \; \; \mathrm{et \; Var}(X) = \mathbf{b}^\intercal\mathbf{S}\mathbf{b} $$ -->
-<!--L'objectif de la LDA est d'optimiser cette combinaison linéaire $X$ en maximisant le rapport entre le carré de la distance interclasse (écart des moyennes) et la dispersion intraclasse (variance intraclasse) par rapport à $\mathbf{b}$  c'est à dire de maximiser le rapport : -->
-<!--$$\frac{\left(\mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)}\right)^{2}}{\mathrm{Var}(X)} = \frac{\left(\mathbf{b}^\intercal\mathbf{d}\right)^{2}}{\mathbf{b}^\intercal\mathbf{S}\mathbf{b}} $$ -->
-<!--Une solution algébrique est $\mathbf{b} = \mathbf{S}^{-1}\mathbf{d}$. La fonction linéaire optimale ainsi obtenue, $\mathbf{X} = \mathbf{b}^\intercal \mathbf{x}$ est alors la fonction discriminante linéaire, et peut être utilisée pour classifier une future observation comme venant de : -->
-<!--$$- \mathrm{\;la \; population \; (1) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} > \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2} $$ -->
-<!--$$ - \mathrm{\; la \; population \; (2) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$ -->
-<!-- #### Approche non-matricielle... -->
+En pratique, la LDA consiste à déterminer le meilleur ensemble de caractéristiques séparant deux classes, en réduisant la dimensionalité du problème (nombre de caractéristiques) par construction d'un sous-espace de dimensionalité réduite, dans lequel les points du problème originel deviennent "séparables".
+
+Considérons deux échantillons $\mathbf{x}_{1}^{(1)}, \,...\,, \mathbf{x}_{n_{1}}^{(1)}$ et $\mathbf{x}_{1}^{(2)}, \,...\,, \mathbf{x}_{n_{2}}^{(2)}$, issus de deux distributions multivariées. La LDA pose implicitement l'hypothèse que ces distributions ont une matrice de covariance commune. Il est possible de définir la différence $\mathbf{d}$ entre les moyennes des deux échantillons (correspondant à la notion de distance interclasse) par :
+$$ \mathbf{d} = \mathbf{\overline{x}}^{(1)} - \mathbf{\overline{x}}^{(2)} $$ et de calculer la somme des carrés intragroupes $\mathbf{A}$ telle que :
+$$\mathbf{A} = \sum^{2}_{i=1} \sum^{n_{i}}_{j=1} \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) ^\intercal$$
+d'où la matrice de covariance :
+$$\mathbf{S} = \frac{1}{ddl}\,\mathbf{A}, \; \; \; \mathrm{avec} \; ddl = n_{1} + n_{2} - 2$$
+Soit une combinaison linéaire arbitraire des variables observées : $\mathbf{X} = \mathbf{b}^{T}\mathbf{x}$. Alors les différences de moyennes interclasses de cette combinaison linéaire et la variance intraclasse de X se définissent respectivement par :
+$$ \mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)} = \mathbf{b}^\intercal\mathbf{d} \; \; \mathrm{et \; Var}(X) = \mathbf{b}^\intercal\mathbf{S}\mathbf{b} $$
+L'objectif de la LDA est d'optimiser cette combinaison linéaire $X$ en maximisant le rapport entre le carré de la distance interclasse (écart des moyennes) et la dispersion intraclasse (variance intraclasse) par rapport à $\mathbf{b}$  c'est à dire de maximiser le rapport :
+$$\frac{\left(\mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)}\right)^{2}}{\mathrm{Var}(X)} = \frac{\left(\mathbf{b}^\intercal\mathbf{d}\right)^{2}}{\mathbf{b}^\intercal\mathbf{S}\mathbf{b}} $$
+Une solution algébrique est $\mathbf{b} = \mathbf{S}^{-1}\mathbf{d}$. La fonction linéaire optimale ainsi obtenue, $\mathbf{X} = \mathbf{b}^\intercal \mathbf{x}$ est alors la fonction discriminante linéaire, et peut être utilisée pour classifier une future observation comme venant de :
+$$- \mathrm{\;la \; population \; (1) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} > \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2} $$
+$$ - \mathrm{\; la \; population \; (2) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$ -->
+
 
 \paragraph*{}
 En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* et *Iris setosa*.
@@ -454,7 +454,7 @@ kable(iris_prods, caption = "Produits des différences à la moyenne des 4 param
 ```
 
 \paragraph*{}
-La maximisation du rapport entre distances des moyennes interclasses et variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation, pour chaque $\lambda{}_{i}$ :
+La maximisation du rapport entre carrés des distances des moyennes interclasses et variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation pour chacun des $\lambda{}_{i}$ :
 $$\frac{\partial}{\partial{}\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
 
 En supposant que les distributions des classes soient unimodales, cette équation admet une solution unique. Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système :
@@ -468,8 +468,9 @@ d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambd
 \right.$$
 
 soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$. 
-
+\paragraph*{}
 En indiçant les facteurs :
+
 * $i = 1$ pour la longueur de sépale $L_{s}$,
 * $i = 2$ pour la largeur de sépale $\ell_{s}$,
 * $i = 3$ pour la longueur de pétale $L_{p}$,
@@ -520,7 +521,7 @@ plot(ggarrange(widths = c(1, 1.5),
 )
 ```
 
-
+\FloatBarrier
 \paragraph*{}
 Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, illustrées par certains développements de cette section :
 
@@ -528,11 +529,26 @@ Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, i
 * La séparation entre les différentes classes est basée sur la construction d'un indice synthétique purement linéaire : dans l'hyperplan de projection, la séparation entre "territoires" des différentes classes sera toujours une droite,
 * La plupart des modèles d'analyse discriminante se basent sur des hypothèses tacites concernant les distributions des spécimens, notamment normalité et homoscédasticité.
 
+
+
 ### Arbres de décision
 <!-- rpart, Ctree???, c50tree, Rpartcost -->
-*Développements théoriques sur les arbres décisionnels...*
+\FloatBarrier
 
-[A FAIRE]
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=.98\linewidth]{IrisCARTArbre}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=.98\linewidth]{IrisCARTGraphe}
+\end{minipage}
+  \caption{Arbre et critères de classification des trois espèces du lot de données Iris}
+\end{figure}
+
+
 
 ### Forêts aléatoires
 <!-- rFerns, Rborist, ranger -->
