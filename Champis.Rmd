@@ -389,7 +389,7 @@ Comme démontré précédemment, une validation croisée *k-folds* avec $k = `r 
 \FloatBarrier
 
 ## Modèles utilisés
-### Analyses discriminantes
+### Analyses discriminantes {#chapitre:modeles_LDA}
 
 \paragraph*{}
 Cette étude proposera plusieurs classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA).
@@ -532,9 +532,44 @@ Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, i
 
 
 ### Arbres de décision
-<!-- rpart, Ctree???, c50tree, Rpartcost -->
 \FloatBarrier
 
+Les arbres de décision sont l'une des formes les plus populaires de représentation des connaissances utilisées dans le *data mining*.[@wu_top_2009] Une des raisons de cette popularité est que les résultats obtenus sont généralement considérés comme performants, et que l'apprentissage comme les prédictions sont aisément compréhensibles, contrairement à certaines approches dont la complexité peut les rapprocher de modèles assimilables à des boîtes noires.[@rokach_data_2015]
+\paragraph*{}
+Les arbres de décision peuvent aussi bien être utilisés pour des problèmes de classification (prédictions de classes) que de régression (prédiction de valeurs numériques). Les arbres de décisions sont des structures hiérarchiques, séquentielles, composées de n\oe{}uds reliés par des branches. Les n\oe{}uds sont conceptuellement de deux types :
+
+* Les n\oe{}uds internes, qui possèdent des descendants ; le premier d'entre eux, dépourvu de prédécesseur, est qualifié de racine. A chacun de ces n\oe{}uds est associé un test, à deux ou plusieurs issues, dont chacune constitue une branche qui aboutira au n\oe{}ud suivant.
+* Les n\oe{}uds terminaux, dépourvus de descendants, qualifiés de feuilles, responsables de la prédiction : classe (arbre de classification) ou valeur numérique (arbre de régression).
+
+Le fonctionnement de l'arbre de classification se base donc sur une succession de tests -- les plus importants se situant près de la racine -- dont les résultats permettent d'avancer dans la hiérarchie de l'arbre, étape après étape, afin d'aboutir à une décision finale, dans une démarche pouvant mimer certains aspects du raisonnement humain.[@rokach_data_2015]
+
+\paragraph*{}
+Les tests des arbres de décision peuvent être :
+
+* Univariés, typiquement un test d'inégalité de forme $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurée et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique pour aboutir à une multifurcation.
+* Multivariés, qui exploitent plus d'une caractéristique. Le cas le plus habituel est la scission oblique (*oblique split*), basée sur un hyperplan représentant une combinaison linéaire de caractéristiques. Ce type de test multivarié se rapproche ainsi de la LDA.\footnote{cf. section \ref{chapitre:modeles_LDA}, page \pageref{chapitre:modeles_LDA}}
+
+\paragraph*{}
+Les modèles d'arbres de classification peuvent utiliser des tests purement univariés (ID3, C4.5, CHAID...), purement obliques (arbres *perceptron*) ou autoriser les deux types de tests (arbres CART : *Classification And Regression Trees*).[@loh_fifty_2014]
+\paragraph*{}
+L'algorithme le plus utilisé pour la conception des arbres de classification est l'induction du haut vers le bas, basée sur l'algorithme classique dit "diviser pour régner" (*divide and conquer*), qui consiste à découper le problème de base en sous-problèmes, puis à résoudre ces sous-problèmes avant de les combiner en une solution globale.
+\paragraph*{}
+En pratique, un n\oe{}ud racine est tout d'abord créé, auquel sera associé la totalité du jeu d'apprentissage. En partant de ce n\oe{}ud initial sera appliqué un algorithme récursif qui essaie de diviser ces données, à chaque étape duquel les n\oe{}ds créés peuvent soit être marqués comme feuille (auquel cas l'induction est terminée), soit comme n\oe{}u interne (auquel cas l'algorithme se poursuit et l'arbre continuera de grandir). A chaque étape de cet algorithme, la taille du jeu de données disponible pour chaque n\oe{}ud se réduit, et la probabilité que le n\oe{}ud devienne une feuille augmente.
+\paragraph*{}
+L'optimalité du critère de scission appliqué par chaque n\oe{}ud est usuellement obtenue en minimisant un critère dit d'*impureté*, représentatif :
+
+* De l'inhomogénéité des classes peuplant chaque n\oe{}ud postérieur à la scission pour les problèmes de classification,
+* De la somme de la valeur absolue des résidus ou de leurs carrés pour les problèmes de régression.
+
+Pour le modèle CART qui sera utilisé dans la classification binaire cette étude, cette inhomogénéité est évaluée par le coefficient de Gini :[@wu_top_2009]
+$$G(t) = 1- p(t)^{2} - \left(1- p(t) \right)^{2}$$
+avec $p(t)$ la fréquence relative d'une des deux classes au sein du n\oe{}ud considéré.
+\paragraph*{}
+Enfin, les arbres obtenus peuvent être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre en l'analysant des feuilles à la racine, et en évaluant si un n\oe{}ud intermédiaire peut avantageusement être remplacé par une feuille. Différents critères d'optimisation existe, parmi lesquels nous pouvons citer l'élagage coût-complexité[@kretowski_evolutionary_2019], exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de l'arbre $T$ :
+$$CC(T) = Erreur(T) + \alpha{}\times Taille(T)$$
+Avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{#paragraphe:train-CART}, p. \pageref{#paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{#chapitre:doe}, p. \pageref{#chapitre:doe}}
+\paragraph*{}
+Les résultats de la mise en \oe{}uvre d'une classification par arbre de décision sur le jeu de données Iris sont représentés par la figure \@ref(fig:Iris-CART).
 \begin{figure}
 \centering
 \begin{minipage}{.5\textwidth}
@@ -546,6 +581,7 @@ Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, i
   \includegraphics[width=.98\linewidth]{IrisCARTGraphe}
 \end{minipage}
   \caption{Arbre et critères de classification des trois espèces du lot de données Iris}
+  \label{fig:Iris-CART}
 \end{figure}
 
 
@@ -761,33 +797,33 @@ Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambd
 Ces performances médiocres s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple :
 
 * Données binaires ou booléennes,
-* Données catégorielles basées sur des données quantitatives.
+* Données qualitatives ordinales.
 
 \paragraph*{}
 L'inclusion de ces modèles, présentant ici des performances très modestes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
 
-\FloatBarrier
-<!-- ### Modèle additif généralisé   -->
-<!-- \paragraph*{} -->
-<!-- Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). Le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation). -->
+<!-- \FloatBarrier
+### Modèle additif généralisé
 
-<!-- ```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en classification binaire, en fonction du span (gauche) and du degré (droite)"} -->
-<!-- plot(ggarrange(widths = c(1, 1.5), -->
-<!--    ncol = 2, -->
-<!--    BI_fit_gamLoess_span_graphe + theme(legend.position="none"), -->
-<!--    BI_fit_gamLoess_degree_graphe -->
-<!--    ) -->
-<!-- ) -->
-<!-- ``` -->
+Le seul modèle additif généralisé choisi pour cette étude est gamLoess (*Generalized Additive Model using Locally Weighted Linear Regression*). Le modèle gamLoess dispose de deux hyperparamètres : *span* (fraction de points utilisés dans l'environnement local) and *degree* (degré de linéarisation).
 
-<!-- \paragraph*{} -->
-<!-- L'hyperparamètre *degree* du modèle gamLoess a un impact mineur sur ses performances, avec un écart entre indices J de Youden maximal et minimal de $\Delta J_{w} = `r round(max(BI_fit_gamLoess_degree_resultats[,"Jw"]) - min(BI_fit_gamLoess_degree_resultats[,"Jw"]), 3)`$. -->
-<!-- \paragraph*{} -->
-<!-- L'hyperparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de $span = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Jw"]), "span"]`$, aboutissant à un index J de Youden maximal de $J_{w_{max}} = `r round(max(BI_fit_gamLoess_span_resultats["Jw"]), 3)`$. -->
-<!-- \paragraph*{} -->
-<!-- Les performances de ce modèle n'atteignent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`). -->
-<!-- \paragraph*{} -->
-<!-- Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante.\footnote{cf. section \ref{chapitre:BI_lda}) -->
+```{r, echo = FALSE, fig.height = 3, fig.cap = "Performances de gamLoess en classification binaire, en fonction du span (gauche) and du degré (droite)"}
+plot(ggarrange(widths = c(1, 1.5),
+   ncol = 2,
+   BI_fit_gamLoess_span_graphe + theme(legend.position="none"),
+   BI_fit_gamLoess_degree_graphe
+   )
+)
+```
+
+
+L'hyperparamètre *degree* du modèle gamLoess a un impact mineur sur ses performances, avec un écart entre indices J de Youden maximal et minimal de $\Delta J_{w} = `r round(max(BI_fit_gamLoess_degree_resultats[,"Jw"]) - min(BI_fit_gamLoess_degree_resultats[,"Jw"]), 3)`$.
+
+L'hyperparamètre *span* affecte marginalement la sensibilité de gamLoess, avec une valeur optimale de $span = `r BI_fit_gamLoess_span_resultats[which.max(BI_fit_gamLoess_span_resultats[,"Jw"]), "span"]`$, aboutissant à un index J de Youden maximal de $J_{w_{max}} = `r round(max(BI_fit_gamLoess_span_resultats["Jw"]), 3)`$.
+
+Les performances de ce modèle n'atteignent pas le critère posé pour notre étude. Le modèle additif généralisé s'est avéré inférieur aux modèles d'analyse discriminante linéaire, aussi bien en en sensibilité (`r round(max(BI_fit_gamLoess_span_resultats["Sens"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Sens, BI_fit_pda_lambda_resultats$Sens)), 3)`) qu'en spécificité (`r round(max(BI_fit_gamLoess_span_resultats["Spec"]), 3)` vs `r round(mean(c(BI_fit_lda2_dim_resultats$Spec, BI_fit_pda_lambda_resultats$Spec)), 3)`).
+
+Les performances médiocres de ce modèle s'expliquent par les mêmes raisons que celles des modèles d'analyse discriminante.\footnote{cf. section \ref{chapitre:BI_lda}) -->
 
 \FloatBarrier
 ### Modèles d'arbres de décision
