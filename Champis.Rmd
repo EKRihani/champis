@@ -751,7 +751,7 @@ Les modèles sélectionnés pour cette étude sont de types variés :
 
 * Analyse naïve
 * Analyse discriminante linéaire (LDA) : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
-* Modèle arborescent : *Classification And Regression Tree* (CART) (rpart, rpartCost)
+* Modèle arborescent : *Classification And Regression Tree* (CART) (rpart, rpartCost), C5.0 tree
 * Forêt aléatoire : *Random Ferns* (rferns), *Random Forest* (ranger, Rborist)
 
 ### Stratégie d'optimisation
