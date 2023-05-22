@@ -27,9 +27,10 @@ csl: https://www.zotero.org/styles/vancouver-superscript
 ```{r setup, include = FALSE, warning=FALSE}
 load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
-load(file = "EKR-Champis-Iris.RData")  # Chargement des exemples Iris
+load("EKR-Champis-Iris.RData")  # Chargement des exemples Iris
 load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
+load("EKR-Champis-Naif.RData")            # Chargement des résultats CLASSIFIEUR NAIF
 load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
 load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
 load("EKR-Champis-AnalyseMultiEsp-Light.RData")       # Chargement des résultats CLASSIF PAR ESPECES
@@ -397,7 +398,7 @@ Cette étude proposera plusieurs classifieurs linéaires s'appuyant sur des mét
 \FloatBarrier
 
 \paragraph*{}
-L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \@ref(fig:Principe-LDA))[@hastie_elements_2016]. La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore pour l'interprétation de l'importance de certaines caractéristiques.
+L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \@ref(fig:Principe-LDA)).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
 
 \paragraph*{}
 \begin{figure}
@@ -439,22 +440,22 @@ avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les cara
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
 avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre $i$, et
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
-avec $S$ la somme des carrés intraclasse de $X$ (proportionnelle à la variance intraclasse) et $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
+avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
 \paragraph*{}
-L'application sur les espèces *iris versicolor* et *iris setosa* nous donne :
+L'application sur les espèces *iris versicolor* et *iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd} :
 
-```{r, echo = FALSE}
+```{r, LDA-TableMoy, echo = FALSE}
 kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
-```{r, echo = FALSE}
+```{r, LDA-TableProd, echo = FALSE}
 kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor (S)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
 \paragraph*{}
-La maximisation du rapport entre carrés des distances des moyennes interclasses et variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation pour chacun des $\lambda{}_{i}$ :
+La maximisation du rapport entre les carrés des distances des moyennes interclasses et les variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation pour chacun des $\lambda{}_{i}$ :
 $$\frac{\partial}{\partial{}\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
 
 En supposant que les distributions des classes soient unimodales, cette équation admet une solution unique. Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système :
@@ -536,38 +537,39 @@ Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, i
 
 Les arbres de décision sont l'une des formes les plus populaires de représentation des connaissances utilisées dans le *data mining*.[@wu_top_2009] Une des raisons de cette popularité est que les résultats obtenus sont généralement considérés comme performants, et que l'apprentissage comme les prédictions sont aisément compréhensibles, contrairement à certaines approches dont la complexité peut les rapprocher de modèles assimilables à des boîtes noires.[@rokach_data_2015]
 \paragraph*{}
-Les arbres de décision peuvent aussi bien être utilisés pour des problèmes de classification (prédictions de classes) que de régression (prédiction de valeurs numériques). Les arbres de décisions sont des structures hiérarchiques, séquentielles, composées de n\oe{}uds reliés par des branches. Les n\oe{}uds sont conceptuellement de deux types :
+Les arbres de décision peuvent aussi bien être utilisés pour des problèmes de classification (prédictions de classes) que de régression (prédiction de valeurs numériques). Les arbres de décision sont des structures hiérarchiques, séquentielles, composées de n\oe{}uds reliés par des branches. Les n\oe{}uds sont conceptuellement de deux types :
 
 * Les n\oe{}uds internes, qui possèdent des descendants ; le premier d'entre eux, dépourvu de prédécesseur, est qualifié de racine. A chacun de ces n\oe{}uds est associé un test, à deux ou plusieurs issues, dont chacune constitue une branche qui aboutira au n\oe{}ud suivant.
-* Les n\oe{}uds terminaux, dépourvus de descendants, qualifiés de feuilles, responsables de la prédiction : classe (arbre de classification) ou valeur numérique (arbre de régression).
+* Les n\oe{}uds terminaux, dépourvus de descendants, qualifiés de feuilles, responsables de la prédiction : classe (arbre de classification) ou valeur, voire modèle numérique (arbre de régression).
 
-Le fonctionnement de l'arbre de classification se base donc sur une succession de tests -- les plus importants se situant près de la racine -- dont les résultats permettent d'avancer dans la hiérarchie de l'arbre, étape après étape, afin d'aboutir à une décision finale, dans une démarche pouvant mimer certains aspects du raisonnement humain.[@rokach_data_2015]
+Le fonctionnement de l'arbre de décision s'articule donc sur une succession de tests -- les plus importants se situant près de la racine -- dont les résultats permettent d'avancer dans la hiérarchie de l'arbre, étape après étape, afin d'aboutir à une décision finale, dans une démarche pouvant mimer certains aspects du raisonnement humain.[@rokach_data_2015]
 
 \paragraph*{}
 Les tests des arbres de décision peuvent être :
 
-* Univariés, typiquement un test d'inégalité de forme $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurée et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique pour aboutir à une multifurcation.
+* Univariés, usuellement sous forme de test d'inégalité de type $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurée et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique pour aboutir à une multifurcation.
 * Multivariés, qui exploitent plus d'une caractéristique. Le cas le plus habituel est la scission oblique (*oblique split*), basée sur un hyperplan représentant une combinaison linéaire de caractéristiques. Ce type de test multivarié se rapproche ainsi de la LDA.\footnote{cf. section \ref{chapitre:modeles_LDA}, page \pageref{chapitre:modeles_LDA}}
 
 \paragraph*{}
-Les modèles d'arbres de classification peuvent utiliser des tests purement univariés (ID3, C4.5, CHAID...), purement obliques (arbres *perceptron*) ou autoriser les deux types de tests (arbres CART : *Classification And Regression Trees*).[@loh_fifty_2014]
+Les différents modèles d'arbres de classification pourront mettre en \oe{}uvre des tests purement univariés (ID3, C4.5, CHAID...), purement obliques (arbres dits *perceptron*) ou autoriser les deux types de tests (arbres CART : *Classification And Regression Trees*).[@loh_fifty_2014]
 \paragraph*{}
-L'algorithme le plus utilisé pour la conception des arbres de classification est l'induction du haut vers le bas, basée sur l'algorithme classique dit "diviser pour régner" (*divide and conquer*), qui consiste à découper le problème de base en sous-problèmes, puis à résoudre ces sous-problèmes avant de les combiner en une solution globale.
+L'algorithme le plus utilisé pour la construction de la structure des arbres de classification est l'induction du haut vers le bas, basée sur l'algorithme classique dit "diviser pour régner" (*divide and conquer*), qui consiste à découper le problème de base en sous-problèmes, puis à résoudre ces sous-problèmes avant de les combiner en une solution globale.
 \paragraph*{}
-En pratique, un n\oe{}ud racine est tout d'abord créé, auquel sera associé la totalité du jeu d'apprentissage. En partant de ce n\oe{}ud initial sera appliqué un algorithme récursif qui essaie de diviser ces données, à chaque étape duquel les n\oe{}ds créés peuvent soit être marqués comme feuille (auquel cas l'induction est terminée), soit comme n\oe{}u interne (auquel cas l'algorithme se poursuit et l'arbre continuera de grandir). A chaque étape de cet algorithme, la taille du jeu de données disponible pour chaque n\oe{}ud se réduit, et la probabilité que le n\oe{}ud devienne une feuille augmente.
+En pratique, un n\oe{}ud racine est tout d'abord créé, auquel sera associé la totalité du jeu d'apprentissage. En partant de ce n\oe{}ud initial sera appliqué un algorithme récursif qui essaie de diviser ces données à chaque n\oe{}ud. A chaque étape de cet algorithme, l'opportunité d'une scission est évaluée et chaque n\oe{}ud créé pourra soit être marqué comme feuilles (auquel cas l'induction est terminée pour cette branche), soit comme n\oe{}ud interne (auquel cas l'algorithme se poursuit et l'arbre continuera de grandir). Notons qu'à chaque étape de cet algorithme, la taille du jeu de données disponible pour les n\oe{}ud descendants se réduira en raison de la scission, et par conséquent, la probabilité que ces descendants deviennent des feuilles augmentera.
 \paragraph*{}
 L'optimalité du critère de scission appliqué par chaque n\oe{}ud est usuellement obtenue en minimisant un critère dit d'*impureté*, représentatif :
 
-* De l'inhomogénéité des classes peuplant chaque n\oe{}ud postérieur à la scission pour les problèmes de classification,
-* De la somme de la valeur absolue des résidus ou de leurs carrés pour les problèmes de régression.
+* De l'inhomogénéité des classes peuplant chaque n\oe{}ud postérieur à la scission pour les arbres de classification,
+* De la somme de la valeur absolue des résidus ou de leurs carrés pour les arbres de régression.
 
-Pour le modèle CART qui sera utilisé dans la classification binaire cette étude, cette inhomogénéité est évaluée par le coefficient de Gini :[@wu_top_2009]
-$$G(t) = 1- p(t)^{2} - \left(1- p(t) \right)^{2}$$
-avec $p(t)$ la fréquence relative d'une des deux classes au sein du n\oe{}ud considéré.
 \paragraph*{}
-Enfin, les arbres obtenus peuvent être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre en l'analysant des feuilles à la racine, et en évaluant si un n\oe{}ud intermédiaire peut avantageusement être remplacé par une feuille. Différents critères d'optimisation existe, parmi lesquels nous pouvons citer l'élagage coût-complexité[@kretowski_evolutionary_2019], exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de l'arbre $T$ :
+Pour l'arbre CART qui sera utilisé dans la classification binaire cette étude, le critère d'impureté mise en \oe{}uvre au sein du modèle est le coefficient de Gini :[@wu_top_2009]
+$$G(t) = 1- p(t)^{2} - \left(1- p(t) \right)^{2}$$
+avec $p(t)$ la fréquence relative de l'une des deux classes, au sein du n\oe{}ud considéré.
+\paragraph*{}
+Les arbres obtenus peuvent enfin être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre. Cet algorithme effectue l'analyse de l'arbre des feuilles à la racine -- donc dans le sens inverse de l'induction qui l'a construit -- et en évaluant si chaque n\oe{}ud intermédiaire peut avantageusement être remplacé par une feuille ou par une branche. Différents critères d'optimisation existent, parmi lesquels nous pouvons citer l'élagage coût-complexité[@kretowski_evolutionary_2019], exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de notre arbre $T$ :
 $$CC(T) = Erreur(T) + \alpha{}\times Taille(T)$$
-Avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{#paragraphe:train-CART}, p. \pageref{#paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{#chapitre:doe}, p. \pageref{#chapitre:doe}}
+Avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{paragraphe:train-CART}, p. \pageref{paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{chapitre:doe}, p. \pageref{chapitre:doe}}
 \paragraph*{}
 Les résultats de la mise en \oe{}uvre d'une classification par arbre de décision sur le jeu de données Iris sont représentés par la figure \@ref(fig:Iris-CART).
 \begin{figure}
@@ -747,14 +749,14 @@ Il existe une grande variété de modèles exploitables pour bâtir un système 
 \paragraph*{}
 Les modèles sélectionnés pour cette étude sont de types variés :
 
+* Analyse naïve
 * Analyse discriminante linéaire (LDA) : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
-<!-- * Modèle additif généralisé (GAM) : *Generalized Additive Model using LOESS* (gamLoess) -->
-* Modèle arborescent : *Classification And Regression Tree* (CART) (rpart, rpartCost), *Single C5.0 Tree* (ctree)
+* Modèle arborescent : *Classification And Regression Tree* (CART) (rpart, rpartCost)
 * Forêt aléatoire : *Random Ferns* (rferns), *Random Forest* (ranger, Rborist)
 
 ### Stratégie d'optimisation
 
-Les algorithme d'apprentissage machine développés au cours de cette étude mettent en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
+Les algorithmes d'apprentissage machine développés au cours de cette étude mettent en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
 
 1. Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial,\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}}
 2. Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à k blocs, avec adaptation du nombre de blocs à la taille du lot de données,\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}}
@@ -766,11 +768,40 @@ Les algorithme d'apprentissage machine développés au cours de cette étude met
 8. Sélection des modèles les plus performants pour prédiction et mesure finale des performances contre le lot d'évaluation,
 9. Génération, sauvegarde et insertion automatique de tous les graphiques et données numériques dans le texte de la présente étude.
 
+\newpage
+
+### Modèle naïf
+
+\paragraph*{}
+Le premier classifieur présenté dans cette étude est un classifieur naïf, dont l'algorithme est extrêmement simple :
+
+1. Considérer par défaut tous les champignons comme toxiques,
+2. Tester chaque combinaison de $n$ variables, à la recherche des valeurs pour lesquelles tous les champignons sont comestibles.
+
+\paragraph*{}
+Trois classifieurs sont ainsi proposés : un classifieur "stupide", ne tenant compte d'aucun critère ($n=0$) et considérant tous les champignons comme toxiques, un classifieur monovariable ($n=1$), et un classifieur exploitant des combinaisons de 2 variables ($n = 2$).
+\paragraph*{}
+Les performances respectives de ces différents modèles sont synthétisées dans le tableau \ref{tab:NAIF-Resultats}.
+\FloatBarrier
+
+```{r NAIF-Resultats, echo = FALSE}
+kable(NAIF_Resultats, caption = "Performances de différents classifieurs naïfs") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+```  
+
+Les performances de ces modèles paraissent relativement bonnes, mais sont à relativiser en raison de la définition de notre indice de Youden qui accorde une très grande importance à la sensibilité. Ainsi, notre classifieur dit "stupide" -- excessivement pusillanime et d'un intérêt pratiquement nul car rejetant tous les champignons -- semble montrer une performance honorable d'après ce critère, avec $J_w = `r NAIF_Resultats["Stupide","Jw"]`$, alors que, par construction, $\kappa = `r NAIF_Resultats["Stupide","Kappa"]`$.
+\paragraph*{}
+Les performances du modèle monovariable ne sont guère plus élevées, ce qui démontre l'inefficacité des adages populaires prétendant garantir la comestibilité de tous les champignons d'une couleur donnée.\footnote{Même si le modèle venait à montrer le contraire, il convient de rappeler que ce lot de données se limite aux espèces les plus courantes, d'une fonge limitée dans l'espace et dans le temps.}
+\paragraph*{}
+En revanche, les performances du modèle bivariable sont honorables, avec une amélioration sensible de la spécificité ($Spec \approx `r NAIF_Resultats["BiCritere","Spec"]`$), donc de la capacité à réellement distinguer des champignons comestibles. Les performances de ce modèle ($J_w = `r NAIF_Resultats["BiCritere","Jw"]`$) ne répondent toutefois pas au critère de performance défini précédemment ($J_{w} \geq `r Jw_min`$)\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}. Les performances calculatoires sont médiocres ($t = `r NAIF_Resultats["BiCritere","Temps (s)"]`$ s), et probablement à mettre en relation avec un code peu optimisé.
+\FloatBarrier
+
 ### Modèles d'analyse discriminante{#chapitre:BI_lda}
 \paragraph*{}
 Les modèles d'analyse discriminante choisis pour cette étude sont lda2 (LDA : *Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un seul hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
+\FloatBarrier
 
-```{r, lda-pda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite), dans une tâche de classification binaire"}
+```{r, BIldapda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite), dans une tâche de classification binaire"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
    BI_fit_lda2_dim_graphe + theme(legend.position="none"),
@@ -778,8 +809,9 @@ plot(ggarrange(widths = c(1, 1.5),
    )
 )
 ```
+
 \paragraph*{}
-Comme l'illustre la figure \ref{fig:lda-pda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
+Comme l'illustre la figure \ref{fig:BIldapda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
 \paragraph*{}
 Le paramètre *dimen* du modèle lda2 ne semble en effet pas avoir d'effet significatif sur ses performances, avec un index J de Youden pondéré relativement constant ($J_{w_{moy}} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). 
 \paragraph*{}

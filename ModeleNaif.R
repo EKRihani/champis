@@ -4,9 +4,6 @@
 
 # Chargement des bibliothèques
 library(tidyverse)    # Outils génériques
-library(caret)        # Outils d'apprentissage machine
-library(DiceDesign)    # Hypercubes Latins
-library(DiceEval)       # Modélisation sur hypercubes latins
 library(twinning)       # Découpage équilibré des jeux de données (plus efficient que split!)
 
 # Récupération, décompression, importation des données
@@ -24,35 +21,38 @@ dataset$class <- relevel(dataset$class, ref = "toxique")
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION     #
 ####################################################################
 
-BI_n_champis <- nrow(dataset)
-BI_split_p <- sqrt(BI_n_champis)
-BI_split_facteur <- round(sqrt(BI_split_p)+1)
+NAIF_n_champis <- nrow(dataset)
+NAIF_split_p <- sqrt(NAIF_n_champis)
+NAIF_split_facteur <- round(sqrt(NAIF_split_p)+1)
 
 set.seed(007)
-index1 <- twin(data = dataset, r = BI_split_facteur)
-BI_lot_appr_opti <- dataset[-index1,]
-BI_lot_evaluation <- dataset[index1,]
+index1 <- twin(data = dataset, r = NAIF_split_facteur)
+NAIF_lot_appr_opti <- dataset[-index1,]
+NAIF_lot_evaluation <- dataset[index1,]
 
 set.seed(007)
-index1 <- twin(data = BI_lot_appr_opti, r = BI_split_facteur)
-BI_lot_appr <- BI_lot_appr_opti[-index1,]
-BI_lot_opti <- BI_lot_appr_opti[index1,]
+index1 <- twin(data = NAIF_lot_appr_opti, r = NAIF_split_facteur)
+NAIF_lot_appr <- NAIF_lot_appr_opti[-index1,]
+NAIF_lot_opti <- NAIF_lot_appr_opti[index1,]
 
-save.image(file = "test.RData")
-load(file = "test.RData")
+# Définition index de Youden
+NAIF_w <- 10
+NAIF_RatioSens <- 2*NAIF_w/(NAIF_w+1)
+NAIF_RatioSpec <- 2*(1-NAIF_w/(NAIF_w+1))
+
 ############################################################
 #     MODELE DE CLASSIFICATION SIMPLE : LISTE CRITERES     #
 ############################################################
 
 # Créer listes de critères (facteur + type + valeurs) pour classification simple
-facteurs_liste <- BI_lot_appr %>% 
+facteurs_liste <- NAIF_lot_appr %>% 
    select(where(is.factor) | where(is.logical)) %>% 
    gather(facteur, niveau) %>% 
    unique() %>% 
    select(facteur, niveau) %>% 
    filter(facteur != "class")     # Récupère tous les niveaux de facteurs + logique
 
-facteurs_type <- BI_lot_appr %>% 
+facteurs_type <- NAIF_lot_appr %>% 
    summary.default %>% 
    as.data.frame %>% 
    group_by(Var1) %>% 
@@ -64,7 +64,7 @@ facteurs_type$Class <- if_else(facteurs_type$Class == "-none-", facteurs_type$Mo
 facteurs_type <- facteurs_type %>% 
    select(-Mode, -Length)              # Nettoie facteurs_type
 
-colnames(facteurs_type) <- c("facteur", "type")     ############ A TRADUIRE ###############
+colnames(facteurs_type) <- c("facteur", "type")
 
 liste_numeriques <- facteurs_type %>% 
    filter(type == "numeric") %>% select(facteur) %>%         # Sélectionne valeurs numériques, extrait le nom du facteur
@@ -81,25 +81,17 @@ facteurs_liste1$tous_comestibles <- FALSE                  # Par défaut : non-c
 # Liste de facteurs pour analyse bivariée
 m <- nrow(facteurs_liste)
 index_list2 <- t(combn(m, 2))                            # Créer toutes les combinaisons de 2 nombres de 1 à m (indices)
-half1_list2 <- facteurs_liste[index_list2[,1],]            # Extraire 1er attribut, d'après le 1er index
-colnames(half1_list2) <- c("facteur1", "niveau1", "type1")
-half2_list2 <- facteurs_liste[index_list2[,2],]            # Extraire 2e attribut, d'après le 2e index
-colnames(half2_list2) <- c("facteur2", "niveau2", "type2")
-facteurs_liste2 <- cbind(half1_list2, half2_list2)
+moitie1_list2 <- facteurs_liste[index_list2[,1],]            # Extraire 1er attribut, d'après le 1er index
+colnames(moitie1_list2) <- c("facteur1", "niveau1", "type1")
+moitie2_list2 <- facteurs_liste[index_list2[,2],]            # Extraire 2e attribut, d'après le 2e index
+colnames(moitie2_list2) <- c("facteur2", "niveau2", "type2")
+facteurs_liste2 <- cbind(moitie1_list2, moitie2_list2)
 facteurs_liste2 <- facteurs_liste2 %>% filter(facteur1 != facteur2)     # Retire doublons
 facteurs_liste2$tous_comestibles <- FALSE                        # Par défaut : non-comestible
 
-
-save.image(file = "test.RData")
-load(file = "test.RData")
 ###########################################################
 #     CONSTRUCTION DU MODELE DE CLASSIFICATION SIMPLE     #
 ###########################################################
-
-# Vérifie structure facteurs_liste2 structure : en théorie, par construction, il ne devrait PAS avoir de texte facteur2 + numérique facteur1
-# factors_check <- facteurs_liste2 %>% 
-#    filter(type2 %in% c("logical", "factor", "character"), type1 %in% c("integer", "numeric")) %>% 
-#    nrow
 
 # Définition fonction : sélection min/max et association à +/- pour marges
 minmaxing <- function(fcn_niveau_entree, fcn_marges){
@@ -243,144 +235,181 @@ crit2string2 <- function(fcn_liste_crit_simple, fcn_liste_crit_double){
    str_facteurs2f <- str_facteurs2f %>%
       filter(type2 %in% c("numeric", "integer"))  %>%
       rbind(str_facteurs2ff, .)
-   double_criteria <- fcn_liste_crit_double %>%
+   double_crit <- fcn_liste_crit_double %>%
       filter(tous_comestibles == TRUE, type1 %in% c("numeric", "integer")) %>%
       rbind(str_facteurs2f, .)
-   double_criteria_list <- paste("(", double_criteria$facteur1, double_criteria$niveau1, "&", double_criteria$facteur2, double_criteria$niveau2, ")",collapse = " | ")
-   liste_bicrit <- paste(liste_monocrit, "|", double_criteria_list)
+   double_crit_list <- paste("(", double_crit$facteur1, double_crit$niveau1, "&", double_crit$facteur2, double_crit$niveau2, ")",collapse = " | ")
+   liste_bicrit <- paste(liste_monocrit, "|", double_crit_list)
 
    c(liste_monocrit, liste_bicrit)
 }
 
-save.image(file = "test.RData")
-load(file = "test.RData")
-
-# Run criteria analyses for single and dual-criteria models
-marges1 <- 2
-facteurs_liste1a <- recherche_simple(BI_lot_appr, facteurs_liste1, marges1)
+# Lance l'analyse des critères pour les modèles mono et bicritères
+START <- Sys.time()
+marges1 <- 0
+facteurs_liste1a <- recherche_simple(NAIF_lot_appr, facteurs_liste1, marges1)
 facteurs_liste2a <- retrait_simple(facteurs_liste1a, facteurs_liste2)
-marges2 <- 3
-facteurs_liste2b <- recherche_double(BI_lot_appr, facteurs_liste2a, marges2)
+STOP1 <- Sys.time()
+marges2 <- 0
+facteurs_liste2b <- recherche_double(NAIF_lot_appr, facteurs_liste2a, marges2)
+STOP2 <- Sys.time()
 
-# Show relevant (i.e. edible-only) factors, data types and levels (criterion)
+NAIF_temps_mono <- difftime(STOP1, START, units = "secs") %>% round(.,1)
+NAIF_temps_bi <- difftime(STOP2, START, units = "secs") %>% round(.,1)
+
+# Montre les facteurs pertinents (i.e. 100% comestibles) + types données et niveaux (critères)
 facteurs_pertinents1 <- facteurs_liste1a %>% filter(tous_comestibles == TRUE) %>% select(facteur, niveau, type)
 facteurs_pertinents2 <- facteurs_liste2b %>% filter(tous_comestibles == TRUE) %>% select(facteur1, niveau1, type1, facteur2, niveau2, type2)
 
-criteria_list_prediction <- crit2string2(facteurs_liste1a, facteurs_liste2b)
+list_criteres_prediction <- crit2string2(facteurs_liste1a, facteurs_liste2b)
 
-# Create a prediction dataset, with boolean factors (meaning "is.edible") as .$reference
-predictions <- BI_lot_evaluation
-predictions$reference <- as.logical(as.character(recode_factor(predictions$class, comestible = TRUE, toxique = FALSE))) # Switch to logical values
+# Crée un lot de données predictions, avec facteurs booléens (VRAI = toxique) en .$reference
+predictions <- NAIF_lot_evaluation
+predictions$reference <- as.logical(as.character(recode_factor(predictions$class, comestible = FALSE, toxique = TRUE))) # Convertit en booléens
 
-# Apply the three predictive models : stupid , single-criterion, double-criteria
-predictions$stupid_predict = FALSE   # Consider all mushrooms as toxique
-predictions <- predictions %>% mutate(mono_predict = eval(parse(text = criteria_list_prediction[1])))
-predictions <- predictions %>% mutate(bi_predict = eval(parse(text = criteria_list_prediction[2])))
+# Applique les 3 modèles prédictifs : stupide , monocritère, double-critère
+predictions <- predictions%>% mutate(predict_stupide = TRUE) %>% # Considère tous les champignons comme toxiques
+                              mutate(predict_mono = !eval(parse(text = list_criteres_prediction[1]))) %>%
+                              mutate(predict_double = !eval(parse(text = list_criteres_prediction[2]))) %>%
+                              select(reference, predict_stupide, predict_mono, predict_double)
 
-# Convert .$reference from logical to factor (confusionMatrix works with factors)
+# Convertit .$reference de booléen à facteur (confusionMatrix fonctionne avec des facteurs!)
 predictions$reference <- as.factor(predictions$reference)
-predictions$stupid_predict <- factor(predictions$stupid_predict, levels = c("FALSE","TRUE")) # Create level TRUE (not present in stupid model) for confusionMatrix use (reference & prediction must have the same levels)
-predictions$mono_predict <- as.factor(predictions$mono_predict)
-predictions$bi_predict <- as.factor(predictions$bi_predict)
+predictions$predict_stupide <- factor(predictions$predict_stupide, levels = c("FALSE","TRUE")) # Créer manuellement le niveau FALSE (pas présent dans le stupide) pour ConfusionMatrix
+predictions$predict_mono <- as.factor(predictions$predict_mono)
+predictions$predict_double <- as.factor(predictions$predict_double)
 
-# Confusion matrices
-CM_stupid <- confusionMatrix(data = predictions$stupid_predict, reference = predictions$reference, positive = "TRUE")
-CM_monocrit <- confusionMatrix(data = predictions$mono_predict, reference = predictions$reference, positive = "TRUE")
-CM_bicrit <- confusionMatrix(data = predictions$bi_predict, reference = predictions$reference, positive = "TRUE")
+# Matrices de confusion
+NAIF_CM_stupide <- confusionMatrix(data = predictions$predict_stupide, reference = predictions$reference, positive = "TRUE")
+NAIF_CM_monocrit <- confusionMatrix(data = predictions$predict_mono, reference = predictions$reference, positive = "TRUE")
+NAIF_CM_bicrit <- confusionMatrix(data = predictions$predict_double, reference = predictions$reference, positive = "TRUE")
 
-save.image(file = "test.RData")
-load(file = "test.RData")
+NAIF_Resultats <- NULL
+NAIF_Resultats$Stupide <-c(0, round(NAIF_CM_stupide$byClass["Sensitivity"],3), round(NAIF_CM_stupide$byClass["Specificity"],3), round(NAIF_CM_stupide$overall["Kappa"],3), 0)
+NAIF_Resultats$MonoCritere <-c(1, round(NAIF_CM_monocrit$byClass["Sensitivity"],3), round(NAIF_CM_monocrit$byClass["Specificity"],3), round(NAIF_CM_monocrit$overall["Kappa"],3), NAIF_temps_mono)
+NAIF_Resultats$BiCritere <-c(2, round(NAIF_CM_bicrit$byClass["Sensitivity"],3), round(NAIF_CM_bicrit$byClass["Specificity"],3), round(NAIF_CM_bicrit$overall["Kappa"],3), NAIF_temps_bi)
+
+NAIF_Resultats <- data.frame(t(data.frame(NAIF_Resultats)))
+
+colnames(NAIF_Resultats) <- c("n", "Sens", "Spec", "Kappa", "Temps (s)")
+NAIF_Resultats <- NAIF_Resultats %>% mutate(Jw = round(Sens*NAIF_RatioSens + Spec*NAIF_RatioSpec - 1,3))
+
+NAIF_Resultats <- NAIF_Resultats[, c("n", "Sens", "Spec", "Jw", "Kappa", "Temps (s)")]
+
+save.image(file = "EKR-Champis-Naif.RData")
+load(file = "EKR-Champis-Naif.RData")
 
 
-# Define functions : get sensitivity/specificity according to margin, for single-crit tuning
-tuning1a <- function(fcn_trainset, fcn_factorlist, fcn_marge){
-   factlistname <- deparse(substitute(fcn_factorlist))               # Get factor list name as string
-   SCS <- paste0("recherche_simple(fcn_trainset, ", factlistname, ", fcn_marge)")      # Create single-search string
-   fact_list <- eval(parse(text = SCS))               # Evaluate single-search string (or nested functions will not detect accurately the original factor list name)
+
+#################################### FIN DU CLASSIFIEUR NAIF DE BASE ######################"
+
+#####################################################################
+#        REGLAGES HYPERPARAMETRES (MARGE) : LENT, A VIRER ???       #
+#####################################################################
+library(parallel)       # Calcul parallèle pour les sapply
+
+# Définir fonctions : mesure sensibilité/specificité selon la marge, pour réglage hyperparemètre monocritère
+tuning1a <- function(fcn_entrain, fcn_facteurs, fcn_marge){
+   nomfactliste <- deparse(substitute(fcn_facteurs))               # Extrait la liste des noms de facteurs comme chaîne
+   SCS <- paste0("recherche_simple(fcn_entrain, ", nomfactliste, ", fcn_marge)")      # Crée le texte correspondant à la recherche
+   fact_list <- eval(parse(text = SCS))               # Evalue la chaîne de caractères de la recherche (sinon les fonctions imbriquées ne vont pas détecter les noms de facteurs...)
    critlist_prediction <- crit2string1(fact_list)
-   predictions$tuning <- FALSE                  # Set .$tuning to false by default
+   predictions$tuning <- TRUE                  # Règle .$tuning à VRAI (toxique) par défaut
    predictions <- predictions %>% mutate(tuning = eval(parse(text = critlist_prediction[[1]])))    # Switch .$tuning to TRUE if criterion is met
    predictions$tuning <- as.factor(predictions$tuning)
    CM <- confusionMatrix(data = predictions$tuning, reference = predictions$reference, positive = "TRUE")
-   sensitivity <- round(CM$byClass["Sensitivity"], 4)
-   specificity <- round(CM$byClass["Specificity"], 4)
+   Sens <- round(CM$byClass["Sensitivity"], 4)
+   Spec <- round(CM$byClass["Specificity"], 4)
    F1 <- round(CM$byClass["F1"], 4)
-   names(fcn_marge) <- "Margin"
-   c(fcn_marge, sensitivity, specificity, F1)    # Output 1-crit margin, sensitivity, specificity, F1-Score
+   names(fcn_marge) <- "Marge"
+   c(fcn_marge, Sens, Spec, F1)    # Output 1-crit margin, sensitivity, specificity, F1-Score
 }
 
-tuning2a <- function(fcn_trainset, fcn_factorlist1, fcn_factorlist2, fcn_marge2){
-   factlistname2 <- deparse(substitute(fcn_factorlist2))            # Get factor list name as string
-   DCS <- paste0("recherche_double(fcn_trainset, ", factlistname2, ", fcn_marge2)")      # Create dual-search string
-   fact2_list <- eval(parse(text = DCS))            # Evaluate dual-search string (or nested functions will not detect accurately the original factor list name)
-   critlist_prediction <- crit2string2(fcn_factorlist1, fact2_list)
-   predictions$tuning <- FALSE                  # Set .$tuning to false by default
+tuning2a <- function(fcn_entrain, fcn_facteurs1, fcn_facteurs2, fcn_marge2){
+   nomfactliste2 <- deparse(substitute(fcn_facteurs2))            # Extrait la liste des noms de facteurs comme chaîne
+   DCS <- paste0("recherche_double(fcn_entrain, ", nomfactliste2, ", fcn_marge2)")      # Crée le texte correspondant à la recherche
+   fact2_list <- eval(parse(text = DCS))            # Evalue la chaîne de caractères de la recherche
+   critlist_prediction <- crit2string2(fcn_facteurs1, fact2_list)
+   predictions$tuning <- TRUE                  # Règle .$tuning à VRAI (toxique) par défaut
    predictions <- predictions %>% mutate(tuning = eval(parse(text = critlist_prediction[[2]])))    # Switch .$tuning to TRUE if criteria are met
    predictions$tuning <- as.factor(predictions$tuning)
    CM <- confusionMatrix(data = predictions$tuning, reference = predictions$reference, positive = "TRUE")
-   sensitivity <- round(CM$byClass["Sensitivity"], 4)
-   specificity <- round(CM$byClass["Specificity"], 4)
+   Sens <- round(CM$byClass["Sensitivity"], 4)
+   Spec <- round(CM$byClass["Specificity"], 4)
    F1 <- round(CM$byClass["F1"], 4)
-   names(fcn_marge2) <- "Margin"
-   c(fcn_marge2, sensitivity, specificity, F1)    # Output 2-crit margin, sensitivity, specificity, F1-Score
+   names(fcn_marge2) <- "Marge"
+   c(fcn_marge2, Sens, Spec, F1)    # Output 2-crit margin, sensitivity, specificity, F1-Score
 }
 
-# Define functions : synthetic tuning functions (need only one input)
+# Définir fonctions : réglage (1 entrée)
 tuning1b <- function(fcn_marge){
-   tuning1a(BI_lot_appr, facteurs_liste1, fcn_marge)
+   tuning1a(NAIF_lot_appr, facteurs_liste1, fcn_marge)
 }
 
 tuning2b <- function(fcn_marge){
-   tuning2a(BI_lot_appr, facteurs_liste1a, facteurs_liste2a, fcn_marge)
+   tuning2a(NAIF_lot_appr, facteurs_liste1a, facteurs_liste2a, fcn_marge)
 }
 
-# Set margin list and run single list classifier tuning
-margin_1 <- c(seq(from = 0, to = 0.4, by = 0.1), seq(from = 0.5, to = 4, by = 0.5))
-single_crit_tune <- t(sapply(margin_1, FUN = tuning1b))
-single_crit_tune <- as.data.frame(single_crit_tune)
+# Règle les marges et lance le réglage du modèle monocritère
+marge_1 <- c(seq(from = 0, to = 0.4, by = 0.1), seq(from = 0.5, to = 4, by = 0.5))
+START <- Sys.time()
+tuning_mono <- mclapply(X = marge_1, FUN = tuning1b)
+tuning_mono <- do.call(rbind.data.frame, tuning_mono)
+colnames(tuning_mono) <- c("Marge", "Sensitivity", "Specificity", "F1")
+#tuning_mono <- t(sapply(marge_1, FUN = tuning1b))
+tuning_mono <- as.data.frame(tuning_mono)
+STOP <- Sys.time()
+temps_mono <- STOP - START
 
-# Get best margin (highest specificity, then highest sensitivity, then safest margin)
-best_marges1 <- single_crit_tune %>% 
+# Choisit la meilleure marge (haute spécificité, puis sensibilité, puis marge la plus sûre)
+best_marges1 <- tuning_mono %>% 
    filter(Specificity == max(Specificity)) %>% 
    filter(Sensitivity == max(Sensitivity)) %>% 
-   filter(Margin == max(Margin))
+   filter(Marge == max(Marge))
 
-# Run single list  classifier with optimum margin, set crit list for factor 2
-facteurs_liste1a <- recherche_simple(BI_lot_appr, facteurs_liste1, as.numeric(best_marges1["Margin"]))
+# Lance classifieur monocritère avec marge optimale, règle la liste des critères pour le facteur2
+facteurs_liste1a <- recherche_simple(NAIF_lot_appr, facteurs_liste1, as.numeric(best_marges1["Marge"]))
 facteurs_liste2a <- retrait_simple(facteurs_liste1a, facteurs_liste2)
 
 # Run double list classifier tuning
-margin_2 <- seq(from = 0, to = 2, by = 0.2)
-dual_crit_tune <- t(sapply(margin_2, FUN = tuning2b))
+marge_2 <- seq(from = 0, to = 2, by = 0.2)
+dual_crit_tune <- t(sapply(marge_2, FUN = tuning2b))
 dual_crit_tune <- as.data.frame(dual_crit_tune)
+
+START <- Sys.time()
+test_tuning2 <- mclapply(X = marge_2, FUN = tuning2b)
+#test_tuning <- lapply(marge_1, FUN = tuning1b)
+test_tuning2 <- do.call(rbind.data.frame, test_tuning2)
+colnames(test_tuning2) <- c("Marge", "Sensitivity", "Specificity", "F1")
+STOP <- Sys.time()
+but_temps <- STOP - START
 
 # Get best margin (highest specificity, then highest sensitivity, then safest margin)
 best_marges2 <- dual_crit_tune %>% 
    filter(Specificity == max(Specificity)) %>% 
    filter(Sensitivity == max(Sensitivity)) %>% 
-   filter(Margin == max(Margin))
+   filter(Marge == max(Marge))
 
-# Define function : Sensitivity, Specificity, F1-Score plot
+# Définir fonction : Graphe Sensibilité, Spécificité, F1-Score
 SenSpeF1plot <- function(fcn_tuneresult, fcn_n){
    fcn_tuneresult %>%
-      ggplot(aes_string(x = "Margin", y = names(fcn_tuneresult)[fcn_n])) + #aes_string allows use of string instead of variable name
+      ggplot(aes_string(x = "Marge", y = names(fcn_tuneresult)[fcn_n])) + #aes_string permet d'utiliser des chaînes au lieu de noms de variables
       geom_point() +
       theme_bw()
 }
 
-# Plot single_crit tuning parameters
-l <- ncol(single_crit_tune)
-for (n in 2:l){         # Don't plot first col : it is the x axis
-   plot <- SenSpeF1plot(single_crit_tune, n)
-   plotname <- paste0("SCtune", names(single_crit_tune)[n])   # Concatenate "SCtune" with the column name
-   assign(plotname, plot)     # Assign the plot to the SCtune_colname name
+# Graphe paramètres réglages monocritères
+l <- ncol(tuning_mono)
+for (n in 2:l){         # Ne pas tracer la première colonne, c'est l'axe des x
+   plot <- SenSpeF1plot(tuning_mono, n)
+   plotname <- paste0("SCtune", names(tuning_mono)[n])   # Concaténer "SCtune" avec nom colonne
+   assign(plotname, plot)     # Attribuer le graphe au nom SCtune_colonne
 }
 
-# Plot dual_crit tuning parameters
+# Graphe paramètres réglages bicritères
 l <- ncol(dual_crit_tune)
-for (n in 2:l){         # Don't plot first col : it is the x axis
+for (n in 2:l){         # Ne pas tracer la première colonne, c'est l'axe des x
    plot <- SenSpeF1plot(dual_crit_tune, n)
-   plotname <- paste0("DCtune", names(dual_crit_tune)[n])   # Concatenate "DCtune" with the column name
-   assign(plotname, plot)     # Assign the plot to the DCtune_colname name
+   plotname <- paste0("DCtune", names(dual_crit_tune)[n])   # Concaténer "DCtune" avec nom colonne
+   assign(plotname, plot)     # Attribuer le graphe au nom SCtune_colonne
 }
-
