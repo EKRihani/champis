@@ -53,7 +53,7 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 
 \begingroup
 \flushleft
-AI : \emph{Artificial Intelligence} (intelligence artificielle)
+<!-- AI : \emph{Artificial Intelligence} (intelligence artificielle) -->
 
 AUC : *Area Under Curve* (aire sous la courbe)
 
@@ -67,15 +67,11 @@ EDA : *Exploratory Data Analysis* (analyse exploratoire des données)
 
 ESE : *Enhanced Stochastic Evolutionnary* ([algorithme] évolutionnaire stochastique amélioré)
 
-GAM : *Generalized Additive Model* (modèle additif généralisé)
-
-IA : Intelligence Artificielle  
+<!-- IA : Intelligence Artificielle -->
 
 LDA : *Linear Discriminant Analysis* (analyse linéaire discriminante)
 
 LHS : *Latin Hypercube Sample* (échantillonnage par hypercube latin)
-
-LOESS : *LOcally Estimated Scatterplot Smoothing* (régression locale)
 
 ML : *Machine Learning* (apprentissage machine)
 
@@ -89,8 +85,6 @@ ROC : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
 
 VCS : *Version Control System* (logiciel de contrôle des versions)
 
-XGB : *eXtreme Gradient Boosting*
-
 \endflushleft
 \endgroup
 
@@ -102,9 +96,9 @@ L'identification des macromycètes est un sujet difficile, ne devant évidemment
 \paragraph*{}
 Le lot de données mycologiques constitué dans cette étude, bien que constituant l'un des lots en libre accès les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
 \paragraph*{}
-Ce lot se concentre exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *psilocybe*, connus pour leurs propriétés psychédéliques. Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).
+Ce lot se concentre exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *psilocybe*, connus pour leurs propriétés psychédéliques. Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).[@courtecuisse_initiation_2020]
 \paragraph*{}
-L'ingestion de certains de ces champignons est *mortelle*, même en faible quantité. Le diagnostic de l'intoxication fongique peut être difficile, et parfois trop tardif pour un traitement efficace. Des composés toxiques tels que les amanitines ne sont pas altérés ou détruits par cuisson ou congélation, et seront absorbés par l'intestin, avant de passer dans la circulation sanguine afin d'être filtrés par le foie, détruisant les cellules hépatiques, puis excrétées dans l'intestin, réabsorbées, refiltrées... chaque passe détruisant les cellules hépatiques ayant survécu à la précédente, dans un cycle connu sous le nom de réabsorption hépato-entérique.
+L'ingestion de certains de ces champignons est *mortelle*, même en faible quantité. Le diagnostic de l'intoxication fongique peut être difficile, et parfois trop tardif pour un traitement efficace. Des composés toxiques tels que les amanitines ne sont pas altérés ou détruits par cuisson ou congélation, et seront absorbés par l'intestin, avant de passer dans la circulation sanguine afin d'être filtrés par le foie, détruisant les cellules hépatiques, puis excrétées dans l'intestin, réabsorbées, refiltrées... chaque passe détruisant les cellules hépatiques ayant survécu à la précédente, dans un cycle connu sous le nom de réabsorption hépato-entérique.[@courtecuisse_champignons_2013]
 \paragraph*{}
 Il ne faut jamais, *sous aucune circonstance*, utiliser les lots de données générés par des méthodes similaires à celles de notre études dans le but de déterminer si un champignon est comestible ou non.
 
@@ -116,7 +110,7 @@ La première limite est le nombre de chaînons manquants. Certaines espèces son
 \paragraph*{}
 La seconde limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. La divergence évolutive explique par exemple la diversité des mammifères : les chauves-souris, baleines et chevaux sont apparentés, mais ont des aspects très dissemblables en raison de leur adaptation à des environnements très différents. D'un autre côté, la convergence évolutive explique la similarité entre l'aile de la chauve-souris et celle de l'abeille. Toutefois, malgré leur apparente dissimilarité, l'aile de la chauve-souris est plus proche de la main humaine ou de la nageoire de la baleine que de l'aile de l'abeille. La façon la plus fiable pour évaluer le processus évolutionnaire et trouver les liens phylogénétiques de la manière la plus précise possible est l'analyse des génomes : les caractéristiques visibles peuvent être trompeuses. Malheureusement, ces caractéristiques sont souvent les seules aisément identifiables.
 \paragraph*{}
-Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visible, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème : il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
+Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème : il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
 \paragraph*{}
 Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques. Le but de cette étude est notamment de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies de classification.
 
@@ -156,7 +150,7 @@ Trois stratégies sont usuellement utilisées :
 
 \FloatBarrier
 \paragraph*{}
-Les données générées par ces stratégies peuvent être de type variés, que nous pouvons grossièrement regrouper en données alphanumériques (quantitatives et qualitatives), en séries temporelles, et en données d'imagerie.
+Les données générées par ces stratégies peuvent être de types variés, que nous pouvons grossièrement regrouper en données alphanumériques (quantitatives et qualitatives), en séries temporelles, et en données d'imagerie.
 \paragraph*{}
 Pour des raisons pratiques et de maturité des technologies disponibles à l'heure actuelle, la méthode retenue pour créer le lot de données exploité dans notre étude sera la génération de données alphanumériques à partir de règles, extraites d'ouvrages mycologiques de référence.[@courtecuisse_cle_1986; @courtecuisse_champignons_2013; @courtecuisse_initiation_2020]
 
@@ -183,11 +177,11 @@ D_{C} = D_{C_{max}}.F_{Dc} \\
 
 Avec :
 
-* $L_{S_{max}}$, $D_{S_{max}}$ et $D_{C_{max}}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété de champignon, extraites de la littérature, 
+* $L_{S_{max}}$, $D_{S_{max}}$ et $D_{C_{max}}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété fongique, extraites de la littérature, 
 * $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle $\left] 0 ; 1 \right]$, et représentatives de la croissance du spécimen.
 
 \paragraph*{}
-Toutefois, nos recherches bibliographiques concernant la cinétique de croissance des sporophores n'ont pas permis de distinguer de différences de la cinétique de croissance de chacun de ces trois paramètres. Nous supposerons donc, en première approximation, que la croissance du stipe en longueur et en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques. Nous obtenons par conséquent :
+Toutefois, nos recherches bibliographiques n'ont pas permis de distinguer de différences de la cinétique de croissance de chacune de ces trois caractéristiques dimensionnells du sporophore. Nous supposerons donc, en première approximation, que la croissance du stipe en longueur et en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques. Nous obtenons par conséquent :
 
 $$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
 Avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen, généré aléatoirement.
@@ -225,7 +219,7 @@ Le critère d'asymétrie est un critère permettant de tenir compte des différe
 \paragraph*{}
 Le premier paramètre évoqué précédemment n'a pu être exploité dans le cadre de cette étude en raison du manque de données concernant les cinétiques relatives de croissance des sporophores des différentes familles de macromycètes. Le modèle que nous proposons permet toutefois des développements ultérieurs dans ce domaine.
 \paragraph*{}
-Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce à l'issue d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
+Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce issus d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
 \paragraph*{}
 Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
 \paragraph*{}
@@ -267,9 +261,7 @@ $F_{c}$ est ici défini comme un facteur de croissance permettant de rendre comp
 plot(lois_beta)
 ```
 
-Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$.
-\paragraph*{}
-Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant :
+Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant :
 
 $$\left \{
 \begin{array}{ll} 
@@ -294,7 +286,7 @@ plot(ggarrange(
 
 
 \paragraph*{}
-La dispersion ainsi créée permet ainsi de créer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \@ref(fig:Lots-DispersionDensite)). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
+La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \@ref(fig:Lots-DispersionDensite)). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
 <!-- [FAIRE CALCULS SUR R POUR RELIER AUTOMATIQUEMENT AUX CHIFFRES ?] -->
 
 
@@ -323,33 +315,36 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 \FloatBarrier
 
 # Principes de l'apprentissage machine
+
+## Types d'apprentissage machine
+
+*Apprentissage supervisé, semi-supervisé, non supervisé*
+
 ## Jeux de données {#chapitre:split}
 
-Les jeux de données dédiés à l'apprentissage machine sont tous construits sur la base de couples données-résultats. Selon l'étape de l'apprentissage machine, le résultat peut être fourni à la machine ou lui être caché, le but étant dans le premier cas de permettre à la machine d'effectuer son apprentissage, et dans le second cas d'évaluer les performances de la prédiction par rapport au résultat réel.
+Les jeux de données dédiés à l'apprentissage machine supervisé ou semi-supervisé sont tous construits sur la base de couples données-résultats. Selon l'étape de ces types d'apprentissage machine, le résultat peut être fourni à la machine ou lui être caché, le but étant dans le premier cas de permettre à la machine d'effectuer son apprentissage, et dans le second cas d'évaluer les performances de la prédiction par rapport au résultat réel.
 \paragraph*{}
-Le déroulement de l'apprentissage machine se décompose conceptuellement en trois étapes principales, mettant en jeu trois lots de données distincts :
+Le déroulement de l'apprentissage machine supervisé se décompose conceptuellement en trois étapes principales, mettant en jeu trois lots de données distincts :
 
-1. Entraînement : le modèle d'apprentissage est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif (cf. section \@ref(chapitre:lotsynth)) des données auquel le modèle sera exposé en utilisation réelle. Cette phase est la phase d'apprentissage du modèle.
-2. Validation : le modèle d'apprentissage machine élaboré à l'étape précédente, est ici soumis à un *jeu de données de validation* (*validation data set*) et tentera d'apporter des prédictions quant à une variable d'intérêt considérée comme le résultat (ex: comestibilité, espèce...), sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...). Ces prédictions sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances prédictives du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, F1-score, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) à fins d'optimisation.
+1. Entraînement : le modèle d'apprentissage machine est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif\footnote{Voir section \@ref(chapitre:lotsynth)} des données auquel le modèle sera exposé en utilisation réelle. Cette phase est la phase d'apprentissage du modèle.
+2. Validation : le modèle d'apprentissage machine élaboré à l'étape précédente, est ici soumis à un *jeu de données de validation* (*validation data set*) et tentera d'apporter des prédictions quant à une variable d'intérêt considérée comme le résultat (ex: comestibilité, espèce...), sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...). Ces prédictions sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, indice de Rand, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) à fins d'optimisation.
 3. Test : les performances du meilleur modèle (avec hyperparamètres optimaux), sélectionné à l'issue de l'étape de validation, sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
 
 \paragraph*{}
 La séparation entre étapes d'optimisation et de test peut sembler artificielle. Le problème est en partie lié à un flou sémantique : si l'étape initiale d'entraînement ou d'apprentissage ne pose que peu de problèmes conceptuels, l'étape intermédiaire, dite de *validation* correspond en réalité à une étape d'*optimisation* du modèle et de ses hyperparamètres. Par ailleurs, l'étape finale de *test* sera parfois qualifiée d'étape de *validation* dans la littérature, ce qui peut entretenir la confusion entre ces étapes.[@brownlee_what_2017]
 \paragraph*{}
-Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase pouvant parfois sembler superflue : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.
-\paragraph*{}
-Dans un souci de clarté, nous utiliserons les termes de lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.
+Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase pouvant parfois sembler superflue : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.\footnote{Dans un souci de clarifier le propos, nous utiliserons les termes de lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.}
 \paragraph*{}
 Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives (voir figure \@ref(fig:Split-jeux)) du lot de données initial, avec des proportions pouvant être variables d'une scission à l'autre :
 
-1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement + optimisation d'autre part,
-2. Découpage du jeu de données entraînement + optimisation, en un jeu d'entraînement et un jeu d'optimisation.
+1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement et optimisation d'autre part,
+2. Découpage du jeu de données entraînement et optimisation, en un jeu d'entraînement et un jeu d'optimisation.
 
 
 \begin{figure}
    \centering
    \includegraphics[width=\linewidth]{Split-Jeux}
-  \caption{Principe de séparations successives d'un jeu de données initial en jeux d'apprentissage, d'optimisation et d'évaluation.}
+  \caption{Principe de scissions successives d'un jeu de données initial en jeux d'apprentissage, d'optimisation et d'évaluation.}
   \label{fig:Split-jeux}
 \end{figure}
 
@@ -358,11 +353,11 @@ Les rapports de taille entre jeux de données d'entraînement, d'optimisation et
 \paragraph*{} 
 Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de lignes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons contenus dans le lot de données.[@joseph_optimal_2022]
 \paragraph*{}
-Un rapide calcul nous montre qu'il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première scission entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu d'évaluation d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier, une taille représentant la fraction du lot total :
+Il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première scission entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu d'évaluation d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier, une taille représentant la fraction du lot total :
 $$f_{test}= \frac{\sqrt{p}+1}{p+2\sqrt{p}+1} = \frac{1}{\sqrt{p}+1} $$
 \paragraph*{}
 Cette première dichotomie peut être suivie par une seconde dichotomie entre jeu d'entraînement (de taille relative $p$) et jeu d'optimisation (de taille relative $\sqrt{p}$), de fraction :
-$$ f_{opti} = \frac{\sqrt{p}}{p + \sqrt{p}} = \frac{1}{\sqrt{p}+1} $$
+$$ f_{opti} = \frac{\sqrt{p}}{p + \sqrt{p}} = \frac{1}{\sqrt{p}+1} \Rightarrow f_{test}= f_{opti} = \frac{1}{\sqrt{p}+1} $$
 
 \paragraph*{}
 En pratique, pour notre lot de données contenant $N_{u} = `r BI_n_champis`$ spécimens, nous pouvons calculer $p \approx `r round(BI_split_p,1)`$, soit deux dichotomies successives de ratio `r BI_split_facteur-1`:1.
@@ -393,7 +388,7 @@ Comme démontré précédemment, une validation croisée *k-folds* avec $k = `r 
 ### Analyses discriminantes {#chapitre:modeles_LDA}
 
 \paragraph*{}
-Cette étude proposera plusieurs classifieurs linéaires s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (*Linear Discriminant Analysis*, LDA).
+Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (LDA : *Linear Discriminant Analysis*).
 
 \FloatBarrier
 
@@ -409,24 +404,6 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 \end{figure}
 
 \FloatBarrier
-
-<!-- #### Approche matricielle...
-
-En pratique, la LDA consiste à déterminer le meilleur ensemble de caractéristiques séparant deux classes, en réduisant la dimensionalité du problème (nombre de caractéristiques) par construction d'un sous-espace de dimensionalité réduite, dans lequel les points du problème originel deviennent "séparables".
-
-Considérons deux échantillons $\mathbf{x}_{1}^{(1)}, \,...\,, \mathbf{x}_{n_{1}}^{(1)}$ et $\mathbf{x}_{1}^{(2)}, \,...\,, \mathbf{x}_{n_{2}}^{(2)}$, issus de deux distributions multivariées. La LDA pose implicitement l'hypothèse que ces distributions ont une matrice de covariance commune. Il est possible de définir la différence $\mathbf{d}$ entre les moyennes des deux échantillons (correspondant à la notion de distance interclasse) par :
-$$ \mathbf{d} = \mathbf{\overline{x}}^{(1)} - \mathbf{\overline{x}}^{(2)} $$ et de calculer la somme des carrés intragroupes $\mathbf{A}$ telle que :
-$$\mathbf{A} = \sum^{2}_{i=1} \sum^{n_{i}}_{j=1} \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) \left( \mathbf{\overline{x}}^{(i)}_{j} - \mathbf{\overline{x}}^{(i)} \right) ^\intercal$$
-d'où la matrice de covariance :
-$$\mathbf{S} = \frac{1}{ddl}\,\mathbf{A}, \; \; \; \mathrm{avec} \; ddl = n_{1} + n_{2} - 2$$
-Soit une combinaison linéaire arbitraire des variables observées : $\mathbf{X} = \mathbf{b}^{T}\mathbf{x}$. Alors les différences de moyennes interclasses de cette combinaison linéaire et la variance intraclasse de X se définissent respectivement par :
-$$ \mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)} = \mathbf{b}^\intercal\mathbf{d} \; \; \mathrm{et \; Var}(X) = \mathbf{b}^\intercal\mathbf{S}\mathbf{b} $$
-L'objectif de la LDA est d'optimiser cette combinaison linéaire $X$ en maximisant le rapport entre le carré de la distance interclasse (écart des moyennes) et la dispersion intraclasse (variance intraclasse) par rapport à $\mathbf{b}$  c'est à dire de maximiser le rapport :
-$$\frac{\left(\mathbf{\overline{X}}^{(1)} - \mathbf{\overline{X}}^{(2)}\right)^{2}}{\mathrm{Var}(X)} = \frac{\left(\mathbf{b}^\intercal\mathbf{d}\right)^{2}}{\mathbf{b}^\intercal\mathbf{S}\mathbf{b}} $$
-Une solution algébrique est $\mathbf{b} = \mathbf{S}^{-1}\mathbf{d}$. La fonction linéaire optimale ainsi obtenue, $\mathbf{X} = \mathbf{b}^\intercal \mathbf{x}$ est alors la fonction discriminante linéaire, et peut être utilisée pour classifier une future observation comme venant de :
-$$- \mathrm{\;la \; population \; (1) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} > \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2} $$
-$$ - \mathrm{\; la \; population \; (2) \; si \; : \; \;} \mathbf{b}^\intercal \mathbf{x} < \frac{\mathbf{\overline{x}}^{(1)} + \mathbf{\overline{x}}^{(2)}}{2}$$ -->
-
 
 \paragraph*{}
 En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* et *Iris setosa*.
@@ -450,7 +427,7 @@ kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres 
 ```
 
 ```{r, LDA-TableProd, echo = FALSE}
-kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor (S)") %>%
+kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor (Spq)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
@@ -465,10 +442,10 @@ d_{1} = S_{11}\lambda_{1} + S_{12}\lambda_{2} + S_{13}\lambda_{3} + S_{14}\lambd
 d_{2} = S_{21}\lambda_{1} + S_{22}\lambda_{2} + S_{23}\lambda_{3} + S_{24}\lambda_{4} \\
 d_{3} = S_{31}\lambda_{1} + S_{32}\lambda_{2} + S_{33}\lambda_{3} + S_{34}\lambda_{4} \\
 d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambda_{4} \\
-\end{array}
+\end{array} \Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
 \right.$$
 
-soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$. 
+<!-- soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath  --> avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
 \paragraph*{}
 En indiçant les facteurs :
 
@@ -502,7 +479,8 @@ $$ X = L_{s} + `r round(iris_CoeffsNorm[2],3)`.\ell_{s} `r round(iris_CoeffsNorm
 
 Le seuil de séparation est alors défini par : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
 \paragraph*{}
-La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \@ref(fig:LDA-MinMax) et \@ref(fig:LDA-Separation).
+La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \@ref(fig:LDA-MinMax) et \@ref(fig:LDA-Separation).
+<!-- Ajouter petit paragraphe explicatif -->
 
 ```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
@@ -524,10 +502,10 @@ plot(ggarrange(widths = c(1, 1.5),
 
 \FloatBarrier
 \paragraph*{}
-Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, illustrées par certains développements de cette section :
+Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, soulignées par certains développements de cette section :
 
-* Les modèles LDA ne sont adaptés qu'à des données quantitatives ou qualitatives ordinales,
-* La séparation entre les différentes classes est basée sur la construction d'un indice synthétique purement linéaire : dans l'hyperplan de projection, la séparation entre "territoires" des différentes classes sera toujours une droite,
+* Les modèles d'analyse discriminante ne sont adaptés qu'à des données quantitatives ou qualitatives ordinales,
+* Dans la LDA, la séparation entre les différentes classes est basée sur la construction d'un indice synthétique purement linéaire : sur l'hyperplan de projection, la séparation entre "territoires" des différentes classes sera toujours une droite,
 * La plupart des modèles d'analyse discriminante se basent sur des hypothèses tacites concernant les distributions des spécimens, notamment normalité et homoscédasticité.
 
 
@@ -535,9 +513,9 @@ Nous pouvons conclure cette présentation de la LDA en soulignant ses limites, i
 ### Arbres de décision
 \FloatBarrier
 
-Les arbres de décision sont l'une des formes les plus populaires de représentation des connaissances utilisées dans le *data mining*.[@wu_top_2009] Une des raisons de cette popularité est que les résultats obtenus sont généralement considérés comme performants, et que l'apprentissage comme les prédictions sont aisément compréhensibles, contrairement à certaines approches dont la complexité peut les rapprocher de modèles assimilables à des boîtes noires.[@rokach_data_2015]
+Les arbres de décision sont l'une des formes les plus populaires de représentation des connaissances utilisées dans le *data mining*.[@wu_top_2009] Une des raisons de cette popularité est que les modèles obtenus sont généralement considérés comme performants, et que l'apprentissage comme les prédictions sont aisément compréhensibles, contrairement à certaines approches dont la complexité peut les rapprocher de modèles assimilables à des boîtes noires.[@rokach_data_2015]
 \paragraph*{}
-Les arbres de décision peuvent aussi bien être utilisés pour des problèmes de classification (prédictions de classes) que de régression (prédiction de valeurs numériques). Les arbres de décision sont des structures hiérarchiques, séquentielles, composées de n\oe{}uds reliés par des branches. Les n\oe{}uds sont conceptuellement de deux types :
+Les arbres de décision peuvent aussi bien être utilisés pour des problèmes de classification (prédictions de classes) que de régression (prédiction de valeurs numériques). Les arbres de décision sont des structures hiérarchiques, séquentielles, composées de n\oe{}uds reliés par des branches. Ces n\oe{}uds sont conceptuellement de deux types :
 
 * Les n\oe{}uds internes, qui possèdent des descendants ; le premier d'entre eux, dépourvu de prédécesseur, est qualifié de racine. A chacun de ces n\oe{}uds est associé un test, à deux ou plusieurs issues, dont chacune constitue une branche qui aboutira au n\oe{}ud suivant.
 * Les n\oe{}uds terminaux, dépourvus de descendants, qualifiés de feuilles, responsables de la prédiction : classe (arbre de classification) ou valeur, voire modèle numérique (arbre de régression).
@@ -547,7 +525,7 @@ Le fonctionnement de l'arbre de décision s'articule donc sur une succession de 
 \paragraph*{}
 Les tests des arbres de décision peuvent être :
 
-* Univariés, usuellement sous forme de test d'inégalité de type $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurée et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique pour aboutir à une multifurcation.
+* Univariés, usuellement sous forme de test d'inégalité de type $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurée et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique unique pour aboutir à une multifurcation.
 * Multivariés, qui exploitent plus d'une caractéristique. Le cas le plus habituel est la scission oblique (*oblique split*), basée sur un hyperplan représentant une combinaison linéaire de caractéristiques. Ce type de test multivarié se rapproche ainsi de la LDA.\footnote{cf. section \ref{chapitre:modeles_LDA}, page \pageref{chapitre:modeles_LDA}}
 
 \paragraph*{}
@@ -555,7 +533,7 @@ Les différents modèles d'arbres de classification pourront mettre en \oe{}uvre
 \paragraph*{}
 L'algorithme le plus utilisé pour la construction de la structure des arbres de classification est l'induction du haut vers le bas, basée sur l'algorithme classique dit "diviser pour régner" (*divide and conquer*), qui consiste à découper le problème de base en sous-problèmes, puis à résoudre ces sous-problèmes avant de les combiner en une solution globale.
 \paragraph*{}
-En pratique, un n\oe{}ud racine est tout d'abord créé, auquel sera associé la totalité du jeu d'apprentissage. En partant de ce n\oe{}ud initial sera appliqué un algorithme récursif qui essaie de diviser ces données à chaque n\oe{}ud. A chaque étape de cet algorithme, l'opportunité d'une scission est évaluée et chaque n\oe{}ud créé pourra soit être marqué comme feuilles (auquel cas l'induction est terminée pour cette branche), soit comme n\oe{}ud interne (auquel cas l'algorithme se poursuit et l'arbre continuera de grandir). Notons qu'à chaque étape de cet algorithme, la taille du jeu de données disponible pour les n\oe{}ud descendants se réduira en raison de la scission, et par conséquent, la probabilité que ces descendants deviennent des feuilles augmentera.
+En pratique, un n\oe{}ud racine est tout d'abord créé, auquel sera associé la totalité du jeu d'apprentissage. En partant de ce n\oe{}ud initial sera appliqué un algorithme récursif qui essaie de diviser ces données à chaque n\oe{}ud. A chaque étape de cet algorithme, l'opportunité d'une scission est évaluée et chaque n\oe{}ud créé pourra soit être marqué en tant que feuille (auquel cas l'induction est terminée pour cette branche), soit en tant que n\oe{}ud interne (auquel cas l'algorithme se poursuit et l'arbre continuera à s'étoffer). Notons qu'à chaque étape de cet algorithme, la taille du jeu de données disponible pour les n\oe{}ud descendants se réduira en raison de la scission, et par conséquent, la probabilité que ces descendants deviennent des feuilles augmentera.
 \paragraph*{}
 L'optimalité du critère de scission appliqué par chaque n\oe{}ud est usuellement obtenue en minimisant un critère dit d'*impureté*, représentatif :
 
@@ -564,10 +542,10 @@ L'optimalité du critère de scission appliqué par chaque n\oe{}ud est usuellem
 
 \paragraph*{}
 Pour l'arbre CART qui sera utilisé dans la classification binaire cette étude, le critère d'impureté mise en \oe{}uvre au sein du modèle est le coefficient de Gini :[@wu_top_2009]
-$$G(t) = 1- p(t)^{2} - \left(1- p(t) \right)^{2}$$
-avec $p(t)$ la fréquence relative de l'une des deux classes, au sein du n\oe{}ud considéré.
+$$G = 1- p^{2} - \left(1- p \right)^{2}$$
+avec $p$ la fréquence relative de l'une des deux classes, au sein du n\oe{}ud considéré.
 \paragraph*{}
-Les arbres obtenus peuvent enfin être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre. Cet algorithme effectue l'analyse de l'arbre des feuilles à la racine -- donc dans le sens inverse de l'induction qui l'a construit -- et en évaluant si chaque n\oe{}ud intermédiaire peut avantageusement être remplacé par une feuille ou par une branche. Différents critères d'optimisation existent, parmi lesquels nous pouvons citer l'élagage coût-complexité[@kretowski_evolutionary_2019], exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de notre arbre $T$ :
+Les arbres obtenus peuvent enfin être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre. Cet algorithme effectue l'analyse de l'arbre des feuilles vers la racine -- donc dans le sens inverse de l'induction qui l'a construit -- et en évaluant si chaque n\oe{}ud intermédiaire pourrait être avantageusement remplacé par une feuille ou par une branche. Différents critères d'optimisation existent, parmi lesquels nous pouvons citer l'élagage coût-complexité[@kretowski_evolutionary_2019], exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de notre arbre $T$ :
 $$CC(T) = Erreur(T) + \alpha{}\times Taille(T)$$
 Avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{paragraphe:train-CART}, p. \pageref{paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{chapitre:doe}, p. \pageref{chapitre:doe}}
 \paragraph*{}
@@ -594,9 +572,9 @@ Les résultats de la mise en \oe{}uvre d'une classification par arbre de décisi
 
 [A FAIRE]
 
-## Optimisation par plans d'expérience (DOE) {#chapitre:doe}
+## Optimisation par plans d'expérience {#chapitre:doe}
 
-Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afin d'obtenir des performances maximales. Cette optimisation relève du domaine des plans d'expérience. De nombreux plans et stratégies sont envisageables, le choix dépendant en partie des caractéristiques du processus à optimiser.
+Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afin d'obtenir des performances maximales. Cette optimisation relève du domaine des plans d'expérience (*DOE : Design Of Experiments*). De nombreux plans et stratégies sont envisageables, le choix dépendant en partie des caractéristiques du processus à optimiser.
 \paragraph*{}
 En effet, l'optimisation des paramètres d'un modèle informatique présente quelques particularités notables ayant un impact sur l'utilisation des plans d'expérience :
 
@@ -615,7 +593,7 @@ De nombreux plans expérimentaux basés sur les hypercubes latins peuvent être 
 
 * Aléatoires,
 * Optimisés, afin d'améliorer l'occupation spatiale,
-* Orthogonaux, visant à minimiser la corrélation des estimateurs des effets principaux.
+* Orthogonaux, visant à minimiser la corrélation entre estimateurs des effets principaux.
 
 ```{r Carres-Latins, echo = FALSE, fig.height = 2.5, fig.cap = "Carré latin aléatoire (à gauche), carré latin avec optimisation évolutive ESE maximin (au milieu), carré latin quasi-orthogonal (à droite)"}
 plot(ggarrange(
