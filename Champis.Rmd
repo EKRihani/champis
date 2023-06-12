@@ -118,6 +118,8 @@ Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habi
 Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987]
 \paragraph*{}
 Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@wagner_mushroom_2021] et mis en libre accès sous le nom de *Secondary Mushroom Dataset*.
+\paragraph*{}
+Des bases de données dédiées à la mycologie sont également disponibles {CITER FONGIFRANCE ET MYCODB}, mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
 
 \newpage
 # Création du lot de données
@@ -610,7 +612,7 @@ Dans le cadre de cette étude, nous utiliserons des hypercubes latins quasi-orth
 \paragraph*{}
 Le but des plans expérimentaux de cette étude ne sera pas l'obtention d'une prédiction exacte de la valeur de la réponse, mais plus modestement la recherche des facteurs permettant d'obtenir cette réponse optimale. A cet effet, la modélisation de la performance pourra s'effectuer à l'aide d'un modèle quadratique avec interactions, de formule générale :
 $$ Y = \beta_{0}  + \sum_{i = 1}^{k} \beta_{i}.X_{i} + \sum_{i <j}^{k} \sum_{j>1}^{k} \beta_{ij}.X_{i}.X_{j} + \sum_{i = 1}^{k} + \beta_{ii}.X_{i}^2 + \varepsilon$$
-Avec $\beta_{n}$ les coefficients des effets principaux et $X_{n}$ les facteurs réduits.
+Avec $\beta_{n}$ les coefficients des effets principaux et $X_{n}$ leurs facteurs réduits.
 \FloatBarrier
 
 ## Évaluation des performances des modèles {#chapitre:perf}
@@ -629,7 +631,7 @@ L'index J de Youden pondéré est donné par :[@rucker_summary_2010]
 $$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
 
 \paragraph*{}
-Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur toxicité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index J de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
+Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur comestibilité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index J de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
 \paragraph*{}
 Le problème de classification binaire étant relativement simple (*comestible* ou *non-comestible*), nous fixerons arbitrairement le critère de performance minimum à atteindre à $J_{w} \geq `r Jw_min`$, soit :
 $$\left \{
@@ -642,7 +644,7 @@ Spe_{max} = 1 \Leftrightarrow Sen_{min} = `r Jw_Sens_min` \\
 \paragraph*{}
 Dans les tâches de classification multiclasse, d'autres indicateurs d'intérêt pourront être utilisés, tels que le kappa de Cohen, l'indice de Rand (*accuracy*, ou précision), mais aussi la sensibilité et la spécificité moyennes.
 \paragraph*{}
-Nous retiendrons dans le cadre de notre étude le kappa de Cohen,[@cohen_coefficient_1960] calculé à partir de la matrice de confusion (cf. figure \ref{fig:Matrice-Confusion}), et donné par :
+Nous retiendrons dans les classifications multiclasses effectuées au cours de notre étude le kappa de Cohen,[@cohen_coefficient_1960] calculé à partir de la matrice de confusion (illustrée en figure \ref{fig:Matrice-Confusion}), et donné par :
 $$\kappa{} = \frac{\pi_{0}-\pi_{e}}{1-\pi_{e}}$$
 \paragraph*{}
 Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle du champignon, et $\pi_{e}$ la probabilité d'un même accord résultant du pur hasard.
@@ -683,7 +685,7 @@ kable(structure_dataset, caption = "Structure du lot de données initial")
 ```
 
 \paragraph*{}
-Le lot de données d'origine contient `r EDA_n_champis` spécimens de champignons, caractérisés par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumé dans le tableau \@ref(tab:EDA-structure).
+Le lot de données d'origine contient `r EDA_n_champis` spécimens de champignons, caractérisés par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumée dans le tableau \@ref(tab:EDA-structure).
 \paragraph*{}
 Ce lot de données original a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur-1`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.}
 \paragraph*{}
@@ -737,7 +739,7 @@ Les modèles sélectionnés pour cette étude sont de types variés :
 Les algorithmes d'apprentissage machine développés au cours de cette étude mettent en \oe{}uvre les méthodes présentées dans les sections précédentes afin d'effectuer automatiquement les tâches suivantes :
 
 1. Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial,\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}}
-2. Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à k blocs, avec adaptation du nombre de blocs à la taille du lot de données,\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}}
+2. Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à k blocs, avec adaptation du nombre de blocs à la taille du lot de données,\footnote{cf. section \ref{chapitre:split_methodes}}, page \pageref{paragraphe:crossvalid}}
 3. Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux,\footnote{\label{note:doe}cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}
 4. Mesure des performances en exploitant une métrique adaptée,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}
 5. Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions,\footnotemark[\value{footnote}]
@@ -754,7 +756,7 @@ Les algorithmes d'apprentissage machine développés au cours de cette étude me
 Le premier classifieur présenté dans cette étude est un classifieur naïf, dont l'algorithme est extrêmement simple :
 
 1. Considérer par défaut tous les champignons comme toxiques,
-2. Tester chaque combinaison de $n$ variables, à la recherche des valeurs pour lesquelles tous les champignons sont comestibles.
+2. Tester chaque combinaison de $n$ variables, à la recherche des valeurs qualitatives et quantitatives pour lesquelles tous les champignons sont comestibles. 
 
 \paragraph*{}
 Trois classifieurs sont ainsi proposés : un classifieur "stupide", ne tenant compte d'aucun critère ($n=0$) et considérant tous les champignons comme toxiques, un classifieur monovariable ($n=1$), et un classifieur exploitant des combinaisons de 2 variables ($n = 2$).
