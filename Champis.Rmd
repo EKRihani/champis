@@ -512,7 +512,7 @@ Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, so
 
 
 
-### Arbres de décision
+### Arbres de décision {#chapitre:modeles_arbres}
 \FloatBarrier
 
 Les arbres de décision sont l'une des formes les plus populaires de représentation des connaissances utilisées dans le *data mining*.[@wu_top_2009] Une des raisons de cette popularité est que les modèles obtenus sont généralement considérés comme performants, et que l'apprentissage comme les prédictions sont aisément compréhensibles, contrairement à certaines approches dont la complexité peut les rapprocher de modèles assimilables à des boîtes noires.[@rokach_data_2015]
@@ -569,10 +569,24 @@ Les résultats de la mise en \oe{}uvre d'une classification par arbre de décisi
 
 
 ### Forêts aléatoires
-<!-- rFerns, Rborist, ranger -->
-*Développements théoriques sur les modèles de forêts aléatoires...*
 
-[A FAIRE]
+Les arbres décisionnels conventionnels ont montré, au cours de leur utilisation dans le traitement des données, quelques limites récurrentes : [Zhang]
+
+* Tendance à l’instabilité des structures arborescentes, même avec des perturbations mineures,
+* Apparition, grâce notamment aux avancées de la génomique, de problèmes dits de type *grand p, petit n*, avec un grand nombre de prédicteurs $p$ pour un petit nombre d’observations $n$\footnote{En l'espèce, les problèmes posés par la génomique imposent souvent d'analyser des dizaines de milliers de gènes (*p*), sur quelques dizaines ou centaines de patients (*n*).} qui mettent en échec la vision classique de parcimonie d’un modèle unique pour un problème unique,
+* Impossibilité usuelle d’inférence théorique, liée à la nature adaptative de la construction des arbres décisionnels.
+
+La génération de forêts s’est imposée comme une solution élégante à ces limitations. Une forêt est un ensemble d’arbres qui, individuellement, sont suboptimaux, mais dont la combinaison en un comité améliore considérablement les performances. [Breiman 96, 01] L’exploitation de nombreux arbres offre la possibilité d’utiliser plus d’informations, et d’avoir ainsi une meilleure compréhension des données : des arbres différents peuvent proposer des cheminements alternatifs vers une solution.
+
+L’algorithme de génération d’une forêt aléatoire, pour un lot avec $n$ observations et $p$ prédicteurs, est le suivant :
+
+1. Prélever un échantillon bootstrap\footnote{Le bootstrap correspond au à la constitution d’un échantillon par prélèvement d’individus *avec* remplacement.} de taille $n$.
+2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ parmi $p$ prédicteurs (avec $q 
+3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre.\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}}
+4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt. La classification par forêt se fait par un vote de tout les arbres.
+
+
+[A FINIR]
 
 ## Optimisation par plans d'expérience {#chapitre:doe}
 
