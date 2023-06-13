@@ -580,9 +580,9 @@ La génération de forêts s’est imposée comme une solution élégante à ces
 
 L’algorithme de génération d’une forêt aléatoire, pour un lot avec $n$ observations et $p$ prédicteurs, est le suivant :
 
-1. Prélever un échantillon bootstrap\footnote{Le bootstrap correspond au à la constitution d’un échantillon par prélèvement d’individus *avec* remplacement.} de taille $n$.
-2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ parmi $p$ prédicteurs (avec $q 
-3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre.\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}}
+1. Prélever un échantillon bootstrap\footnote{Le bootstrap correspond au à la constitution d’un échantillon par prélèvement d’individus *avec* remplacement.} de taille $n$,
+2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
+3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre,\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}}
 4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt. La classification par forêt se fait par un vote de tout les arbres.
 
 
