@@ -8,7 +8,7 @@ fontsize: 12pt          # Imposé par la fac
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "sfmath" ]
+    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath"]
     toc: yes
     toc_depth: 3
     includes:
@@ -17,6 +17,8 @@ output:
 header-includes:
    - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
    - \renewcommand{\thefootnote}{\alph{footnote}}      # Pieds de page en lettres minuscules (autres: Roman, Alph)
+   - \DeclareMathOperator*{\argmax}{arg\,max}    # Pour fonction argmax (forêts aléatoires)
+   - \usepackage{bbm}    # Pour fonction caractéristique 1 (forêts aléatoires)
 #  - \usepackage{sansmathaccent}    # Pour tidles/chapeaux mal alignés avec maths sans accent...
    - \linespread{1.15}
 indent: true
@@ -572,7 +574,7 @@ Les résultats de la mise en \oe{}uvre d'une classification par arbre de décisi
 
 Les arbres décisionnels conventionnels ont montré, au cours de leur utilisation dans le traitement des données, quelques limites récurrentes : [Zhang]
 
-* Tendance à l’instabilité des structures arborescentes, même avec des perturbations mineures,
+* Tendance à l’instabilité des structures arborescentes, même avec des perturbations mineures : une petite modification du lot d'entraînement peut entraîner des modifications majeures de l'arborescence d'un arbre décisionnel,
 * Apparition, grâce notamment aux avancées de la génomique, de problèmes dits de type *grand p, petit n*, avec un grand nombre de prédicteurs $p$ pour un petit nombre d’observations $n$\footnote{En l'espèce, les problèmes posés par la génomique imposent souvent d'analyser des dizaines de milliers de gènes (*p*), sur quelques dizaines ou centaines de patients (*n*).} qui mettent en échec la vision classique de parcimonie d’un modèle unique pour un problème unique,
 * Impossibilité usuelle d’inférence théorique, liée à la nature adaptative de la construction des arbres décisionnels.
 
@@ -582,9 +584,11 @@ L’algorithme de génération d’une forêt aléatoire, pour un lot avec $n$ o
 
 1. Prélever un échantillon bootstrap\footnote{Le bootstrap correspond au à la constitution d’un échantillon par prélèvement d’individus *avec* remplacement.} de taille $n$,
 2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
-3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre,\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}}
-4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt. La classification par forêt se fait par un vote de tout les arbres.
+3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre,\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q $
+4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
 
+L'agrégation s'obtient donc par :
+\widehat{h}_{RF}(x) = \argmax_{1\leq c\leq C} \sum^{q}_{\ell=1}\mathbf{1}_{\widehat{h}(x, \Theta_{\ell})=c}
 
 [A FINIR]
 
