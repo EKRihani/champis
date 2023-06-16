@@ -17,8 +17,7 @@ output:
 header-includes:
    - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
    - \renewcommand{\thefootnote}{\alph{footnote}}      # Pieds de page en lettres minuscules (autres: Roman, Alph)
-   - \DeclareMathOperator*{\argmax}{arg\,max}    # Pour fonction argmax (forêts aléatoires)
-   - \usepackage{bbm}    # Pour fonction caractéristique 1 (forêts aléatoires)
+#   - \usepackage{bbm}    # Pour fonction caractéristique 1 (forêts aléatoires)
 #  - \usepackage{sansmathaccent}    # Pour tidles/chapeaux mal alignés avec maths sans accent...
    - \linespread{1.15}
 indent: true
@@ -82,6 +81,8 @@ NOLH : *Nearly Orthogonal Latin Hypercube* (hypercube latin quasi orthogonal)
 PDA : *Penalized Discriminant Analysis* (analyse discriminante pénalisée)
 
 RF : *Random Forest* (forêt aléatoire)
+
+RF-RI : *Random Forest Random Inputs* (forêt aléatoire à [variables d']entrées aléatoires)
 
 ROC : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
 
@@ -568,37 +569,34 @@ Les résultats de la mise en \oe{}uvre d'une classification par arbre de décisi
   \label{fig:Iris-CART}
 \end{figure}
 
-
-
+\FloatBarrier
 ### Forêts aléatoires
 
-Les arbres décisionnels conventionnels ont montré, au cours de leur utilisation dans le traitement des données, quelques limites récurrentes : [Zhang]
+Les arbres décisionnels conventionnels ont montré, au cours de leur utilisation dans le traitement des données, quelques limites récurrentes: [@zhang_recursive_2010, @zhang_ensemble_2012]
 
-* Tendance à l’instabilité des structures arborescentes, même avec des perturbations mineures : une petite modification du lot d'entraînement peut entraîner des modifications majeures de l'arborescence d'un arbre décisionnel,
-* Apparition, grâce notamment aux avancées de la génomique, de problèmes dits de type *grand p, petit n*, avec un grand nombre de prédicteurs $p$ pour un petit nombre d’observations $n$\footnote{En l'espèce, les problèmes posés par la génomique imposent souvent d'analyser des dizaines de milliers de gènes (*p*), sur quelques dizaines ou centaines de patients (*n*).} qui mettent en échec la vision classique de parcimonie d’un modèle unique pour un problème unique,
-* Impossibilité usuelle d’inférence théorique, liée à la nature adaptative de la construction des arbres décisionnels.
+* Tendance à l'instabilité des structures arborescentes, même avec des perturbations mineures: une petite modification du lot d'entraînement peut entraîner des modifications majeures de l'arborescence d'un arbre décisionnel,
+* Apparition, grâce notamment aux avancées de la génomique, de problèmes dits de type *grand p, petit n*, avec un grand nombre de prédicteurs $p$ pour un petit nombre d’observations $n$,\footnote{En l'espèce, les problèmes posés par la génomique imposent souvent d'analyser des dizaines de milliers de gènes (\emph{p}), sur quelques dizaines ou centaines de patients (\emph{n}).} qui mettent en échec la vision classique de parcimonie d’un modèle unique pour un problème unique,
+* Performances limitées face à des combinaisons linéaires de facteurs,
+* Impossibilité usuelle d'inférence théorique, liée à la nature adaptative de la construction des arbres décisionnels.
 
-La génération de forêts s’est imposée comme une solution élégante à ces limitations. Une forêt est un ensemble d’arbres qui, individuellement, sont suboptimaux, mais dont la combinaison en un comité améliore considérablement les performances. [Breiman 96, 01] L’exploitation de nombreux arbres offre la possibilité d’utiliser plus d’informations, et d’avoir ainsi une meilleure compréhension des données : des arbres différents peuvent proposer des cheminements alternatifs vers une solution.
-
-Une forêt aléatoire est un type particulier de forêt, dont la définition canonique correspond, d’après Breiman[CITATION BREIMAN 2001, POGGI 2020], à une collection $\left(\widehat{h}(., \Theta_{1}),\dots, \widehat{h}(., \Theta_{q}) \right)$ d’arbres de prédiction avec $\Theta_{1},\dots, \Theta_{q}$ des variables indépendantes, identiquement distribuées, aléatoirement sélectionnées dans le lot de données $\mathcal{L}{n}$ comptant $n$ observations et $q$ prédicteurs. L’agrégation des données s'obtient par un vote majoritaire :
-$$\widehat{h}_{RF}(x) = \argmax_{1\leq c\leq C} \sum^{q}_{\ell=1}\mathbf{1}_{\widehat{h}(x, \Theta_{\ell})=c}$$
+\paragraph*{}
+La génération de forêts s’est imposée comme une solution élégante à ces limitations. Une forêt est un ensemble d’arbres qui, individuellement, sont suboptimaux, mais dont la combinaison en un comité améliore considérablement les performances.[@breiman_bagging_1996, @breiman_random_2001] L’exploitation de nombreux arbres offre la possibilité d’utiliser plus d’informations, et d’avoir ainsi une meilleure compréhension des données : des arbres différents peuvent proposer des cheminements alternatifs vers une solution.
+\paragraph*{}
+Une forêt aléatoire est un type particulier de forêt, dont la définition canonique correspond, d’après Breiman[@breiman_random_2001, @genuer_random_2020], à une collection $\left(\widehat{h}(., \Theta_{1}),\dots, \widehat{h}(., \Theta_{q}) \right)$ d’arbres de prédiction avec $\Theta_{1},\dots, \Theta_{q}$ des variables indépendantes, identiquement distribuées, aléatoirement sélectionnées dans le lot de données $\mathcal{L}_{n}$ comptant $n$ observations et $q$ prédicteurs.
+\paragraph*{}
+L’agrégation des données s'obtient par un vote majoritaire :
 
 $$\widehat{h}_{RF}(x) = \underset{1\leq c\leq C}{\operatorname{argmax}}\sum^{q}_{\ell=1}\mathbf{1}_{\widehat{h}(x, \Theta_{\ell})=c}$$
 
-Le type le plus usuel de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI : Random Forests Random Inputs).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme *forêt aléatoire* est utilisé dans la littérature.[POGGI]} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires* : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé. \footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus *avec* remplacement.}
-
+\paragraph*{}
+Le type le plus commun de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI : *Random Forests Random Inputs*).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme \emph{forêt aléatoire} est utilisé dans la littérature.[POGGI]} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires* : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé.\footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus \emph{avec} remplacement.}
+\paragraph*{}
 En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pour un lot de données structuré autour de $n$ observations et $p$ prédicteurs, fonctionne de la façon suivante :
 
 1. Prélever un échantillon bootstrap de taille $n$,
 2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
-3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre,\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q $
+3. Poursuivre le partitionnement récursif jusqu’à la formation d’un arbre\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q$,
 4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
-
-2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
-3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre,\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q $
-4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
-
-
 
 [SCHEMA]
 
@@ -609,7 +607,7 @@ Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afi
 En effet, l'optimisation des paramètres d'un modèle informatique présente quelques particularités notables ayant un impact sur l'utilisation des plans d'expérience :
 
 * La réalisation d'une expérience supplémentaire a un coût faible,
-* Plusieurs métriques relatives aux performances peuvent coexister,\footnote{cf. section \ref{chapitre:perf}}
+* Plusieurs métriques relatives aux performances peuvent coexister,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}
 * La fonction de réponse peut s'avérer relativement complexe.
 
 \paragraph*{}
