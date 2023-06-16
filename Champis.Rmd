@@ -585,10 +585,15 @@ $$\widehat{h}_{RF}(x) = \argmax_{1\leq c\leq C} \sum^{q}_{\ell=1}\mathbf{1}_{\wi
 
 $$\widehat{h}_{RF}(x) = \underset{1\leq c\leq C}{\operatorname{argmax}}\sum^{q}_{\ell=1}\mathbf{1}_{\widehat{h}(x, \Theta_{\ell})=c}$$
 
+Le type le plus usuel de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI : Random Forests Random Inputs).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme *forêt aléatoire* est utilisé dans la littérature.[POGGI]} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires* : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé. \footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus *avec* remplacement.}
 
-En pratique, l’algorithme de génération d’une forêt aléatoire, pour un lot de données structuré autour de $n$ observations et $p$ prédicteurs, fonctionne de la façon suivante :
+En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pour un lot de données structuré autour de $n$ observations et $p$ prédicteurs, fonctionne de la façon suivante :
 
-1. Prélever un échantillon bootstrap\footnote{Le bootstrap correspond au à la constitution d’un échantillon par prélèvement d’individus *avec* remplacement.} de taille $n$,
+1. Prélever un échantillon bootstrap de taille $n$,
+2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
+3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre,\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q $
+4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
+
 2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
 3. Poursuivre le partitionnement récursif jusqu’à l’obtention d’un arbre,\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q $
 4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
