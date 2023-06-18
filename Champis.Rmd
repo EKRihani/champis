@@ -621,7 +621,12 @@ En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pou
 3. Poursuivre le partitionnement récursif jusqu’à la création d’un arbre\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} : $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q$,
 4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
 
-[SCHEMA]
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{RandomForest}
+   \caption{Algorithme de génération des forêts aléatoires de type RF-RI[@genuer_random_2020]}
+   \label{fig:RandomForest}
+\end{figure}
 
 ## Optimisation par plans d'expérience {#chapitre:doe}
 
