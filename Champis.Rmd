@@ -203,7 +203,7 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 
 \FloatBarrier
 \paragraph*{}
-Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \@ref(fig:Lots-Chrono)).
+Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
 
 
 ```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
@@ -260,7 +260,7 @@ $$\left \{
 \end{array}
 \right.$$
 
-$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \@ref(fig:Lots-LoisBeta).
+$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \ref{fig:Lots-LoisBeta}.
 
 ```{r Lots-LoisBeta, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
 plot(lois_beta)
@@ -277,7 +277,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 \right.$$
 
 \paragraph*{}
-L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \@ref(fig:Lots-Dispersion2D) et  \@ref(fig:Lots-DispersionDensite).
+L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \ref{fig:Lots-Dispersion2D} et  \ref{fig:Lots-DispersionDensite}.
 \paragraph*{}
 
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "png", dpi = 300, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
@@ -291,7 +291,7 @@ plot(ggarrange(
 
 
 \paragraph*{}
-La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \@ref(fig:Lots-DispersionDensite)). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
+La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \ref{fig:Lots-DispersionDensite}). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
 <!-- [FAIRE CALCULS SUR R POUR RELIER AUTOMATIQUEMENT AUX CHIFFRES ?] -->
 
 
@@ -300,7 +300,7 @@ plot(densite2d)
 ```
 
 \paragraph*{}
-Une simulation de Monte Carlo unidimensionnelle effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (cf. figure \@ref(fig:HorsNormes)). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
+Une simulation de Monte Carlo unidimensionnelle effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (voir figure \ref{fig:HorsNormes}). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
 \paragraph*{}
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
@@ -325,13 +325,18 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 
 *Apprentissage supervisé, semi-supervisé, non supervisé*
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\paragraph*{}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
 ## Jeux de données {#chapitre:split}
 
 Les jeux de données dédiés à l'apprentissage machine supervisé ou semi-supervisé sont tous construits sur la base de couples données-résultats. Selon l'étape de ces types d'apprentissage machine, le résultat peut être fourni à la machine ou lui être caché, le but étant dans le premier cas de permettre à la machine d'effectuer son apprentissage, et dans le second cas d'évaluer les performances de la prédiction par rapport au résultat réel.
 \paragraph*{}
 Le déroulement de l'apprentissage machine supervisé se décompose conceptuellement en trois étapes principales, mettant en jeu trois lots de données distincts :
 
-1. Entraînement : le modèle d'apprentissage machine est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif\footnote{Voir section \@ref(chapitre:lotsynth)} des données auquel le modèle sera exposé en utilisation réelle. Cette phase est la phase d'apprentissage du modèle.
+1. Entraînement : le modèle d'apprentissage machine est exposé à un *jeu de données d'entraînement* (*training data set*), censé être représentatif\footnote{Voir section \ref{chapitre:lotsynth}} des données auquel le modèle sera exposé en utilisation réelle. Cette phase est la phase d'apprentissage du modèle.
 2. Validation : le modèle d'apprentissage machine élaboré à l'étape précédente, est ici soumis à un *jeu de données de validation* (*validation data set*) et tentera d'apporter des prédictions quant à une variable d'intérêt considérée comme le résultat (ex: comestibilité, espèce...), sur la base des informations contenues dans le lot de données de validation (ex : dimensions, couleurs, morphologie du champignon...). Ces prédictions sont comparées avec les valeurs réelles (ex : comestibilité, espèce...), ce qui permet d'évaluer les performances du modèle proposé en fonction des indicateurs retenus (spécificité, sensibilité, indice de Rand, temps de calcul...). Les étapes d'apprentissage et de validation sont répétées de manière itérative en explorant l'ensemble des paramètres de configuration du modèle (hyperparamètres) à fins d'optimisation.
 3. Test : les performances du meilleur modèle (avec hyperparamètres optimaux), sélectionné à l'issue de l'étape de validation, sont évaluées vis-à-vis d'un *jeu de données test* (*test* ou *holdout data set*).
 
@@ -340,11 +345,10 @@ La séparation entre étapes d'optimisation et de test peut sembler artificielle
 \paragraph*{}
 Une distinction sémantique plus nette entre phases d'*apprentissage*, d'*optimisation* et de *test* permet de comprendre plus aisément le fondement épistémologique de cette dernière phase pouvant parfois sembler superflue : l'optimisation effectuée lors de l'étape de validation aboutit à un modèle potentiellement biaisé par surajustement (problème dit d'*overfitting*) vis-à-vis du jeu de données utilisé comme référence lors de cette étape. Seule une exposition du modèle à des données n'ayant jamais servi à son entraînement ou son optimisation permettra réellement d'évaluer avec précision son caractère prédictif, donc sa validité.\footnote{Dans un souci de clarifier le propos, nous utiliserons les termes de lots et de phases d'entraînement, d'optimisation et d'évaluation dans la suite de cette étude.}
 \paragraph*{}
-Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives (voir figure \@ref(fig:Split-jeux)) du lot de données initial, avec des proportions pouvant être variables d'une scission à l'autre :
+Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un lot de données spécifique. Chacun de ces lots de données est habituellement obtenu suite à dichotomies successives (voir figure \ref{fig:Split-jeux}) du lot de données initial, avec des proportions pouvant être variables d'une scission à l'autre :
 
 1. Découpage du jeu de données initial, en un jeu d'évaluation d'une part, et un jeu d'entraînement et optimisation d'autre part,
 2. Découpage du jeu de données entraînement et optimisation, en un jeu d'entraînement et un jeu d'optimisation.
-
 
 \begin{figure}
    \centering
@@ -352,14 +356,13 @@ Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un
   \caption{Principe de scissions successives d'un jeu de données initial en jeux d'apprentissage, d'optimisation et d'évaluation.}
   \label{fig:Split-jeux}
 \end{figure}
-
 \paragraph*{} \label{paragraphe:split_ratio}
-Les rapports de taille entre jeux de données d'entraînement, d'optimisation et d'évaluation de cette étude suivront la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022] 
-\paragraph*{} 
+Les rapports de taille entre jeux de données d'entraînement, d'optimisation et d'évaluation de cette étude suivront la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022] \paragraph*{} 
 Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de lignes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons contenus dans le lot de données.[@joseph_optimal_2022]
 \paragraph*{}
 Il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première scission entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu d'évaluation d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier, une taille représentant la fraction du lot total :
 $$f_{test}= \frac{\sqrt{p}+1}{p+2\sqrt{p}+1} = \frac{1}{\sqrt{p}+1} $$
+
 \paragraph*{}
 Cette première dichotomie peut être suivie par une seconde dichotomie entre jeu d'entraînement (de taille relative $p$) et jeu d'optimisation (de taille relative $\sqrt{p}$), de fraction :
 $$ f_{opti} = \frac{\sqrt{p}}{p + \sqrt{p}} = \frac{1}{\sqrt{p}+1} \Rightarrow f_{test}= f_{opti} = \frac{1}{\sqrt{p}+1} $$
@@ -367,13 +370,14 @@ $$ f_{opti} = \frac{\sqrt{p}}{p + \sqrt{p}} = \frac{1}{\sqrt{p}+1} \Rightarrow f
 \paragraph*{}
 En pratique, pour notre lot de données contenant $N_{u} = `r BI_n_champis`$ spécimens, nous pouvons calculer $p \approx `r round(BI_split_p,1)`$, soit deux dichotomies successives de ratio `r BI_split_facteur-1`:1.
 
-## Méthodes de construction des jeux de données  {#chapitre:split_methodes}
+\FloatBarrier
+## Méthodes de construction des jeux de données {#chapitre:split_methodes}
 
 Les méthodes de division mises en \oe{}uvre dans cette étude appellent quelques précisions, car elles apportent certaines améliorations par rapport à l'utilisation de deux scissions successives effectuées de manière purement aléatoire.
 \paragraph*{}
 La première division, entre jeu d'entraînement/optimisation et jeu d'évaluation, mettra en \oe{}uvre une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (*nearest neighbour*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
 \paragraph*{} \label{paragraphe:crossvalid}
-Notre seconde division, entre jeu d'entraînement et d'optimisation, exploitera quant à elle la méthode de validation croisée à k blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une rotation de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \@ref(fig:Cross-validation)).
+Notre seconde division, entre jeu d'entraînement et d'optimisation, exploitera quant à elle la méthode de validation croisée à k blocs (*k-folds cross-validation*). Le principe de la validation croisée repose sur une rotation de la séparation créée entre jeux d'entraînement et d'optimisation (voir figure \ref{fig:Cross-validation}).
 \paragraph*{}
 Le jeu d'entraînement/optimisation est découpé, de façon aléatoire, en k blocs de données de taille égale, dont k-1 sont utilisés pour l'entraînement du modèle prédictif et 1 pour son optimisation. Cette opération est répétée k fois, en utilisant un jeu d'optimisation différent à chaque itération. L'évaluation de la performance globale s'effectue en évaluant la performance moyenne des k itérations. Cette méthode permet de limiter les biais potentiels générés par une simple dichotomie des données d'entraînement et d'optimisation en exploitant la totalité des données du lot afin d'effectuer ces deux tâches.
 \paragraph*{}
@@ -398,7 +402,7 @@ Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'ana
 \FloatBarrier
 
 \paragraph*{}
-L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \@ref(fig:Principe-LDA)).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
+L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
 
 \paragraph*{}
 \begin{figure}
@@ -432,7 +436,7 @@ kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres 
 ```
 
 ```{r, LDA-TableProd, echo = FALSE}
-kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor (Spq)") %>%
+kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor ($S_{pq}$)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
@@ -450,7 +454,7 @@ d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambd
 \end{array} \Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
 \right.$$
 
-<!-- soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath  --> avec $\mathbf{S}$ la matrice des $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
+<!-- soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath  --> avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
 \paragraph*{}
 En indiçant les facteurs :
 
@@ -484,7 +488,7 @@ $$ X = L_{s} + `r round(iris_CoeffsNorm[2],3)`.\ell_{s} `r round(iris_CoeffsNorm
 
 Le seuil de séparation est alors défini par : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
 \paragraph*{}
-La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \@ref(fig:LDA-MinMax) et \@ref(fig:LDA-Separation).
+La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
 <!-- Ajouter petit paragraphe explicatif -->
 
 ```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
@@ -550,11 +554,14 @@ Pour l'arbre CART qui sera utilisé dans la classification binaire cette étude,
 $$G = 1- p^{2} - \left(1- p \right)^{2}$$
 avec $p$ la fréquence relative de l'une des deux classes, au sein du n\oe{}ud considéré.
 \paragraph*{}
-Les arbres obtenus peuvent enfin être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre. Cet algorithme effectue l'analyse de l'arbre des feuilles vers la racine -- donc dans le sens inverse de l'induction qui l'a construit -- et en évaluant si chaque n\oe{}ud intermédiaire pourrait être avantageusement remplacé par une feuille ou par une branche. Différents critères d'optimisation existent, parmi lesquels nous pouvons citer l'élagage coût-complexité[@kretowski_evolutionary_2019], exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de notre arbre $T$ :
+Les arbres obtenus peuvent enfin être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre. Cet algorithme effectue l'analyse de l'arbre des feuilles vers la racine -- donc dans le sens inverse de l'induction qui l'a construit -- et en évaluant si chaque n\oe{}ud intermédiaire pourrait être avantageusement remplacé par une feuille ou par une branche. Différents critères d'optimisation existent, parmi lesquels nous pouvons citer l'élagage coût-complexité,[@kretowski_evolutionary_2019] exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de notre arbre $T$ :
 $$CC(T) = Erreur(T) + \alpha{}\times Taille(T)$$
 Avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{paragraphe:train-CART}, p. \pageref{paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{chapitre:doe}, p. \pageref{chapitre:doe}}
 \paragraph*{}
-Les résultats de la mise en \oe{}uvre d'une classification par arbre de décision sur le jeu de données Iris sont représentés par la figure \@ref(fig:Iris-CART).
+Les résultats de la mise en \oe{}uvre d'une classification par arbre de décision sur le jeu de données Iris sont représentés par la figure \ref{fig:Iris-CART}. 
+\paragraph*{}
+Des exemples d'application sur les macromycètes sont également illustrés par les figures \ref{fig:Iris-Champis-CARTa} et \ref{fig:Iris-Champis-CARTb}, qui permettent d'appréhender la potentielle complexité de la classification des champignons, même en limitant la prédiction à un critère binaire (comestible ou toxique).
+
 \begin{figure}
 \centering
 \begin{minipage}{.5\textwidth}
@@ -570,9 +577,25 @@ Les résultats de la mise en \oe{}uvre d'une classification par arbre de décisi
 \end{figure}
 
 \FloatBarrier
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{IntroChampisCART2Arbre}
+   \caption{Arbre simplifié proposé par CART pour la classification des champignons}
+   \label{fig:Iris-Champis-CARTa}
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{IntroChampisCART1Arbre}
+   \caption{Structure arborescente complète proposée par CART pour la classification des champignons}
+   \label{fig:Iris-Champis-CARTb}
+\end{figure}
+
+\FloatBarrier
 ### Forêts aléatoires
 
-Les arbres décisionnels conventionnels ont montré, au cours de leur utilisation dans le traitement des données, quelques limites récurrentes: [@zhang_recursive_2010, @zhang_ensemble_2012]
+Les arbres décisionnels conventionnels ont montré, au cours de leur utilisation dans le traitement des données, quelques limites récurrentes : [@zhang_recursive_2010, @zhang_ensemble_2012]
 
 * Tendance à l'instabilité des structures arborescentes, même avec des perturbations mineures: une petite modification du lot d'entraînement peut entraîner des modifications majeures de l'arborescence d'un arbre décisionnel,
 * Apparition, grâce notamment aux avancées de la génomique, de problèmes dits de type *grand p, petit n*, avec un grand nombre de prédicteurs $p$ pour un petit nombre d’observations $n$,\footnote{En l'espèce, les problèmes posés par la génomique imposent souvent d'analyser des dizaines de milliers de gènes (\emph{p}), sur quelques dizaines ou centaines de patients (\emph{n}).} qui mettent en échec la vision classique de parcimonie d’un modèle unique pour un problème unique,
@@ -595,7 +618,7 @@ En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pou
 
 1. Prélever un échantillon bootstrap de taille $n$,
 2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
-3. Poursuivre le partitionnement récursif jusqu’à la formation d’un arbre\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q$,
+3. Poursuivre le partitionnement récursif jusqu’à la création d’un arbre\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}} : $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q$,
 4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
 
 [SCHEMA]
@@ -699,7 +722,7 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 
 ## Analyse exploratoire des données (EDA)
 
-*Partie permettant de présenter globalement le lot de données synthétiques créé dans cette étude (cf. section \@ref(chapitre:lotsynth)) avant utilisation des IA.*
+*Partie permettant de présenter globalement le lot de données synthétiques créé dans cette étude (cf. section \ref{chapitre:lotsynth}) avant utilisation des IA.*
 
 *La génération du lot de données fonctionne, la génération des graphiques aussi, mais le texte sera à retravailler en fonction du lot de données synthétiques obtenu...*
 
@@ -711,13 +734,13 @@ kable(structure_dataset, caption = "Structure du lot de données initial")
 ```
 
 \paragraph*{}
-Le lot de données d'origine contient `r EDA_n_champis` spécimens de champignons, caractérisés par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumée dans le tableau \@ref(tab:EDA-structure).
+Le lot de données d'origine contient `r EDA_n_champis` spécimens de champignons, caractérisés par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumée dans le tableau \ref{tab:EDA-structure}.
 \paragraph*{}
 Ce lot de données original a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur-1`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.}
 \paragraph*{}
 Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles.
 \paragraph*{}
-Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (figure \@ref(fig:EDA-distrib)), avec une longue queue à droite. Une transformation logarithmique (figure \@ref(fig:EDA-distrib-log)) montre plus nettement la forme de cette queue.
+Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes : à première vue, elles semblent suivre une courbe en cloche (figure \ref{fig:EDA-distrib}), avec une longue queue à droite. Une transformation logarithmique (figure \ref{fig:EDA-distrib-log}) montre plus nettement la forme de cette queue.
 
 ```{r EDA-distrib, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe"}
 plot(ggarrange(
@@ -1127,7 +1150,7 @@ b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
 
 
 \paragraph*{}
-Le modèle ranger semble déjà, par simple interprétation graphique (voir figures \@ref(fig:BI-ranger-gini), \@ref(fig:BI-ranger-ET) et \@ref(fig:BI-ranger-Jw)), donner de bons résultats sur une très large plage de l'espace expérimental de ses hyperparamètres, même avec un nombre réduit d'arbres ($n=6$). Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats :
+Le modèle ranger semble déjà, par simple interprétation graphique (voir figures \ref{fig:BI-ranger-gini}, \ref{fig:BI-ranger-ET} et \ref{fig:BI-ranger-Jw}), donner de bons résultats sur une très large plage de l'espace expérimental de ses hyperparamètres, même avec un nombre réduit d'arbres ($n=6$). Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(BI_fit_ranger_best_resultats["Jw"],5)` \\

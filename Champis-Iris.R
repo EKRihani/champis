@@ -174,22 +174,87 @@ load(file = "EKR-Champis-Iris.RData")
 #########
 
 # Produits des carrés des différences (table VII)
-deltas_set <- delta %>% 
-   filter(Species == "setosa") %>%
-   select(SL:PW) %>%
-   as.matrix()
-prods_set <- rbind(deltas_set[,1] %*% deltas_set,
-                   deltas_set[,2] %*% deltas_set,
-                   deltas_set[,3] %*% deltas_set,
-                   deltas_set[,4] %*% deltas_set)
+# deltas_set <- delta %>% 
+#    filter(Species == "setosa") %>%
+#    select(SL:PW) %>%
+#    as.matrix()
+# prods_set <- rbind(deltas_set[,1] %*% deltas_set,
+#                    deltas_set[,2] %*% deltas_set,
+#                    deltas_set[,3] %*% deltas_set,
+#                    deltas_set[,4] %*% deltas_set)
+# 
+# deltas_ver <- delta %>% 
+#    filter(Species == "versicolor") %>%
+#    select(SL:PW) %>%
+#    as.matrix()
+# prods_ver <- rbind(deltas_ver[,1] %*% deltas_ver,
+#                    deltas_ver[,2] %*% deltas_ver,
+#                    deltas_ver[,3] %*% deltas_ver,
+#                    deltas_ver[,4] %*% deltas_ver)
 
-deltas_ver <- delta %>% 
-   filter(Species == "versicolor") %>%
-   select(SL:PW) %>%
-   as.matrix()
-prods_ver <- rbind(deltas_ver[,1] %*% deltas_ver,
-                   deltas_ver[,2] %*% deltas_ver,
-                   deltas_ver[,3] %*% deltas_ver,
-                   deltas_ver[,4] %*% deltas_ver)
 
 
+############################
+#     ARBRES / CHAMPIS     #
+############################
+
+# Initialisation
+library(twinning)
+library(rpart.plot)
+
+fichier_data <- tempfile()
+#URL <- "https://github.com/EKRihani/champis/raw/master/MushroomDataset.zip"      # URL de mon repo
+# download.file(URL, fichier_data)
+fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
+fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
+dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
+dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
+dataset$class <- relevel(dataset$class, ref = "toxique")
+
+# Création des lots d'entraînement, validation, évaluation
+
+INTRO_n_champis <- nrow(dataset)
+INTRO_split_p <- sqrt(INTRO_n_champis)
+INTRO_split_facteur <- round(sqrt(INTRO_split_p)+1)
+
+set.seed(007)
+index1 <- twin(data = dataset, r = INTRO_split_facteur)
+INTRO_lot_appr_opti <- dataset[-index1,]
+INTRO_lot_evaluation <- dataset[index1,]
+
+# Initialisation du biclassifieur
+
+tr_ctrl <- trainControl(classProbs = TRUE,
+                        summaryFunction = twoClassSummary,
+                        method = "cv",
+                        number = INTRO_split_facteur)
+
+# Lancement du biclassifieur
+
+INTRO_fit_rpart2 <- train(class ~ .,
+                         method = "rpart2",
+                         data = INTRO_lot_appr_opti,
+                         trControl = tr_ctrl,
+                         tuneGrid  = data.frame(maxdepth = 4)) 
+
+
+pdf("IntroChampisCART2Arbre.pdf", width = 8, height = 5, pointsize = 16)
+rpart.plot(x = INTRO_fit_rpart2$finalModel, type = 4, extra = 8, branch = 1.0, under = TRUE, box.palette = "Blues")
+dev.off()
+
+
+INTRO_fit_rpart <- train(class ~ .,
+                         method = "rpart",
+                         data = INTRO_lot_appr_opti,
+                         trControl = tr_ctrl,
+                         tuneGrid  = data.frame(cp = 1e-5)) 
+
+pdf("IntroChampisCART1Arbre.pdf", width = 8, height = 10, pointsize = 0.1)
+plot(INTRO_fit_rpart$finalModel)
+dev.off()
+
+
+
+
+save.image(file = "EKR-Champis-Iris.RData")
+load(file = "EKR-Champis-Iris.RData")
