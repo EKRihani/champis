@@ -614,7 +614,7 @@ $$\widehat{h}_{RF}(x) = \underset{1\leq c\leq C}{\operatorname{argmax}}\sum^{q}_
 \paragraph*{}
 Le type le plus commun de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI : *Random Forests Random Inputs*).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme \emph{forêt aléatoire} est utilisé dans la littérature.[POGGI]} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires* : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé.\footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus \emph{avec} remplacement.}
 \paragraph*{}
-En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pour un lot de données structuré autour de $n$ observations et $p$ prédicteurs, fonctionne de la façon suivante :
+En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pour un lot de données structuré autour de $n$ observations et $p$ prédicteurs, fonctionne de la façon suivante, également résumée par la figure \ref{fig:RandomForest} [@genuer_random_2020] :
 
 1. Prélever un échantillon bootstrap de taille $n$,
 2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
@@ -624,10 +624,10 @@ En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pou
 \begin{figure}
    \centering
    \includegraphics[width=\linewidth]{RandomForest}
-   \caption{Algorithme de génération des forêts aléatoires de type RF-RI[@genuer_random_2020]}
+   \caption{Algorithme de génération des forêts aléatoires de type RF-RI}
    \label{fig:RandomForest}
 \end{figure}
-
+\FloatBarrier
 ## Optimisation par plans d'expérience {#chapitre:doe}
 
 Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afin d'obtenir des performances maximales. Cette optimisation relève du domaine des plans d'expérience (*DOE : Design Of Experiments*). De nombreux plans et stratégies sont envisageables, le choix dépendant en partie des caractéristiques du processus à optimiser.
@@ -715,10 +715,8 @@ Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec u
 \paragraph*{}
 L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette étude la complétera parfois par l'indice de Rand $R$, métrique moins robuste en présence de données non-équilibrées\footnote{Ce cas se présente habituellement lors d'une surreprésentation de certaines classes dans les jeux de données.}, mais présentant l'avantage d'être de compréhension plus aisée, car représentant le pourcentage de prédictions exactes.
 \paragraph*{}
-
-
-
-
+\FloatBarrier
+\phantom{blablabla}
 \newpage
 
 # Apprentissage machine et classification binaire
