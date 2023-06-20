@@ -321,14 +321,14 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 
 # Principes de l'apprentissage machine
 
-L’apprentissage machine est un sous-domaine de l'intelligence artificielle, se situant à l’interface entre les statistiques et l’informatique. L’objet de l'apprentissage machine est la génération d'algorithmes autonomes capables de prédire par inférence la meilleure décision ou réponse à une question à partir d’un lot de données.[Machine Learning with Go]
+L’apprentissage machine est un sous-domaine de l'intelligence artificielle, se situant à l’interface entre les statistiques et l’informatique. L’objet de l'apprentissage machine est la génération d'algorithmes autonomes capables de prédire par inférence la meilleure décision ou réponse à une question à partir d’un lot de données.[@michael_machine_2019]
 
 ## Types d'apprentissage machine
 
-L’apprentissage machine peut se dérouler suivant un certain nombre de paradigmes, parmi lesquels la stratégie d’apprentissage, définie à partir du type de données disponibles. Les principaux paradigmes d’apprentissage sont : [Machine Learning with Go, Hands-On Machine Learningwith scikit-learn and ScientiﬁcPython Toolkits]
+L’apprentissage machine peut se dérouler suivant un certain nombre de paradigmes, concernant en particulier la stratégie d’apprentissage -- définie à partir du type de données disponibles -- parmi lesquels nous pouvons notamment citer[@michael_machine_2019;@amr_hands-machine_2020] :
 
 * Apprentissage machine supervisé : les données du problème sont disponibles sous forme de couples exemple-annotation. Chaque point de données possède des caractéristiques (covariables) et une annotation. Le principe de cet apprentissage est donc de générer une application liant les vecteurs des entrées (covariables) et une variable de sortie (annotation). L’apprentissage machine supervisé permet également de mesurer les performances du modèle obtenu.
-* Apprentissage machine semi-supervisé : les données du problème contiennent une petite quantité de données annotées, avec une grande quantité de données non annotées. La présence de cette grande quantité de données non-annotées peut apporter une amélioration considérable de la précision des prédictions par rapport à l’utilisation d’un seul lot de données annotées de plus petite taille.
+* Apprentissage machine semi-supervisé : les données du problème contiennent une petite quantité de données annotées, associée avec une grande quantité de données non annotées. La présence de cette grande quantité de données non-annotées peut apporter une amélioration considérable de la précision des prédictions par rapport à l’utilisation d’un seul lot de données annotées de plus petite taille.
 * Apprentissage machine non supervisé : les données ne sont pas annotées. Ce paradigme permet d’acquérir une connaissance concise de la structure du lot de données, notamment par des méthodes de partitionnement des données (*clustering*), de réduction de dimensionalité ou de réseaux neuronaux. Il peut notamment être utilisé pour l’analyse exploratoire de données ou pour diminuer la quantité de données fournie à des algorithmes supervisés afin de d’augmenter l’efficience calculatoire du système.
 
 
