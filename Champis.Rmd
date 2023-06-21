@@ -321,7 +321,9 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 
 # Principes de l'apprentissage machine
 
-L’apprentissage machine est un domaine scientifique se situant à l’interface entre les statistiques et l’informatique, et constitue un sous-domaine de l’intelligence artificielle. L’objet de l’apprentissage machine est conceptuellement de permettre aux machines d’ « apprendre », c’est-à-dire d’améliorer leurs performances par l’entraînement. En pratique, ce domaine se consacre à la génération d’algorithmes autonomes capables d’améliorer leurs performances prédictives par exposition à un lot de données et de prédire par inférence la meilleure décision ou réponse à une question.[@michael_machine_2019]
+L’apprentissage machine est un domaine scientifique se situant à l’interface entre les statistiques et l’informatique, et constitue un sous-domaine de l’intelligence artificielle. L’objet de l’apprentissage machine est conceptuellement de permettre aux machines d’ « apprendre », c’est-à-dire d’améliorer leurs performances par l’entraînement. 
+\paragraph*{}
+En pratique, ce domaine se consacre à la génération d’algorithmes autonomes capables d’améliorer leurs performances prédictives par exposition à un lot de données et de prédire par inférence la meilleure décision ou réponse à une question.[@michael_machine_2019]
 
 ## Types d'apprentissage machine
 
