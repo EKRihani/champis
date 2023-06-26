@@ -236,6 +236,9 @@ graphe_NOHLD
 
 #temps_fonctions
 chrono_distrib
+chrono_distrib2 <- chrono_distrib + scale_y_continuous(trans = "log2") #"exp", "log10", "log1p", "log2", "sqrt"
+chrono_distrib2
+
 
 # Distribution Champis
 lois_beta                  # Profil des lois beta selon facteur de croissance
