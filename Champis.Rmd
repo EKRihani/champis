@@ -50,7 +50,9 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 \pagestyle{plain}
 
 \newpage
-# Liste des abréviations
+# Abréviations et conventions
+
+## Liste des abréviations
 
 \begingroup
 \flushleft
@@ -88,6 +90,14 @@ ROC\ : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur
 
 VCS\ : *Version Control System* (logiciel de contrôle des versions)
 
+<!-- \endflushleft
+\endgroup -->
+## Conventions utilisées
+
+* Les références bibliographiques seront indiquées par des exposants numériques : ^1^, ^2^, ^3^...
+* Les références de pied de page seront indiquées par des exposants alphabétiques : ^a^, ^b^, ^c^...
+* Les notations scientifiques utiliseront la *notation E* : 3e --5 = $3 \times 10^{-5}$.
+
 \endflushleft
 \endgroup
 
@@ -122,7 +132,7 @@ Le tout premier lot de données mycologiques en libre accès mentionné en data 
 \paragraph*{}
 Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@wagner_mushroom_2021] et mis en libre accès sous le nom de *Secondary Mushroom Dataset*.
 \paragraph*{}
-Des bases de données dédiées à la mycologie sont également disponibles,[@noauthor_fongifrance_nodate, @noauthor_mycodb_nodate] mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
+Des bases de données dédiées à la mycologie sont également disponibles,[@noauthor_fongifrance_nodate; @noauthor_mycodb_nodate] mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
 
 \newpage
 # Création du lot de données
