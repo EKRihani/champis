@@ -526,7 +526,7 @@ plot(ggarrange(widths = c(1, 1.5),
 
 \FloatBarrier
 \paragraph*{}
-Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, soulignées par certains développements de cette section\ :
+Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, soulignées par certains développements de cette section\ : \label{chapitre:LDA_limites}
 
 * Les modèles d'analyse discriminante ne sont adaptés qu'à des données quantitatives ou qualitatives ordinales,
 * Dans la LDA, la séparation entre les différentes classes est basée sur la construction d'un indice synthétique purement linéaire\ : sur l'hyperplan de projection, la séparation entre "territoires" des différentes classes sera toujours une droite,
@@ -643,6 +643,9 @@ En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pou
    \label{fig:RandomForest}
 \end{figure}
 \FloatBarrier
+
+Bien que les algorithmes de type forêts aléatoires soient des outils particulièrement performants, ils ont toutefois quelques limites, la principale étant la relative opacité du modèle obtenu, assimilable à une véritable "boîte noire", et donc inadapté en tant qu'outil descriptif permettant d'acquérir une meilleure compréhension des données.
+
 ## Optimisation par plans d'expérience {#chapitre:doe}
 
 Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afin d'obtenir des performances maximales. Cette optimisation relève du domaine des plans d'expérience (*DOE\ : Design Of Experiments*). De nombreux plans et stratégies sont envisageables, le choix dépendant en partie des caractéristiques du processus à optimiser.
@@ -786,11 +789,17 @@ La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe
 \paragraph*{}
 La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 \paragraph*{}
-L'étude des distributions dans un espace bidmensionnel (figure\ \ref{fig:EDA-bidistrib}, p.\ \pageref{fig:EDA-bidistrib}) permet déjà de dégager des associations de caractéristiques d'intérêt, ici représentées sous formes de zones unicolores où un type de champignons (comestible ou non) dominera, ce qui permet déjà d'élaborer des stratégies de classification basiques\footnote{cf. section \ref{chapitre:naif}, page \pageref{chapitre:naif}}.
+L'étude des distributions dans un espace bidimensionnel (figure\ \ref{fig:EDA-bidistrib}, p.\ \pageref{fig:EDA-bidistrib}) permet déjà de dégager des associations de caractéristiques d'intérêt, ici représentées sous formes de zones unicolores où un type de champignons (comestible ou non) dominera, ce qui permet déjà d'élaborer des stratégies de classification basiques.\footnote{Ce type de classifieur sera développé ultérieurement, en section \ref{chapitre:naif}, page \pageref{chapitre:naif}}
 \paragraph*{}
-Ainsi, il est déjà possible de constater, d'après le nuage de points en haut à droite de la figure \ref{fig:EDA-bidistrib} que dans le lot de données, *tous* les champignons pour lesquels $cap.diameter \geq 0.1$ seront comestibles, et de même pour $stem.height \geq 20$.
+Ainsi, il est déjà possible de constater, d'après le nuage de points en haut à droite de la figure \ref{fig:EDA-bidistrib} que dans le lot de données, *tous* les champignons pour lesquels $cap.diameter \geq 40$ seront comestibles, et de même pour $stem.height \geq 20$. Toutefois, ainsi que l'illustre le graphique de densité situé dans le coin opposé, cette possible séparation ne concernera qu'une minorité de champignons, l'immense majorité des spécimens ayant des caractéristiques $stem.heigh \leq 10$ et $cap.diameter \leq 15$, où les courbes de densité se superposent, laissant entendre que cette association de critères ne sera que peu d'intérêt pour classer un grand nombre de champignons.
+\paragraph*{}
+La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
+\paragraph*{}
+De même, les graphiques de distribution des variables *cap.diameter* et *stem.height* en fonction des variables *veil.type* et *has.ring* montrent des distributions multimodales, qui mettront probablement en difficulté des modèles d'analyse discriminante linéaire, basées sur l'hypothèse de variables distribuées normalement -- ou a minima dotées de distributions monomodales.\footnote{cf. section  \ref{chapitre:modeles_LDA}, page \pageref{chapitre:LDA_limites}}
+\paragraph*{}
+Cette brève analyse exploratoire des données illustre donc l'intérêt de l'EDA, qui constitue un outil puissant permettant de mieux appréhender un lot de données, voire d'orienter le choix des stratégies d'apprentissage machine qui pourraient être exploitées à fins de classification.
 
-```{r EDA-bidistrib, echo = FALSE, fig.height = 6.5, fig.cap = "Distributions bi-critères pour 4 critères d'intérêt"}
+```{r EDA-bidistrib, echo = FALSE, fig.height = 6.5, dev = "png", dpi = 300, fig.cap = "Distributions bi-critères pour 4 critères d'intérêt"}
 paires_graphes
 ```
 

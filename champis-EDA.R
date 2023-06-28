@@ -16,6 +16,8 @@ fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
 
 fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
 dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
+dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
+
 
 ########################################
 #  FORMATTAGE / NETTOYAGE DES DONNEES  #
@@ -98,28 +100,37 @@ for (n in 2:l){    # La colonne 1 (class) n'est pas tracée (attribut de fill/co
 
 # Graphes de corrélation pour une (petite) sélection de critères
 paires_graphes <- ggpairs(
-   lot_appr_opti,
-   columns = c(2,15,17,10),
-   lower = NULL,
-   legend = 1,
-   diag = list(continuous = wrap("densityDiag", alpha = .6), 
-               discrete = wrap("barDiag")
-   ),
-   upper = list(continuous = wrap("points", alpha = .3, shape = 20), 
-                combo = wrap("dot", alpha = .3, shape = 20),
-                discrete = wrap("dot_no_facet", alpha = .3, shape = 20)
-   ),
-   ggplot2::aes(color = class)
-)
-
-paires_graphes <- paires_graphes + 
+      lot_appr_opti,
+      columns = c(2,15,17,10),
+#      lower = NULL,
+      lower = list(continuous = wrap("density"), #densityDiag, dot, points, cor, smooth, smooth_loess, density
+                   combo = wrap("facetdensity", scale_x_continuous(trans = "log10")),  #dot, trends, box_no_facet, facethist, facetdensity, facetdensitystrip
+                   discrete = wrap("count")  #barDiag, dot_no_facet, count, facetbar
+      ),
+      legend = 1,
+      diag = list(continuous = wrap("densityDiag", alpha = .6), 
+                  discrete = wrap("barDiag")
+      ),
+      upper = list(continuous = wrap("points", alpha = .3, shape = 20), 
+                   combo = wrap("dot", alpha = .3, shape = 20),
+                   discrete = wrap("dot_no_facet", alpha = .3, shape = 20)
+      ),
+      ggplot2::aes(color = class)
+   ) + 
    theme_bw() +
    scale_fill_viridis_d(begin = .1, end = .8, option = "D") + 
    scale_color_viridis_d(begin = .1, end = .8, option = "D") +
    theme(legend.position = "bottom") +
-   labs(fill = "Comestibilité")
+   labs(fill = "Type")
+
+paires_graphes
 
 # Nettoyage données inutiles et sauvegarde
+save.image(file = "EKR-Champis-EDA2.RData")     # Sauvegarde données pour rapport
+load(file = "EKR-Champis-EDA2.RData")     # Chargement données
+
 rm(dataset, index1, lot_appr_opti, unique_length)
-save.image(file = "EKR-Champis-EDA.RData")     # Sauvegarde données pour rapport
+save.image(file = "EKR-Champis-EDA.RData")     # Sauvegarde données pour rapportb
+
+
 load(file = "EKR-Champis-EDA.RData")     # Chargement données
