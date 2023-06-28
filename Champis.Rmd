@@ -785,8 +785,14 @@ La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cl
 La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en cloche avec une longue queue à droite, un mode principal à 5 cm et un mode secondaire à 0 cm. Cette valeur peut également sembler surprenante, mais certains champignons du lot n'ont pas de pied, ce qui explique cette valeur.
 \paragraph*{}
 La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
-
 \paragraph*{}
+L'étude des distributions dans un espace bidmensionnel (figure\ \ref{fig:EDA-bidistrib}, p.\ \pageref{fig:EDA-bidistrib}) permet déjà de dégager des associations de caractéristiques d'intérêt, ici représentées sous formes de zones unicolores où un type de champignons (comestible ou non) dominera, ce qui permet déjà d'élaborer des stratégies de classification basiques\footnote{cf. section \ref{chapitre:naif}, page \pageref{chapitre:naif}}.
+\paragraph*{}
+Ainsi, il est déjà possible de constater, d'après le nuage de points en haut à droite de la figure \ref{fig:EDA-bidistrib} que dans le lot de données, *tous* les champignons pour lesquels $cap.diameter \geq 0.1$ seront comestibles, et de même pour $stem.height \geq 20$.
+
+```{r EDA-bidistrib, echo = FALSE, fig.height = 6.5, fig.cap = "Distributions bi-critères pour 4 critères d'intérêt"}
+paires_graphes
+```
 
 \newpage
 
@@ -817,7 +823,7 @@ Les algorithmes d'apprentissage machine développés au cours de cette étude me
 
 \newpage
 
-### Modèle naïf
+### Modèle naïf {#chapitre:naif}
 
 \paragraph*{}
 Le premier classifieur présenté dans cette étude est un classifieur naïf, dont l'algorithme est extrêmement simple\ :
@@ -1320,6 +1326,8 @@ Ce modèle, bien que relativement simple, donne encore des résultats honorables
 
 \paragraph*{}
 Comme lors de la classification par familles, notre premier modèle de forêt aléatoire évalué dans cette partie est ranger. L'exploration de l'espace expérimental des hyperparamètres de ce modèle laisse entrevoir de très bonnes performances sur une large plage d'hyperparamètres.
+\FloatBarrier
+\paragraph*{}
 
 ```{r, echo = FALSE, fig.height = 4, fig.cap = "Performances du modèle Ranger dans une classification par espèces, en fonction de ses 2 hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
 plot(ggarrange(
@@ -1329,17 +1337,18 @@ plot(ggarrange(
    )
 )
 ```
-
+\FloatBarrier
+\paragraph*{}
 Après optimisation des hyperparamètres (*min.node.size* = `r MULESP_best_rangergrid$min.node.size`, *mtry* = `r MULESP_best_rangergrid$mtry` et *splitrule* = `r MULESP_best_rangergrid$splitrule`), ce modèle a donné, comme lors des tests précédents, d'excellents résultats, malgré la complexité accrue du problème.
-
+\FloatBarrier
 ```{r, echo = FALSE}
 kable(MULESP_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
-
+\FloatBarrier
 \paragraph*{}
 Le dernier modèle de forêt aléatoire exploité dans cette tâche de classification par espèces est Rborist.
-
+\FloatBarrier
 ```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(MULESP_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```

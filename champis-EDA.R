@@ -101,6 +101,7 @@ paires_graphes <- ggpairs(
    lot_appr_opti,
    columns = c(2,15,17,10),
    lower = NULL,
+   legend = 1,
    diag = list(continuous = wrap("densityDiag", alpha = .6), 
                discrete = wrap("barDiag")
    ),
@@ -111,7 +112,14 @@ paires_graphes <- ggpairs(
    ggplot2::aes(color = class)
 )
 
+paires_graphes <- paires_graphes + 
+   theme_bw() +
+   scale_fill_viridis_d(begin = .1, end = .8, option = "D") + 
+   scale_color_viridis_d(begin = .1, end = .8, option = "D") +
+   theme(legend.position = "bottom") +
+   labs(fill = "Comestibilité")
+
 # Nettoyage données inutiles et sauvegarde
 rm(dataset, index1, lot_appr_opti, unique_length)
 save.image(file = "EKR-Champis-EDA.RData")     # Sauvegarde données pour rapport
-#load(file = "EKR-Champis-EDA.RData")     # Chargement données
+load(file = "EKR-Champis-EDA.RData")     # Chargement données
