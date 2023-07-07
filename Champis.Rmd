@@ -1346,6 +1346,7 @@ plot(ggarrange(
    )
 )
 ```
+
 \FloatBarrier
 \paragraph*{}
 Après optimisation des hyperparamètres (*min.node.size* = `r MULESP_best_rangergrid$min.node.size`, *mtry* = `r MULESP_best_rangergrid$mtry` et *splitrule* = `r MULESP_best_rangergrid$splitrule`), ce modèle a donné, comme lors des tests précédents, d'excellents résultats, malgré la complexité accrue du problème.
@@ -1358,6 +1359,7 @@ kable(MULESP_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 \paragraph*{}
 Le dernier modèle de forêt aléatoire exploité dans cette tâche de classification par espèces est Rborist.
 \FloatBarrier
+
 ```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
 plot(MULESP_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
@@ -1410,35 +1412,40 @@ kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Range
 
 \newpage
 
-# Robustesse de la classification
+<!-- # Robustesse de la classification -->
 
-*Partie facultative, assez ambitieux, voir si cette partie est compatible (en temps) avec la création du lot de données, qui va être assez chronophage...*
+<!-- *Partie facultative, assez ambitieux, voir si cette partie est compatible (en temps) avec la création du lot de données, qui va être assez chronophage...* -->
 
-*Evaluation de la robustesse, avec deux stratégies envisageables\ : *
+<!-- *Evaluation de la robustesse, avec deux stratégies envisageables\ : * -->
 
-*1. Robustesse "intrinsèque"\ : lot d'entraînement standard, lot d'évaluation avec variations. Robustesse des modèles seuls.*
+<!-- *1. Robustesse "intrinsèque"\ : lot d'entraînement standard, lot d'évaluation avec variations. Robustesse des modèles seuls.* -->
 
-*2. Robustesse "intégrée"\ : intégration de la robustesse dès le départ, avec lot d'entraînement intégrant des variations représentatives du lot d'évaluation.*
+<!-- *2. Robustesse "intégrée"\ : intégration de la robustesse dès le départ, avec lot d'entraînement intégrant des variations représentatives du lot d'évaluation.* -->
 
-## Robustesse face aux déviations
+<!-- ## Robustesse face aux déviations -->
 
-*Robustesse face à des données hors-normes, sans être extrêmes pour autant.*
+<!-- *Robustesse face à des données hors-normes, sans être extrêmes pour autant.* -->
 
-*Facile à coder pour valeurs quantitatives (simplement augmenter la SD du générateur...)*
+<!-- *Facile à coder pour valeurs quantitatives (simplement augmenter la SD du générateur...)* -->
 
-*DIFFICILE à coder pour les valeurs qualitatives (i.e. trouver des proximités, soit manuellement, soit via clustering / KNN)*
+<!-- *DIFFICILE à coder pour les valeurs qualitatives (i.e. trouver des proximités, soit manuellement, soit via clustering / KNN)* -->
 
-*Robustesse "intrinsèque" et "intégrée" *
+<!-- *Robustesse "intrinsèque" et "intégrée" * -->
 
-## Robustesse face aux erreurs
+<!-- ## Robustesse face aux erreurs -->
 
-*Robustesse face à des données complètement aberrantes.*
+<!-- *Robustesse face à des données complètement aberrantes.* -->
 
-*Facile à coder. Robustesse "intrinsèque" uniquement. *
+<!-- *Facile à coder. Robustesse "intrinsèque" uniquement. * -->
 
-\FloatBarrier
+<!-- \FloatBarrier -->
+<!-- \newpage -->
+
+# Conclusion et perspectives
+
+*A écrire...*
+
 \newpage
-
 # Références bibliographiques
 <div id="refs"></div>
 
