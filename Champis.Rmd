@@ -822,7 +822,7 @@ Les algorithmes d'apprentissage machine développés au cours de cette étude me
 
 1. Découpage du lot de données en un jeu d'entraînement/optimisation et en un jeu de validation, avec adaptation des rapports de taille en fonction du volume de données du lot initial,\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}}
 2. Apprentissage sur le jeu d'entraînement, exploitant une validation croisée à k blocs, avec adaptation du nombre de blocs à la taille du lot de données,\footnote{cf. section \ref{chapitre:split_methodes}, page \pageref{paragraphe:crossvalid}}
-3. Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux,\footnote{\label{note:doe}cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}
+3. Exploration de l'ensemble de l'espace expérimental des hyperparamètres du modèle, via la méthode des hypercubes latins quasi-orthogonaux,\footnote{\label{note:doe}cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}
 4. Mesure des performances en exploitant une métrique adaptée,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}
 5. Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions,\footnotemark[\value{footnote}]
 6. Sélection des hyperparamètres permettant d'optimiser les performances du modèle,
