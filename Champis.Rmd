@@ -8,7 +8,9 @@ fontsize: 12pt          # Imposé par la fac
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath"]
+    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath", "alphalph"]
+    # "bbm" : Pour fonction caractéristique 1 (forêts aléatoires)
+    # "sansmathaccent" : Pour tidles/chapeaux mal alignés avec maths sans accent...
     toc: yes
     toc_depth: 3
     includes:
@@ -16,9 +18,7 @@ output:
       after_body: quatrieme.tex
 header-includes:
    - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
-   - \renewcommand{\thefootnote}{\alph{footnote}}      # Pieds de page en lettres minuscules (autres: Roman, Alph)
-#   - \usepackage{bbm}    # Pour fonction caractéristique 1 (forêts aléatoires)
-#  - \usepackage{sansmathaccent}    # Pour tidles/chapeaux mal alignés avec maths sans accent...
+   - \renewcommand{\thefootnote}{\alphalph{\value{footnote}}}      # Pieds de page en lettres minuscules (autres: Roman, AlphAlph)
    - \linespread{1.15}
 indent: true
 bibliography: [packages.bib,Champis.bib]
@@ -43,7 +43,7 @@ library(rmarkdown)
 library(knitr)
 library(tidyverse)
 library(bookdown)
-library(rpart.plot) # Arbres de classification (à tester !)
+library(rpart.plot) # Arbres de classification
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
 knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown", "twinning", "rpart.plot"), "packages.bib")
 ```
@@ -627,7 +627,7 @@ L’agrégation des données s'obtient par un vote majoritaire\ :
 $$\widehat{h}_{RF}(x) = \underset{1\leq c\leq C}{\operatorname{argmax}}\sum^{q}_{\ell=1}\mathbf{1}_{\widehat{h}(x, \Theta_{\ell})=c}$$
 
 \paragraph*{}
-Le type le plus commun de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI\ : *Random Forests Random Inputs*).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme \emph{forêt aléatoire} est utilisé dans la littérature.[@genuer_random_2020]} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires*\ : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé.\footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus \emph{avec} remplacement.}
+Le type le plus commun de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI\ : *Random Forests Random Inputs*).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme \emph{forêt aléatoire} est utilisé dans la littérature.\cite{genuer_random_2020}} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires*\ : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé.\footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus \emph{avec} remplacement.}
 \paragraph*{}
 En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pour un lot de données structuré autour de $n$ observations et $p$ prédicteurs, fonctionne de la façon suivante, également résumée par la figure \ref{fig:RandomForest}\ :[@genuer_random_2020]
 
