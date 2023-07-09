@@ -43,6 +43,7 @@ library(rmarkdown)
 library(knitr)
 library(tidyverse)
 library(bookdown)
+library(magick)
 library(rpart.plot) # Arbres de classification
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
 knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown", "twinning", "rpart.plot"), "packages.bib")
@@ -627,7 +628,7 @@ L’agrégation des données s'obtient par un vote majoritaire\ :
 $$\widehat{h}_{RF}(x) = \underset{1\leq c\leq C}{\operatorname{argmax}}\sum^{q}_{\ell=1}\mathbf{1}_{\widehat{h}(x, \Theta_{\ell})=c}$$
 
 \paragraph*{}
-Le type le plus commun de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI\ : *Random Forests Random Inputs*).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme \emph{forêt aléatoire} est utilisé dans la littérature.\cite{genuer_random_2020}} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires*\ : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé.\footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus \emph{avec} remplacement.}
+Le type le plus commun de forêt aléatoire est la forêt aléatoire à entrées aléatoires (RF-RI\ : *Random Forests Random Inputs*).\footnote{Les forêts RF-RI sont d’ailleurs le type de forêt aléatoire auquel il est souvent tacitement référence lorsque le terme \emph{forêt aléatoire} est utilisé dans la littérature.} Le terme *entrées aléatoires* est ici à interpréter comme *variables d’entrées aléatoires*\ : le principe de la forêt RF-RI est de construire une forêt aléatoire avec des prédicteurs arborescents dont les variables d’entrées sont aléatoires, chacun construit à partir d’un échantillon bootstrapé.\footnote{L’échantillonnage bootstrap correspond à la construction d’un échantillon par prélèvement d’individus \emph{avec} remplacement.}
 \paragraph*{}
 En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pour un lot de données structuré autour de $n$ observations et $p$ prédicteurs, fonctionne de la façon suivante, également résumée par la figure \ref{fig:RandomForest}\ :[@genuer_random_2020]
 
@@ -932,7 +933,7 @@ En pratique, pour $cp \geq 0.05$, notre modèle d'IA basé sur ce type d'arbre d
 C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
 
 
-```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en classification binaire, en fonction de la complexité et du coût (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en classification binaire, en fonction de la complexité et du coût (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_rpartcost_sens_graphe,
@@ -942,7 +943,7 @@ plot(ggarrange(
 ```
 
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.width = 5.2, fig.cap = paste0("Performances (index J de Youden pondéré ", Jw_ratio,":1) de rpartCost en classification binaire, en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation quadratique, points expérimentaux encadrés en noir)")}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.width = 5.2, fig.cap = paste0("Performances (index J de Youden pondéré ", Jw_ratio,":1) de rpartCost en classification binaire, en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)")}
 plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1044,7 +1045,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rFerns_depth_resultats[which.max(BI_fit_rFerns_
 \paragraph*{}
 Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle\ : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_Rborist_sens_graphe,
@@ -1053,7 +1054,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres réduits de nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres réduits de nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1119,7 +1120,7 @@ plot(ggarrange(
 ```
 
 
-```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Ranger en classification binaire, en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des hyperparamètres réduits\ : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Ranger en classification binaire, en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des hyperparamètres réduits\ : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_jw_graphe,
@@ -1266,7 +1267,7 @@ kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist.
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1360,7 +1361,7 @@ kable(MULESP_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 Le dernier modèle de forêt aléatoire exploité dans cette tâche de classification par espèces est Rborist.
 \FloatBarrier
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULESP_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1626,15 +1627,15 @@ BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>%
 ```
 \normalsize
 
-L'objet de type *dataframe* ainsi créé peut être appelé afin d'en extraire des résultats d'intérêt ou d'en inclure le tableau dans le rapport\ :
+L'objet de type *dataframe* ainsi créé peut être appelé afin d'en extraire des résultats d'intérêt ou d'en inclure le tableau dans le rapport (tableau \ref{tab:Annexe-Entrainement}).
 
 \small
-```{r, echo = FALSE}
+```{r, Annexe-Entrainement, echo = FALSE}
 kable(BI_fit_rpart_cp_resultats, caption = "Tableau des résultats de l'entraînement de rpart") %>%
   kable_styling(font_size = 10)
 ```
 \normalsize
-
+\paragraph*{}
 L'algorithme génère également un graphique synthétisant les performances du modèle (sensibilité, spécificité, $J_{w}$, $\kappa$, $R$ ou autre indicateur d'intérêt) en fonction de son hyperparamètre\ :
 
 * *ggplot* est la fonction de génération du graphique, et permet d'appeler l'objet servant à générer le graphique, ainsi que certains paramètres complémentaires via *aes*. Ici, la variable servant d’abscisse.

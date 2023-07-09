@@ -56,7 +56,7 @@ fit_test <- function(fcn_modele){
                            number = BI_split_facteur)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (n-fold)
    cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
                  fcn_modele[1], 
-                 "', data = BI_lot_appr_opti, trControl = tr_ctrl, ", 
+                 "', data = BI_lot_appr_opti, trControl = tr_ctrl, metric = 'Spec',", # voir si métrique adaptée?
                  fcn_modele[2],")")
    fitting <- eval(parse(text = cmd))        # Lance commande
    fitting
@@ -136,29 +136,6 @@ BI_fit_pda_lambda_resultats <- BI_fit_pda_lambda$results %>% mutate(Jw = Sens*BI
 BI_fit_pda_lambda_graphe <- grapheSpeSenJw(BI_fit_pda_lambda_resultats, lambda)
 
 
-### GAMLOESS ###   [A RATIONNALISER AVEC DoE ADAPTE]
-set.seed(36)
-#BI_set_gamLoess <- expand.grid(span = seq(from = 0.01, to = 1, by = 0.19), degree = c(0,1))
-BI_grid_gamLoess <- data.frame(degree = rep(c(0,1), times = 3), span = 2^(1:6)/2^6) #10/5
-BI_set_gamLoess <- c("gamLoess", "tuneGrid  = BI_grid_gamLoess")
-BI_fit_gamLoess <- fit_test(BI_set_gamLoess_span)
-BI_fit_gamLoess_resultats <- BI_fit_gamLoess$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-
-ggplot(data = BI_fit_gamLoess_resultats, aes(x = span)) +
-   geom_point(aes(y = Sens, shape = as.factor(degree)))
-
-
-BI_set_gamLoess_span <-  c("gamLoess", "tuneGrid  = data.frame(span = 2^(1:8)/2^8, degree = 1)") #seq(from = 0.01, to = 1, by = 0.11)
-BI_set_gamLoess_degree <-  c("gamLoess", "tuneGrid  = data.frame(degree = c(0, 1), span = 0.5)")
-BI_fit_gamLoess_span <- fit_test(BI_set_gamLoess_span)
-BI_fit_gamLoess_degree <- fit_test(BI_set_gamLoess_degree)
-
-BI_fit_gamLoess_span_resultats <- BI_fit_gamLoess_span$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_gamLoess_span_graphe <- grapheSpeSenJw(BI_fit_gamLoess_span_resultats, span)
-BI_fit_gamLoess_degree_resultats <- BI_fit_gamLoess_degree$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-BI_fit_gamLoess_degree_graphe <- grapheSpeSenJw(BI_fit_gamLoess_degree_resultats, degree)
-
-
 ###############################################
 #     BICLASSIFIEUR : ARBRES DECISIONNELS     #
 ###############################################
@@ -167,13 +144,6 @@ BI_fit_gamLoess_degree_graphe <- grapheSpeSenJw(BI_fit_gamLoess_degree_resultats
 BI_LHS <- nolhDesign(dimension = 2, range = c(0, 1))$design     # Hypercube latin quasi-orthogonal
 BI_LHS <- data.frame(BI_LHS)
 colnames(BI_LHS) <- c("X1", "X2")
-
-### CTREE ###
-set.seed(32)
-#BI_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
-#BI_fit_ctree_criterion <- fit_test(BI_set_ctree_criterion)
-# BI_fit_ctree_criterion_resultats <- BI_fit_ctree_criterion$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-# BI_fit_ctree_criterion_graphe <- grapheSpeSenJw(BI_fit_ctree_criterion_resultats, mincriterion)
 
 
 ### C 5.0 TREE ###
@@ -304,8 +274,10 @@ BI_pred_ranger <- expand(BI_fit_ranger_resultats[,c("X1","X2","X3")], X1, X2, X3
 
 BI_pred_ranger_ET <- BI_pred_ranger %>% filter(splitrule == "extratrees")
 BI_pred_ranger_GINI <- BI_pred_ranger %>% filter(splitrule == "gini")
-BI_fit_ranger_ET <- BI_fit_ranger$results %>% filter(splitrule == "extratrees")
-BI_fit_ranger_GINI <- BI_fit_ranger$results %>% filter(splitrule == "gini")
+
+BI_fit_ranger_ET <- BI_fit_ranger_resultats %>% filter(splitrule == "extratrees")
+BI_fit_ranger_GINI <- BI_fit_ranger_resultats %>% filter(splitrule == "gini")
+
 
 # Graphes 2D
 BI_fit_ranger_Gini_spec_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Spec", "F")
@@ -356,11 +328,12 @@ BI_mod_Rborist_spec <- modelFit(X=BI_fit_Rborist_resultats[,c("predFixed", "minN
 BI_mod_Rborist_sens <-  modelFit(X=BI_fit_Rborist_resultats[,c("predFixed", "minNode")], 
                                  Y=BI_fit_Rborist_resultats$Sens,  
                                  type="Kriging", 
-                                 formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+                                 formula=Y~predFixed+minNode +predFixed:minNode+I(predFixed^2)+I(minNode^2))
 BI_mod_Rborist_jw <-  modelFit(X=BI_fit_Rborist_resultats[,c("X1", "X2")], 
                                Y=BI_fit_Rborist_resultats$Jw,  
                                type="Kriging", 
                                formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
+
 
 BI_pred_Rborist <- expand.grid(BI_fit_Rborist_resultats[,c("X1","X2")]) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
@@ -450,9 +423,8 @@ save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données compl
 # Suppression gros fichiers intermédiaires, avant sauvegarde
 rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
    BI_fit_pda_lambda, BI_fit_lda2_dim, 
-   BI_fit_gamLoess_degree, BI_fit_gamLoess_span, BI_fit_gamLoess,
    BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
-   BI_fit_ctree_criterion, BI_fit_c50tree, BI_fit_rFerns_depth,
+   BI_fit_c50tree, BI_fit_rFerns_depth,
    BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
 
