@@ -114,7 +114,7 @@ Ce lot se concentre exclusivement sur les champignons habituellement rencontrés
 \paragraph*{}
 L'ingestion de certains de ces champignons est *mortelle*, même en faible quantité. Le diagnostic de l'intoxication fongique peut être difficile, et parfois trop tardif pour un traitement efficace. Des composés toxiques tels que les amanitines ne sont pas altérés ou détruits par cuisson ou congélation, et seront absorbés par l'intestin, avant de passer dans la circulation sanguine afin d'être filtrés par le foie, détruisant les cellules hépatiques, puis excrétées dans l'intestin, réabsorbées, refiltrées... chaque passe détruisant les cellules hépatiques ayant survécu à la précédente, dans un cycle connu sous le nom de réabsorption hépato-entérique.[@courtecuisse_champignons_2013]
 \paragraph*{}
-Il ne faut jamais, *sous aucune circonstance*, utiliser les lots de données générés par des méthodes similaires à celles de notre études dans le but de déterminer si un champignon est comestible ou non.
+Il ne faut jamais, *sous aucune circonstance*, utiliser les lots de données générés par des méthodes similaires à celles de notre étude dans le but de déterminer si un champignon est comestible ou non.
 
 ## But de l'étude
 \paragraph*{}
@@ -124,7 +124,7 @@ La première limite est le nombre de chaînons manquants. Certaines espèces son
 \paragraph*{}
 La seconde limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu\ : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. La divergence évolutive explique par exemple la diversité des mammifères\ : les chauves-souris, baleines et chevaux sont apparentés, mais ont des aspects très dissemblables en raison de leur adaptation à des environnements très différents. D'un autre côté, la convergence évolutive explique la similarité entre l'aile de la chauve-souris et celle de l'abeille. Toutefois, malgré leur apparente dissimilarité, l'aile de la chauve-souris est plus proche de la main humaine ou de la nageoire de la baleine que de l'aile de l'abeille. La façon la plus fiable pour évaluer le processus évolutionnaire et trouver les liens phylogénétiques de la manière la plus précise possible est l'analyse des génomes\ : les caractéristiques visibles peuvent être trompeuses. Malheureusement, ces caractéristiques sont souvent les seules aisément identifiables.
 \paragraph*{}
-Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème\ : il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
+Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème\ : en effet, il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
 \paragraph*{}
 Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques. Le but de cette étude est notamment de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies de classification.
 
@@ -203,7 +203,7 @@ $$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
 Avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen, généré aléatoirement.
 
 \paragraph*{}
-Ainsi, le problème de génération de nos trois variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire\ : le facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires, il convient donc de définir le cahier des charges de la distribution la plus adaptée au sujet de cette étude.
+Ainsi, le problème de génération de nos trois variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire\ : le facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires. Il convient donc de définir le cahier des charges de la distribution la plus adaptée au sujet de cette étude.
 \paragraph*{}
 Les critères de sélection retenus afin de choisir la loi la plus appropriée sont\ :
 
@@ -342,7 +342,7 @@ L’apprentissage machine peut se dérouler suivant un certain nombre de paradig
 
 * Apprentissage machine supervisé\ : les données du problème sont disponibles sous forme de couples exemple-annotation. Chaque point de données possède des caractéristiques (covariables) et une annotation. Le principe de cet apprentissage est donc de générer une application liant les vecteurs des entrées (covariables) et une variable de sortie (annotation). L’apprentissage machine supervisé permet également de mesurer les performances du modèle obtenu.
 * Apprentissage machine semi-supervisé\ : les données du problème contiennent une petite quantité de données annotées, associée avec une grande quantité de données non annotées. La présence de cette grande quantité de données non-annotées peut apporter une amélioration considérable de la précision des prédictions par rapport à l’utilisation d’un seul lot de données annotées de plus petite taille.
-* Apprentissage machine non supervisé\ : les données ne sont pas annotées. Ce paradigme permet d’acquérir une connaissance concise de la structure du lot de données, notamment par des méthodes de partitionnement des données (*clustering*), de réduction de dimensionalité ou de réseaux neuronaux. Il peut notamment être utilisé pour l’analyse exploratoire de données ou pour diminuer la quantité de données fournie à des algorithmes supervisés afin de d’augmenter l’efficience calculatoire du système.
+* Apprentissage machine non supervisé\ : les données ne sont pas annotées. Ce paradigme permet d’acquérir une connaissance concise de la structure du lot de données, notamment par des méthodes de partitionnement des données (*clustering*), de réduction de dimensionalité ou de réseaux neuronaux. Il peut notamment être utilisé pour l’analyse exploratoire de données ou pour diminuer la quantité de données fournie à des algorithmes supervisés afin d'augmenter l'efficience calculatoire du système.
 
 
 
@@ -444,7 +444,7 @@ avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètr
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
 avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
 \paragraph*{}
-L'application sur les espèces *iris versicolor* et *iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd}\ :
+L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd}\ :
 
 ```{r, LDA-TableMoy, echo = FALSE}
 kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
@@ -550,7 +550,7 @@ Le fonctionnement de l'arbre de décision s'articule donc sur une succession de 
 \paragraph*{}
 Les tests des arbres de décision peuvent être\ :
 
-* Univariés, usuellement sous forme de test d'inégalité de type $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurée et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique unique pour aboutir à une multifurcation.
+* Univariés, usuellement sous forme de test d'inégalité de type $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurer et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique unique pour aboutir à une multifurcation.
 * Multivariés, qui exploitent plus d'une caractéristique. Le cas le plus habituel est la scission oblique (*oblique split*), basée sur un hyperplan représentant une combinaison linéaire de caractéristiques. Ce type de test multivarié se rapproche ainsi de la LDA.\footnote{cf. section \ref{chapitre:modeles_LDA}, page \pageref{chapitre:modeles_LDA}}
 
 \paragraph*{}
@@ -558,7 +558,7 @@ Les différents modèles d'arbres de classification pourront mettre en \oe{}uvre
 \paragraph*{}
 L'algorithme le plus utilisé pour la construction de la structure des arbres de classification est l'induction du haut vers le bas, basée sur l'algorithme classique dit "diviser pour régner" (*divide and conquer*), qui consiste à découper le problème de base en sous-problèmes, puis à résoudre ces sous-problèmes avant de les combiner en une solution globale.
 \paragraph*{}
-En pratique, un n\oe{}ud racine est tout d'abord créé, auquel sera associé la totalité du jeu d'apprentissage. En partant de ce n\oe{}ud initial sera appliqué un algorithme récursif qui essaie de diviser ces données à chaque n\oe{}ud. A chaque étape de cet algorithme, l'opportunité d'une scission est évaluée et chaque n\oe{}ud créé pourra soit être marqué en tant que feuille (auquel cas l'induction est terminée pour cette branche), soit en tant que n\oe{}ud interne (auquel cas l'algorithme se poursuit et l'arbre continuera à s'étoffer). Notons qu'à chaque étape de cet algorithme, la taille du jeu de données disponible pour les n\oe{}ud descendants se réduira en raison de la scission, et par conséquent, la probabilité que ces descendants deviennent des feuilles augmentera.
+En pratique, un n\oe{}ud racine est tout d'abord créé, auquel sera associé la totalité du jeu d'apprentissage. En partant de ce n\oe{}ud initial sera appliqué un algorithme récursif qui essaie de diviser ces données à chaque n\oe{}ud. A chaque étape de cet algorithme, l'opportunité d'une scission est évaluée et chaque n\oe{}ud créé pourra soit être marqué en tant que feuille (auquel cas l'induction est terminée pour cette branche), soit en tant que n\oe{}ud interne (auquel cas l'algorithme se poursuit et l'arbre continuera à s'étoffer). Notons qu'à chaque étape de cet algorithme, la taille du jeu de données disponible pour les n\oe{}uds descendants se réduira en raison de la scission, et par conséquent, la probabilité que ces descendants deviennent des feuilles augmentera.
 \paragraph*{}
 L'optimalité du critère de scission appliqué par chaque n\oe{}ud est usuellement obtenue en minimisant un critère dit d'*impureté*, représentatif\ :
 
@@ -566,7 +566,7 @@ L'optimalité du critère de scission appliqué par chaque n\oe{}ud est usuellem
 * De la somme de la valeur absolue des résidus ou de leurs carrés pour les arbres de régression.
 
 \paragraph*{}
-Pour l'arbre CART qui sera utilisé dans la classification binaire cette étude, le critère d'impureté mise en \oe{}uvre au sein du modèle est le coefficient de Gini\ :[@wu_top_2009]
+Pour l'arbre CART qui sera utilisé dans la classification binaire de cette étude, le critère d'impureté mise en \oe{}uvre au sein du modèle est le coefficient de Gini\ :[@wu_top_2009]
 $$G = 1- p^{2} - \left(1- p \right)^{2}$$
 avec $p$ la fréquence relative de l'une des deux classes, au sein du n\oe{}ud considéré.
 \paragraph*{}
@@ -696,7 +696,7 @@ De nombreux critères sont utilisables, en fonction du cahier des charges défin
 \paragraph*{}
 Dans une tâche de classification binaire, les critères usuels sont la spécificité, la sensibilité, et l'aire sous la courbe de fonction d'efficacité du récepteur (*AUC ROC*, parfois abrégé en *ROC*). Il conviendra bien évidemment, avant d'utiliser des indicateurs tels que la spécificité et la sensibilité, de définir la notion de test positif et test négatif.
 \paragraph*{}
-D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de Youden[@youden_index_1950] pondéré, qui permet de d'ajuster l'importance relative accordée à la spécificité et à la sensibilité, au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
+D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de Youden[@youden_index_1950] pondéré, qui permet d'ajuster l'importance relative accordée à la spécificité et à la sensibilité, au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
 \paragraph*{}
 En l'espèce, l'index J de Youden pondéré nous permet d'élaborer un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible -- sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
 \paragraph*{}
