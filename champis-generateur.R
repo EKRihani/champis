@@ -6,9 +6,9 @@
 library(tidyverse)    # Outils génériques
 data_champis <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = TRUE)
 
-
-# SIMPLIFICATION (à virer une fois appliqué)
+###### SIMPLIFICATION (à virer une fois appliqué)
 dataset <- data_champis
+
 
 # Retirer valeurs numériques EXCEPTIONNELLES (PROVISOIRE)
 dataset <- dataset %>% 
@@ -21,9 +21,9 @@ dataset <- dataset %>%
   mutate_all(funs(str_remove(., '\\]')))
 
 # Suppression des valeurs RARES (PROVISOIRE)
-dataset <- dataset %>% 
-  mutate_all(funs(str_remove(., '\\('))) %>% 
-  mutate_all(funs(str_remove(., '\\)')))
+# dataset <- dataset %>% 
+#   mutate_all(funs(str_remove(., '\\('))) %>% 
+#   mutate_all(funs(str_remove(., '\\)')))
 
 # Suppression valeurs minimales (PROVISOIRE)
 dataset$Chapeau.Diametre <- dataset$Chapeau.Diametre %>% str_remove(., ".+-") %>% as.numeric(.)
@@ -61,17 +61,23 @@ for (n in 1:n_especes){
 ######################
 #   FACTEURS RARES   #
 ######################
+ratio_cr <- 10
+
+#data_TEST_RARE <- data_champis[35:45,c(1,2,3,5,9,10,12,26)]
+
+#TEST <- data_champis[37,26]
 
 TEST <- c("comA", "comB", "(RAREA)", "(RAREB)")
 
-ratio_cr <- 10
 n_repet <- TEST %>% str_match(string = ., pattern ="\\([[:alpha:]]+\\)") %>% 
   is.na() %>%
   "*"(ratio_cr-1)+1
 
 TEST_RARES <- rep(TEST, n_repet) %>% 
   str_remove(., '\\(') %>% 
-  str_remove(., '\\)')
+  str_remove(., '\\)') %>% 
+  str_flatten(., collapse = ", ")
+
 TEST_RARES
 
 
