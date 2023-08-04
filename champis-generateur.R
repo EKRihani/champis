@@ -65,9 +65,10 @@ ratio_cr <- 10
 
 #data_TEST_RARE <- data_champis[35:45,c(1,2,3,5,9,10,12,26)]
 
-#TEST <- data_champis[37,26]
+#TEST <- data_champis[37,26] %>% as.character(.)
 
-TEST <- c("comA", "comB", "(RAREA)", "(RAREB)")
+TEST <- "comA, comB, (RAREA), (RAREB)"
+TEST <- strsplit(TEST, split = ",")[[1]]
 
 n_repet <- TEST %>% str_match(string = ., pattern ="\\([[:alpha:]]+\\)") %>% 
   is.na() %>%
@@ -95,7 +96,7 @@ tailles <- names(structure[numeriques])    # Facteurs de taille
 #textes <- names(structure[-numeriques & 1:2])
 textes <- names(structure[-numeriques])
 
-func_alea <- function(x){x * rnorm(n = n_champis, mean = 1, sd = .05)}
+func_alea <- function(x){round(x * rnorm(n = n_champis, mean = 1, sd = .05), digits = 2)}
 
 for (n in 1:n_especes){
   assign(lots_liste[n], NULL)
