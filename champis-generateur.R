@@ -86,6 +86,21 @@ TEST_RARES <- rep(TEST, n_repet) %>%
 TEST_RARES
 
 
+##############################
+#    CONVERSION DES DATES    #
+##############################
+
+ConversionMois <- function(fcn_mois){
+  date_extraction <- str_extract_all(fcn_mois, '[:digit:]+')[[1]]
+  ifelse(
+    as.numeric(date_extraction[1]) < as.numeric(date_extraction[2]),
+    liste_mois <- seq.int(from = date_extraction[1], to = date_extraction[2]),
+    liste_mois <- c(seq.int(from = date_extraction[1], to = 12), seq.int(from = 1, to = date_extraction[2]))
+    )
+  str_flatten(liste_mois, collapse = ", ")
+}
+
+dataset$Mois <- lapply(X = dataset$Mois, FUN = ConversionMois)
 
 #############################
 #     CREATION DES LOTS     #
