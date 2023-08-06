@@ -9,6 +9,10 @@ data_champis <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFa
 ###### SIMPLIFICATION (à virer une fois appliqué)
 dataset <- data_champis
 
+# Critere de comestibilité binaire (conserver/rejeter)
+dataset$Type <- recode_factor(dataset$Type, 
+                                  Bon = "A conserver", Comestible = "A conserver", "Comestible cuit" = "A conserver",
+                                  Mediocre = "A rejeter", "Non Comestible" = "A rejeter", Toxique = "A rejeter", Mortel = "A rejeter")
 
 # Retirer valeurs numériques EXCEPTIONNELLES (PROVISOIRE)
 dataset <- dataset %>% 
