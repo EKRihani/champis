@@ -6,13 +6,9 @@
 library(tidyverse)    # Outils génériques
 data_champis <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = TRUE)
 
-###### SIMPLIFICATION (à virer une fois appliqué)
 dataset <- data_champis
 
-# Critere de comestibilité binaire (conserver/rejeter)
-dataset$Type <- recode_factor(dataset$Type, 
-                                  Bon = "A conserver", Comestible = "A conserver", "Comestible cuit" = "A conserver",
-                                  Mediocre = "A rejeter", "Non Comestible" = "A rejeter", Toxique = "A rejeter", Mortel = "A rejeter")
+###### SIMPLIFICATION (à virer une fois appliqué?)
 
 # Retirer valeurs numériques EXCEPTIONNELLES (PROVISOIRE)
 dataset <- dataset %>% 
@@ -41,13 +37,56 @@ dataset$Pied.Largeur <- dataset$Pied.Largeur %>% str_remove(., ".+-") %>% as.num
 
 dataset[is.na(dataset)] <- 0    # Remplace les dimensions NA par 0 (a priori inutile, mais bon...)
 
-
-
 structure <- sapply(X = dataset, FUN = class, simplify = TRUE)
 numeriques <- which(structure %in% c("integer", "numeric"))
 n_especes <- nrow(dataset)
 dataset$N <- 1:n_especes
 champ_liste <- paste0("champ", dataset$N)
+
+
+#########################################
+#     ADAPTATION DES DONNEES SOURCE     #
+#########################################
+
+# Critère de comestibilité binaire (conserver/rejeter)
+dataset$Type <- recode_factor(dataset$Type, 
+                              Bon = "A conserver", Comestible = "A conserver", "Comestible cuit" = "A conserver",
+                              Mediocre = "A rejeter", "Non Comestible" = "A rejeter", Toxique = "A rejeter", Mortel = "A rejeter")
+
+# Conversion des mois, du format DEBUT-FIN vers liste complète
+ConversionMois <- function(fcn_mois){
+  date_extraction <- str_extract_all(fcn_mois, '[:digit:]+')[[1]]
+  ifelse(
+    test = as.numeric(date_extraction[1]) < as.numeric(date_extraction[2]),  # Teste l'absence de passage décembre/janiver
+    yes = liste_mois <- seq.int(from = date_extraction[1], to = date_extraction[2]),
+    no = liste_mois <- c(seq.int(from = date_extraction[1], to = 12), seq.int(from = 1, to = date_extraction[2]))
+  )
+  str_flatten(liste_mois, collapse = ", ")
+}
+
+dataset$Mois <- lapply(X = dataset$Mois, FUN = ConversionMois)
+
+# Facteurs rares de (facteur_rare) à liste complète avec ratio adapté
+TEST1 <- data_champis[35:45,c(1,2,3,5,12,26)]
+TEST2 <- data_champis[37,26]
+TEST3 <- data_champis[40,26]
+
+ratio_cr <- 10  # Ratio commun/rare
+
+ConversionRares <- function(fcn_facteur){
+  fcn_facteur <- as.character(fcn_facteur)
+  valeurs <- strsplit(fcn_facteur, split = ",")[[1]]
+  n_repet <- valeurs %>% str_match(string = ., pattern ="\\([[:alpha:]]+\\)") %>% is.na() %>% "*"(ratio_cr-1)+1
+  nv_valeur <- rep(valeurs, n_repet) %>% str_remove(., ' \\(') %>% str_remove(., '\\)') %>% str_flatten(., collapse = ", ")
+  ifelse(
+  test = str_detect(fcn_facteur, pattern ="\\([[:alpha:]]+\\)"),  # Détecte si présence effective de rares
+  yes = nv_valeur,
+  no = fcn_facteur
+  )
+  }
+ConversionRares(TEST2)
+
+
 ###############################
 #     LISTES DES ESPECES      #
 ###############################
@@ -62,45 +101,6 @@ for (n in 1:n_especes){
   eval(parse(text = ordre))
 }
 
-######################
-#   FACTEURS RARES   #
-######################
-ratio_cr <- 10
-
-#data_TEST_RARE <- data_champis[35:45,c(1,2,3,5,9,10,12,26)]
-
-#TEST <- data_champis[37,26] %>% as.character(.)
-
-TEST <- "comA, comB, (RAREA), (RAREB)"
-TEST <- strsplit(TEST, split = ",")[[1]]
-
-n_repet <- TEST %>% str_match(string = ., pattern ="\\([[:alpha:]]+\\)") %>% 
-  is.na() %>%
-  "*"(ratio_cr-1)+1
-
-TEST_RARES <- rep(TEST, n_repet) %>% 
-  str_remove(., '\\(') %>% 
-  str_remove(., '\\)') %>% 
-  str_flatten(., collapse = ", ")
-
-TEST_RARES
-
-
-##############################
-#    CONVERSION DES DATES    #
-##############################
-
-ConversionMois <- function(fcn_mois){
-  date_extraction <- str_extract_all(fcn_mois, '[:digit:]+')[[1]]
-  ifelse(
-    as.numeric(date_extraction[1]) < as.numeric(date_extraction[2]),
-    liste_mois <- seq.int(from = date_extraction[1], to = date_extraction[2]),
-    liste_mois <- c(seq.int(from = date_extraction[1], to = 12), seq.int(from = 1, to = date_extraction[2]))
-    )
-  str_flatten(liste_mois, collapse = ", ")
-}
-
-dataset$Mois <- lapply(X = dataset$Mois, FUN = ConversionMois)
 
 #############################
 #     CREATION DES LOTS     #
