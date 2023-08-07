@@ -4,7 +4,7 @@
 
 # Chargement des bibliothèques et données initiales
 library(tidyverse)    # Outils génériques
-data_champis <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = TRUE)
+data_champis <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)  # TRUE ???
 
 dataset <- data_champis
 
@@ -39,6 +39,9 @@ dataset[is.na(dataset)] <- 0    # Remplace les dimensions NA par 0 (a priori inu
 
 structure <- sapply(X = dataset, FUN = class, simplify = TRUE)
 numeriques <- which(structure %in% c("integer", "numeric"))
+numeriques <- which(names(structure) %in% c("Chapeau.Diametre", "Pied.Hauteur", "Pied.Largeur"))  #PROVISOIRE
+#textes <- names(structure[-numeriques & 1:2])
+textes <- names(structure[-numeriques])
 n_especes <- nrow(dataset)
 dataset$N <- 1:n_especes
 champ_liste <- paste0("champ", dataset$N)
@@ -66,7 +69,7 @@ ConversionMois <- function(fcn_mois){
 
 dataset$Mois <- lapply(X = dataset$Mois, FUN = ConversionMois)
 
-# Facteurs rares de (facteur_rare) à liste complète avec ratio adapté
+# Converstion des facteurs rares de (facteur_rare) à liste complète avec ratio adapté
 TEST1 <- data_champis[35:45,c(1,2,3,5,12,26)]
 TEST2 <- data_champis[37,26]
 TEST3 <- data_champis[40,26]
@@ -75,16 +78,26 @@ ratio_cr <- 10  # Ratio commun/rare
 
 ConversionRares <- function(fcn_facteur){
   fcn_facteur <- as.character(fcn_facteur)
-  valeurs <- strsplit(fcn_facteur, split = ",")[[1]]
-  n_repet <- valeurs %>% str_match(string = ., pattern ="\\([[:alpha:]]+\\)") %>% is.na() %>% "*"(ratio_cr-1)+1
-  nv_valeur <- rep(valeurs, n_repet) %>% str_remove(., ' \\(') %>% str_remove(., '\\)') %>% str_flatten(., collapse = ", ")
-  ifelse(
-  test = str_detect(fcn_facteur, pattern ="\\([[:alpha:]]+\\)"),  # Détecte si présence effective de rares
-  yes = nv_valeur,
-  no = fcn_facteur
-  )
-  }
-ConversionRares(TEST2)
+  if(str_detect(fcn_facteur, pattern ="\\([[:alpha:]]+\\)"))  # Détecte si présence effective de valeurs rares
+    {
+    valeurs <- strsplit(fcn_facteur, split = ",")[[1]]
+    n_repet <- valeurs %>% str_match(string = ., pattern ="\\([[:alpha:]]+\\)") %>% is.na() %>% "*"(ratio_cr-1)+1
+    rep(valeurs, n_repet) %>% str_remove(., ' \\(') %>% str_remove(., '\\)') %>% str_flatten(., collapse = ", ")
+    }
+  else
+    {
+      fcn_facteur
+    }
+}
+
+for (n in 1:n_especes){
+  ordre_rares <- paste0("dataset[",n,",]$", textes, " <- ConversionRares(dataset[",n,",]$", textes, ")")
+  #print(ordre_rares)
+  eval(parse(text = ordre_rares))
+}
+
+#dataset[37,]$Habitat <- ConversionRares(dataset[37,]$Habitat)
+#ConversionRares(TEST3)
 
 
 ###############################
@@ -112,8 +125,7 @@ n_champis <- 1e3      # Nombre de champignons pour chaque espèce
 f_crois <- 2          # Facteur de croissance
 #tailles <- names(structure[numeriques[-c(1,2)]])    # Facteurs de taille
 tailles <- names(structure[numeriques])    # Facteurs de taille
-#textes <- names(structure[-numeriques & 1:2])
-textes <- names(structure[-numeriques])
+
 
 func_alea <- function(x){round(x * rnorm(n = n_champis, mean = 1, sd = .05), digits = 2)}
 
