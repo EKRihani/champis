@@ -13,12 +13,17 @@ library(twinning)       # Découpage équilibré des jeux de données (plus effi
 fichier_data <- tempfile()
 #URL <- "https://github.com/EKRihani/champis/raw/master/MushroomDataset.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
 
-fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
-dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
-dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
-dataset$class <- relevel(dataset$class, ref = "toxique")
+#fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
+#fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
+#dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
+#dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
+#dataset$class <- relevel(dataset$class, ref = "toxique")
+
+fichier_data <- "~/projects/champis/lot_champis.csv" # FICHIER LOCAL
+dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
+dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
+dataset <- dataset %>% select(!Nom)
 
 ####################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION     #
@@ -47,14 +52,14 @@ BI_RatioSens <- 2*BI_w/(BI_w+1)
 BI_RatioSpec <- 2*(1-BI_w/(BI_w+1))
 
 
-# Définition de fonction : lance le modèle avec les paramètres données, évalue la performance (spécificité), renvoie les résultats de fitting
+# Définition de fonction : lance le modèle avec les paramètres donnés, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_modele){
    set.seed(1)
    tr_ctrl <- trainControl(classProbs = TRUE, 
                            summaryFunction = twoClassSummary, 
                            method = "cv", 
                            number = BI_split_facteur)   # Règle paramètres d'évaluation performance à twoClassSummary (ROC, Sens, Spec), avec cross-validation (n-fold)
-   cmd <- paste0("train(class ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
+   cmd <- paste0("train(Type ~ ., method = '",      # Construit commande, évaluation de performance par Spécificité
                  fcn_modele[1], 
                  "', data = BI_lot_appr_opti, trControl = tr_ctrl, metric = 'Spec',", # voir si métrique adaptée?
                  fcn_modele[2],")")
@@ -371,7 +376,7 @@ BI_fit_Rborist_best_resultats <- BI_fit_Rborist_best$results %>% mutate(Jw = Sen
 
 # Règle la liste de prédiction et lance la classification
 BI_evaluation <- BI_lot_evaluation %>%
-   mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, class == "comestible" ~ FALSE)))
+   mutate(reference = as.factor(case_when(Type == "Rejeter" ~ TRUE, Type == "Conserver" ~ FALSE)))
 
 # A SUPPRIMER ???
 # BI_evaluation$reference <- as.logical(as.character(recode_factor(BI_evaluation$class, toxique = TRUE, comestible = FALSE))) # Bascule en booléen
@@ -381,10 +386,10 @@ BI_evaluation <- BI_lot_evaluation %>%
 
 set.seed(695)
 start_time <- Sys.time()
-cmd <- paste0("train(class ~ ., method = 'ranger', data = BI_lot_appr_opti,", BI_set_ranger_best[2], ")")
+cmd <- paste0("train(Type ~ ., method = 'ranger', data = BI_lot_appr_opti,", BI_set_ranger_best[2], ")")
 BI_fit_ranger_final <- eval(parse(text = cmd)) 
 BI_pred_ranger_final <- predict(object = BI_fit_ranger_final, newdata = BI_lot_evaluation)
-BI_CM_ranger_final <- confusionMatrix(data = BI_pred_ranger_final, reference = BI_lot_evaluation$class)
+BI_CM_ranger_final <- confusionMatrix(data = BI_pred_ranger_final, reference = BI_lot_evaluation$Type)
 end_time <- Sys.time()
 BI_temps_ranger <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
 BI_resultats_ranger <- BI_CM_ranger_final$byClass %>% 
@@ -401,10 +406,10 @@ BI_resultats_ranger <- BI_CM_ranger_final$byClass %>%
 
 set.seed(45)
 start_time <- Sys.time()
-cmd <- paste0("train(class ~ ., method = 'Rborist', data = BI_lot_appr_opti,", BI_set_Rborist_best[2], ")") # Construction de la commande
+cmd <- paste0("train(Type ~ ., method = 'Rborist', data = BI_lot_appr_opti,", BI_set_Rborist_best[2], ")") # Construction de la commande
 BI_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 BI_pred_Rborist_final <- predict(object = BI_fit_Rborist_final, newdata = BI_lot_evaluation)
-BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, reference = BI_lot_evaluation$class)
+BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, reference = BI_lot_evaluation$Type)
 end_time <- Sys.time()
 BI_temps_Rborist <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
 BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>% 

@@ -16,20 +16,18 @@ dataset <- dataset %>%
   mutate_all(funs(str_remove(., "[[:space:]]*\\[[[:digit:]]*.[[:digit:]]*\\]")))
 
 # Retire les MATURES (PROVISOIRE)
-dataset <- dataset %>% 
-  mutate_all(funs(str_remove(., '\\['))) %>% 
-  mutate_all(funs(str_remove(., '\\]')))
+dataset <- lapply(dataset, gsub, pattern='\\]', replacement='')
+dataset <- lapply(dataset, gsub, pattern='\\[', replacement='')
+dataset <- data.frame(dataset)
 
 # Suppression des valeurs RARES (PROVISOIRE)
-# dataset <- dataset %>% 
-#   mutate_all(funs(str_remove(., '\\('))) %>% 
-#   mutate_all(funs(str_remove(., '\\)')))
+# dataset <- lapply(dataset, gsub, pattern='\\)', replacement='')
+# dataset <- lapply(dataset, gsub, pattern='\\(', replacement='')
 
 # Suppression valeurs minimales (PROVISOIRE)
 dataset$Chapeau.Diametre <- dataset$Chapeau.Diametre %>% str_remove(., ".+-") %>% as.numeric(.)
 dataset$Pied.Hauteur <- dataset$Pied.Hauteur %>% str_remove(., ".+-") %>% as.numeric(.)
 dataset$Pied.Largeur <- dataset$Pied.Largeur %>% str_remove(., ".+-") %>% as.numeric(.)
-
 
 #############################
 #     NETTOYAGE DONNEES     #
@@ -53,8 +51,8 @@ champ_liste <- paste0("champ", dataset$N)
 
 # Critère de comestibilité binaire (conserver/rejeter)
 dataset$Type <- recode_factor(dataset$Type, 
-                              Bon = "A conserver", Comestible = "A conserver", "Comestible cuit" = "A conserver",
-                              Mediocre = "A rejeter", "Non Comestible" = "A rejeter", Toxique = "A rejeter", Mortel = "A rejeter")
+                              bon = "Conserver", comestible = "Conserver", "comestible cuit" = "Conserver",
+                              mediocre = "Rejeter", "non comestible" = "Rejeter", toxique = "Rejeter", Mortel = "Rejeter")
 
 # Conversion des mois, du format DEBUT-FIN vers liste complète
 ConversionMois <- function(fcn_mois){
@@ -69,19 +67,19 @@ ConversionMois <- function(fcn_mois){
 
 dataset$Mois <- lapply(X = dataset$Mois, FUN = ConversionMois)
 
-# Converstion des facteurs rares de (facteur_rare) à liste complète avec ratio adapté
-TEST1 <- data_champis[35:45,c(1,2,3,5,12,26)]
-TEST2 <- data_champis[37,26]
-TEST3 <- data_champis[40,26]
+# Conversion des facteurs rares de (facteur_rare) à liste complète avec ratio adapté
+# TEST1 <- data_champis[35:45,c(1,2,3,5,12,26)]
+# TEST2 <- data_champis[37,26]
+# TEST3 <- data_champis[40,26]
 
 ratio_cr <- 10  # Ratio commun/rare
 
 ConversionRares <- function(fcn_facteur){
   fcn_facteur <- as.character(fcn_facteur)
-  if(str_detect(fcn_facteur, pattern ="\\([[:alpha:]]+\\)"))  # Détecte si présence effective de valeurs rares
+  if(str_detect(fcn_facteur, pattern ="\\([[:alpha:]]|[[:space:]]+\\)"))  # Détecte si présence effective de valeurs rares
     {
     valeurs <- strsplit(fcn_facteur, split = ",")[[1]]
-    n_repet <- valeurs %>% str_match(string = ., pattern ="\\([[:alpha:]]+\\)") %>% is.na() %>% "*"(ratio_cr-1)+1
+    n_repet <- valeurs %>% str_match(string = ., pattern ="\\([[:alpha:]]|[[:space:]]+\\)") %>% is.na() %>% "*"(ratio_cr-1)+1
     rep(valeurs, n_repet) %>% str_remove(., ' \\(') %>% str_remove(., '\\)') %>% str_flatten(., collapse = ", ")
     }
   else
@@ -95,9 +93,6 @@ for (n in 1:n_especes){
   #print(ordre_rares)
   eval(parse(text = ordre_rares))
 }
-
-#dataset[37,]$Habitat <- ConversionRares(dataset[37,]$Habitat)
-#ConversionRares(TEST3)
 
 
 ###############################
@@ -121,7 +116,7 @@ for (n in 1:n_especes){
 
 lots_liste <- paste0("lot", dataset$N)
 
-n_champis <- 1e3      # Nombre de champignons pour chaque espèce
+n_champis <- 1e2      # Nombre de champignons pour chaque espèce
 f_crois <- 2          # Facteur de croissance
 #tailles <- names(structure[numeriques[-c(1,2)]])    # Facteurs de taille
 tailles <- names(structure[numeriques])    # Facteurs de taille
@@ -156,7 +151,7 @@ for (n in 1:n_especes){
 lot_la_totale <- do.call(rbind, mget(paste0("lot",1:n_especes)))   # Fusion de tous les lots
 
 lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)), ]
-write_csv(x = lot_final, file = "lot_test.csv")
+write_csv(x = lot_final, file = "lot_champis.csv")
 
 # Gros nettoyage
 for (n in 1:n_especes){
@@ -165,3 +160,33 @@ for (n in 1:n_especes){
   eval(parse(text = ordre_rm1))
   eval(parse(text = ordre_rm2))
 }
+
+
+#Analyse niveaux pour nettoyage (A SUPPRIMER)
+fichier_data <- "~/projects/champis/lot_champis.csv" # FICHIER LOCAL
+dataset2 <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
+str(dataset2)
+summary(dataset2$Type)
+summary(dataset2$Hyménophore1)
+summary(dataset2$Hyménophore2)
+summary(dataset2$Chair.Type)
+summary(dataset2$Chair.Couleur)
+summary(dataset2$Chapeau.Forme)
+summary(dataset2$Chapeau.Surface)
+summary(dataset2$Chapeau.Couleur)
+summary(dataset2$Chapeau.Marge)
+summary(dataset2$Spore.Couleur)
+summary(dataset2$Lames.Attache)
+summary(dataset2$Lames.Espace)
+summary(dataset2$Lames.Couleur)
+summary(dataset2$Pied.Forme)
+summary(dataset2$Pied.Surface)
+summary(dataset2$Pied.Couleur)
+summary(dataset2$Habitat)
+summary(dataset2$Odeur)
+summary(dataset2$VG.Type)
+summary(dataset2$VG.Type2)
+summary(dataset2$VP.Type)
+summary(dataset2$VP.Type2)
+
+dataset[dataset$Pied.Surface=="chin",1]
