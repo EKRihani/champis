@@ -10,14 +10,14 @@ library(twinning)
 
 
 fichier_data <- tempfile()
-fichier_data <- "~/projects/champis/MushroomDataset.zip"
-fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
+fichier_data <- "~/projects/champis/lot_champis.zip"
+fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset <- read.csv(fichier_data, 
                     header = TRUE, 
-                    sep = ";", 
+                    sep = ",",
                     stringsAsFactors = TRUE)
-dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
-dataset$class <- relevel(dataset$class, ref = "toxique")
+dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
+dataset <- dataset %>% select(!Nom)
 
 
 ########################################
@@ -59,7 +59,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
                         number = CodBI_split_facteur)
 
 
-CodBI_fit_rpart_cp <- train(class ~ .,
+CodBI_fit_rpart_cp <- train(Type ~ .,
                          method = "rpart",
                          data = CodBI_lot_appr_opti,
                          trControl = tr_ctrl,
@@ -104,7 +104,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
                         summaryFunction = twoClassSummary,
                         method = "cv",
                         number = CodBI_split_facteur)
-CodBI_fit_Rborist <- train(class ~ .,
+CodBI_fit_Rborist <- train(Type ~ .,
                          method = "Rborist",
                          data = CodBI_lot_appr_opti,
                          trControl = tr_ctrl,
@@ -175,7 +175,7 @@ CodBI_modelquad_Rborist_top <- CodBI_modelquad_Rborist[which.max(CodBI_modelquad
 ################################### A tester
 
 set.seed(1)
-CodBI_fit_Rborist_best <- train(class ~ .,
+CodBI_fit_Rborist_best <- train(Type ~ .,
                          method = "Rborist",
                          data = CodBI_lot_appr_opti,
                          trControl = tr_ctrl,
@@ -187,10 +187,10 @@ CodBI_fit_Rborist_best_resultats <- CodBI_fit_Rborist_best$results %>% mutate(Jw
 
 # A rationnaliser et insérer dans le rapport
 CodBI_evaluation <- CodBI_lot_evaluation %>%
-   mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, class == "comestible" ~ FALSE)))
+   mutate(reference = as.factor(case_when(Type == "Rejeter" ~ TRUE, Type == "Conserver" ~ FALSE)))
 
 chrono_debut <- Sys.time()
-CodBI_fit_Rborist_final <- train(class ~ ., 
+CodBI_fit_Rborist_final <- train(Type ~ ., 
                               method = 'Rborist', 
                               data = CodBI_lot_appr_opti,
                               trControl = tr_ctrl,
@@ -207,7 +207,7 @@ CodBI_temps_Rborist <- difftime(chrono_fin, chrono_debut) %>% as.numeric %>% rou
 
 #############################################
 
-CodBI_CM_Rborist_final <- confusionMatrix(data = CodBI_pred_Rborist_final, reference = CodBI_lot_evaluation$class)
+CodBI_CM_Rborist_final <- confusionMatrix(data = CodBI_pred_Rborist_final, reference = CodBI_lot_evaluation$Type)
 
 CodBI_resultats_Rborist <- CodBI_CM_Rborist_final$byClass %>% 
    t(.) %>% as.data.frame(.) %>% 

@@ -106,7 +106,7 @@ VCS\ : *Version Control System* (logiciel de contrôle des versions)
 # Introduction
 ## Propos liminaire
 \paragraph*{}
-L'identification des macromycètes est un sujet difficile, ne devant évidemment pas être pris à la légère. Les espèces rencontrées varient considérablement d'un écosystème à un autre, d'un continent à un autre, et aucun lot de données ni ouvrage sur les champignons ne saurait couvrir toute la diversité du monde fongique.
+L'identification des macromycètes, c'est à dire des champignons visibles à l'\oe{}il nu est un sujet difficile, ne devant évidemment pas être pris à la légère. Les espèces rencontrées varient considérablement d'un écosystème à un autre, d'un continent à un autre, et aucun lot de données ni ouvrage sur les champignons ne saurait couvrir toute la diversité du monde fongique.
 \paragraph*{}
 Le lot de données mycologiques constitué dans cette étude, bien que constituant l'un des lots en libre accès les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
 \paragraph*{}
@@ -740,13 +740,32 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 
 # Apprentissage machine et classification binaire
 
-*BROUILLON, le lot de données utilisé ici est le Secondary Mushroom Dataset de D.Wagner.*
+## Définition des critères de classification binaire
+
+Le critère de notre classification binaire est un critère très simple, qui répond à la question *"ce champignon est-il comestible ou non ?"*
+
+Malgré la simplicité apparente du critère binaire, la comestibilité ou la non-comestibilité d'un champignon se situe en réalité sur un continuum :
+
+* Champignons particulièrement réputés pour leurs qualités gustatives,
+* Champignons réputés comestibles,
+* Champignons comestibles après cuisson,
+* Champignons non-toxiques, mais à la comestibilité médiocre en raison de leur amertume (bolet de fiel, *Tylopilus Felleus*), de leur piquant (lactaire poivré, *Lactarius piperatus*)...
+* Champignons dont la toxicité se manifeste à partir d'une certaine quantité consommée,
+* Champignons toxiques, avec des syndromes de sévérité variée,
+* Champignons mortels.
+
+Si le classement des deux premières et des deux dernières catégories au sein d'un critère binaire est trivial, il n'en est pas de même pour les trois autres. L'acceptation ou le rejet des champignons appartenant de ces catégories intermédiaires sera par définition un critère arbitraire.
+
+Nous pouvons toutefois esquisser des contours - forcément subjectifs - de notre critère de comestibilité en supposant que les champignons seront soumis à une cuisson, que tout champignon à la comestibilité médiocre sera à rejeter car susceptible de rendre la totalité du plat immangeable, et que tout champignon présentant une possible toxicité, même minime, sera à écarter par mesure de prudence : à titre d'exemple, le tricholome doré (*Tricholoma Auratum*) a pu être successivement qualifié de *comestible très réputé*, puis de champignon ayant provoqué des empoisonnements mortels par rhabdomyolyse.[@courtecuisse_champignons_2013]
+
+Nous choisirons donc de fixer les catégories binaires suivantes :
+
+* À accepter : excellents comestibles, comestibles, comestibles cuits.
+* À rejeter : comestibles médiocres, toxiques au delà d'une certaine quantité, toxiques, mortels.
 
 ## Analyse exploratoire des données (EDA)
 
-*Partie permettant de présenter globalement le lot de données synthétiques créé dans cette étude (cf. section \ref{chapitre:lotsynth}) avant utilisation des IA.*
-
-*La génération du lot de données fonctionne, la génération des graphiques aussi, mais le texte sera à retravailler en fonction du lot de données synthétiques obtenu...*
+*BROUILLON, à finir*
 
 \FloatBarrier
 \paragraph*{}
@@ -1455,12 +1474,7 @@ kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Range
 
 # Annexe\ : développement d'un algorithme de génération de lot synthétique
 
-\paragraph*{}
-*Plus de détails concrets sur la méthode utilisée en pratique, avec extraits de code...*
-\paragraph*{}
-*Pour l'instant, l'algorithme est écrit et fonctionne, à partir des données primaires du Secondary Dataset de Dennis Wagner. C'est cet algorithme qui a servi à créer le lot de données de la classification multiclasse.*
-\paragraph*{}
-*Pour avoir mes propres lots de données, il ne me reste plus qu'à avoir mes propres données primaires, c'est à dire entrer manuellement les caractéristiques clés de mes 400+ champignons, un par un...*
+Le principe de cet algorithme est de prendre un tableau au format csv contenant les caractéristiques typiques des macromycètes extraites de la littérature mycologique (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.) et de générer un lot de données exploitable, sous forme d'une liste de spécimens, de chaque espèce données, possédant des caractéristiques individuelles censées être représentatives de leur espèce.
 \paragraph*{} 
 La seule bibliothèque utilisée lors de la création du lot de données synthétique est le *tidyverse*,[@R-tidyverse] collection de bibliothèques spécialisées dans le domaine de la *data science* et notamment dédiées au traitement, au nettoyage et à la visualisation de données.
 
@@ -1469,31 +1483,216 @@ La seule bibliothèque utilisée lors de la création du lot de données synthé
 library(tidyverse)
 ```
 \normalsize
-
-Notre algorithme charge ensuite le fichier zip, incluant le fichier csv contenant les caractéristiques typiques des macromycètes (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.), qui est lu et attribué à un *dataframe*. Les lignes commentées correspondent à l'utilisation d'un fichier identique hébergé à distance sur un dépôt GitHub.
+Notre algorithme charge ensuite le fichier csv contenant les caractéristiques typiques des champignons, qui est lu avec les paramètres de décimale et de séparateur utilisés lors de la création et de la sauvegarde du tableau csv (respectivement *,* et *;*), puis attribué à un *dataframe* que nous nommerons *data_champis*. Les lignes commentées correspondent à l'utilisation d'un fichier identique hébergé à distance sur un dépôt GitHub.
 
 \small
 ```{r, eval = FALSE}
-fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"
+#URL <- "https://github.com/EKRihani/champis/raw/master/donnees_champis.csv"
 #download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/MushroomDataset.zip"
-fichier_data <- unzip(fichier_data, "MushroomDataset/primary_data.csv")
-data_champis <- read.csv(fichier_data, 
-                         header = TRUE, 
-                         sep = ";", 
-                         stringsAsFactors = TRUE)
+fichier_data <- "donnees_champis.csv"
+
+data_champis <- read.csv(fichier_data,
+                         header = TRUE,
+                         sep = ";",
+                         dec = ",",
+                         stringsAsFactors = FALSE)
 ```
 \normalsize
 
+L'étape suivante consiste à extraire des données d'intérêt relatives à structure de notre objet *data_champis*, qui seront utiles pour les étapes ultérieures du générateur. 
 
-etc etc.
+La première partie de cette étape s'applique à déterminer le caractère numérique (*i.e.* dimensionnel) ou textuel de chaque variable, à l'aide de la fonction *class*, appliquée sur la totalité de notre objet via une fonction *sapply*. Les données numériques sont ici définies comme des données entières (*integer*)ou numériques (*numeric*). Les données textuelles sont quant à elles définies comme toutes les données n'obéissant pas à ces deux critères.
+
+La seconde partie de cette étape extrait le nombre d'espèces présentes dans notre lot de données et indice chacune d'entre elle dans une variable dédiée *N*.
+
+\small
+```{r, eval = FALSE}
+structure <- sapply(X = data_champis, FUN = class, simplify = TRUE)
+numeriques <- which(structure %in% c("integer", "numeric"))
+textes <- names(structure[-numeriques])
+
+n_especes <- nrow(data_champis)
+data_champis$N <- 1:n_especes
+```
+\normalsize
+
+Les données relatives à la saisonnalité des champignons ont été créées, dans notre tableau initial, sous la forme *mm-MM*, avec *mm* le mois de début, et *MM* le mois de fin de fructification. Afin de pouvoir générer chacun des mois de cet intervalle, nous pouvons créer un vecteur contenant chacune des valeurs de cet intervalle, à l'aide d'une fonction *ad hoc*.
+
+Cette fonction extrait tout d'abord les deux chaînes numériques *mm* et *MM*, avant d'effectuer une comparaison entre ces deux valeurs. En effet, si $mm > MM$, alors la saison de fructification devra inclure le passage de décembre à janvier, et donc générer toutes les valeurs entières de *mm* à 12, puis celles de 1 à *MM*. L'ensemble de ces valeurs est intégrée dans une chaîne de caractères via la fonction *str_flatten*, avec la séparation appropriée. Cette fonction est ensuite appliquée sur l'ensemble de la variable *Mois*.
+
+\small
+```{r, eval = FALSE}
+ConversionMois <- function(fcn_mois){
+  date_extraction <- str_extract_all(fcn_mois, '[:digit:]+')[[1]]
+  ifelse(
+    test = as.numeric(date_extraction[1]) < as.numeric(date_extraction[2]),
+    yes = liste_mois <- seq.int(from = date_extraction[1], to = date_extraction[2]),
+    no = liste_mois <- c(seq.int(from = date_extraction[1], to = 12),
+                         seq.int(from = 1, to = date_extraction[2]))
+  )
+  str_flatten(liste_mois, collapse = ", ")
+}
+
+data_champis$Mois <- lapply(X = data_champis$Mois, FUN = ConversionMois)
+```
+\normalsize
+
+Une autre particularité de notre lot de données est la prise en compte de caractéristiques rares, parfois rencontrées chez certains individus, mais néanmoins mentionnées dans la littérature mycologique comme étant exceptionnelles. Ces données ont été enregistrées entre parenthèses dans le tableau csv.
+
+La stratégie retenue ici consiste à effectuer un tirage équiprobable, dans un vecteur contenant une occurrence unique de chaque valeur rare, et une répétition de chaque valeur commune. Le nombre de répétition de chaque valeur commune est ici défini par la variable *ratio_cr*.
+
+La fonction créée afin de générer ce vecteur effectue tout d'abord un test visant à identifier les chaînes de caractères de type *(xxx)*, synonymes de présence d'une caractéristique rare. En l'absence d'une caractéristique rare, les données d'entrées seront inchangées par l'algorithme. En la présence d'une telle caractéristique, chaque valeur (séparée par une virgule) est extraite individuellement par la fonction *strsplit*.
+
+Un vecteur *n_repet*, contenant le nombre de répétitions de chacune de ces valeurs (ici, 10 pour une valeur commune, 1 pour une valeur rare) est généré, par détection de l'absence de parenthèses autour de chaque valeur. Ce vecteur sert ensuite d'argument à la fonction *rep* pour générer la liste complète. Les parenthèses sont ensuite ôtées, et toutes les valeurs concaténées, avec une virgule en tant que séparateur.
+
+La fonction ainsi créée est ensuite appliquée à l'ensemble des variables que nous avons précédemment identifiées comme textuelles, pour chaque ligne de l'objet *data_champis*, via la construction du texte constituant la commande, puis son exécution par la combinaison de fonction *eval* et *parse*.
+
+\small
+```{r, eval = FALSE}
+ratio_cr <- 10    # Ratio communs/rares
+
+ConversionRares <- function(fcn_facteur){
+  if(str_detect(fcn_facteur, pattern ="\\([[:alpha:]]|[[:space:]]+\\)"))
+    {
+    valeurs <- strsplit(fcn_facteur, split = ",")[[1]]
+
+    n_repet <- valeurs %>%
+       str_match(string = ., pattern ="\\([[:alpha:]]|[[:space:]]+\\)") %>%
+       is.na() %>%
+       "*"(ratio_cr-1)+1
+
+    rep(valeurs, n_repet) %>%
+       str_remove(., ' \\(') %>%
+       str_remove(., '\\)') %>%
+       str_flatten(., collapse = ", ")
+    }
+  else
+    {
+      fcn_facteur
+    }
+}
+
+for (n in 1:n_especes)
+ {
+  ordre_rares <- paste0("data_champis[",n,",]$", textes,
+                        " <- ConversionRares(data_champis[",n,",]$", textes, ")")
+  eval(parse(text = ordre_rares))
+ }
+```
+\normalsize
+
+La génération du lot de données à proprement parler peut commencer. La stratégie globale est de générer un sous-lot de données par espèce, contenant un nombre défini de spécimens, puis de les regrouper dans le lot final, qui sera par la suite exporté sous forme d'un tableau csv.
+
+La première étape de la génération des sous-lots consiste à créer une liste par espèce, nommée *champN*, avec *N* l'indice attribué précédemment à chaque espèce. La génération implique tout d'abord de créer une liste des noms de listes, ainsi qu'une fonction *ad hoc* permettant de séparer toutes les valeurs séparées par des virgules.
+
+Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* *data_champis*. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction *str_split* étant par définition une chaîne de caractère, toutes valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront quant à elles forcées en tant que numériques via la fonction *as.numeric*.
+
+\small
+```{r, eval = FALSE}
+fonc_split <- function(x){str_split(x, ",\\s*", simplify = TRUE)}
+
+champ_liste <- paste0("champ", data_champis$N)
+
+for (n in 1:n_especes){
+  assign(champ_liste[n], NULL)
+  assign(champ_liste[n], as.list(data_champis[n,]))
+  assign(champ_liste[n], map(.x = eval(parse(text = champ_liste[n])), .f = fonc_split))
+  ordre <- paste0(champ_liste[n],"[numeriques] <- map(.x = ", champ_liste[n], "[numeriques], .f = as.numeric)")
+  eval(parse(text = ordre))
+}
+```
+\normalsize
+
+La préparation de la seconde et dernière étape de la génération des données consiste à définir la liste des lots de chaque espèce, appelés *lotN* (avec *N* l'indice attribué à chaque espèce), puis de définir quelques variables d'intérêt : nombre de champignons par espèce (*n_champis*), facteur de croissance appliqué à la loi bêta (*f_crois*). Une fonction permettant de générer la dispersion suivant la loi normale $\mathcal{N}(\mu = 1 ; \sigma = 0.05)$ et arrondissant la valeur finale à deux décimales est également définie
+
+\small
+```{r, eval = FALSE}
+lots_liste <- paste0("lot", data_champis$N)
+
+n_champis <- 3e2      # Nombre de champignons pour chaque espèce
+f_crois <- 2          # Facteur de croissance
+tailles <- names(structure[numeriques])
+
+func_alea <- function(x){round(x * rnorm(n = n_champis, mean = 1, sd = .05), digits = 2)}
+```
+\normalsize
+
+La génération des sous-lots se décompose fondamentalement en trois étapes :
+
+1. La construction d'un objet vide pour chaque lot,
+2. La construction des chaînes de caractères de chaque commande, 
+3. L'exécution de ces commandes par l'en chaînement de fonctions *eval*/*parse*
+
+Les chaînes de caractères correspondent aux commandes suivantes :
+
+* *ordre_texte* insère, pour toutes les valeurs textuelles, une valeur piochée au hasard dans celles de la liste,
+* *ordre_fac* définit, en suivant une loi bêta, le facteur de taille,
+* *ordre_num1* multiplie ce facteur de taille par la valeur maximale de chaque caractéristique dimenstionnelle,
+* *ordre_num2* y applique la fonction de dispersion et d'arrondi définie précédemment,
+* *ordre_df* crée l'objet de type *dataframe* regroupant toutes ces données,
+* *ordre_suppr* et *ordre_rm* nettoient l'environnement en supprimant les données inutiles.
+
+\small
+```{r, eval = FALSE}
+for (n in 1:n_especes){
+  assign(lots_liste[n], NULL)
+
+  ordre_texte <- paste0(lots_liste[n], "$", textes, 
+                         "<- sample(x = ", champ_liste[n], "$", textes, ", size = n_champis, replace = TRUE)")
+  ordre_fac <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, 
+                                                             shape1 = 6*f_crois, 
+                                                             shape2 =4, 
+                                                             ncp = .5*f_crois)")
+  ordre_num1 <- paste0(lots_liste[n], "[tailles] <- lapply(", 
+                       champ_liste[n], "[tailles], '*', ",
+                       lots_liste[n], "$FacteurTaille)")
+  ordre_num2 <- paste0(lots_liste[n], "[tailles] <- map(.x = ",
+                       lots_liste[n], "[tailles], .f = func_alea)")
+  ordre_df <- paste0("lot",n, " <- data.frame(lot", n, ")")
+  ordre_suppr <- paste0("lot",n, "$FacteurTaille <- NULL ")
+  ordre_rm <- paste0("rm(champ",n, ")")
+
+  eval(parse(text = ordre_texte))
+  eval(parse(text = ordre_fac))
+  eval(parse(text = ordre_num1))
+  eval(parse(text = ordre_num2))
+  eval(parse(text = ordre_df))
+  eval(parse(text = ordre_suppr))
+  eval(parse(text = ordre_rm))
+}
+```
+\normalsize
+
+L'ensemble des sous-lots est ensuite concaténé. Cette concaténation a pour effet de joindre les sous-lots, mais place également la totalité des spécimens de chaque espèce ensemble. Nous effections donc un mélange aléatoire des spécimens par échantillonnage de leurs indices.\footnote{Cet échantillonnage s'effectuant *sans* remplacement, il s'agit donc d'un simple mélange, par opposition à un *bootstrap*, qui s'effectuerait *avec* remplacement.}
+
+Le lot résultant est exporté sous format csv, compressé dans un fichier zip, et prêt à être exploité dans les autres parties de cette étude.
+\small
+```{r, eval = FALSE}
+lot_la_totale <- do.call(rbind, mget(paste0("lot",1:n_especes)))
+
+lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)), ]
+write_csv(x = lot_final, file = "lot_champis.csv")
+zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
+```
+\normalsize
+
+L'étape finale consiste à nettoyer l'environnement en supprimant tous les objets de type *champX* et *lotX*.
+\small
+```{r, eval = FALSE}
+for (n in 1:n_especes){
+  ordre_rm1 <- paste0("rm(champ",n, ")")
+  ordre_rm2 <- paste0("rm(lot",n, ")")
+  eval(parse(text = ordre_rm1))
+  eval(parse(text = ordre_rm2))
+}
+```
+\normalsize
 
 \newpage
 
 # Annexe\ : outils d'analyse exploratoire des données (EDA)
 
-*Code EDA... A développer une fois le jeu de données primaires créé...*
+*Code EDA...*
 
 \newpage
 
@@ -1525,20 +1724,21 @@ library(twinning)
 \normalsize
 
 \paragraph*{}
-Le chargement des données s'effectue de la même façon que lors des sections précédentes. L'argument *stringsAsFactors = TRUE* revêt une importance particulière, car la classe *factor* est essentielle au bon fonctionnement des classifieurs. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction *relevel*, la classe *"toxique"* comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
+Le chargement des données s'effectue de la même façon que lors des sections précédentes. L'argument *stringsAsFactors = TRUE* revêt une importance particulière, car la classe *factor* est essentielle au bon fonctionnement des classifieurs. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction *relevel*, la classe *"Rejeter"* comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
+
+Dans le cadre des classifications binaire et multiclasse, nous ôterons respectivement le nom de chaque spécimen (variable *Nom*), et sa comestiblité (variable *Type*), ces variables étant censées être inconnues du modèle prédictif et ne représentant pas la caractéristique à prédire.
 
 \small
 ```{r, eval = FALSE}
 fichier_data <- tempfile()
-fichier_data <- "~/projects/champis/MushroomDataset.zip"
-fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
+fichier_data <- "~/projects/champis/lot_champis.zip"
+fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset <- read.csv(fichier_data, 
                     header = TRUE, 
-                    sep = ";", 
+                    sep = ",",
                     stringsAsFactors = TRUE)
-dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")   
-# /!\ recode utilisé uniquement pour le Wagner !!!
-dataset$class <- relevel(dataset$class, ref = "toxique")
+dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
+dataset <- dataset %>% select(!Nom)
 ```
 \normalsize
 
@@ -1606,11 +1806,11 @@ tr_ctrl <- trainControl(classProbs = TRUE,
 ```
 \normalsize
 
-L'entraînement du modèle peut avoir lieu. En l'espèce, le modèle mathématique retenu est l'attribution d'une prédiction sur *class* en fonction de toutes les autres variables (*class ~ .*). Les arguments *data*, *trControl*, *tuneGrid* font appel aux éléments décrits dans les paragraphes qui précèdent.
+L'entraînement du modèle peut avoir lieu. En l'espèce, le modèle mathématique retenu est l'attribution d'une prédiction sur *Type* en fonction de toutes les autres variables (*Type ~ .*). Les arguments *data*, *trControl*, *tuneGrid* font appel aux éléments décrits dans les paragraphes qui précèdent.
 
 \small
 ```{r, eval = FALSE}
-BI_fit_rpart_cp <- train(class ~ .,
+BI_fit_rpart_cp <- train(Type ~ .,
                          method = "rpart",
                          data = BI_lot_appr_opti,
                          trControl = tr_ctrl,
@@ -1708,7 +1908,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
                         summaryFunction = twoClassSummary,
                         method = "cv",
                         number = BI_split_facteur)
-BI_fit_Rborist <- train(class ~ .,
+BI_fit_Rborist <- train(Type ~ .,
                          method = "Rborist",
                          data = BI_lot_appr_opti,
                          trControl = tr_ctrl,
@@ -1808,7 +2008,7 @@ Il est ensuite possible de relancer un entraînement, comme précédemment, avec
 \small
 ```{r, eval = FALSE}
 set.seed(1)
-BI_fit_Rborist_best <- train(class ~ .,
+BI_fit_Rborist_best <- train(Type ~ .,
                  method = "Rborist",
                  data = BI_lot_appr_opti,
                  trControl = tr_ctrl,                                    
@@ -1826,8 +2026,8 @@ L'étape finale est celle de l'évaluation des performances du modèle, ici pré
 \small
 ```{r, eval = FALSE}
 BI_evaluation <- BI_lot_evaluation %>%
-   mutate(reference = as.factor(case_when(class == "toxique" ~ TRUE, 
-                                          class == "comestible" ~ FALSE)))
+   mutate(reference = as.factor(case_when(Type == "Rejeter" ~ TRUE, 
+                                          Type == "Conserver" ~ FALSE)))
 ```
 \normalsize
 
@@ -1839,7 +2039,7 @@ Le code exécuté correspond ici à l'entraînement du modèle (cf. *supra*) et 
 \small
 ```{r, eval = FALSE}
 chrono_debut <- Sys.time()
-BI_fit_Rborist_final <- train(class ~ .,
+BI_fit_Rborist_final <- train(Type ~ .,
                   method = 'Rborist',
                   data = BI_lot_appr_opti,
                   trControl = tr_ctrl,
@@ -1858,7 +2058,7 @@ L'objet correspondant aux prédictions est ensuite comparé aux valeurs référe
 \small
 ```{r, eval = FALSE}
 BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, 
-                                       reference = BI_lot_evaluation$class)
+                                       reference = BI_lot_evaluation$Type)
 BI_CM_Rborist_final$table
 ```
 \normalsize

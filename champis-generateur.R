@@ -4,9 +4,7 @@
 
 # Chargement des bibliothèques et données initiales
 library(tidyverse)    # Outils génériques
-data_champis <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)  # TRUE ???
-
-dataset <- data_champis
+dataset <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
 ###### SIMPLIFICATION (à virer une fois appliqué?)
 
@@ -20,20 +18,22 @@ dataset <- lapply(dataset, gsub, pattern='\\]', replacement='')
 dataset <- lapply(dataset, gsub, pattern='\\[', replacement='')
 dataset <- data.frame(dataset)
 
-# Suppression des valeurs RARES (PROVISOIRE)
-# dataset <- lapply(dataset, gsub, pattern='\\)', replacement='')
-# dataset <- lapply(dataset, gsub, pattern='\\(', replacement='')
-
 # Suppression valeurs minimales (PROVISOIRE)
 dataset$Chapeau.Diametre <- dataset$Chapeau.Diametre %>% str_remove(., ".+-") %>% as.numeric(.)
 dataset$Pied.Hauteur <- dataset$Pied.Hauteur %>% str_remove(., ".+-") %>% as.numeric(.)
 dataset$Pied.Largeur <- dataset$Pied.Largeur %>% str_remove(., ".+-") %>% as.numeric(.)
 
+dataset[is.na(dataset)] <- 0    # Remplace les dimensions NA par 0 (a priori inutile, mais bon...)
+
+dataset$Type <- recode_factor(dataset$Type, 
+                                   bon = "Conserver", comestible = "Conserver", "comestible cuit" = "Conserver",
+                                   mediocre = "Rejeter", "non comestible" = "Rejeter", toxique = "Rejeter", Mortel = "Rejeter")
+
+write_csv2(x = dataset, file = "donnees_champis.csv")
+
 #############################
 #     NETTOYAGE DONNEES     #
 #############################
-
-dataset[is.na(dataset)] <- 0    # Remplace les dimensions NA par 0 (a priori inutile, mais bon...)
 
 structure <- sapply(X = dataset, FUN = class, simplify = TRUE)
 numeriques <- which(structure %in% c("integer", "numeric"))
@@ -48,11 +48,6 @@ champ_liste <- paste0("champ", dataset$N)
 #########################################
 #     ADAPTATION DES DONNEES SOURCE     #
 #########################################
-
-# Critère de comestibilité binaire (conserver/rejeter)
-dataset$Type <- recode_factor(dataset$Type, 
-                              bon = "Conserver", comestible = "Conserver", "comestible cuit" = "Conserver",
-                              mediocre = "Rejeter", "non comestible" = "Rejeter", toxique = "Rejeter", Mortel = "Rejeter")
 
 # Conversion des mois, du format DEBUT-FIN vers liste complète
 ConversionMois <- function(fcn_mois){
@@ -152,6 +147,7 @@ lot_la_totale <- do.call(rbind, mget(paste0("lot",1:n_especes)))   # Fusion de t
 
 lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)), ]
 write_csv(x = lot_final, file = "lot_champis.csv")
+zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 
 # Gros nettoyage
 for (n in 1:n_especes){
