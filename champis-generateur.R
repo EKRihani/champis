@@ -116,7 +116,7 @@ for (n in 1:n_especes){
 
 lots_liste <- paste0("lot", dataset$N)
 
-n_champis <- 1e2      # Nombre de champignons pour chaque espèce
+n_champis <- 3e2      # Nombre de champignons pour chaque espèce
 f_crois <- 2          # Facteur de croissance
 #tailles <- names(structure[numeriques[-c(1,2)]])    # Facteurs de taille
 tailles <- names(structure[numeriques])    # Facteurs de taille

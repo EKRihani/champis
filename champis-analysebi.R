@@ -426,7 +426,7 @@ colnames(BI_RF_resultat) <- c("Sensibilité", "Spécificité", "J de Youden", "D
 save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données complètes
 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
-rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_apprentissage, BI_lot_evaluation,
+rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_evaluation,
    BI_fit_pda_lambda, BI_fit_lda2_dim, 
    BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
    BI_fit_c50tree, BI_fit_rFerns_depth,

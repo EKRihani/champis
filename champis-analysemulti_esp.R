@@ -13,19 +13,23 @@ library(twinning)       # Découpage équilibré des jeux de données (plus effi
 fichier_data <- tempfile()
 #URL <- "https://github.com/EKRihani/champis/raw/master/lot_test.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/lot_test.zip" # FICHIER LOCAL
+# fichier_data <- "~/projects/champis/lot_test.zip" # FICHIER LOCAL
+# 
+# fichier_data <- unzip(fichier_data, "lot_test.csv")
+# dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)   # sep ; ou, selon fichier
 
-fichier_data <- unzip(fichier_data, "lot_test.csv")
-dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)   # sep ; ou, selon fichier
+fichier_data <- "~/projects/champis/lot_champis.csv" # FICHIER LOCAL
+dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 
 
 ##############################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
 ##############################################################################
-# Suppression family/name/classe + renommage correct
-dataset$class <- NULL      # Censé être inconnu !!!
-dataset$family <- NULL       # Idem.
-dataset$name <- dataset$name %>% str_replace_all(., "[:space:]|-", "_")  %>% str_replace_all(., "\'", "_") %>% as.factor(.)
+
+# Suppression des variables inutiles et reformatage des noms
+dataset <- dataset %>% select(!Type) # La comestibilité est censée être inconnue...
+dataset$Nom <- str_replace_all(string = dataset$Nom, pattern = " ", replacement = "_")
+dataset$Nom <- as.factor(dataset$Nom)
 
 MULESP_n_champis <- nrow(dataset)
 MULESP_split_p <- sqrt(MULESP_n_champis)
@@ -50,7 +54,7 @@ fit_test <- function(fcn_model){
                            summaryFunction = multiClassSummary, 
                            method = "cv", 
                            number = MULESP_split_facteur)   # Règle paramètres d'évaluation performance à multiClassSummary (kappa...), avec cross-validation
-   cmd <- paste0("train(name ~ ., method = '",      # Construit commande, évaluation de performance
+   cmd <- paste0("train(Nom ~ ., method = '",      # Construit commande, évaluation de performance
                  fcn_model[1], 
                  "', data = MULESP_lot_appr_opti, trControl = tr_ctrl, ", 
                  fcn_model[2],")")
@@ -251,16 +255,16 @@ save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 
 # Règle la liste de prédiction et lance la classification
 MULESP_evaluation <- MULESP_lot_evaluation
-MULESP_evaluation$reference <- as.factor(MULESP_evaluation$name)
+MULESP_evaluation$reference <- as.factor(MULESP_evaluation$Nom)
 save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")
 
 MULESP_n_eval <- nrow(MULESP_evaluation)
 
 start_time <- Sys.time()     # Démarre chrono
-cmd <- paste0("train(name ~ ., method = 'ranger', data = MULESP_lot_appr_opti,", MULESP_set_ranger_best[2], ")") # Construction de la commande
+cmd <- paste0("train(Nom ~ ., method = 'ranger', data = MULESP_lot_appr_opti,", MULESP_set_ranger_best[2], ")") # Construction de la commande
 MULESP_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULESP_pred_ranger_final <- predict(object = MULESP_fit_ranger_final, newdata = MULESP_lot_evaluation)
-MULESP_CM_ranger_final <- confusionMatrix(data = MULESP_pred_ranger_final, reference = MULESP_lot_evaluation$name)
+MULESP_CM_ranger_final <- confusionMatrix(data = MULESP_pred_ranger_final, reference = MULESP_lot_evaluation$Nom)
 MULESP_resultats_ranger <- c(MULESP_CM_ranger_final$byClass["Accuracy"], MULESP_CM_ranger_final$byClass["Kappa"])
 end_time <- Sys.time()     # Stop chrono
 MULESP_temps_ranger <- difftime(end_time, start_time)
@@ -268,10 +272,10 @@ MULESP_temps_ranger <- MULESP_temps_ranger %>% as.numeric %>% round(.,2)
 save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 
 start_time <- Sys.time()            # Démarre chrono
-cmd <- paste0("train(name ~ ., method = 'Rborist', data = MULESP_lot_appr_opti,", MULESP_set_Rborist_best[2], ")") # Construction de la commande
+cmd <- paste0("train(Nom ~ ., method = 'Rborist', data = MULESP_lot_appr_opti,", MULESP_set_Rborist_best[2], ")") # Construction de la commande
 MULESP_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULESP_pred_Rborist_final <- predict(object = MULESP_fit_Rborist_final, newdata = MULESP_lot_evaluation)
-MULESP_CM_Rborist_final <- confusionMatrix(data = MULESP_pred_Rborist_final, reference = MULESP_lot_evaluation$name)
+MULESP_CM_Rborist_final <- confusionMatrix(data = MULESP_pred_Rborist_final, reference = MULESP_lot_evaluation$Nom)
 MULESP_resultats_Rborist <- c(MULESP_CM_Rborist_final$byClass["Accuracy"], MULESP_CM_Rborist_final$byClass["Kappa"])
 end_time <- Sys.time()              # Stop chrono
 MULESP_temps_Rborist <- difftime(end_time, start_time)
@@ -295,13 +299,14 @@ MULESP_CMerreurs_ranger <- MULESP_CMerreurs_ranger[,colSums(MULESP_CMerreurs_ran
 
 MULESP_erreurs_Rborist <- which(MULESP_CM_Rborist_final$byClass[,'Precision'] != 1)
 #MULESP_CM_Rborist_final$byClass[MULESP_erreurs_Rborist,]
-MULESP_CMerreurs_Rborist <- MULESP_CM_Rborist_final$table[MULESP_erreurs_Rborist,]
+# MULESP_CMerreurs_Rborist <- MULESP_CM_Rborist_final$table[MULESP_erreurs_Rborist,]
+# MULESP_CMerreurs_Rborist <- MULESP_CMerreurs_Rborist[,colSums(MULESP_CMerreurs_Rborist) > 0]
 index <- which(apply(matrix(MULESP_CMerreurs_Rborist),1,sum) !=0)
-MULESP_CMerreurs_Rborist <- MULESP_CMerreurs_Rborist[, index]
+MULESP_CMerreurs_Rborist <- MULESP_CMerreurs_Rborist[index]
 
 
 save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")     # Sauvegarde données complètes
-
+ 
 # Suppression gros fichiers intermédiaires, avant sauvegarde
 rm(dataset, MULESP_evaluation, MULESP_lot_appr_opti, MULESP_lot_evaluation,
    MULESP_fit_rpart_cp,
