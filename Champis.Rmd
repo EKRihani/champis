@@ -168,9 +168,9 @@ Trois stratégies sont usuellement utilisées\ :
 \paragraph*{}
 Les données générées par ces stratégies peuvent être de types variés, que nous pouvons grossièrement regrouper en données alphanumériques (quantitatives et qualitatives), en séries temporelles, et en données d'imagerie.
 \paragraph*{}
-Pour des raisons pratiques et de maturité des technologies disponibles à l'heure actuelle, la méthode retenue pour créer le lot de données exploité dans notre étude sera la génération de données alphanumériques à partir de règles, extraites d'ouvrages mycologiques de référence.[@courtecuisse_cle_1986; @courtecuisse_champignons_2013; @courtecuisse_initiation_2020]
+Pour des raisons pratiques et de maturité des technologies disponibles à l'heure actuelle, la méthode retenue pour créer le lot de données exploité dans notre étude sera la génération de données alphanumériques à partir de règles, extraites d'ouvrages mycologiques de référence.[@courtecuisse_cle_1986; @courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013; @courtecuisse_initiation_2020]
 
-### Principes de génération des paramètres quantitatifs
+### Principes de génération des paramètres quantitatifs {#chapitre:generation_quanti}
 \paragraph*{}
 \FloatBarrier
 Dans le cadre de cette étude, les variables quantitatives générées aléatoirement sont\ :
@@ -373,7 +373,8 @@ Les phases d'entraînement, d'optimisation et d'évaluation utilisent chacune un
   \label{fig:Split-jeux}
 \end{figure}
 \paragraph*{} \label{paragraphe:split_ratio}
-Les rapports de taille entre jeux de données d'entraînement, d'optimisation et d'évaluation de cette étude suivront la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022] \paragraph*{} 
+Les rapports de taille entre jeux de données d'entraînement, d'optimisation et d'évaluation de cette étude suivront la loi $p : \sqrt{p} : \sqrt{p}+1$, avec $p$ le nombre de coefficients du modèle.[@joseph_optimal_2022]
+\paragraph*{} 
 Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de lignes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons contenus dans le lot de données.[@joseph_optimal_2022]
 \paragraph*{}
 Il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première scission entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu d'évaluation d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier, une taille représentant la fraction du lot total\ :
@@ -756,7 +757,7 @@ Malgré la simplicité apparente du critère binaire, la comestibilité ou la no
 
 Si le classement des deux premières et des deux dernières catégories au sein d'un critère binaire est trivial, il n'en est pas de même pour les trois autres. L'acceptation ou le rejet des champignons appartenant de ces catégories intermédiaires sera par définition un critère arbitraire.
 
-Nous pouvons toutefois esquisser des contours - forcément subjectifs - de notre critère de comestibilité en supposant que les champignons seront soumis à une cuisson, que tout champignon à la comestibilité médiocre sera à rejeter car susceptible de rendre la totalité du plat immangeable, et que tout champignon présentant une possible toxicité, même minime, sera à écarter par mesure de prudence : à titre d'exemple, le tricholome doré (*Tricholoma Auratum*) a pu être successivement qualifié de *comestible très réputé*, puis de champignon ayant provoqué des empoisonnements mortels par rhabdomyolyse.[@courtecuisse_champignons_2013]
+Nous pouvons toutefois esquisser des contours - forcément subjectifs - de notre critère de comestibilité en supposant que les champignons seront soumis à une cuisson, que tout champignon à la comestibilité médiocre sera à rejeter car susceptible de rendre la totalité du plat immangeable, et que tout champignon présentant une possible toxicité, même minime, sera à écarter par mesure de prudence : à titre d'exemple, le tricholome doré (*Tricholoma Auratum*) a pu être successivement qualifié de *comestible très réputé*, puis de champignon ayant provoqué des empoisonnements mortels par rhabdomyolyse.[@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
 
 Nous choisirons donc de fixer les catégories binaires suivantes :
 
@@ -803,7 +804,7 @@ plot(ggarrange(
 )
 ```
 
-La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5 cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx$ 50 cm. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@courtecuisse_champignons_2013]
+La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5 cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx$ 50 cm. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
 \paragraph*{}
 La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en cloche avec une longue queue à droite, un mode principal à 5 cm et un mode secondaire à 0 cm. Cette valeur peut également sembler surprenante, mais certains champignons du lot n'ont pas de pied, ce qui explique cette valeur.
 \paragraph*{}
@@ -1472,10 +1473,11 @@ kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Range
 \newpage
 # (APPENDIX) Appendix {-} 
 
-# Annexe\ : développement d'un algorithme de génération de lot synthétique
+# Annexe 1\ : Algorithme de génération de lot synthétique
 
 Le principe de cet algorithme est de prendre un tableau au format csv contenant les caractéristiques typiques des macromycètes extraites de la littérature mycologique (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.) et de générer un lot de données exploitable, sous forme d'une liste de spécimens, de chaque espèce données, possédant des caractéristiques individuelles censées être représentatives de leur espèce.
-\paragraph*{} 
+
+## Initialisation
 La seule bibliothèque utilisée lors de la création du lot de données synthétique est le *tidyverse*,[@R-tidyverse] collection de bibliothèques spécialisées dans le domaine de la *data science* et notamment dédiées au traitement, au nettoyage et à la visualisation de données.
 
 \small
@@ -1499,10 +1501,12 @@ data_champis <- read.csv(fichier_data,
 ```
 \normalsize
 
+## Préparation des données
+
 L'étape suivante consiste à extraire des données d'intérêt relatives à structure de notre objet *data_champis*, qui seront utiles pour les étapes ultérieures du générateur. 
-
-La première partie de cette étape s'applique à déterminer le caractère numérique (*i.e.* dimensionnel) ou textuel de chaque variable, à l'aide de la fonction *class*, appliquée sur la totalité de notre objet via une fonction *sapply*. Les données numériques sont ici définies comme des données entières (*integer*)ou numériques (*numeric*). Les données textuelles sont quant à elles définies comme toutes les données n'obéissant pas à ces deux critères.
-
+\paragraph*{}
+La première partie de cette étape s'applique à déterminer le caractère numérique (*i.e.* dimensionnel) ou textuel de chaque variable, à l'aide de la fonction *class*, appliquée sur la totalité de notre objet via une fonction *sapply*. Les données numériques sont ici définies comme des données entières (*integer*) ou numériques (*numeric*). Les données textuelles sont quant à elles définies comme toutes les données n'obéissant pas à ces deux critères.
+\paragraph*{}
 La seconde partie de cette étape extrait le nombre d'espèces présentes dans notre lot de données et indice chacune d'entre elle dans une variable dédiée *N*.
 
 \small
@@ -1516,8 +1520,9 @@ data_champis$N <- 1:n_especes
 ```
 \normalsize
 
+\paragraph*{}
 Les données relatives à la saisonnalité des champignons ont été créées, dans notre tableau initial, sous la forme *mm-MM*, avec *mm* le mois de début, et *MM* le mois de fin de fructification. Afin de pouvoir générer chacun des mois de cet intervalle, nous pouvons créer un vecteur contenant chacune des valeurs de cet intervalle, à l'aide d'une fonction *ad hoc*.
-
+\paragraph*{}
 Cette fonction extrait tout d'abord les deux chaînes numériques *mm* et *MM*, avant d'effectuer une comparaison entre ces deux valeurs. En effet, si $mm > MM$, alors la saison de fructification devra inclure le passage de décembre à janvier, et donc générer toutes les valeurs entières de *mm* à 12, puis celles de 1 à *MM*. L'ensemble de ces valeurs est intégrée dans une chaîne de caractères via la fonction *str_flatten*, avec la séparation appropriée. Cette fonction est ensuite appliquée sur l'ensemble de la variable *Mois*.
 
 \small
@@ -1537,23 +1542,23 @@ data_champis$Mois <- lapply(X = data_champis$Mois, FUN = ConversionMois)
 ```
 \normalsize
 
+\paragraph*{}
 Une autre particularité de notre lot de données est la prise en compte de caractéristiques rares, parfois rencontrées chez certains individus, mais néanmoins mentionnées dans la littérature mycologique comme étant exceptionnelles. Ces données ont été enregistrées entre parenthèses dans le tableau csv.
-
+\paragraph*{}
 La stratégie retenue ici consiste à effectuer un tirage équiprobable, dans un vecteur contenant une occurrence unique de chaque valeur rare, et une répétition de chaque valeur commune. Le nombre de répétition de chaque valeur commune est ici défini par la variable *ratio_cr*.
-
+\paragraph*{}
 La fonction créée afin de générer ce vecteur effectue tout d'abord un test visant à identifier les chaînes de caractères de type *(xxx)*, synonymes de présence d'une caractéristique rare. En l'absence d'une caractéristique rare, les données d'entrées seront inchangées par l'algorithme. En la présence d'une telle caractéristique, chaque valeur (séparée par une virgule) est extraite individuellement par la fonction *strsplit*.
-
-Un vecteur *n_repet*, contenant le nombre de répétitions de chacune de ces valeurs (ici, 10 pour une valeur commune, 1 pour une valeur rare) est généré, par détection de l'absence de parenthèses autour de chaque valeur. Ce vecteur sert ensuite d'argument à la fonction *rep* pour générer la liste complète. Les parenthèses sont ensuite ôtées, et toutes les valeurs concaténées, avec une virgule en tant que séparateur.
-
-La fonction ainsi créée est ensuite appliquée à l'ensemble des variables que nous avons précédemment identifiées comme textuelles, pour chaque ligne de l'objet *data_champis*, via la construction du texte constituant la commande, puis son exécution par la combinaison de fonction *eval* et *parse*.
+\paragraph*{}
+Un vecteur *n_repet*, contenant le nombre de répétitions de chaque valeur (ici, 10 pour une valeur commune, 1 pour une rare) est généré, par détection de l'absence de parenthèses autour des valeurs. Ce vecteur servira d'argument à la fonction *rep* pour générer la liste complète. Les parenthèses sont ensuite ôtées, et toutes les valeurs concaténées, avec une virgule en tant que séparateur.
+\paragraph*{}
+La fonction ainsi créée sera appliquée à l'ensemble des variables précédemment identifiées comme textuelles, pour chaque ligne de l'objet *data_champis*, via la construction du texte constituant la commande, puis son exécution par la combinaison de fonctions *eval* et *parse*.
 
 \small
 ```{r, eval = FALSE}
 ratio_cr <- 10    # Ratio communs/rares
 
 ConversionRares <- function(fcn_facteur){
-  if(str_detect(fcn_facteur, pattern ="\\([[:alpha:]]|[[:space:]]+\\)"))
-    {
+  if(str_detect(fcn_facteur, pattern ="\\([[:alpha:]]|[[:space:]]+\\)")){
     valeurs <- strsplit(fcn_facteur, split = ",")[[1]]
 
     n_repet <- valeurs %>%
@@ -1566,14 +1571,12 @@ ConversionRares <- function(fcn_facteur){
        str_remove(., '\\)') %>%
        str_flatten(., collapse = ", ")
     }
-  else
-    {
+  else{
       fcn_facteur
     }
 }
 
-for (n in 1:n_especes)
- {
+for (n in 1:n_especes){
   ordre_rares <- paste0("data_champis[",n,",]$", textes,
                         " <- ConversionRares(data_champis[",n,",]$", textes, ")")
   eval(parse(text = ordre_rares))
@@ -1581,29 +1584,38 @@ for (n in 1:n_especes)
 ```
 \normalsize
 
+## Génération du lot de données
+
 La génération du lot de données à proprement parler peut commencer. La stratégie globale est de générer un sous-lot de données par espèce, contenant un nombre défini de spécimens, puis de les regrouper dans le lot final, qui sera par la suite exporté sous forme d'un tableau csv.
-
+\paragraph*{}
 La première étape de la génération des sous-lots consiste à créer une liste par espèce, nommée *champN*, avec *N* l'indice attribué précédemment à chaque espèce. La génération implique tout d'abord de créer une liste des noms de listes, ainsi qu'une fonction *ad hoc* permettant de séparer toutes les valeurs séparées par des virgules.
-
+\paragraph*{}
 Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* *data_champis*. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction *str_split* étant par définition une chaîne de caractère, toutes valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront quant à elles forcées en tant que numériques via la fonction *as.numeric*.
 
 \small
 ```{r, eval = FALSE}
-fonc_split <- function(x){str_split(x, ",\\s*", simplify = TRUE)}
+fonc_split <- function(fcn_split){str_split(string = fcn_split, 
+                                    pattern = ",\\s*",
+                                    simplify = TRUE)}
 
 champ_liste <- paste0("champ", data_champis$N)
 
 for (n in 1:n_especes){
   assign(champ_liste[n], NULL)
   assign(champ_liste[n], as.list(data_champis[n,]))
-  assign(champ_liste[n], map(.x = eval(parse(text = champ_liste[n])), .f = fonc_split))
-  ordre <- paste0(champ_liste[n],"[numeriques] <- map(.x = ", champ_liste[n], "[numeriques], .f = as.numeric)")
+  assign(champ_liste[n], map(.x = eval(parse(text = champ_liste[n])), 
+                             .f = fonc_split))
+ 
+  ordre <- paste0(champ_liste[n],"[numeriques] <-", 
+                  "map(.x = ", champ_liste[n], "[numeriques],", 
+                      ".f = as.numeric)")
   eval(parse(text = ordre))
 }
 ```
 \normalsize
 
-La préparation de la seconde et dernière étape de la génération des données consiste à définir la liste des lots de chaque espèce, appelés *lotN* (avec *N* l'indice attribué à chaque espèce), puis de définir quelques variables d'intérêt : nombre de champignons par espèce (*n_champis*), facteur de croissance appliqué à la loi bêta (*f_crois*). Une fonction permettant de générer la dispersion suivant la loi normale $\mathcal{N}(\mu = 1 ; \sigma = 0.05)$ et arrondissant la valeur finale à deux décimales est également définie
+\paragraph*{}
+La préparation de la seconde et dernière étape de la génération des données consiste à définir la liste des lots de chaque espèce, appelés *lotN* (avec *N* l'indice attribué à chaque espèce), ainsi que quelques variables : nombre de champignons par espèce (*n_champis*), facteur de croissance appliqué à la loi bêta (*f_crois*), de même qu' une fonction permettant de générer la dispersion suivant la loi normale $\mathcal{N}(\mu = 1 ; \sigma = 0.05)$ et arrondissant la valeur finale à deux décimales.\footnote{cf. section \ref{chapitre:generation_quanti}, page \pageref{chapitre:generation_quanti} et suivantes.}
 
 \small
 ```{r, eval = FALSE}
@@ -1613,16 +1625,21 @@ n_champis <- 3e2      # Nombre de champignons pour chaque espèce
 f_crois <- 2          # Facteur de croissance
 tailles <- names(structure[numeriques])
 
-func_alea <- function(x){round(x * rnorm(n = n_champis, mean = 1, sd = .05), digits = 2)}
+func_alea <- function(x){round(x * rnorm(n = n_champis, 
+                                         mean = 1, 
+                                         sd = .05),
+                               digits = 2)}
 ```
 \normalsize
 
+\paragraph*{}
 La génération des sous-lots se décompose fondamentalement en trois étapes :
 
 1. La construction d'un objet vide pour chaque lot,
 2. La construction des chaînes de caractères de chaque commande, 
 3. L'exécution de ces commandes par l'en chaînement de fonctions *eval*/*parse*
 
+\paragraph*{}
 Les chaînes de caractères correspondent aux commandes suivantes :
 
 * *ordre_texte* insère, pour toutes les valeurs textuelles, une valeur piochée au hasard dans celles de la liste,
@@ -1638,7 +1655,8 @@ for (n in 1:n_especes){
   assign(lots_liste[n], NULL)
 
   ordre_texte <- paste0(lots_liste[n], "$", textes, 
-                         "<- sample(x = ", champ_liste[n], "$", textes, ", size = n_champis, replace = TRUE)")
+                         "<- sample(x = ", champ_liste[n], "$", textes,
+                                    ", size = n_champis, replace = TRUE)")
   ordre_fac <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, 
                                                              shape1 = 6*f_crois, 
                                                              shape2 =4, 
@@ -1663,8 +1681,9 @@ for (n in 1:n_especes){
 ```
 \normalsize
 
-L'ensemble des sous-lots est ensuite concaténé. Cette concaténation a pour effet de joindre les sous-lots, mais place également la totalité des spécimens de chaque espèce ensemble. Nous effections donc un mélange aléatoire des spécimens par échantillonnage de leurs indices.\footnote{Cet échantillonnage s'effectuant *sans* remplacement, il s'agit donc d'un simple mélange, par opposition à un *bootstrap*, qui s'effectuerait *avec* remplacement.}
-
+\paragraph*{}
+L'ensemble des sous-lots est ensuite concaténé. Cette concaténation a pour effet de joindre les sous-lots, mais place également la totalité des spécimens de chaque espèce ensemble. Nous effectuons donc un mélange aléatoire des spécimens par échantillonnage de leurs indices.\footnote{Cet échantillonnage s'effectuant \emph{sans} remplacement, il s'agit donc d'un simple mélange, par opposition à un \emph{bootstrap}, qui s'effectuerait \emph{avec} remplacement.}
+\paragraph*{}
 Le lot résultant est exporté sous format csv, compressé dans un fichier zip, et prêt à être exploité dans les autres parties de cette étude.
 \small
 ```{r, eval = FALSE}
@@ -1676,6 +1695,7 @@ zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 ```
 \normalsize
 
+\paragraph*{}
 L'étape finale consiste à nettoyer l'environnement en supprimant tous les objets de type *champX* et *lotX*.
 \small
 ```{r, eval = FALSE}
@@ -1690,14 +1710,14 @@ for (n in 1:n_especes){
 
 \newpage
 
-# Annexe\ : outils d'analyse exploratoire des données (EDA)
+# Annexe 2\ : Analyse exploratoire des données (EDA)
 
 *Code EDA...*
 
 \newpage
 
 
-# Annexe\ : développement des algorithmes d'apprentissage machine
+# Annexe 3\ : Algorithmes d'apprentissage machine
 
 \paragraph*{}
 Nous détaillerons ici principalement les algorithmes utilisés pour le classifieur binaire. Les particularités d'intérêt des classifieurs multiples seront évoquées brièvement lors des développements de cette section.
@@ -1789,7 +1809,7 @@ BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 \label{paragraphe:train-CART}
 L'étape suivante est de définir les paramètres d'entraînement et d'évaluation des performances du modèle en vue de son optimisation. La fonction *trainControl* permet ici de préciser les principaux paramètres régissant cette étape\ :
 
-* *classProbs*, *[TRUE indispensable au fonctionnement...]*
+* *classProbs*, afin de permettre le calcul des indicateurs de performance (ROC, spécificité, sensibilité...)
 * *summaryFunction*, afin d'indiquer que les métriques de performance à utiliser sont celles d'un classifieur binaire (l'argument *multiClassSummary* sera utilisé pour un classifieur multiclasse)
 * *method*, afin de préciser la méthode de construction des jeux d'entraînement et d'optimisation, ici validation croisée (*CV\ : cross-validation*)
 * *number*, afin d'indiquer le nombre de blocs de la validation croisée, calculé précédemment.
@@ -1819,6 +1839,7 @@ BI_fit_rpart_cp <- train(Type ~ .,
 \normalsize
 
 L'objet résultant est d'une structure relativement complexe. Notre algorithme peut notamment en extraire les résultats relatifs aux performances du modèle, et y adjoindre le calcul du J de Youden pondéré $J_{w}$. Dans le cadre des classifieurs multiclasses, ce calcul est inutile, l'objet généré à l'étape précédente contenant déjà les indicateurs de performance que nous utilisons\ : kappa ($\kappa$) et indice de Rand ($R$, *accuracy*).
+\FloatBarrier
 
 \small
 ```{r, eval = FALSE}
@@ -1832,9 +1853,11 @@ L'objet de type *dataframe* ainsi créé peut être appelé afin d'en extraire d
 \small
 ```{r, Annexe-Entrainement, echo = FALSE}
 kable(BI_fit_rpart_cp_resultats, caption = "Tableau des résultats de l'entraînement de rpart") %>%
-  kable_styling(font_size = 10)
+  kable_styling(font_size = 10, latex_options = "HOLD_position")
 ```
 \normalsize
+
+\FloatBarrier
 \paragraph*{}
 L'algorithme génère également un graphique synthétisant les performances du modèle (sensibilité, spécificité, $J_{w}$, $\kappa$, $R$ ou autre indicateur d'intérêt) en fonction de son hyperparamètre\ :
 
@@ -1895,7 +1918,8 @@ BI_grid_Rborist <- data.frame(BI_LHS) %>%
 \FloatBarrier
 
 ```{r, echo = FALSE}
-kable(BI_grid_Rborist, caption = "Plan d'expériences d'entraînement et optimisation du modèle Rborist")
+kable(BI_grid_Rborist, caption = "Plan d'expériences d'entraînement et optimisation du modèle Rborist") %>%
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 \FloatBarrier
@@ -1916,6 +1940,7 @@ BI_fit_Rborist <- train(Type ~ .,
 ```
 \normalsize
 
+\newpage
 L'algorithme extrait les résultats relatifs aux performances du modèle et y adjoint le calcul de $J_{w}$ (ou $\kappa$ pour les classifieurs multiclasses), comme précédemment. L'objet obtenu ne contenant que les facteurs expérimentaux (non réduits) des hyperparamètres, il convient d'y adjoindre les facteurs réduits. La table *BI_grid_Rborist* générée précédemment contient toutes les informations qui permettent, via une jonction, de lier facteurs réduits et facteurs expérimentaux.
 
 \small

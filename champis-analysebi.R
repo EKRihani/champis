@@ -11,7 +11,7 @@ library(twinning)       # Découpage équilibré des jeux de données (plus effi
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/champis/raw/master/MushroomDataset.zip"      # URL de mon repo
+#URL <- "https://github.com/EKRihani/champis/raw/master/lot_champis.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
 
 fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL

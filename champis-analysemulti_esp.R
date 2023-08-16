@@ -11,14 +11,12 @@ library(twinning)       # Découpage équilibré des jeux de données (plus effi
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/champis/raw/master/lot_test.zip"      # URL de mon repo
+#URL <- "https://github.com/EKRihani/champis/raw/master/lot_champis.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-# fichier_data <- "~/projects/champis/lot_test.zip" # FICHIER LOCAL
-# 
-# fichier_data <- unzip(fichier_data, "lot_test.csv")
-# dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)   # sep ; ou, selon fichier
 
-fichier_data <- "~/projects/champis/lot_champis.csv" # FICHIER LOCAL
+fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
+fichier_data <- unzip(fichier_data, "lot_champis.csv")
+dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 
 
