@@ -23,7 +23,7 @@ dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = T
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
 ##############################################################################
 # Suppression Nom/Type + renommage correct
-dataset$Famille <- str_extract(string = dataset$Nom, pattern = "[[:alpha:]]+")
+dataset$Famille <- as.factor(str_extract(string = dataset$Nom, pattern = "[[:alpha:]]+"))
 
 dataset <- dataset %>% select(!Type) %>% select(!Nom)
 

@@ -742,9 +742,9 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 # Apprentissage machine et classification binaire
 
 ## Définition des critères de classification binaire
-
+\paragraph*{}
 Le critère de notre classification binaire est un critère très simple, qui répond à la question *"ce champignon est-il comestible ou non ?"*
-
+\paragraph*{}
 Malgré la simplicité apparente du critère binaire, la comestibilité ou la non-comestibilité d'un champignon se situe en réalité sur un continuum :
 
 * Champignons particulièrement réputés pour leurs qualités gustatives,
@@ -755,10 +755,11 @@ Malgré la simplicité apparente du critère binaire, la comestibilité ou la no
 * Champignons toxiques, avec des syndromes de sévérité variée,
 * Champignons mortels.
 
+\paragraph*{}
 Si le classement des deux premières et des deux dernières catégories au sein d'un critère binaire est trivial, il n'en est pas de même pour les trois autres. L'acceptation ou le rejet des champignons appartenant de ces catégories intermédiaires sera par définition un critère arbitraire.
-
+\paragraph*{}
 Nous pouvons toutefois esquisser des contours - forcément subjectifs - de notre critère de comestibilité en supposant que les champignons seront soumis à une cuisson, que tout champignon à la comestibilité médiocre sera à rejeter car susceptible de rendre la totalité du plat immangeable, et que tout champignon présentant une possible toxicité, même minime, sera à écarter par mesure de prudence : à titre d'exemple, le tricholome doré (*Tricholoma Auratum*) a pu être successivement qualifié de *comestible très réputé*, puis de champignon ayant provoqué des empoisonnements mortels par rhabdomyolyse.[@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
-
+\paragraph*{}
 Nous choisirons donc de fixer les catégories binaires suivantes :
 
 * À accepter : excellents comestibles, comestibles, comestibles cuits.
