@@ -17,7 +17,6 @@ fichier_data <- tempfile()
 fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
 fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
-dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 
 
 ##############################################################################
@@ -297,7 +296,7 @@ MULESP_CMerreurs_ranger <- MULESP_CMerreurs_ranger[,colSums(MULESP_CMerreurs_ran
 
 MULESP_erreurs_Rborist <- which(MULESP_CM_Rborist_final$byClass[,'Precision'] != 1)
 #MULESP_CM_Rborist_final$byClass[MULESP_erreurs_Rborist,]
-# MULESP_CMerreurs_Rborist <- MULESP_CM_Rborist_final$table[MULESP_erreurs_Rborist,]
+MULESP_CMerreurs_Rborist <- MULESP_CM_Rborist_final$table[MULESP_erreurs_Rborist,]
 # MULESP_CMerreurs_Rborist <- MULESP_CMerreurs_Rborist[,colSums(MULESP_CMerreurs_Rborist) > 0]
 index <- which(apply(matrix(MULESP_CMerreurs_Rborist),1,sum) !=0)
 MULESP_CMerreurs_Rborist <- MULESP_CMerreurs_Rborist[index]

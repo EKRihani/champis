@@ -11,22 +11,21 @@ library(twinning)       # Découpage équilibré des jeux de données (plus effi
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/champis/raw/master/lot_test.zip"      # URL de mon repo
+#URL <- "https://github.com/EKRihani/champis/raw/master/lot_champis.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/lot_test.zip" # FICHIER LOCAL
 
-fichier_data <- unzip(fichier_data, "lot_test.csv")
-dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)   # sep ; ou, selon fichier
+fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
+fichier_data <- unzip(fichier_data, "lot_champis.csv")
+dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 
 
 ##############################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
 ##############################################################################
-# Suppression family/name/classe + renommage correct
-dataset$class <- NULL      # Censé être inconnu !!!
-dataset$name <- NULL       # On y va mollo : d'abord les familles...
-dataset$family <- dataset$family %>% str_replace_all(., "[:space:]|-", "_") %>% str_remove_all(., "_Family") %>% as.factor(.)
-#dataset$family <- as.factor(str_replace_all(dataset$family, "[:space:]|-", "_"))
+# Suppression Nom/Type + renommage correct
+dataset$Famille <- str_extract(string = dataset$Nom, pattern = "[[:alpha:]]+")
+
+dataset <- dataset %>% select(!Type) %>% select(!Nom)
 
 MULFAM_n_champis <- nrow(dataset)
 MULFAM_split_p <- sqrt(MULFAM_n_champis)
@@ -51,7 +50,7 @@ fit_test <- function(fcn_model){
                            summaryFunction = multiClassSummary, 
                            method = "cv", 
                            number = MULFAM_split_facteur)   # Règle paramètres d'évaluation performance à multiClassSummary (kappa...), avec cross-validation
-   cmd <- paste0("train(family ~ ., method = '",      # Construit commande, évaluation de performance
+   cmd <- paste0("train(Famille ~ ., method = '",      # Construit commande, évaluation de performance
                  fcn_model[1], 
                  "', data = MULFAM_lot_appr_opti, trControl = tr_ctrl, ", 
                  fcn_model[2],")")
@@ -250,23 +249,23 @@ MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results
 
 # Règle la liste de prédiction et lance la classification
 MULFAM_evaluation <- MULFAM_lot_evaluation
-MULFAM_evaluation$reference <- as.factor(MULFAM_evaluation$family)
+MULFAM_evaluation$reference <- as.factor(MULFAM_evaluation$Famille)
 
 start_time <- Sys.time()     # Démarre chrono
-cmd <- paste0("train(family ~ ., method = 'ranger', data = MULFAM_lot_appr_opti,", MULFAM_set_ranger_best[2], ")") # Construction de la commande
+cmd <- paste0("train(Famille ~ ., method = 'ranger', data = MULFAM_lot_appr_opti,", MULFAM_set_ranger_best[2], ")") # Construction de la commande
 MULFAM_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULFAM_pred_ranger_final <- predict(object = MULFAM_fit_ranger_final, newdata = MULFAM_lot_evaluation)
-MULFAM_CM_ranger_final <- confusionMatrix(data = MULFAM_pred_ranger_final, reference = MULFAM_lot_evaluation$family)
+MULFAM_CM_ranger_final <- confusionMatrix(data = MULFAM_pred_ranger_final, reference = MULFAM_lot_evaluation$Famille)
 MULFAM_resultats_ranger <- c(MULFAM_CM_ranger_final$byClass["Accuracy"], MULFAM_CM_ranger_final$byClass["Kappa"])
 end_time <- Sys.time()     # Stop chrono
 MULFAM_temps_ranger <- difftime(end_time, start_time)
 MULFAM_temps_ranger <- MULFAM_temps_ranger %>% as.numeric %>% round(.,2)
 
 start_time <- Sys.time()            # Démarre chrono
-cmd <- paste0("train(family ~ ., method = 'Rborist', data = MULFAM_lot_appr_opti,", MULFAM_set_Rborist_best[2], ")") # Construction de la commande
+cmd <- paste0("train(Famille ~ ., method = 'Rborist', data = MULFAM_lot_appr_opti,", MULFAM_set_Rborist_best[2], ")") # Construction de la commande
 MULFAM_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULFAM_pred_Rborist_final <- predict(object = MULFAM_fit_Rborist_final, newdata = MULFAM_lot_evaluation)
-MULFAM_CM_Rborist_final <- confusionMatrix(data = MULFAM_pred_Rborist_final, reference = MULFAM_lot_evaluation$family)
+MULFAM_CM_Rborist_final <- confusionMatrix(data = MULFAM_pred_Rborist_final, reference = MULFAM_lot_evaluation$Famille)
 MULFAM_resultats_Rborist <- c(MULFAM_CM_Rborist_final$byClass["Accuracy"], MULFAM_CM_Rborist_final$byClass["Kappa"])
 end_time <- Sys.time()              # Stop chrono
 MULFAM_temps_Rborist <- difftime(end_time, start_time)
