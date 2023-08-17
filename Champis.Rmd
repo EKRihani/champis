@@ -5,6 +5,7 @@
 lang: fr
 geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
 fontsize: 12pt          # Imposé par la fac
+classoption: twoside
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
@@ -22,13 +23,13 @@ header-includes:
    - \linespread{1.15}
 indent: true
 bibliography: [packages.bib,Champis.bib]
-csl: https://www.zotero.org/styles/vancouver-superscript
+csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscript
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
 load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
-load("EKR-Champis-Iris.RData")  # Chargement des exemples Iris
+load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
 load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
 load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-Naif.RData")            # Chargement des résultats CLASSIFIEUR NAIF
@@ -93,6 +94,7 @@ VCS\ : *Version Control System* (logiciel de contrôle des versions)
 
 <!-- \endflushleft
 \endgroup -->
+
 ## Conventions utilisées
 
 * Les références bibliographiques seront indiquées par des exposants numériques : ^1^, ^2^, ^3^...
@@ -102,7 +104,7 @@ VCS\ : *Version Control System* (logiciel de contrôle des versions)
 \endflushleft
 \endgroup
 
-\newpage
+\cleardoublepage
 # Introduction
 ## Propos liminaire
 \paragraph*{}
@@ -135,7 +137,7 @@ Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@w
 \paragraph*{}
 Des bases de données dédiées à la mycologie sont également disponibles,[@noauthor_fongifrance_nodate; @noauthor_mycodb_nodate] mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
 
-\newpage
+\cleardoublepage
 # Création du lot de données
 ## Configuration matérielle et logicielle
 \paragraph*{}
@@ -347,7 +349,7 @@ La génération des paramètres qualitatifs, tels que la couleur des spores ou l
 L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question pour chaque spécimen.
 \paragraph*{}
 
-\newpage
+\cleardoublepage
 \FloatBarrier
 
 # Principes de l'apprentissage machine
@@ -757,7 +759,7 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 \paragraph*{}
 \FloatBarrier
 \phantom{blablabla}
-\newpage
+\cleardoublepage
 
 # Apprentissage machine et classification binaire
 
@@ -1258,11 +1260,10 @@ kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et
 
 \paragraph*{}
 
-\newpage
+\cleardoublepage
 
 # Apprentissage machine et classification multiclasse
 
-*Brouillon, le lot de données utilisé ici est un lot synthétique créé par moi-même (avec algorithme de création fonctionnel), mais à partir des données primaires du Secondary Mushroom Dataset de D.Wagner.*
 \paragraph*{}
 Étant données les performances qu'ont montré les différents modèles lors de la classification binaire, seuls les modèles basés sur les arbres décisionnels et les forêts aléatoires seront évalués dans cette section.
 \FloatBarrier
@@ -1453,7 +1454,7 @@ kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Range
 
 \paragraph*{}
 
-\newpage
+\cleardoublepage
 
 <!-- # Robustesse de la classification -->
 
@@ -1492,7 +1493,7 @@ kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Range
 # Références bibliographiques
 <div id="refs"></div>
 
-\newpage
+\cleardoublepage
 # (APPENDIX) Appendix {-} 
 
 # Annexe 1\ : Algorithme de génération de lot synthétique
@@ -1730,14 +1731,14 @@ for (n in 1:n_especes){
 ```
 \normalsize
 
-\newpage
+\cleardoublepage
 
 # Annexe 2\ : Analyse exploratoire des données (EDA)
 
 *Code EDA...*
 
-\newpage
 
+\cleardoublepage
 
 # Annexe 3\ : Algorithmes d'apprentissage machine
 

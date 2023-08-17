@@ -257,5 +257,8 @@ dev.off()
 
 save.image(file = "EKR-Champis-Iris.RData")
 
+rm(dataset, iris_rpart, index1,
+   INTRO_fit_rpart, INTRO_fit_rpart2, INTRO_lot_appr_opti, INTRO_lot_evaluation)
 
+save.image(file = "EKR-Champis-Iris-Light.RData")
 load(file = "EKR-Champis-Iris.RData")
