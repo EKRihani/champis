@@ -35,10 +35,13 @@ write_csv2(x = dataset, file = "donnees_champis.csv")
 #     NETTOYAGE DONNEES     #
 #############################
 
+fichier_data <- "donnees_champis.csv"
+
+dataset <- read.csv(fichier_data, header = TRUE, sep = ";", dec = "," , stringsAsFactors = FALSE)
+
 structure <- sapply(X = dataset, FUN = class, simplify = TRUE)
 numeriques <- which(structure %in% c("integer", "numeric"))
-numeriques <- which(names(structure) %in% c("Chapeau.Diametre", "Pied.Hauteur", "Pied.Largeur"))  #PROVISOIRE
-#textes <- names(structure[-numeriques & 1:2])
+
 textes <- names(structure[-numeriques])
 n_especes <- nrow(dataset)
 dataset$N <- 1:n_especes
@@ -62,10 +65,6 @@ ConversionMois <- function(fcn_mois){
 
 dataset$Mois <- lapply(X = dataset$Mois, FUN = ConversionMois)
 
-# Conversion des facteurs rares de (facteur_rare) à liste complète avec ratio adapté
-# TEST1 <- data_champis[35:45,c(1,2,3,5,12,26)]
-# TEST2 <- data_champis[37,26]
-# TEST3 <- data_champis[40,26]
 
 ratio_cr <- 10  # Ratio commun/rare
 

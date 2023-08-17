@@ -8,14 +8,14 @@ library(twinning)       # Découpage équilibré des jeux de données (plus effi
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/champis/raw/master/MushroomDataset.zip"      # URL de mon repo
+#URL <- "https://github.com/EKRihani/champis/raw/master/lot_champis.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
 
-fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
-dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
-dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
-dataset$class <- relevel(dataset$class, ref = "toxique")
+fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
+fichier_data <- unzip(fichier_data, "lot_champis.csv")
+dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
+dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
+dataset <- dataset %>% select(!Nom)
 
 ####################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION     #
@@ -50,7 +50,7 @@ facteurs_liste <- NAIF_lot_appr %>%
    gather(facteur, niveau) %>% 
    unique() %>% 
    select(facteur, niveau) %>% 
-   filter(facteur != "class")     # Récupère tous les niveaux de facteurs + logique
+   filter(facteur != "Type")     # Récupère tous les niveaux de facteurs + logique
 
 facteurs_type <- NAIF_lot_appr %>% 
    summary.default %>% 
@@ -59,7 +59,7 @@ facteurs_type <- NAIF_lot_appr %>%
    spread(Var2, Freq) %>% 
    as.data.frame        # Extraire structure du lot d'entraînement
 
-facteurs_type$Class <- if_else(facteurs_type$Class == "-none-", facteurs_type$Mode, facteurs_type$Class)     # Créer une colonne Class cohérente
+facteurs_type$Type <- if_else(facteurs_type$Type == "-none-", facteurs_type$Mode, facteurs_type$Type)     # Créer une colonne Type cohérente
 
 facteurs_type <- facteurs_type %>% 
    select(-Mode, -Length)              # Nettoie facteurs_type
@@ -119,14 +119,14 @@ recherche_simple <- function(fcn_lot_entrainement, fcn_liste_criteres, fcn_marge
       if(fcn_liste_criteres$type[n] %in% c("logical", "factor", "character"))
       {
          fcn_liste_criteres$tous_comestibles[n] <- fcn_lot_entrainement %>% 
-            filter(class == "toxique", get(fcn_liste_criteres$facteur[n]) == fcn_liste_criteres$niveau[n]) %>% 
+            filter(Type == "Rejeter", get(fcn_liste_criteres$facteur[n]) == fcn_liste_criteres$niveau[n]) %>% 
             nrow() == 0  # Trouve si (pour cette combinaison facteur/niveau) il n'y a aucun non-comestible
       }
       else          # Si type numérique (ou integer)
       {
          minmax <- minmaxing(fcn_liste_criteres$niveau[n], fcn_marge)     # Pose min/max et valeurs arrondies pour ".$niveau"
          valeur_actuelle <- fcn_lot_entrainement %>% 
-            filter(class == "toxique") %>% 
+            filter(Type == "Rejeter") %>% 
             select(fcn_liste_criteres$facteur[n]) %>% 
             minmax[[1]](.)
          extremum <- fcn_lot_entrainement %>%  
@@ -150,7 +150,7 @@ recherche_double <- function(fcn_lot_entrainement, fcn_liste_criteres, fcn_marge
             filter(get(fcn_liste_criteres$facteur1[n]) == fcn_liste_criteres$niveau1[n], get(fcn_liste_criteres$facteur2[n]) == fcn_liste_criteres$niveau2[n]) %>%
             nrow
          comptage_poison <- fcn_lot_entrainement %>%
-            filter(class == "toxique", get(fcn_liste_criteres$facteur1[n]) == fcn_liste_criteres$niveau1[n],
+            filter(Type == "Rejeter", get(fcn_liste_criteres$facteur1[n]) == fcn_liste_criteres$niveau1[n],
                    get(fcn_liste_criteres$facteur2[n]) == fcn_liste_criteres$niveau2[n]) %>%
             nrow
          fcn_liste_criteres$tous_comestibles[n] <- comptage != 0 & comptage_poison == 0 # Trouve si (pour cette combinaison facteur/niveau) il y a des champis ET aucun vénéneux
@@ -160,7 +160,7 @@ recherche_double <- function(fcn_lot_entrainement, fcn_liste_criteres, fcn_marge
       {
          minmax <- minmaxing(fcn_liste_criteres$niveau2[n], fcn_marge)
          valeur_actuelle <- fcn_lot_entrainement %>%
-            filter(class == "toxique", get(fcn_liste_criteres$facteur1[n]) == fcn_liste_criteres$niveau1[n]) %>%
+            filter(Type == "Rejeter", get(fcn_liste_criteres$facteur1[n]) == fcn_liste_criteres$niveau1[n]) %>%
             select(fcn_liste_criteres$facteur2[n]) %>%
             minmax[[1]](.)
          extremum <- fcn_lot_entrainement %>% filter(get(fcn_liste_criteres$facteur1[n]) == fcn_liste_criteres$niveau1[n]) %>%
@@ -174,14 +174,14 @@ recherche_double <- function(fcn_lot_entrainement, fcn_liste_criteres, fcn_marge
             minmax1 <- minmaxing(fcn_liste_criteres$niveau1[n], fcn_marge)
             minmax2 <- minmaxing(fcn_liste_criteres$niveau2[n], fcn_marge)
             valeur_actuelle1 <- fcn_lot_entrainement %>%
-               filter(class == "toxique") %>%
+               filter(Type == "Rejeter") %>%
                select(fcn_liste_criteres$facteur1[n]) %>%
                minmax1[[1]](.)
             extremum1 <- fcn_lot_entrainement %>%
                select(fcn_liste_criteres$facteur1[n]) %>%
                minmax1[[1]](.)
             valeur_actuelle2 <- fcn_lot_entrainement %>%
-               filter(class == "toxique") %>%
+               filter(Type == "Rejeter") %>%
                select(fcn_liste_criteres$facteur2[n]) %>%
                minmax2[[1]](.)
             extremum2 <- fcn_lot_entrainement %>%
@@ -265,7 +265,7 @@ list_criteres_prediction <- crit2string2(facteurs_liste1a, facteurs_liste2b)
 
 # Crée un lot de données predictions, avec facteurs booléens (VRAI = toxique) en .$reference
 predictions <- NAIF_lot_evaluation
-predictions$reference <- as.logical(as.character(recode_factor(predictions$class, comestible = FALSE, toxique = TRUE))) # Convertit en booléens
+predictions$reference <- as.logical(as.character(recode_factor(predictions$Type, comestible = FALSE, toxique = TRUE))) # Convertit en booléens
 
 # Applique les 3 modèles prédictifs : stupide , monocritère, double-critère
 predictions <- predictions%>% mutate(predict_stupide = TRUE) %>% # Considère tous les champignons comme toxiques
