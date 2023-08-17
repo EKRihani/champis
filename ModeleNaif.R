@@ -5,6 +5,7 @@
 # Chargement des bibliothèques
 library(tidyverse)    # Outils génériques
 library(twinning)       # Découpage équilibré des jeux de données (plus efficient que split!)
+library(caret)    # Pour ConfusionMatrix
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
@@ -59,7 +60,7 @@ facteurs_type <- NAIF_lot_appr %>%
    spread(Var2, Freq) %>% 
    as.data.frame        # Extraire structure du lot d'entraînement
 
-facteurs_type$Type <- if_else(facteurs_type$Type == "-none-", facteurs_type$Mode, facteurs_type$Type)     # Créer une colonne Type cohérente
+facteurs_type$Class <- if_else(facteurs_type$Class == "-none-", facteurs_type$Mode, facteurs_type$Class)     # Créer une colonne Type cohérente
 
 facteurs_type <- facteurs_type %>% 
    select(-Mode, -Length)              # Nettoie facteurs_type
@@ -265,7 +266,7 @@ list_criteres_prediction <- crit2string2(facteurs_liste1a, facteurs_liste2b)
 
 # Crée un lot de données predictions, avec facteurs booléens (VRAI = toxique) en .$reference
 predictions <- NAIF_lot_evaluation
-predictions$reference <- as.logical(as.character(recode_factor(predictions$Type, comestible = FALSE, toxique = TRUE))) # Convertit en booléens
+predictions$reference <- as.logical(as.character(recode_factor(predictions$Type, Conserver = FALSE, Rejeter = TRUE))) # Convertit en booléens
 
 # Applique les 3 modèles prédictifs : stupide , monocritère, double-critère
 predictions <- predictions%>% mutate(predict_stupide = TRUE) %>% # Considère tous les champignons comme toxiques
