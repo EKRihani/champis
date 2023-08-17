@@ -743,7 +743,7 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 
 ## Définition des critères de classification binaire
 \paragraph*{}
-Le critère de notre classification binaire est un critère très simple, qui répond à la question *"ce champignon est-il comestible ou non ?"*
+Le critère de notre classification binaire est un critère très simple, qui répond à l'éternelle question *"ce champignon est-il comestible ou non ?"*
 \paragraph*{}
 Malgré la simplicité apparente du critère binaire, la comestibilité ou la non-comestibilité d'un champignon se situe en réalité sur un continuum :
 
@@ -758,12 +758,14 @@ Malgré la simplicité apparente du critère binaire, la comestibilité ou la no
 \paragraph*{}
 Si le classement des deux premières et des deux dernières catégories au sein d'un critère binaire est trivial, il n'en est pas de même pour les trois autres. L'acceptation ou le rejet des champignons appartenant de ces catégories intermédiaires sera par définition un critère arbitraire.
 \paragraph*{}
-Nous pouvons toutefois esquisser des contours - forcément subjectifs - de notre critère de comestibilité en supposant que les champignons seront soumis à une cuisson, que tout champignon à la comestibilité médiocre sera à rejeter car susceptible de rendre la totalité du plat immangeable, et que tout champignon présentant une possible toxicité, même minime, sera à écarter par mesure de prudence : à titre d'exemple, le tricholome doré (*Tricholoma Auratum*) a pu être successivement qualifié de *comestible très réputé*, puis de champignon ayant provoqué des empoisonnements mortels par rhabdomyolyse.[@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
+Nous pouvons toutefois esquisser des contours -- forcément subjectifs -- de notre critère de comestibilité en supposant que les champignons seront soumis à une cuisson, que tout champignon à la comestibilité médiocre sera à rejeter car susceptible de rendre la totalité du plat immangeable, et que tout champignon présentant une possible toxicité, même minime, sera à écarter par mesure de prudence : à titre d'exemple, le tricholome doré (*Tricholoma Auratum*) a pu être successivement qualifié de *comestible très réputé*, puis de champignon ayant provoqué des empoisonnements mortels par rhabdomyolyse.[@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
 \paragraph*{}
 Nous choisirons donc de fixer les catégories binaires suivantes :
 
 * À accepter : excellents comestibles, comestibles, comestibles cuits.
 * À rejeter : comestibles médiocres, toxiques au delà d'une certaine quantité, toxiques, mortels.
+
+\newpage
 
 ## Analyse exploratoire des données (EDA)
 
@@ -831,11 +833,11 @@ paires_graphes
 \paragraph*{}
 Il existe une grande variété de modèles exploitables pour bâtir un système d'apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles, ainsi que pour l'exploration de l'espace de leurs hyperparamètres à fins d'optimisation et la mesure de leurs performances. 
 \paragraph*{}
-Les modèles sélectionnés pour cette étude sont de types variés\ :
+Les modèles sélectionnés pour cette étude sont de types variés\ :\footnote{Les termes entre parenthèses font référence aux noms de modèles qu'utilise la librairie \emph{caret}}
 
 * Analyse naïve
-* Analyse discriminante linéaire (LDA)\ : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
-* Modèle arborescent\ : *Classification And Regression Tree* (CART) (rpart, rpartCost), C5.0 tree
+* Analyse discriminante linéaire\ : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
+* Modèle arborescent\ : *Classification And Regression Tree* (rpart, rpartCost), C5.0 tree
 * Forêt aléatoire\ : *Random Ferns* (rferns), *Random Forest* (ranger, Rborist)
 
 ### Stratégie d'optimisation
@@ -849,8 +851,7 @@ Les algorithmes d'apprentissage machine développés au cours de cette étude me
 5. Modélisation des performances en fonction des hyperparamètres, via un modèle quadratique avec interactions,\footnotemark[\value{footnote}]
 6. Sélection des hyperparamètres permettant d'optimiser les performances du modèle,
 7. Mesure des performances de chaque modèle avec les hyperparamètres optimaux,
-8. Sélection des modèles les plus performants pour prédiction et mesure finale des performances contre le lot d'évaluation,
-9. Génération, sauvegarde et insertion automatique de tous les graphiques et données numériques dans le texte de la présente étude.
+8. Sélection des modèles les plus performants pour prédiction et mesure finale des performances contre le lot d'évaluation.
 
 \newpage
 
@@ -877,7 +878,7 @@ Les performances de ces modèles paraissent relativement bonnes, mais sont à re
 \paragraph*{}
 Les performances du modèle monovariable ne sont guère plus élevées, ce qui démontre l'inefficacité des adages populaires prétendant garantir la comestibilité de tous les champignons d'une couleur donnée.\footnote{Même si le modèle venait à montrer le contraire, il convient de rappeler que ce lot de données se limite aux espèces les plus courantes, d'une fonge limitée dans l'espace et dans le temps.}
 \paragraph*{}
-En revanche, les performances du modèle bivariable sont honorables, avec une amélioration sensible de la spécificité ($Spec \approx `r NAIF_Resultats["BiCritere","Spec"]`$), donc de la capacité à réellement distinguer des champignons comestibles. Les performances de ce modèle ($J_w = `r NAIF_Resultats["BiCritere","Jw"]`$) ne répondent toutefois pas au critère de performance défini précédemment ($J_{w} \geq `r Jw_min`$)\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}. Les performances calculatoires sont médiocres ($t = `r NAIF_Resultats["BiCritere","Temps (s)"]`$ s), et probablement à mettre en relation avec un code peu optimisé.
+En revanche, les performances du modèle bivariable sont honorables, avec une amélioration sensible de la spécificité ($Spec \approx `r NAIF_Resultats["BiCritere","Spec"]`$), donc de la capacité à réellement distinguer des champignons comestibles. Les performances de ce modèle ($J_w = `r NAIF_Resultats["BiCritere","Jw"]`$) ne répondent toutefois pas au critère de performance défini précédemment ($J_{w} \geq `r Jw_min`$)\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}. Les performances calculatoires sont extrêmement médiocres ($t > `r floor(NAIF_Resultats["BiCritere","Temps (s)"]/3600)`$ h), et probablement à mettre en relation avec un code peu optimisé.
 \FloatBarrier
 
 ### Modèles d'analyse discriminante{#chapitre:BI_lda}
@@ -910,13 +911,13 @@ Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambd
 \right.$$
 
 \paragraph*{}
-Ces performances médiocres s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
+Ces performances perfectibles, car très comparables à celles d'un modèle naïf bidimensionnel, s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
 
 * Données binaires ou booléennes,
 * Données qualitatives ordinales.
 
 \paragraph*{}
-L'inclusion de ces modèles, présentant ici des performances très modestes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
+L'inclusion de ces modèles, présentant ici des performances correctes mais insuffisantes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -927,7 +928,7 @@ Les modèles basés sur des arbres de décision ont un intérêt tout particulie
 * Les arbres de décision obtenus peuvent être tracés, et facilement interprétés par l'humain.
 
 \paragraph*{}
-Les premiers modèles présentés dans le cadre de notre étude sont deux modèles CART (*Classification And Regression Tree*). Le modèle CART le plus simple proposé dans notre étude (rpart) ne dispose que d'un seul hyperparamètre \ : *cp* (complexité).
+Les premiers modèles présentés dans le cadre de notre étude sont deux modèles de type CART (*Classification And Regression Tree*). Le modèle CART le plus simple proposé dans notre étude (rpart) ne dispose que d'un seul hyperparamètre \ : *cp* (complexité).
 \FloatBarrier
 \paragraph*{}
 ```{r, BIrpart, echo = FALSE, fig.height = 3, fig.cap = "Performances du modèle rpart en classification binaire, en fonction du paramètre de complexité (cp)"}
@@ -936,7 +937,7 @@ plot(BI_fit_rpart_cp_graphe)
 
 
 \paragraph*{}
-Le modèle CART le plus simple n'atteint jamais les performances requises, le critère étant $Jw \geq `r Jw_min`$. Toutefois, ce modèle s'en approche, et donne de bons résultats globaux, avec\ :
+Le modèle CART le plus simple propose des performances excellentes sur une large plage d'hyperparamètres, remplissant notre critère $Jw \geq `r Jw_min`$, avec les résultats suivants\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),4)` \\
@@ -947,11 +948,11 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_re
 
 \FloatBarrier
 \paragraph*{}
-Le second modèle CART utilisé dans cette étude (rpartCost) associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres (figure  \ref{fig:BIrpartcostSenSpe}) illustrent bien, dans leur partie supérieure ($cp \geq 0.05$) la notion classique de compromis entre sensibilité et spécificité\ : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et réciproquement.
+Le second modèle CART utilisé dans cette étude (rpartCost) est plus élaboré et associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres (figure  \ref{fig:BIrpartcostSenSpe}) illustrent bien, dans leur partie supérieure ($cp \geq 0.05$) la notion classique de compromis entre sensibilité et spécificité\ : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et réciproquement.
 \paragraph*{}
 En pratique, pour $cp \geq 0.05$, notre modèle d'IA basé sur ce type d'arbre de décision se montrera soit excessivement sévère, rejetant un nombre considérable de champignons comestibles (quadrant supérieur gauche, $cost \leq 1.5$), soit au contraire excessivement laxiste, admettant un nombre important de champignons non-comestibles (quadrant supérieur droit, $cost \geq 1.5$).
 \paragraph*{}
-C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$) que le modèle montre une performance acceptable tant en sensibilité qu'en spécificité.
+C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$) que le modèle montrera une performance acceptable tant en sensibilité qu'en spécificité.
 
 
 ```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en classification binaire, en fonction de la complexité et du coût (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
@@ -1020,7 +1021,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Sens"],4)` \\
 \right.$$
 
 \paragraph*{}
-Les performances du modèle rpartCost, bien qu'excellentes, ne permettent pas d'atteindre l'index J de Youden requis.
+Les performances du modèle rpartCost, sont excellentes, dépassant celles de notre modèle précédent, et remplissant donc notre critère concernant l'index J de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. \paragraph*{}
 Les performances obtenues sont\ :
@@ -1032,13 +1033,13 @@ Sen = `r round(BI_fit_c50tree_resultats["Sens"],4)` \\
 \end{array}
 \right.$$
 \paragraph*{}
-De manière assez surprenante, bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats sans aucune optimisation nécessaire. Toutefois, le modèle C5.0 tree n'a pas rempli l'objectif posé par le critère $J_w \geq `r Jw_min`$.
+Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, remplissant aisément le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée.
 \paragraph*{}
-Les modèles d'arbres de classification sont particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette étude en fournissant des résultats très acceptables ($Spe \geq `r round(min(BI_fit_c50tree_resultats["Spec"], 
-    BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Spec"], 
-    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),3)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
-    BI_fit_rpartcost_resultats[which.max(BI_fit_rpartcost_resultats[,"Jw"]),"Sens"], 
-    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),3)`$), mais n'atteignant pas pour autant les exigences imposées par le critère de performance que nous avons défini pour les classifieurs binaires de notre étude.
+Les modèles d'arbres de classification sont réputés pour être particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette tâche de classification en fournissant des résultats excellents ($Spe \geq `r round(min(BI_fit_c50tree_resultats["Spec"], 
+    BI_fit_rpartcost_best_resultats["Spec"], 
+    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),4)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
+    BI_fit_rpartcost_best_resultats["Sens"], 
+    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),4)`$), dépassant tous les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.
 \paragraph*{}
 
 \newpage

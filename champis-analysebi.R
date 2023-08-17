@@ -148,29 +148,38 @@ colnames(BI_LHS) <- c("X1", "X2")
 
 ### C 5.0 TREE ###
 set.seed(62)
+start_time <- Sys.time()
 BI_set_c50tree <- c("C5.0Tree", "")
 BI_fit_c50tree <- fit_test(BI_set_c50tree)
 BI_fit_c50tree_resultats <- BI_fit_c50tree$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-
+end_time <- Sys.time()
+BI_temps_c50tree <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
 
 ### RPART ###
 set.seed(262)
+start_time <- Sys.time()
 BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 BI_set_rpart_cp <- c("rpart", "tuneGrid  = BI_grid_rpart_cp")
 BI_fit_rpart_cp <- fit_test(BI_set_rpart_cp)
 #system.time(fit_test(BI_set_rpart_cp))    ####### CHRONO
 BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_x_log10()
-
+end_time <- Sys.time()
+BI_temps_rpart <- difftime(end_time, start_time) %>% as.numeric
+BI_temps_rpart <- round(BI_temps_rpart/nrow(BI_grid_rpart_cp) ,2)
 
 ### RPARTCOST ###
 set.seed(3)
+start_time <- Sys.time()
 BI_grid_rpartcost <- BI_LHS
 BI_grid_rpartcost <- BI_grid_rpartcost %>%
    mutate(cp = X1*1e-2+1e-5) %>%
    mutate(Cost = X2*2.5+1e-3)
 BI_set_rpartcost <- c("rpartCost", "tuneGrid  = BI_grid_rpartcost[c('cp', 'Cost')]")
 BI_fit_rpartcost <- fit_test(BI_set_rpartcost)
+end_time <- Sys.time()
+BI_temps_rpartcost <- difftime(end_time, start_time) %>% as.numeric
+BI_temps_rpartcost <- round(BI_temps_rpartcost/nrow(BI_grid_rpartcost) ,2)
 
 # Modèle quadratique
 BI_fit_rpartcost_resultats <- BI_fit_rpartcost$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)     # Calcul du Jw
@@ -216,12 +225,11 @@ BI_modelquad_rpartcost <- BI_modelquad_rpartcost %>%
 BI_modelquad_rpartcost_top <- BI_modelquad_rpartcost[which.max(BI_modelquad_rpartcost$Jw),]
 
 
-# Meilleur modèle CART [A AUTOMATISER]
+# Meilleur modèle rpartcost
 BI_best_rpartcostgrid <- BI_modelquad_rpartcost_top[c("cp", "Cost")]
 BI_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = BI_best_rpartcostgrid"))
 BI_fit_rpartcost_best <- fit_test(BI_set_rpartcost_best)
 BI_fit_rpartcost_best_resultats <- BI_fit_rpartcost_best$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
-
 
 
 #############################################
@@ -230,10 +238,16 @@ BI_fit_rpartcost_best_resultats <- BI_fit_rpartcost_best$results %>% mutate(Jw =
 
 ### RFERNS ###
 set.seed(6945)
-BI_set_rFerns_depth <- c("rFerns", "tuneGrid  = data.frame(depth = 2^(1:5)/2)")
+
+start_time <- Sys.time()
+BI_grid_rFerns_depth <- data.frame(depth = 2^(1:5)/2)
+BI_set_rFerns_depth <- c("rFerns", "tuneGrid  = BI_grid_rFerns_depth")
 BI_fit_rFerns_depth <- fit_test(BI_set_rFerns_depth)
 BI_fit_rFerns_depth_resultats <- BI_fit_rFerns_depth$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_rFerns_depth_graphe <- grapheSpeSenJw(BI_fit_rFerns_depth_resultats, depth)
+end_time <- Sys.time()
+BI_temps_rferns <- difftime(end_time, start_time) %>% as.numeric
+BI_temps_rferns <- round(BI_temps_rferns/nrow(BI_grid_rFerns_depth) ,2)
 
 ### RANGER ###
 set.seed(694)
