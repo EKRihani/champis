@@ -102,9 +102,9 @@ grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
       geom_point(aes(y = Spec, color = "Spécificité")) +
       geom_line(aes(y = Jw, color = "Jw")) +
       geom_point(aes(y = Jw, color = "Jw")) +
-      ylab(NULL) + labs(colour = "Performance") + theme_bw()
+      ylab(NULL) + labs(colour = "Performance") + theme_bw() +
+      scale_color_viridis_d(option = "B", direction = 1, begin = 0, end = .8)
 }
-
 
 ########################################################
 #     BICLASSIFIEUR : ANALYSE DISCRIMINANTE ET GAM     #

@@ -140,7 +140,7 @@ Des bases de données dédiées à la mycologie sont également disponibles,[@no
 ## Configuration matérielle et logicielle
 \paragraph*{}
 \FloatBarrier
-Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant\ :
+Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant, présenté ici à fins de reproductibilité\ :
 
 * CPU\ : AMD Ryzen 5 5600G
 * RAM\ : 2x16 Go DDR4-3200
@@ -150,6 +150,26 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 * IDE\ : RStudio version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
 * VCS\ : `r system("git --version", intern = TRUE)`
 * Librairies\ : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), GGally[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), rpart.plot[@R-rpart.plot] (v`r packageVersion("rpart.plot")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
+
+\FloatBarrier
+## Description de l'objet de l'étude
+
+Notre étude portant sur la classification des champignons macroscopiques (macromycètes) par leur morphologie, il convient d'en apporter une définition succincte. 
+\paragraph*{}
+Le règne fongique est l'un des grands règnes du vivant, se distinguant à la fois du règne animal et du règne végétal par des caractères propres.[@courtecuisse_champignons_2013; @courtecuisse_photo-guide_2000] 
+\paragraph*{}
+L'élément le plus atypique du règne fongique est probablement sa morphologie, caractérisée par son aspect essentiellement diffus, indéterminable et intimement lié à son substrat (sol, bois...), le champignon constituant ainsi un feutrage arachnéen, qualifié de *mycélium*.[@courtecuisse_champignons_2013] Cette particularité singulière permet à certains champignons de constituer des organismes extrêmement massifs, pouvant s'étendre sur des surfaces considérables : le plus grand être vivant de notre planète est ainsi un spécimen d'*Armillaria ostoyae*, mesurant près de quatre kilomètres de long sur deux de large et vieux de plusieurs millénaires.[@ferguson_coarse-scale_2003]
+\paragraph*{}
+Les champignons se reproduisent à l'aide de spores, dont l'ensemble constitue la *sporée*, portée par un organe reproducteur spécialisé appelé le *sporophore*. Le terme de *champignon* du langage usuel et de *sporophore* du langage mycologique font tous deux référence à cet organe reproducteur susceptible d'être identifié, récolté et mangé.
+\paragraph*{}
+Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chapeau*, ce dernier portant en sa face inférieure un *hyménophore*, souvent constitué de *lames* ou de *tubes*, portant les spores. Certains sporophores peuvent également porter un *voile général* ou un *voile partiel*, qui les enrobaient avant leur "éclosion" et dont les restes peuvent être présents sur le sporophore adulte. Ces différents éléments anatomiques, ainsi que l'environnement dans lequel prospère le champignon, représentent autant de caractéristiques permettant l'identification d'une espèce, et qui seront exploitées dans cette étude (voir figure \ref{fig:Anatomie-Champis}).
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{AnatomieChampis}
+  \caption{\'Eléments anatomiques du sporophore et caractéristiques exploitées pour son identification.}
+  \label{fig:Anatomie-Champis}
+\end{figure}
 
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
@@ -1039,7 +1059,7 @@ Les modèles d'arbres de classification sont réputés pour être particulièrem
     BI_fit_rpartcost_best_resultats["Spec"], 
     BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),4)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
     BI_fit_rpartcost_best_resultats["Sens"], 
-    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),4)`$), dépassant tous les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.
+    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),4)`$), dépassant tous les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.Je 
 \paragraph*{}
 
 \newpage
