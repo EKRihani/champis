@@ -1354,12 +1354,14 @@ Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger,
 Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqués précédemment.
 
 \FloatBarrier
-L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}.
+\paragraph*{}
+L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}.
 
 ```{r FAM-CM, echo = FALSE}
 kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, références en haut)") %>%
-   kable_styling(latex_options = c("striped", "hold_position"),full_width = F, font_size = 5) %>%
-  row_spec(0, angle = -90)
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F, font_size = 8) %>%
+  row_spec(0, angle = -90) %>%
+   landscape()
 ```
 
 La précision finale est égale à $R = `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).

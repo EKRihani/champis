@@ -90,12 +90,11 @@ MULFAM_LHS <- data.frame(MULFAM_LHS)
 colnames(MULFAM_LHS) <- c("X1", "X2")
 
 
-### CTREE ###
-MULFAM_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
-MULFAM_fit_ctree_criterion <- fit_test(MULFAM_set_ctree_criterion)
-MULFAM_fit_ctree_criterion_resultats <- MULFAM_fit_ctree_criterion$results
-MULFAM_fit_ctree_criterion_graphe <- grapheKappa(MULFAM_fit_ctree_criterion_resultats, mincriterion)
-
+### CTREE ### PAS UTILISE DANS L'ETUDE...
+# MULFAM_set_ctree_criterion <- c("ctree", "tuneGrid  = data.frame(mincriterion = c(0.01, 0.25, 0.5, 0.75, 0.99))")
+# MULFAM_fit_ctree_criterion <- fit_test(MULFAM_set_ctree_criterion)
+# MULFAM_fit_ctree_criterion_resultats <- MULFAM_fit_ctree_criterion$results
+# MULFAM_fit_ctree_criterion_graphe <- grapheKappa(MULFAM_fit_ctree_criterion_resultats, mincriterion)
 
 ### C 5.0 TREE ###
 # MULFAM_set_c50tree <- c("C5.0Tree", "")
@@ -113,10 +112,11 @@ MULFAM_fit_rpart_cp_graphe <- grapheKappa(MULFAM_fit_rpart_cp_resultats, cp)+ sc
 
 ### RPARTCOST ###    Ne fonctionne pas ?
 # MULFAM_grid_rpartcost <- MULFAM_LHS
-# colnames(MULFAM_grid_rpartcost) <- c("cp", "Cost")
-# MULFAM_grid_rpartcost$cp <- (MULFAM_grid_rpartcost$cp*1e-2+1e-5)
-# MULFAM_grid_rpartcost$Cost <- MULFAM_grid_rpartcost$Cost*2.5+1e-3
-
+# MULFAM_grid_rpartcost <- data.frame(X1=.5 , X2=.5)
+# MULFAM_grid_rpartcost <- MULFAM_grid_rpartcost %>%
+#    mutate(cp = X1*1e-2+1e-5) %>%
+#    mutate(Cost = X2*2.5+1e-3)
+# 
 # MULFAM_set_rpartcost <- c("rpartCost", "tuneGrid  = MULFAM_grid_rpartcost[c('cp', 'Cost')]")
 # MULFAM_fit_rpartcost <- fit_test(MULFAM_set_rpartcost)
 # MULFAM_fit_rpartcost_resultats <- MULFAM_fit_rpartcost$results
