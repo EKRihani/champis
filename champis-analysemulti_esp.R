@@ -24,7 +24,7 @@ dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = T
 ##############################################################################
 
 # Suppression des variables inutiles et reformatage des noms
-dataset <- dataset %>% select(!Type) # La comestibilité est censée être inconnue...
+dataset <- dataset %>% select(!Type) %>% select(!Groupe) # La comestibilité et le groupe sont censés être inconnus..
 dataset$Nom <- str_replace_all(string = dataset$Nom, pattern = " ", replacement = "_")
 dataset$Nom <- as.factor(dataset$Nom)
 

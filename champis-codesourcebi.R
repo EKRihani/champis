@@ -17,7 +17,7 @@ dataset <- read.csv(fichier_data,
                     sep = ",",
                     stringsAsFactors = TRUE)
 dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
-dataset <- dataset %>% select(!Nom)
+dataset <- dataset %>% select(!Nom) %>% select(!Groupe)
 
 
 ########################################

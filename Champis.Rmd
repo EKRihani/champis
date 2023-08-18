@@ -354,13 +354,13 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 
 # Principes de l'apprentissage machine
 
-L’apprentissage machine est un domaine scientifique se situant à l’interface entre les statistiques et l’informatique, et constitue un sous-domaine de l’intelligence artificielle. L’objet de l’apprentissage machine est conceptuellement de permettre aux machines d’ « apprendre », c’est-à-dire d’améliorer leurs performances par l’entraînement. 
+L’apprentissage machine est un domaine scientifique se situant à l’interface entre les statistiques et l’informatique, et constitue un domaine de l’intelligence artificielle. L’objet de l’apprentissage machine est conceptuellement de permettre aux machines d’ « apprendre » de manière autonome, c'est-à-dire d'évaluer et d'améliorer leurs performances sans l'intervention d'un programmeur, par l’entraînement.[@journal_officiel_de_la_republique_francaise_vocabulaire_2018]
 \paragraph*{}
-En pratique, ce domaine se consacre à la génération d’algorithmes autonomes capables d’améliorer leurs performances prédictives par exposition à un lot de données et de prédire par inférence la meilleure décision ou réponse à une question.[@michael_machine_2019]
+En pratique, ce domaine se consacre à la génération d’algorithmes autonomes capables d’améliorer leurs performances prédictives par exposition à un lot de données et de prédire par inférence la meilleure décision ou réponse à une question.[@bironneau_machine_2019]
 
 ## Types d'apprentissage machine
 
-L’apprentissage machine peut se dérouler suivant un certain nombre de paradigmes, concernant en particulier la stratégie d’apprentissage -- définie à partir du type de données disponibles -- parmi lesquels nous pouvons notamment citer\ :[@michael_machine_2019;@amr_hands-machine_2020]
+L’apprentissage machine peut se dérouler suivant un certain nombre de paradigmes, concernant en particulier la stratégie d’apprentissage -- définie à partir du type de données disponibles -- parmi lesquels nous pouvons notamment citer\ :[@bironneau_machine_2019;@amr_hands-machine_2020;@journal_officiel_de_la_republique_francaise_vocabulaire_2018]
 
 * Apprentissage machine supervisé\ : les données du problème sont disponibles sous forme de couples exemple-annotation. Chaque point de données possède des caractéristiques (covariables) et une annotation. Le principe de cet apprentissage est donc de générer une application liant les vecteurs des entrées (covariables) et une variable de sortie (annotation). L’apprentissage machine supervisé permet également de mesurer les performances du modèle obtenu.
 * Apprentissage machine semi-supervisé\ : les données du problème contiennent une petite quantité de données annotées, associée avec une grande quantité de données non annotées. La présence de cette grande quantité de données non-annotées peut apporter une amélioration considérable de la précision des prédictions par rapport à l’utilisation d’un seul lot de données annotées de plus petite taille.
@@ -765,7 +765,7 @@ L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette �
 
 ## Définition des critères de classification binaire
 \paragraph*{}
-Le critère de notre classification binaire est un critère très simple, qui répond à l'éternelle question *"ce champignon est-il comestible ou non ?"*
+Le critère de notre classification binaire est un critère très simple, qui répond à l'éternelle question *"Ce champignon est-il comestible ou non ?"*
 \paragraph*{}
 Malgré la simplicité apparente du critère binaire, la comestibilité ou la non-comestibilité d'un champignon se situe en réalité sur un continuum :
 
@@ -920,26 +920,31 @@ plot(ggarrange(widths = c(1, 1.5),
 \paragraph*{}
 Comme l'illustre la figure \ref{fig:BIldapda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
 \paragraph*{}
-Le paramètre *dimen* du modèle lda2 ne semble en effet pas avoir d'effet significatif sur ses performances, avec un index J de Youden pondéré relativement constant ($J_{w_{moy}} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). 
+Le paramètre *dimen* du modèle lda2 n'a absolument aucun effet sur les performances prédictives, avec un index J de Youden pondéré constant ($J_{w} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). Ce caractère constant était en réalité prévisible, car le nombre de fonctions discriminantes $n_{fd}$ dépend du nombre de prédicteurs $p$ et du nombre de degrés de libertés entre les $n_{g}$ groupes $(ddl = n_{g}-1)$, de sorte que :
+$$n_{fd} = \min(ddl, p) = \min(n_{g}-1 , p)$$
+Dans une classification binaire, ($n_{g} = 2$) il n'y a qu'un degré de liberté, c'est-à-dire une seule séparation entre les groupes, donc une seule fonction discriminante à définir.
 \paragraph*{}
-De même, le paramètre *lambda* du modèle pda n'impacte ses performances que de matière très marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($J_{w_{max}} = `r round(max(BI_fit_pda_lambda_resultats["Jw"]),3)`$).
+L'efficience calculatoire est correcte, avec $t_{moy} = `r BI_temps_lda2`$ min ($n = `r nrow(BI_grid_lda_dimen)`$ itérations).
 \paragraph*{}
-Toutefois, les performances de ces deux modèles restent malheureusement insuffisantes pour notre étude, aussi bien en sensibilité qu'en spécificité\ :
+De même, le paramètre *lambda* du modèle pda n'impacte ses performances que de matière très marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($J_{w_{max}} = `r round(max(BI_fit_pda_lambda_resultats["Jw"]),3)`$). L'efficience calculatoire est nettement en retrait par rapport au modèle lda2, avec $t_{moy} = `r BI_temps_pda`$ min ($n = `r nrow(BI_grid_pda_lambda)`$ itérations).
+\paragraph*{}
+Toutefois, les performances de ces deux modèles restent malheureusement insuffisantes pour notre étude, aussi bien sur le J de Youden pondéré qu'en sensibilité ou en spécificité\ :
 $$\left \{
 \begin{array}{l}
+J_{w} \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Jw"], BI_fit_pda_lambda_resultats[,"Jw"])),3)` \\
 Sen \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambda_resultats[,"Sens"])),3)` \\
-Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Sens"], BI_fit_pda_lambda_resultats[,"Spec"])),3)` \\
+Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Spec"], BI_fit_pda_lambda_resultats[,"Spec"])),3)` \\
 \end{array}
 \right.$$
 
 \paragraph*{}
-Ces performances perfectibles, car très comparables à celles d'un modèle naïf bidimensionnel, s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
+Ces performances prédictives perfectibles, car légèrement en retrait par rapport à celles d'un modèle naïf bidimensionnel, s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
 
 * Données binaires ou booléennes,
 * Données qualitatives ordinales.
 
 \paragraph*{}
-L'inclusion de ces modèles, présentant ici des performances correctes mais insuffisantes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
+L'inclusion de ces modèles d'analyse discriminante, qui présentent ici des performances correctes mais néanmoins insuffisantes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -959,7 +964,7 @@ plot(BI_fit_rpart_cp_graphe)
 
 
 \paragraph*{}
-Le modèle CART le plus simple propose des performances excellentes sur une large plage d'hyperparamètres, remplissant notre critère $Jw \geq `r Jw_min`$, avec les résultats suivants\ :
+Le modèle CART le plus simple propose des performances excellentes sur une large plage d'hyperparamètres (figure \ref{fig:BIrpart}, page \pageref{fig:BIrpart}), remplissant notre critère $Jw \geq `r Jw_min`$, avec les indicateurs de performance suivants\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),4)` \\
@@ -967,6 +972,8 @@ Spe_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_re
 Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"],4)` \\
 \end{array}
 \right.$$
+
+L'efficience calculatoire est faible, avec $t_{moy} = `r BI_temps_rpart`$ min ($n = `r nrow(BI_grid_rpart_cp)`$ itérations).
 
 \FloatBarrier
 \paragraph*{}
@@ -1043,7 +1050,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Sens"],4)` \\
 \right.$$
 
 \paragraph*{}
-Les performances du modèle rpartCost, sont excellentes, dépassant celles de notre modèle précédent, et remplissant donc notre critère concernant l'index J de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
+Les performances du modèle rpartCost, sont excellentes, dépassant celles de notre modèle précédent, avec une efficience calculatoire remarquable ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations), et remplit pleinement notre critère concernant l'index J de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. \paragraph*{}
 Les performances obtenues sont\ :
@@ -1055,13 +1062,13 @@ Sen = `r round(BI_fit_c50tree_resultats["Sens"],4)` \\
 \end{array}
 \right.$$
 \paragraph*{}
-Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, remplissant aisément le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée.
+Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, remplissant aisément le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée. En revanche, le temps de calcul est relativement long ($t = `r BI_temps_c50tree`$ min), signe d'une efficience calculatoire modérée.
 \paragraph*{}
 Les modèles d'arbres de classification sont réputés pour être particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette tâche de classification en fournissant des résultats excellents ($Spe \geq `r round(min(BI_fit_c50tree_resultats["Spec"], 
     BI_fit_rpartcost_best_resultats["Spec"], 
     BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),4)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
     BI_fit_rpartcost_best_resultats["Sens"], 
-    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),4)`$), dépassant tous les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.Je 
+    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),4)`$), dépassant tous les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.
 \paragraph*{}
 
 \newpage
@@ -1076,7 +1083,7 @@ BI_fit_rFerns_depth_graphe + theme_bw()
 ```
 
 \paragraph*{}
-Quoique très efficient sur le plan calculatoire, le modèle de fougères aléatoires a fourni des résultats assez peu satisfaisants, avec\ :
+Le modèle de fougères aléatoires a fourni des résultats peu satisfaisants avec\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(max(BI_fit_rFerns_depth_resultats["Jw"]),3)` \\
@@ -1084,12 +1091,16 @@ Spe_{Jw_{max}} = `r round(BI_fit_rFerns_depth_resultats[which.max(BI_fit_rFerns_
 Sen_{Jw_{max}} = `r round(BI_fit_rFerns_depth_resultats[which.max(BI_fit_rFerns_depth_resultats[,"Jw"]),"Sens"],3)` \\
 \end{array}
 \right.$$
+
 \FloatBarrier
 
 \paragraph*{}
-Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle\ : le nombre de prédicteurs testés pour une scission (*predFixed*) et le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
+Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. Deux hyperparamètres régissent ce modèle\ : 
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+* Le nombre de prédicteurs testés pour une scission (*predFixed*),
+* Le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
+
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à g.) et spécificité (à d.) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres (interpolation Kriging quadratique, points expérimentaux en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_Rborist_sens_graphe,
@@ -1098,18 +1109,19 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses deux hyperparamètres réduits de nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres réduits : nombre de prédicteurs X1 et de mbre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
 \FloatBarrier
+L'interprétation visuelle des graphiques des indicateurs de performance laisse entrevoir une très haute sensibilité -- c'est à dire une excellente capacité à rejeter les champignons non comestibles -- sur une très large plage d'hyperparamètres, et une spécificité beaucoup plus variable en fonction des hyperparamètres. L'hyperparamètre semblant avoir le plus d'effet est le nombre de prédicteurs testés pour une scission (*predFixed*). L'efficience calculatoire est remarquable, avec $t_{moy} = `r BI_temps_Rborist`$ min ($n = `r nrow(BI_grid_Rborist)`$ itérations).
 \paragraph*{}
 Nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
 $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 \paragraph*{}
-Avec $Y$ l'indice J de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants\ :
+Avec $Y$ l'indice J de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
 \paragraph*{}
-Le calcul numérique nous permet d'obtenir les estimation des effets\ :
+Le calcul numérique nous permet d'obtenir les estimations des effets\ :
 
 \begin{minipage}{0.4 \textwidth}
 $$\left \{
@@ -1131,7 +1143,9 @@ b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \end{minipage}
 
 \paragraph*{}
-Ce modèle quadratique avec interactions permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice J de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. Les performances obtenues sont excellentes\ :
+Ce modèle quadratique avec interactions semble confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice J de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
+\paragraph*{}
+Les performances obtenues par le modèle ainsi optimisé sont excellentes\ :
 
 $$\left \{
 \begin{array}{l}
@@ -1143,7 +1157,13 @@ Sen_{Jw_{max}} = `r round(BI_fit_Rborist_best_resultats["Sens"],5)` \\
 
 
 \paragraph*{}
-Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. Celui-ci dispose de trois hyperparamètres\ : la taille minimale de n\oe{}ud (*min.node.size*), le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) et la règle contrôlant cette séparation (*splitrule*).
+Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. Celui-ci dispose de trois hyperparamètres\ : 
+
+* La taille minimale de n\oe{}ud (*min.node.size*), 
+* Le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) 
+* La règle contrôlant cette séparation (*splitrule*).
+
+Les mesures de performance sur l'espace expérimental des hyperparamètres sont illustrées en figures \ref{fig:BI-ranger-gini}, \ref{fig:BI-ranger-ET} et \ref{fig:BI-ranger-Jw}, en pages \pageref{fig:BI-ranger-gini} et \pageref{fig:BI-ranger-Jw}.
 
 ```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission\ : Gini)"}
 plot(ggarrange(
@@ -1175,9 +1195,12 @@ plot(ggarrange(
 
 \FloatBarrier
 \paragraph*{}
+L'interprétation graphique laisse entrevoir un comportement relativement similaire à celui du modèle Rborist, avec une sensibilité très élevée sur l'ensemble du domaine expérimental des hyperparamètres, et une spécificité dépendant largement du nombre de caractéristiques à séparer (*mtry*). L'efficience calculatoire est correcte, avec $t_{moy} = `r BI_temps_ranger`$ min ($n = `r nrow(BI_grid_ranger)`$ itérations).
+
+\paragraph*{}
 Nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ :
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{2}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
+Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{2}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
 \paragraph*{}
 La modélisation permet de calculer les effets suivants\ :
 
@@ -1205,7 +1228,7 @@ b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
 
 
 \paragraph*{}
-Le modèle ranger semble déjà, par simple interprétation graphique (voir figures \ref{fig:BI-ranger-gini}, \ref{fig:BI-ranger-ET} et \ref{fig:BI-ranger-Jw}), donner de bons résultats sur une très large plage de l'espace expérimental de ses hyperparamètres, même avec un nombre réduit d'arbres ($n=6$). Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats\ :
+La modélisation quadratique confirme les conclusions de l'interprétation graphique, avec $b_{1} \gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(BI_fit_ranger_best_resultats["Jw"],5)` \\
@@ -1215,9 +1238,9 @@ Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_resultats["Sens"],5)` \\
 \right.$$
 
 \paragraph*{}
-Le modèle Ranger a donné des résultats similaires à ceux du modèle Rborist, avec une sensibilité, une spécificité et un indice de Youden excellents.
+Le modèle Ranger a donné des résultats assez similaires à ceux du modèle Rborist, avec une sensibilité, une spécificité et un indice de Youden excellents.
 \paragraph*{}
-Ces résultats soulignent un fait intéressant\ : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires ont montré de grandes disparités d'efficience sur le plan calculatoire, ce qui nous a conduit à écarter certains modèles pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
+Ces résultats soulignent un fait intéressant\ : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires ont également montré de grandes disparités d'efficience sur le plan calculatoire, ce qui nous a conduit à écarter certains modèles pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
 \paragraph*{}
 
 \newpage
@@ -1245,9 +1268,9 @@ kable(BI_CM_ranger_final$table, caption = "Matrice de confusion du modèle Range
 
 \FloatBarrier
 \paragraph*{}
-La forêt aléatoire de type Ranger a donné d'excellents résultats, sa précision finale étant égale à `r round(BI_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(BI_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_ranger_final$overall["AccuracyUpper"], 4)`], le tout en un temps raisonnable ($`r BI_temps_ranger` min$), preuve de son efficience calculatoire.
+La forêt aléatoire de type Ranger a donné d'excellents résultats, sa précision finale étant égale à `r round(BI_CM_ranger_final$overall["Accuracy"], 4)`, avec un intervalle de confiance à 95% de [`r round(BI_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_ranger_final$overall["AccuracyUpper"], 4)`], le tout en un temps raisonnable ($`r BI_temps_ranger_final` min$), preuve de son efficience calculatoire.
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, atteignant une précision finale égale à `r BI_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(BI_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est de plus avéré extrêmement efficient sur le plan calculatoire ($`r BI_temps_Rborist` min$).
+La forêt aléatoire de type Rborist a donné des résultats assez similaires, atteignant une précision finale égale à `r round(BI_CM_Rborist_final$overall["Accuracy"],4)`, avec un intervalle de confiance à 95% de [`r round(BI_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(BI_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist s'est de plus avéré extrêmement efficient sur le plan calculatoire ($`r BI_temps_Rborist_final` min$).
 
 \FloatBarrier
 
@@ -1774,7 +1797,7 @@ library(twinning)
 \paragraph*{}
 Le chargement des données s'effectue de la même façon que lors des sections précédentes. L'argument *stringsAsFactors = TRUE* revêt une importance particulière, car la classe *factor* est essentielle au bon fonctionnement des classifieurs. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction *relevel*, la classe *"Rejeter"* comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
 
-Dans le cadre des classifications binaire et multiclasse, nous ôterons respectivement le nom de chaque spécimen (variable *Nom*), et sa comestiblité (variable *Type*), ces variables étant censées être inconnues du modèle prédictif et ne représentant pas la caractéristique à prédire.
+Dans le cadre des classifications binaire et multiclasse, nous ôterons respectivement le nom de chaque spécimen (variable *Nom*), son groupe (variable *Groupe*), et/ou sa comestiblité (variable *Type*), ces variables étant censées être inconnues du modèle prédictif et ne représentant pas la caractéristique à prédire.
 
 \small
 ```{r, eval = FALSE}
@@ -1786,7 +1809,7 @@ dataset <- read.csv(fichier_data,
                     sep = ",",
                     stringsAsFactors = TRUE)
 dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
-dataset <- dataset %>% select(!Nom)
+dataset <- dataset %>% select(!Nom) %>% select(!Groupe)
 ```
 \normalsize
 

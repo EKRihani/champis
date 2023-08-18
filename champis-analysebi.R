@@ -18,7 +18,7 @@ fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
 fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
-dataset <- dataset %>% select(!Nom)
+dataset <- dataset %>% select(!Nom) %>% select(!Groupe)
 
 ####################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION     #
@@ -119,22 +119,28 @@ grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
 
 ### LDA2 ###
 set.seed(362)
-BI_grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 50, by = 6))
+start_time <- Sys.time()
+#BI_grid_lda_dimen <- data.frame(dimen = seq(from = 1, to = 50, by = 6))
+BI_grid_lda_dimen <- data.frame(dimen = round(seq(from = 1, to = 20, length.out = 6),0))
 BI_set_lda2_dim <- c("lda2", "tuneGrid  = BI_grid_lda_dimen")
 BI_fit_lda2_dim <- fit_test(BI_set_lda2_dim)
-#system.time(fit_test(BI_set_lda2_dim))      #### CHRONO
 BI_fit_lda2_dim_resultats <- BI_fit_lda2_dim$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_lda2_dim_graphe <- grapheSpeSenJw(BI_fit_lda2_dim_resultats, dimen)
-
+end_time <- Sys.time()
+BI_temps_lda2 <- difftime(end_time, start_time, units = "mins") %>% as.numeric
+BI_temps_lda2 <- round(BI_temps_lda2/nrow(BI_grid_lda_dimen) ,2)
 
  ### PDA ###
 set.seed(67)
-BI_grid_pda_lambda <- data.frame(lambda = seq(from = 1, to = 65, by = 8))
+start_time <- Sys.time()
+BI_grid_pda_lambda <- data.frame(lambda = round(seq(from = 1, to = 65, length.out = 6),0))
 BI_set_pda_lambda <- c("pda", "tuneGrid  = BI_grid_pda_lambda")
 BI_fit_pda_lambda <- fit_test(BI_set_pda_lambda)
 BI_fit_pda_lambda_resultats <- BI_fit_pda_lambda$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_pda_lambda_graphe <- grapheSpeSenJw(BI_fit_pda_lambda_resultats, lambda)
-
+end_time <- Sys.time()
+BI_temps_pda <- difftime(end_time, start_time, units = "mins") %>% as.numeric
+BI_temps_pda <- round(BI_temps_pda/nrow(BI_grid_pda_lambda) ,2)
 
 ###############################################
 #     BICLASSIFIEUR : ARBRES DECISIONNELS     #
@@ -153,7 +159,7 @@ BI_set_c50tree <- c("C5.0Tree", "")
 BI_fit_c50tree <- fit_test(BI_set_c50tree)
 BI_fit_c50tree_resultats <- BI_fit_c50tree$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 end_time <- Sys.time()
-BI_temps_c50tree <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
+BI_temps_c50tree <- difftime(end_time, start_time, units = "mins") %>% as.numeric %>% round(.,2)
 
 ### RPART ###
 set.seed(262)
@@ -165,7 +171,7 @@ BI_fit_rpart_cp <- fit_test(BI_set_rpart_cp)
 BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_x_log10()
 end_time <- Sys.time()
-BI_temps_rpart <- difftime(end_time, start_time) %>% as.numeric
+BI_temps_rpart <- difftime(end_time, start_time, units = "mins") %>% as.numeric
 BI_temps_rpart <- round(BI_temps_rpart/nrow(BI_grid_rpart_cp) ,2)
 
 ### RPARTCOST ###
@@ -178,7 +184,7 @@ BI_grid_rpartcost <- BI_grid_rpartcost %>%
 BI_set_rpartcost <- c("rpartCost", "tuneGrid  = BI_grid_rpartcost[c('cp', 'Cost')]")
 BI_fit_rpartcost <- fit_test(BI_set_rpartcost)
 end_time <- Sys.time()
-BI_temps_rpartcost <- difftime(end_time, start_time) %>% as.numeric
+BI_temps_rpartcost <- difftime(end_time, start_time, units = "mins") %>% as.numeric
 BI_temps_rpartcost <- round(BI_temps_rpartcost/nrow(BI_grid_rpartcost) ,2)
 
 # Modèle quadratique
@@ -251,6 +257,7 @@ BI_temps_rferns <- round(BI_temps_rferns/nrow(BI_grid_rFerns_depth) ,2)
 
 ### RANGER ###
 set.seed(694)
+start_time <- Sys.time()
 BI_grid_ranger <- rbind(BI_LHS,BI_LHS) %>%
    mutate(X3 = c(rep(0, 17), rep(1, 17))) %>%
    mutate(mtry = round(1+X1*48,0)) %>%    # Prendre des multiples de 16 (car 17 points pour 2d)
@@ -258,6 +265,9 @@ BI_grid_ranger <- rbind(BI_LHS,BI_LHS) %>%
    mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees"))
 BI_set_ranger <- c("ranger", "tuneGrid  = BI_grid_ranger[c('mtry', 'min.node.size', 'splitrule')], num.trees = 6") # OK
 BI_fit_ranger <- fit_test(BI_set_ranger)
+end_time <- Sys.time()
+BI_temps_ranger <- difftime(end_time, start_time, units = "mins") %>% as.numeric
+BI_temps_ranger <- round(BI_temps_ranger/nrow(BI_grid_ranger) ,2)
 
 BI_fit_ranger_resultats <- BI_fit_ranger$results %>% 
    mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1) %>%   # Calcul du Jw
@@ -326,11 +336,15 @@ BI_fit_ranger_best_resultats <- BI_fit_ranger_best$results %>% mutate(Jw = Sens*
 
 ### RBORIST ###
 set.seed(645)
+start_time <- Sys.time()
 BI_grid_Rborist <- data.frame(BI_LHS) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
    mutate(minNode = round(1+X2*16,0))
 BI_set_Rborist <- c("Rborist", "tuneGrid  = BI_grid_Rborist[c('predFixed', 'minNode')]")
 BI_fit_Rborist <- fit_test(BI_set_Rborist)
+end_time <- Sys.time()
+BI_temps_Rborist <- difftime(end_time, start_time, units = "mins") %>% as.numeric
+BI_temps_Rborist <- round(BI_temps_Rborist/nrow(BI_grid_Rborist) ,2)
 
 BI_fit_Rborist_resultats <- BI_fit_Rborist$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1) %>%   # Calcul du Jw
    left_join(., BI_grid_Rborist, by = c("predFixed", "minNode"))   # Ajout des facteurs réduits
@@ -400,7 +414,7 @@ BI_fit_ranger_final <- eval(parse(text = cmd))
 BI_pred_ranger_final <- predict(object = BI_fit_ranger_final, newdata = BI_lot_evaluation)
 BI_CM_ranger_final <- confusionMatrix(data = BI_pred_ranger_final, reference = BI_lot_evaluation$Type)
 end_time <- Sys.time()
-BI_temps_ranger <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
+BI_temps_ranger_final <- difftime(end_time, start_time, units = "mins") %>% as.numeric %>% round(.,2)
 BI_resultats_ranger <- BI_CM_ranger_final$byClass %>% 
    t(.) %>% as.data.frame(.) %>% 
    select(c(Sensitivity, Specificity)) %>% 
@@ -420,7 +434,7 @@ BI_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 BI_pred_Rborist_final <- predict(object = BI_fit_Rborist_final, newdata = BI_lot_evaluation)
 BI_CM_Rborist_final <- confusionMatrix(data = BI_pred_Rborist_final, reference = BI_lot_evaluation$Type)
 end_time <- Sys.time()
-BI_temps_Rborist <- difftime(end_time, start_time) %>% as.numeric %>% round(.,2)
+BI_temps_Rborist_final <- difftime(end_time, start_time, units = "mins") %>% as.numeric %>% round(.,2)
 BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>% 
    t(.) %>% as.data.frame(.) %>% 
    select(c(Sensitivity, Specificity)) %>% 
