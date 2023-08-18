@@ -143,8 +143,17 @@ for (n in 1:n_especes){
 }
 
 lot_la_totale <- do.call(rbind, mget(paste0("lot",1:n_especes)))   # Fusion de tous les lots
-
 lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)), ]
+
+# Ajustement des concolores
+Concol_Pied <- which(lot_final$Pied.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Pied.Couleur[Concol_Pied] <- lot_final$Chapeau.Couleur[Concol_Pied]
+Concol_Chair <- which(lot_final$Chair.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Chair.Couleur[Concol_Chair] <- lot_final$Chapeau.Couleur[Concol_Chair]
+Concol_Lames <- which(lot_final$Lames.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Lames.Couleur[Concol_Lames] <- lot_final$Chapeau.Couleur[Concol_Lames]
+
+# Sauvegarde
 write_csv(x = lot_final, file = "lot_champis.csv")
 zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 
@@ -158,7 +167,8 @@ for (n in 1:n_especes){
 
 
 #Analyse niveaux pour nettoyage (A SUPPRIMER)
-fichier_data <- "~/projects/champis/lot_champis.csv" # FICHIER LOCAL
+fichier_data <- "~/projects/champis/lot_champis.zip"
+fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset2 <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 str(dataset2)
 summary(dataset2$Type)
@@ -185,3 +195,8 @@ summary(dataset2$VP.Type)
 summary(dataset2$VP.Type2)
 
 dataset[dataset$Pied.Surface=="chin",1]
+
+
+test <- dataset2[1:4,]
+
+

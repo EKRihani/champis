@@ -1706,28 +1706,33 @@ for (n in 1:n_especes){
 
 \paragraph*{}
 L'ensemble des sous-lots est ensuite concaténé. Cette concaténation a pour effet de joindre les sous-lots, mais place également la totalité des spécimens de chaque espèce ensemble. Nous effectuons donc un mélange aléatoire des spécimens par échantillonnage de leurs indices.\footnote{Cet échantillonnage s'effectuant \emph{sans} remplacement, il s'agit donc d'un simple mélange, par opposition à un \emph{bootstrap}, qui s'effectuerait \emph{avec} remplacement.}
-\paragraph*{}
-Le lot résultant est exporté sous format csv, compressé dans un fichier zip, et prêt à être exploité dans les autres parties de cette étude.
+
 \small
 ```{r, eval = FALSE}
 lot_la_totale <- do.call(rbind, mget(paste0("lot",1:n_especes)))
-
 lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)), ]
-write_csv(x = lot_final, file = "lot_champis.csv")
-zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 ```
 \normalsize
 
-\paragraph*{}
-L'étape finale consiste à nettoyer l'environnement en supprimant tous les objets de type *champX* et *lotX*.
+La toute dernière étape dans la préparation du lot est de détecter toutes les valeurs *concolores* ou *subconcolores* caractérisant la couleur du stipe, de la chair ou des lames de certains spécimens et d'en extraire les indices respectifs. La liste de ces indices permettra d'aligner les valeurs concernées sur la valeur de couleur du chapeau.
 \small
 ```{r, eval = FALSE}
-for (n in 1:n_especes){
-  ordre_rm1 <- paste0("rm(champ",n, ")")
-  ordre_rm2 <- paste0("rm(lot",n, ")")
-  eval(parse(text = ordre_rm1))
-  eval(parse(text = ordre_rm2))
-}
+Concol_Pied <- which(lot_final$Pied.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Pied.Couleur[Concol_Pied] <- lot_final$Chapeau.Couleur[Concol_Pied]
+
+Concol_Chair <- which(lot_final$Chair.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Chair.Couleur[Concol_Chair] <- lot_final$Chapeau.Couleur[Concol_Chair]
+
+Concol_Lames <- which(lot_final$Lames.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Lames.Couleur[Concol_Lames] <- lot_final$Chapeau.Couleur[Concol_Lames]
+```
+\normalsize
+
+Le lot résultant est finalement exporté sous format csv, compressé dans un fichier zip, et prêt à être exploité dans les autres parties de cette étude.
+\small
+```{r, eval = FALSE}
+write_csv(x = lot_final, file = "lot_champis.csv")
+zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 ```
 \normalsize
 

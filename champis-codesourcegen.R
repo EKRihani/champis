@@ -150,8 +150,18 @@ for (n in 1:n_especes){
 }
 
 lot_la_totale <- do.call(rbind, mget(paste0("lot",1:n_especes)))   # Fusion de tous les lots
-
 lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)),]
+
+# Ajustement concolores
+Concol_Pied <- which(lot_final$Pied.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Pied.Couleur[Concol_Pied] <- lot_final$Chapeau.Couleur[Concol_Pied]
+Concol_Chair <- which(lot_final$Chair.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Chair.Couleur[Concol_Chair] <- lot_final$Chapeau.Couleur[Concol_Chair]
+Concol_Lames <- which(lot_final$Lames.Couleur %in% c("concolore", "subconcolore"))
+lot_final$Lames.Couleur[Concol_Lames] <- lot_final$Chapeau.Couleur[Concol_Lames]
+
+
+
 write_csv(x = lot_final, file = "lot_champis.csv")
 zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 
