@@ -219,7 +219,7 @@ Avec\ :
 * $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle $\left] 0 ; 1 \right]$, et représentatives de la croissance du spécimen.
 
 \paragraph*{}
-Toutefois, nos recherches bibliographiques n'ont pas permis de distinguer de différences de la cinétique de croissance de chacune de ces trois caractéristiques dimensionnells du sporophore. Nous supposerons donc, en première approximation, que la croissance du stipe en longueur et en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques. Nous obtenons par conséquent\ :
+Toutefois, nos recherches bibliographiques n'ont pas permis de distinguer de différences de la cinétique de croissance de chacune de ces trois caractéristiques dimensionnelles du sporophore. Nous supposerons donc, en première approximation, que la croissance du stipe en longueur et en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques. Nous obtenons par conséquent\ :
 
 $$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
 Avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen, généré aléatoirement.

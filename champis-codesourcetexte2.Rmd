@@ -1,0 +1,149 @@
+---
+lang: fr
+fontsize: 12pt
+output: 
+  bookdown::pdf_document2: 
+    number_sections: yes
+    extra_dependencies: ["float", "placeins", "svg", "amssymb", "amsmath"]
+    toc: no
+indent: true
+bibliography: [Champis.bib]
+csl: https://www.zotero.org/styles/springer-vancouver
+---
+
+```{r setup, include = FALSE, warning=FALSE}
+load("EKR-Champis-Iris-Light.RData")
+library(ggpubr)   # Combiner graphes (ggarrange)
+library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
+library(rmarkdown)
+library(knitr)
+library(tidyverse)
+library(bookdown)
+#library(magick)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+```
+\pagestyle{plain}
+
+# Principes de l'apprentissage machine
+## Modèles utilisés
+### Analyses discriminantes {#chapitre:modeles_LDA}
+
+\paragraph*{}
+Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (LDA\ : *Linear Discriminant Analysis*).
+
+\FloatBarrier
+
+\paragraph*{}
+L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
+
+\paragraph*{}
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{LDA}
+  \caption{Séparation par distance maximale des moyennes interclasses (à gauche), et par projection sur l'hyperplan optimal tenant compte des variances intraclasses (LDA, à droite)}
+  \label{fig:Principe-LDA}
+\end{figure}
+
+\FloatBarrier
+
+\paragraph*{}
+En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* et *Iris setosa*.
+\paragraph*{}
+Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
+
+$$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
+avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
+\paragraph*{}
+
+$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
+avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre $i$, et
+$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
+avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
+\paragraph*{}
+L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd}\ :
+
+```{r, LDA-TableMoy, echo = FALSE}
+kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+```
+
+```{r, LDA-TableProd, echo = FALSE}
+kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor ($S_{pq}$)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+```
+
+\paragraph*{}
+La maximisation du rapport entre les carrés des distances des moyennes interclasses et les variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation pour chacun des $\lambda{}_{i}$\ :
+$$\frac{\partial}{\partial{}\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
+
+En supposant que les distributions des classes soient unimodales, cette équation admet une solution unique. Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système\ :
+$$\left \{
+\begin{array}{l}
+d_{1} = S_{11}\lambda_{1} + S_{12}\lambda_{2} + S_{13}\lambda_{3} + S_{14}\lambda_{4} \\
+d_{2} = S_{21}\lambda_{1} + S_{22}\lambda_{2} + S_{23}\lambda_{3} + S_{24}\lambda_{4} \\
+d_{3} = S_{31}\lambda_{1} + S_{32}\lambda_{2} + S_{33}\lambda_{3} + S_{34}\lambda_{4} \\
+d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambda_{4} \\
+\end{array} \Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
+\right.$$
+
+avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
+\paragraph*{}
+En indiçant les facteurs\ :
+
+* $i = 1$ pour la longueur de sépale $L_{s}$,
+* $i = 2$ pour la largeur de sépale $\ell_{s}$,
+* $i = 3$ pour la longueur de pétale $L_{p}$,
+* $i = 4$ pour la largeur de pétale  $\ell_{p}$.
+
+Nous pouvons calculer les coefficients\ :
+\paragraph*{}
+$$\left \{
+\begin{array}{l}
+\lambda_{1} = `r iris_Coeffs[1]` \\
+\lambda_{2} = `r iris_Coeffs[2]` \\
+\lambda_{3} = `r iris_Coeffs[3]` \\
+\lambda_{4} = `r iris_Coeffs[4]` \\
+\end{array}
+\right.$$
+Soit, après normalisation sur le facteur $\lambda_{1}$\ :
+
+$$\left \{
+\begin{array}{l}
+\lambda_{1} = `r iris_CoeffsNorm[1]` \\
+\lambda_{2} = `r round(iris_CoeffsNorm[2],3)` \\
+\lambda_{3} = `r round(iris_CoeffsNorm[3],3)` \\
+\lambda_{4} = `r round(iris_CoeffsNorm[4],3)` \\
+\end{array}
+\right.$$
+
+$$ X = L_{s} + `r round(iris_CoeffsNorm[2],3)`.\ell_{s} `r round(iris_CoeffsNorm[3],3)`.L_{p} `r round(iris_CoeffsNorm[4],3)`.\ell_{p} $$
+
+Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
+\paragraph*{}
+La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
+
+```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
+plot(ggarrange(widths = c(1, 1.5),
+   ncol = 2,
+   iris_grapheMAX + theme(legend.position = "none"),
+   iris_grapheMin
+   )
+)
+```
+
+```{r LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction des espèces"}
+plot(ggarrange(widths = c(1, 1.5),
+   ncol = 2,
+   iris_grapheX + theme(legend.position = "none"),
+   iris_grapheTotale
+   )
+)
+```
+
+\FloatBarrier
+
+### Arbres de décision {#chapitre:modeles_arbres}
+etc.
+
+\newpage
+# Mini-Bibliographie
