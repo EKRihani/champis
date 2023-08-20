@@ -26,7 +26,7 @@ bibliography: [packages.bib,Champis.bib]
 csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscript
 ---
 
-```{r setup, include = FALSE, warning=FALSE}
+```{r setup, include = FALSE, warning = FALSE}
 load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
 load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
@@ -91,6 +91,8 @@ RF-RI\ : *Random Forest Random Inputs* (forêt aléatoire à [variables d']entr�
 ROC\ : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
 
 VCS\ : *Version Control System* (logiciel de contrôle des versions)
+
+YAML\ *YAML Ain't Markup Language* (YAML n'est pas un langage de balisage)
 
 <!-- \endflushleft
 \endgroup -->
@@ -2238,8 +2240,8 @@ save.image(file="CodeSourceIris.RData")
 \paragraph*{}
 Cette partie présente aussi une figure au format vectoriel, enregistrée sous le nom de fichier *LDA.pdf*, ainsi que des références bibliographiques, enregistrées dans un fichier au format Bibtex, sous le nom *IrisBiblio.bib*, dont le bloc suivant reprend le contenu :
 
-\scriptsize
-```{r, eval = FALSE}
+\footnotesize
+```{r, eval = FALSE, highlight = FALSE}
 @article{fisher_use_1936,
 	title = {The {Use} of {Multiple} {Measurements} in {Taxonomic} {Problems}},
 	volume = {7},
@@ -2269,7 +2271,8 @@ Cette partie présente aussi une figure au format vectoriel, enregistrée sous l
 @book{hastie_elements_2016,
 	edition = {2nd},
 	series = {Springer {Series} in {Statistics}},
-	title = {The {Elements} of {Statistical} {Learning} - {Data} {Mining}, {Inference}, and {Prediction}},
+	title = {The {Elements} of {Statistical} {Learning} - {Data} {Mining}, {Inference}, 
+	and {Prediction}},
 	isbn = {978-0-387-84857-0},
 	publisher = {Springer},
 	author = {Hastie, Trevor and Tibshirani, Robert and Friedman, Jerome},
@@ -2277,5 +2280,90 @@ Cette partie présente aussi une figure au format vectoriel, enregistrée sous l
 }
 ```
 \normalsize
+
+\newpage
+## Initialisation
+
+L'initialisation de tout fichier Rmarkdown, commence par un préambule YAML chargé de définir les paramètres à appliquer pour le rendu.
+\paragraph*{}
+Ce préambule est délimité par les balises *\-\-\-*, et contient, entre autres possibilités :
+
+* La langue dans laquelle est rédigée le fichier,
+* La taille de police,
+* Le format de sortie,
+* Les éventuelles dépendances à ajouter (ici, des librairies Latex),
+* La présence ou non d'une table des matières,
+* L'indentation des paragraphes,
+* Le fichier contenant les bibliographies,
+* Le fichier de définition du style de bibliographie.
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+---
+lang: fr
+fontsize: 12pt
+output: 
+  bookdown::pdf_document2: 
+    number_sections: yes
+    extra_dependencies: ["float", "placeins", "amssymb", "amsmath"]
+    toc: no
+indent: true
+bibliography: [IrisBiblio.bib]
+csl: https://www.zotero.org/styles/vancouver
+---
+```
+\normalsize
+
+La rédaction du texte lui-même peut commencer. Toutefois, dans un souci de clarification du code, la première étape que nous réalisons est la préparation de R, avec le chargement des librairies souhaitées :
+
+* *knitr*, pour le paramétrage fin des blocs de code sous R,
+* *ggpubr* pour la génération et la mise en page des graphiques,
+* *kableExtra* pour la génération de tableaux
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+```{r, include = FALSE, warning = FALSE}
+load(file = "CodeSourceIris.RData")
+library(ggpubr)
+library(kableExtra)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+```
+\normalsize
+Les blocs de code sous R commencent et toutes par ```r, et se terminent par ```. Le préambule de chaque bloc de code indique toujours les paramètres utilisés pour le bloc en question, ici :
+
+* *include = FALSE* : ni le code, ni les résultats ne doivent apparaître dans le texte,
+* *warning = FALSE* : les messages d'avertissement ne doivent pas apparaître.
+
+Les lignes suivantes n'appellent pas à commentaire particulier, il s'agit du chargement des données générées par le code mentionné précédemment, et des trois librairies d'intérêt.
+\paragraph*{}
+La toute dernière ligne est plus intéressante, elle permet de définir les paramètres par défaut pour le reste de l’exécution du code :
+
+* *echo = TRUE* : les résultats du code doivent apparaître dans le texte,
+* *message = FALSE* : les messages relatifs au code ne doivent pas apparaître,
+* *fig.pos = "!H"* : les figures et tableaux "flottants" doivent être insérés au plus près de l'endroit où se situe le code qui les a générés.
+
+\paragraph*{}
+La rédaction du texte peut commencer :
+\small
+```{r, eval = FALSE, highlight = FALSE}
+# Principes de l'apprentissage machine
+## Modèles utilisés
+### Analyses discriminantes
+\paragraph*{}
+Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse 
+discriminante, en particulier l'analyse discriminante linéaire (LDA\ : *Linear 
+Discriminant Analysis*).
+```
+\normalsize
+
+\paragraph*{}
+Ce court passage permet de présenter quelques points typiques de la rédaction d'un texte sous Rmarkdown :
+
+* *#, ##, ###* servent respectivement à indiquer des sections, sous-sections et sous-sous-sections, ils sont l'équivalent des commandes *\section*, *\subsection* et *\subsubsection* sous Latex,
+* *\paragraph\*{}* est une commande Latex standard, permettant d'insérer un paragraphe non-numéroté,
+* *\ :* permet d'insérer un symbole deux-points précédé d'une espace insécable,
+* Les astérisques encadrant un texte permettent de l'écrire en italique (équivalent de *\emph* sous Latex).
+
 
 \newpage

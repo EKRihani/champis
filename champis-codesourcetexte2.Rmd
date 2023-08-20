@@ -11,28 +11,25 @@ bibliography: [IrisBiblio.bib]
 csl: https://www.zotero.org/styles/vancouver
 ---
 
-```{r setup, include = FALSE, warning=FALSE}
+```{r, include = FALSE, warning = FALSE}
 load(file = "CodeSourceIris.RData")
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
-library(rmarkdown)
+#library(rmarkdown)
 library(knitr)
-library(tidyverse)
-library(bookdown)
+#library(tidyverse)
+#library(bookdown)
 #library(magick)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
 ```
-\pagestyle{plain}
+<!-- \pagestyle{plain} -->
 
 # Principes de l'apprentissage machine
 ## Modèles utilisés
-### Analyses discriminantes {#chapitre:modeles_LDA}
+### Analyses discriminantes
 
 \paragraph*{}
 Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (LDA\ : *Linear Discriminant Analysis*).
-
-\FloatBarrier
-
 \paragraph*{}
 L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.[@fisher_use_1936;@anderson_r_1996] La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
 
