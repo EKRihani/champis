@@ -4,10 +4,11 @@ iris_lot <- iris %>% filter(Species != "virginica") %>% droplevels()
 # Moyennes intraclasses
 iris_M <- iris_lot %>% 
    aggregate(. ~ Species, mean) %>%
-   add_row(cbind("Species" = "difference", .[1,-1] - .[2,-1])) %>%
+   add_row(cbind("Species" = "difference", 
+                 .[1, names(.)!="Species"] - .[2, names(.)!="Species"])) %>%
    column_to_rownames("Species")
 
-# Produits des carrés (table III)
+# Différences, puis carrés des différences (table III)
 iris_deltas <- iris_lot %>%
    group_by(Species) %>%
    mutate_all(~. - mean(.)) %>%
@@ -25,7 +26,8 @@ iris_Coeffs <- as.matrix(iris_M["difference",]) %*% iris_InvProds # Coeffs bruts
 iris_CoeffsNorm <- iris_Coeffs/iris_Coeffs[1]  # Normalisation
 
 # Coeffs et graphiques LDA
-iris_lot <- iris_lot %>% mutate(X = rowSums(mapply(`*`,.[,-5],iris_CoeffsNorm)))
+iris_lot <- iris_lot %>% 
+   mutate(X = rowSums(mapply(`*`,.[,names(.)!="Species"],iris_CoeffsNorm)))
 
 iris_grapheMAX <- iris_lot %>% 
    ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
@@ -40,8 +42,8 @@ iris_grapheX <- iris_lot %>%
    geom_histogram()
 
 iris_norm <- iris_lot %>% 
-   mutate_at(., scale, .vars=-5) %>% 
-   pivot_longer(data = ., cols = -5)
+   mutate_at(., scale, .vars = which(names(.)!="Species")) %>% 
+   pivot_longer(data = ., cols = which(names(.)!="Species"))
 
 iris_grapheTotale <- iris_norm %>%
    ggplot(aes(x = name, y = value, fill = Species)) +

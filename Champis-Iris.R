@@ -1,4 +1,3 @@
-library(MASS)
 library(caret)
 library(tidyverse)
 data(iris)
@@ -17,59 +16,46 @@ iris_lot <- iris %>% filter(Species != "virginica") %>% droplevels()
 iris_moyennes <- iris_lot %>% aggregate(. ~ Species, mean)
 
 # Différences des moyennes interclasses (table II)
-iris_D <- as.matrix(iris_moyennes[which(iris_moyennes$Species == "setosa"),2:5]
-                    - iris_moyennes[which(iris_moyennes$Species == "versicolor"),2:5])
+# iris_D <- as.matrix(iris_moyennes[which(iris_moyennes$Species == "setosa"),2:5]
+#                     - iris_moyennes[which(iris_moyennes$Species == "versicolor"),2:5])
+# 
+# iris_M <- rbind(iris_moyennes[,2:5], iris_D)
+# rownames(iris_M) <- c("setosa", "versicolor", "diff.")
 
-iris_M <- rbind(iris_moyennes[,2:5], iris_D)
-rownames(iris_M) <- c("setosa", "versicolor", "diff.")
-
+iris_M <- iris_lot %>% 
+   aggregate(. ~ Species, mean) %>%
+   add_row(cbind("Species" = "difference", 
+                 .[1, names(.)!="Species"] - .[2, names(.)!="Species"])) %>%
+   column_to_rownames("Species")
 
 # Produits des carrés : 1. Différences avec moyennes
-iris_delta <- iris_lot %>%
-   group_by(Species) %>% 
-   mutate(S.l = Sepal.Length - mean(Sepal.Length),
-           S.w = Sepal.Width - mean(Sepal.Width),
-           P.l = Petal.Length - mean(Petal.Length),
-           P.w = Petal.Width - mean(Petal.Width))
+iris_deltas <- iris_lot %>%
+   group_by(Species) %>%
+   mutate_all(~. - mean(.)) %>%
+   ungroup() %>% select(!Species) %>%
+   as.matrix()
+colnames(iris_deltas) <- c("S.l","S.w","P.l","P.w")
 
 # Produits des carrés : 2. Carrés des différences (table III)
-iris_deltas <-as.matrix(iris_delta[,c("S.l","S.w","P.l","P.w")])
-
 iris_prods <- rbind(iris_deltas[,1] %*% iris_deltas,
                     iris_deltas[,2] %*% iris_deltas,
                     iris_deltas[,3] %*% iris_deltas,
                     iris_deltas[,4] %*% iris_deltas)
-rownames(iris_prods) <- c("S.l", "S.w", "P.l", "P.w")
+rownames(iris_prods) <- colnames(iris_prods)
 
 # Matrice inverse des produits des carrés des différences (table IV)
 iris_InvProds <- solve(iris_prods) %>% as.matrix()
 
 # Multiplication de la matrice inverse avec les différences
-iris_Coeffs <- iris_D %*% iris_InvProds
+iris_Coeffs <- as.matrix(iris_M["difference",]) %*% iris_InvProds
 
 # Normalisation
 iris_CoeffsNorm <- iris_Coeffs/iris_Coeffs[1]
 
-iris_L_set <- iris_moyennes %>%
-   filter(Species == "setosa") %>%
-   select(-Species) %>%
-   as.matrix() %>%
-   "*" (iris_CoeffsNorm) %>%
-   sum()
-
-iris_L_ver <- iris_moyennes %>%
-   filter(Species == "versicolor") %>%
-   select(-Species) %>%
-   as.matrix() %>%
-   "*" (iris_CoeffsNorm) %>%
-   sum()
-
-
-# LDA avec package MASS
-iris_lda <- lda(formula = Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
+# Comparaison avec LDA via package MASS
+#library(MASS)
+iris_lda <- MASS::lda(formula = Species ~ ., 
                 data = iris_lot)
-iris_lda
-
 iris_lda$means
 iris_moyennes
 iris_lda$scaling/iris_lda$scaling[1,1]
@@ -78,18 +64,16 @@ iris_CoeffsNorm
 
 # Coeffs et graphiques LDA
 
-iris_totale <- iris_lot %>% mutate(X = Sepal.Length*iris_CoeffsNorm[1] +
-                                      Sepal.Width*iris_CoeffsNorm[2] +
-                                      Petal.Length*iris_CoeffsNorm[3] +
-                                      Petal.Width*iris_CoeffsNorm[4])
+iris_totale <- iris_lot %>% 
+   mutate(X = rowSums(mapply(`*`,.[,names(.)!="Species"],iris_CoeffsNorm)))
 
-iris_grapheMAX <- iris_lot %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
+iris_grapheMAX <- iris_totale %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
    labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
    geom_point() +
    scale_color_viridis_d(end = .75, option = "D") +
    theme_bw()
 
-iris_grapheMin <- iris_lot %>% ggplot(aes(x = Sepal.Width, y = Sepal.Length, color= Species)) +
+iris_grapheMin <- iris_totale %>% ggplot(aes(x = Sepal.Width, y = Sepal.Length, color= Species)) +
    labs(x = "Largeur Sépale", y = "Longueur Sépale", color = "Variété") +
    geom_point() +
    scale_color_viridis_d(end = .75, option = "D") +
@@ -104,14 +88,9 @@ iris_grapheX <- iris_totale %>%
    ylim(0, 15) +
    theme_bw()
 
-iris_norm <- iris_totale %>%
-   mutate(Ls = scale(Sepal.Length),
-          ls = scale(Sepal.Width),
-          lp = scale(Petal.Width),
-          Lp = scale(Petal.Length),
-          X = scale(X))
-
-iris_norm <-pivot_longer(data = iris_norm, cols = c("Ls", "ls", "lp", "Lp", "X"))  
+iris_norm <- iris_totale %>% 
+   mutate_at(., scale, .vars = which(names(.)!="Species")) %>% 
+   pivot_longer(data = ., cols = which(names(.)!="Species"))
 
 iris_grapheTotale <- iris_norm %>%
    ggplot(aes(x = name, y = value, fill = Species, color = Species)) +
@@ -119,7 +98,6 @@ iris_grapheTotale <- iris_norm %>%
    geom_boxplot(alpha = .8, color = "black") +
    scale_fill_viridis_d(end = .75, option = "D") +
    theme_bw()
-
 
 # rpart avec caret
 n_iris <- nrow(iris)
@@ -134,13 +112,11 @@ tr_ctrl <- trainControl(classProbs = TRUE,
                         method = "cv",
                         number = iris_split_facteur)
 
-
 iris_rpart <- train(Species ~ .,
                   method = "rpart",
                   data =  iris,
                   trControl = tr_ctrl,
                   tuneGrid  = iris_grid_rpart_cp)
-
 
 
 library(rpart.plot)
@@ -167,34 +143,9 @@ save.image(file = "EKR-Champis-Iris.RData")
 load(file = "EKR-Champis-Iris.RData")
 
 
-#########
-# TRUCS #
-#########
-
-# Produits des carrés des différences (table VII)
-# deltas_set <- delta %>% 
-#    filter(Species == "setosa") %>%
-#    select(SL:PW) %>%
-#    as.matrix()
-# prods_set <- rbind(deltas_set[,1] %*% deltas_set,
-#                    deltas_set[,2] %*% deltas_set,
-#                    deltas_set[,3] %*% deltas_set,
-#                    deltas_set[,4] %*% deltas_set)
-# 
-# deltas_ver <- delta %>% 
-#    filter(Species == "versicolor") %>%
-#    select(SL:PW) %>%
-#    as.matrix()
-# prods_ver <- rbind(deltas_ver[,1] %*% deltas_ver,
-#                    deltas_ver[,2] %*% deltas_ver,
-#                    deltas_ver[,3] %*% deltas_ver,
-#                    deltas_ver[,4] %*% deltas_ver)
-
-
-
-############################
-#     ARBRES / CHAMPIS     #
-############################
+###############################
+#     ARBRES SUR CHAMPIS      #
+###############################
 
 # Initialisation
 library(twinning)
