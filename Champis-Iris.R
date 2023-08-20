@@ -8,15 +8,13 @@ data(iris)
 ###############################
 
 # Moyennes intraclasses
-iris_lot <- iris %>%
-   filter(Species %in% c("versicolor", "setosa")) %>% 
-   droplevels()
+iris_lot <- iris %>% filter(Species != "virginica") %>% droplevels()
 
-iris_moyennes <- iris_lot %>%
-   group_by(Species) %>% 
-   summarise(across(where(is.numeric), mean)) %>%
-   data.frame()
-
+# iris_moyennes <- iris_lot %>%
+#    group_by(Species) %>% 
+#    summarise(across(where(is.numeric), mean)) %>%
+#    data.frame()
+iris_moyennes <- iris_lot %>% aggregate(. ~ Species, mean)
 
 # Différences des moyennes interclasses (table II)
 iris_D <- as.matrix(iris_moyennes[which(iris_moyennes$Species == "setosa"),2:5]
