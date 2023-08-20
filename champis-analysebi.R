@@ -456,5 +456,6 @@ rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_evaluation,
    BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
 
+
 save.image(file = "EKR-Champis-AnalyseBi-Light.RData")     # Sauvegarde données pour rapport
 load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données complètes

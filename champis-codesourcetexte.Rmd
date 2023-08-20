@@ -4,38 +4,39 @@ fontsize: 12pt
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: ["float", "placeins", "svg", "amssymb", "amsmath"]
+#    extra_dependencies: ["float", "placeins", "svg", "amssymb", "amsmath"]
+    extra_dependencies: ["placeins"]
     toc: no
 indent: true
-bibliography: [Champis.bib]
+bibliography: [Champis-CodeSourceBiblio.bib]
 csl: https://www.zotero.org/styles/vancouver-superscript
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
-load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
-load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
+load("EKR-Champis-CodeSource.RData")      # Chargement des résultats INTRO
 
 library(ggpubr)   # Combiner graphes (ggarrange)
-library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
 library(rmarkdown)
 library(knitr)
 library(tidyverse)
 library(bookdown)
 library(magick)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+#knitr::opts_chunk$set(fig.pos = "!H")
 ```
 \pagestyle{plain}
 
 # Création du lot de données
 ## Principes de conception d'un lot de données synthétiques
 ### Principes de génération des paramètres quantitatifs {#chapitre:generation_quanti}
-
+\paragraph*{}
 Dans le cadre de cette étude, les variables quantitatives générées aléatoirement sont\ :
 
 * La longueur du stipe $L_{S}$,
 * Le diamètre du stipe $D_{S}$,
 * Le diamètre du chapeau $D_{C}$.
 
+\paragraph*{}
 En première approximation, nous pouvons considérer que toutes ces valeurs sont intrinsèquement liées à la croissance du champignon. Ces trois variables peuvent, dans l'absolu, être susceptibles de varier indépendamment des autres au cours de la croissance du champignon, les variables $L_{S}$, $D_{S}$ et $D_{C}$ obéissant alors aux lois suivantes\ :
 
 $$\left \{
@@ -45,14 +46,14 @@ D_{S} = D_{S_{max}}.F_{Ds} \\
 D_{C} = D_{C_{max}}.F_{Dc} \\
 \end{array}
 \right.$$
-
+\paragraph*{}
 Avec\ :
 
 * $L_{S_{max}}$, $D_{S_{max}}$ et $D_{C_{max}}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété fongique, extraites de la littérature, 
 * $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle $\left] 0 ; 1 \right]$, et représentatives de la croissance du spécimen.
 
 [...]
-
+\paragraph*{}
 Les critères de sélection retenus afin de choisir la loi la plus appropriée sont\ :
 
 1. Efficience calculatoire,
@@ -61,17 +62,17 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 4. Distribution asymétrique.
 
 \FloatBarrier
-
+\paragraph*{}
 Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
 
 
-```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
+```{r Lots-Chrono, echo = FALSE, fig.height = 3.5, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
 plot(chrono_distrib2)
 ```
-
+\paragraph*{}
 Les critères de continuité et de normalité n'appellent que peu de commentaires. Ces critères permettent simplement de garantir la possibilité d'une infinité de valeurs dimensionnelles, dans l'intervalle considéré. Le critère de continuité proscrit toutefois l'utilisation de lois de distributions discrètes telles que la loi binomiale ou la loi de Poisson, et celui de normalité écarte des distributions telles que la loi de Weibull, dont la normalisation est parfois délicate.
-
 \FloatBarrier
+\paragraph*{}
 Le critère d'asymétrie est un critère permettant de tenir compte des différents paramètres pouvant impacter la distribution de taille des spécimens prélevés, parmi lesquels\ :
 
 * Différences de cinétique de croissance d'une famille à une autre,
@@ -79,13 +80,13 @@ Le critère d'asymétrie est un critère permettant de tenir compte des différe
 * Probabilité de prélèvement variable selon la taille du spécimen (par difficulté de détection, considérations éthiques, intérêt mycologique ou gastronomique...).
 
 [...]
-
+\paragraph*{}
 $F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \ref{fig:Lots-LoisBeta}.
 
-```{r Lots-LoisBeta, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
+```{r Lots-LoisBeta, echo = FALSE, fig.height = 3.5, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
 plot(lois_beta)
 ```
-
+\paragraph*{}
 Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant\ :
 
 $$\left \{
@@ -95,7 +96,7 @@ D_{S} = D_{Smax}.F_{T}.\delta_{Ds} & ~~~~avec~~ \delta_{Ds} \sim \mathcal{N}(\mu
 D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
 \end{array}
 \right.$$
-
+\paragraph*{}
 L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par la figure \ref{fig:Lots-Dispersion2D}.
 
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 720, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
@@ -106,8 +107,9 @@ plot(ggarrange(
    )
 )
 ```
-
+ 
 \FloatBarrier
-
+ 
 \newpage
+ 
 # Mini-Bibliographie

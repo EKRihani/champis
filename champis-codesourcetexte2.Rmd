@@ -12,7 +12,7 @@ csl: https://www.zotero.org/styles/springer-vancouver
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
-load("EKR-Champis-Iris-Light.RData")
+load(file = "EKR-Champis-CodeSource2.RData")
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
 library(rmarkdown)
@@ -74,7 +74,13 @@ kable(iris_prods, caption = "Produits des différences à la moyenne des 4 param
 
 \paragraph*{}
 La maximisation du rapport entre les carrés des distances des moyennes interclasses et les variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient $\lambda{}_{i}$ soit, par dérivation pour chacun des $\lambda{}_{i}$\ :
-$$\frac{\partial}{\partial{}\lambda{}_{i}} \frac{D^2}{S} = 0 \Leftrightarrow{} \frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 \Leftrightarrow{} \frac{D}{S^{2}}\left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 \Leftrightarrow{} \frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
+$$\frac{\partial}{\partial{}\lambda{}_{i}}  \frac{D^2}{S} = 0 
+\Leftrightarrow{}
+\frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} \frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 
+\Leftrightarrow{} 
+\frac{D}{S^{2}} \left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 
+\Leftrightarrow{} 
+\frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = \frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
 
 En supposant que les distributions des classes soient unimodales, cette équation admet une solution unique. Le rapport $S/D$ étant un facteur supposé constant pour tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les solutions du système\ :
 $$\left \{

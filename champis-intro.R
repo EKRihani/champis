@@ -28,7 +28,10 @@ distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
   xlab("Valeur") +
   ylab("") +
   theme_bw() +
-  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+#  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(axis.text = element_blank(),
+         panel.grid = element_blank(),
+         axis.ticks = element_blank())
 
 fonction_uniforme <- function(x,N){runif(n = N)}
 temps_uniforme <- microbenchmark(fonction_uniforme(x, n_chrono), times = fois_chrono, unit = "ms")
@@ -39,7 +42,10 @@ distrib_uniforme <- ggplot(data = valeurs_uniforme, aes(x = val)) +
   xlab("Valeur") +
   ylab("") +
   theme_bw() +
-  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+  #theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(axis.text = element_blank(),
+         panel.grid = element_blank(),
+         axis.ticks = element_blank())
 
 fonction_normale <- function(x,N){rnorm(n = N)}
 temps_normale <- microbenchmark(fonction_normale(x, n_chrono), times = fois_chrono, unit = "ms")
@@ -49,7 +55,10 @@ distrib_normale <- ggplot(data = valeurs_normale, aes(x = val)) +
   xlab("Valeur") +
   ylab("") +
   theme_bw() +
-  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+  #theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(axis.text = element_blank(),
+         panel.grid = element_blank(),
+         axis.ticks = element_blank())
 
 fonction_beta <- function(x,N){rbeta(n = N, shape1 = 6, shape2 = 4, ncp = .5)}
 temps_beta <- microbenchmark(fonction_beta(x, n_chrono), times = fois_chrono, unit = "ms")
@@ -60,7 +69,10 @@ distrib_beta <- ggplot(data = valeurs_beta, aes(x = val)) +
   xlab("Valeur") +
   ylab("") +
   theme_bw() +
-  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+  #theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(axis.text = element_blank(),
+         panel.grid = element_blank(),
+         axis.ticks = element_blank())
 
 fonction_poisson <- function(x,N){rpois(n = N, lambda = binom_taille/3)}
 temps_poisson <- microbenchmark(fonction_poisson(x, n_chrono), times = fois_chrono, unit = "ms")
@@ -70,7 +82,10 @@ distrib_poisson <- ggplot(data = valeurs_poisson, aes(x = val)) +
   xlab("Valeur") +
   ylab("") +
   theme_bw() +
-  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+#  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(axis.text = element_blank(),
+         panel.grid = element_blank(),
+         axis.ticks = element_blank())
 
 fonction_weibull <- function(x,N){rweibull(n = N, shape = 8)}
 temps_weibull <- microbenchmark(fonction_weibull(x, n_chrono), times = fois_chrono, unit = "ms")
@@ -80,7 +95,10 @@ distrib_weibull <- ggplot(data = valeurs_weibull, aes(x = val)) +
   xlab("Valeur") +
   ylab("") +
   theme_bw() +
-  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
+#  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
+   theme(axis.text = element_blank(),
+         panel.grid = element_blank(),
+         axis.ticks = element_blank())
 
 # Calculs chrono
 chrono_fonctions  <- bind_rows(temps_binomiale, temps_uniforme, temps_normale,
@@ -93,7 +111,9 @@ chrono_distrib <- ggplot(data = chrono_fonctions, aes(y = time/1e6, x = reorder(
   geom_boxplot(fill = "grey70", outlier.alpha = 0.3) +
   xlab(NULL) +
   ylab("Temps (ms)") +
-  theme_bw()
+  theme_bw() +
+   theme(panel.grid.major.x = element_blank(),
+         axis.ticks.x = element_blank())
 
 # Focus sur la loi Beta pour génération de champignons
 facteurs <- c(.5, 1, 1.5, 2)
@@ -109,9 +129,13 @@ beta$name <- str_remove(beta$name, "X")
 lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
   labs(colour= "Fc") +
   geom_density(alpha = .7, bw = .025, linewidth = .6) +
-  xlab("Valeur") +
+  scale_color_viridis_d(option = "C", direction = -1, begin = 0, end = .85) +
+  xlab("Valeur (Ft)") +
   ylab("Densité") +
-  theme_bw()
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        axis.ticks.y = element_blank())
 
 
 ###############################

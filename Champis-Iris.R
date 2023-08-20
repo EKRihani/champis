@@ -210,7 +210,7 @@ fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
 fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
-dataset <- dataset %>% select(!Nom)
+dataset <- dataset %>% select(-c("Nom", "Groupe"))
 
 # Création des lots d'entraînement, validation, évaluation
 

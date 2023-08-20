@@ -265,7 +265,7 @@ Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à 
 ```{r Lots-DistribSym, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
 plot(ggarrange(
    ncol = 3,
-   distrib_uniforme + ylab("Nombre"),
+   distrib_uniforme + ylab("Densité"),
    distrib_binomiale,
    distrib_normale))
 ```
@@ -273,7 +273,7 @@ plot(ggarrange(
 ```{r Lots-DistribAsym, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi de Poisson (à gauche), de Weibull (au centre) et bêta (à droite)"}
 plot(ggarrange(
    ncol = 3,
-   distrib_poisson + ylab("Nombre"),
+   distrib_poisson + ylab("Densité"),
    distrib_weibull,
    distrib_beta
    )
@@ -299,6 +299,7 @@ $F_{c}$ est ici défini comme un facteur de croissance permettant de rendre comp
 plot(lois_beta)
 ```
 
+\paragraph*{}
 Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant\ :
 
 $$\left \{
@@ -354,7 +355,7 @@ L'ensemble des valeurs quantitatives possibles pour un critère et pour une vari
 
 # Principes de l'apprentissage machine
 
-L’apprentissage machine est un domaine scientifique se situant à l’interface entre les statistiques et l’informatique, et constitue un domaine de l’intelligence artificielle. L’objet de l’apprentissage machine est conceptuellement de permettre aux machines d’ « apprendre » de manière autonome, c'est-à-dire d'évaluer et d'améliorer leurs performances sans l'intervention d'un programmeur, par l’entraînement.[@journal_officiel_de_la_republique_francaise_vocabulaire_2018]
+L’apprentissage machine est un domaine scientifique se situant à l’interface entre les statistiques et l’informatique, et constitue un domaine de l’intelligence artificielle. L’objet de l’apprentissage machine est conceptuellement de permettre aux machines d’ "apprendre" de manière autonome, c'est-à-dire d'évaluer et d'améliorer leurs performances sans l'intervention d'un programmeur, par l’entraînement.[@journal_officiel_de_la_republique_francaise_vocabulaire_2018]
 \paragraph*{}
 En pratique, ce domaine se consacre à la génération d’algorithmes autonomes capables d’améliorer leurs performances prédictives par exposition à un lot de données et de prédire par inférence la meilleure décision ou réponse à une question.[@bironneau_machine_2019]
 
@@ -812,9 +813,9 @@ Les diagrammes en barres n'ont rien illustré de particulièrement remarquable e
 ```{r EDA-distrib, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe"}
 plot(ggarrange(
    ncol = 3,
-   study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
-   study_distrib_stem.height + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
-   study_distrib_stem.width + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL)
+   study_distrib_Chapeau.Diametre + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
+   study_distrib_Pied.Hauteur + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL),
+   study_distrib_Pied.Largeur + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL)
    )
 )
 ```
@@ -822,9 +823,9 @@ plot(ggarrange(
 ```{r EDA-distrib-log, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe (échelle logarithmique en ordonnée)"}
 plot(ggarrange(
    ncol = 3,
-   study_distrib_cap.diameter + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
-   study_distrib_stem.height + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
-   study_distrib_stem.width + ggtitle("") + ylab("") + scale_y_log10(labels = NULL)
+   study_distrib_Chapeau.Diametre + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
+   study_distrib_Pied.Hauteur + ggtitle("") + ylab("") + scale_y_log10(labels = NULL),
+   study_distrib_Pied.Largeur + ggtitle("") + ylab("") + scale_y_log10(labels = NULL)
    )
 )
 ```
@@ -845,9 +846,9 @@ De même, les graphiques de distribution des variables *cap.diameter* et *stem.h
 \paragraph*{}
 Cette brève analyse exploratoire des données illustre donc l'intérêt de l'EDA, qui constitue un outil puissant permettant de mieux appréhender un lot de données, voire d'orienter le choix des stratégies d'apprentissage machine qui pourraient être exploitées à fins de classification.
 
-```{r EDA-bidistrib, echo = FALSE, fig.height = 6.5, dev = "jpeg", dpi = 720, fig.cap = "Distributions bi-critères pour 4 critères d'intérêt"}
-paires_graphes
-```
+ <!-- ```{r EDA-bidistrib, echo = FALSE, fig.height = 6.5, dev = "jpeg", dpi = 720, fig.cap = "Distributions bi-critères pour 4 critères d'intérêt"} -->
+ <!-- paires_graphes -->
+ <!-- ``` -->
 
 \newpage
 
@@ -896,7 +897,7 @@ kable(NAIF_Resultats, caption = "Performances de différents classifieurs naïfs
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```  
 
-Les performances de ces modèles paraissent relativement bonnes, mais sont à relativiser en raison de la définition de notre indice de Youden qui accorde une très grande importance à la sensibilité. Ainsi, notre classifieur dit "stupide" -- excessivement pusillanime et d'un intérêt pratiquement nul car rejetant tous les champignons -- semble montrer une performance honorable d'après ce critère, avec $J_w = `r NAIF_Resultats["Stupide","Jw"]`$, alors que, par construction, $\kappa = `r NAIF_Resultats["Stupide","Kappa"]`$.
+Les performances de ces modèles paraissent relativement bonnes, mais sont à relativiser en raison de la définition de notre indice de Youden pondéré qui accorde une très grande importance à la sensibilité. Ainsi, notre classifieur dit "stupide" -- excessivement pusillanime et d'un intérêt pratiquement nul car rejetant tous les champignons -- semble montrer une performance honorable d'après ce critère, avec $J_w = `r NAIF_Resultats["Stupide","Jw"]`$, alors que, par construction, $\kappa = `r NAIF_Resultats["Stupide","Kappa"]`$.
 \paragraph*{}
 Les performances du modèle monovariable ne sont guère plus élevées, ce qui démontre l'inefficacité des adages populaires prétendant garantir la comestibilité de tous les champignons d'une couleur donnée.\footnote{Même si le modèle venait à montrer le contraire, il convient de rappeler que ce lot de données se limite aux espèces les plus courantes, d'une fonge limitée dans l'espace et dans le temps.}
 \paragraph*{}
@@ -905,7 +906,7 @@ En revanche, les performances du modèle bivariable sont honorables, avec une am
 
 ### Modèles d'analyse discriminante{#chapitre:BI_lda}
 \paragraph*{}
-Les modèles d'analyse discriminante choisis pour cette étude sont lda2 (LDA\ : *Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un seul hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda a également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
+Les modèles d'analyse discriminante choisis pour cette étude sont lda2 (LDA\ : *Linear Discriminant Analysis*) et pda (*Penalized Discriminant Analysis*). Le modèle lda2 dispose d'un seul hyperparamètre (*dimen*, nombre de fonctions discriminantes). Le modèle pda possède également un unique hyperparamètre (*lambda*, pénalité de réduction des coefficients).  
 \FloatBarrier
 
 ```{r, BIldapda, echo = FALSE, fig.height = 3, fig.cap = "Performances des modèles lda2 (à gauche) et pda (à droite), dans une tâche de classification binaire"}
@@ -921,7 +922,7 @@ plot(ggarrange(widths = c(1, 1.5),
 Comme l'illustre la figure \ref{fig:BIldapda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
 \paragraph*{}
 Le paramètre *dimen* du modèle lda2 n'a absolument aucun effet sur les performances prédictives, avec un index J de Youden pondéré constant ($J_{w} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). Ce caractère constant était en réalité prévisible, car le nombre de fonctions discriminantes $n_{fd}$ dépend du nombre de prédicteurs $p$ et du nombre de degrés de libertés entre les $n_{g}$ groupes $(ddl = n_{g}-1)$, de sorte que :
-$$n_{fd} = \min(ddl, p) = \min(n_{g}-1 , p)$$
+$$n_{fd} = \min(ddl, p) = \min\left( (n_{g}-1) , p \right)$$
 Dans une classification binaire, ($n_{g} = 2$) il n'y a qu'un degré de liberté, c'est-à-dire une seule séparation entre les groupes, donc une seule fonction discriminante à définir.
 \paragraph*{}
 L'efficience calculatoire est correcte, avec $t_{moy} = `r BI_temps_lda2`$ min ($n = `r nrow(BI_grid_lda_dimen)`$ itérations).
@@ -973,15 +974,20 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_re
 \end{array}
 \right.$$
 
-L'efficience calculatoire est faible, avec $t_{moy} = `r BI_temps_rpart`$ min ($n = `r nrow(BI_grid_rpart_cp)`$ itérations).
+L'efficience calculatoire de ce modèle est remarquable, avec $t_{moy} = `r BI_temps_rpart`$ min ($n = `r nrow(BI_grid_rpart_cp)`$ itérations).
 
 \FloatBarrier
 \paragraph*{}
-Le second modèle CART utilisé dans cette étude (rpartCost) est plus élaboré et associe des hyperparamètres de complexité (*cp*) et de coût (*Cost*). Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres (figure  \ref{fig:BIrpartcostSenSpe}) illustrent bien, dans leur partie supérieure ($cp \geq 0.05$) la notion classique de compromis entre sensibilité et spécificité\ : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et réciproquement.
+Le second modèle CART utilisé dans cette étude (rpartCost) est plus élaboré et associe deux hyperparamètres :
+
+* Complexité (*cp*), régissant la complexité et donc la taille de l'arbre,
+* Coût (*Cost*), qui permet d'appliquer une pénalité variable selon le type d'erreur (ici, faux positif ou faux négatif). 
+
+Les graphiques de sensibilité et de spécificité en fonction des hyperparamètres (figure  \ref{fig:BIrpartcostSenSpe}) illustrent bien, dans leur partie supérieure ($cp \geq 0.05$) -- c'est à dire pour des arbres de complexité limitée -- l'impact de cet hyperparamètre de coût, qui se traduit par la notion classique de compromis entre sensibilité et spécificité\ : dans cette zone, toute amélioration de la sensibilité se fera inévitablement au détriment de la spécificité, et réciproquement.
 \paragraph*{}
 En pratique, pour $cp \geq 0.05$, notre modèle d'IA basé sur ce type d'arbre de décision se montrera soit excessivement sévère, rejetant un nombre considérable de champignons comestibles (quadrant supérieur gauche, $cost \leq 1.5$), soit au contraire excessivement laxiste, admettant un nombre important de champignons non-comestibles (quadrant supérieur droit, $cost \geq 1.5$).
 \paragraph*{}
-C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$) que le modèle montrera une performance acceptable tant en sensibilité qu'en spécificité.
+C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$), pour des arbres bien plus complexes, que le modèle montrera une performance acceptable tant en sensibilité qu'en spécificité.
 
 
 ```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en classification binaire, en fonction de la complexité et du coût (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
@@ -1050,7 +1056,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Sens"],4)` \\
 \right.$$
 
 \paragraph*{}
-Les performances du modèle rpartCost, sont excellentes, dépassant celles de notre modèle précédent, avec une efficience calculatoire remarquable ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations), et remplit pleinement notre critère concernant l'index J de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
+Les performances du modèle rpartCost sont excellentes, dépassant celles de notre modèle précédent, au prix d'une efficience calculatoire amoindrie ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations). Ce modèle remplit pleinement notre critère concernant l'index J de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. \paragraph*{}
 Les performances obtenues sont\ :
@@ -1062,13 +1068,21 @@ Sen = `r round(BI_fit_c50tree_resultats["Sens"],4)` \\
 \end{array}
 \right.$$
 \paragraph*{}
-Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, remplissant aisément le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée. En revanche, le temps de calcul est relativement long ($t = `r BI_temps_c50tree`$ min), signe d'une efficience calculatoire modérée.
+Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, remplissant aisément le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée.
 \paragraph*{}
-Les modèles d'arbres de classification sont réputés pour être particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette tâche de classification en fournissant des résultats excellents ($Spe \geq `r round(min(BI_fit_c50tree_resultats["Spec"], 
-    BI_fit_rpartcost_best_resultats["Spec"], 
-    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Spec"]),4)`$, $Sen \geq `r round(min(BI_fit_c50tree_resultats["Sens"], 
-    BI_fit_rpartcost_best_resultats["Sens"], 
-    BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_resultats[,"Jw"]),"Sens"]),4)`$), dépassant tous les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.
+Le temps de calcul est relativement long ($t = `r BI_temps_c50tree`$ min), signe d'une efficience calculatoire modeste, mais cette remarque est à modérer en raison des gains que peut apporter un modèle s'affranchissant totalement de la phase d'optimisation des hyperparamètres :
+
+* Pas de séparation entre lots d'entraînement et d'optimisation,
+* Pas de détermination du domaine expérimental et du plan d'expériences,
+* Pas de balayage du domaine expérimental et de collecte des indicateurs de performance,
+* Pas de modélisation des performances à la recherche des hyperparamètres optimaux.
+
+Ces gains potentiels sont à considérer *lato sensu* : en temps de calcul évidemment, mais aussi de développement et d'optimisation des algorithmes correspondants à ces étapes.
+
+\paragraph*{}
+Les modèles d'arbres de classification sont réputés pour être particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette tâche de classification en fournissant des résultats excellents. 
+\paragraph*{}
+En effet, la totalité des modèles d'arbres testés ici dépassent les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.
 \paragraph*{}
 
 \newpage
@@ -1114,7 +1128,7 @@ plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right') + theme(legend.te
 ```
 
 \FloatBarrier
-L'interprétation visuelle des graphiques des indicateurs de performance laisse entrevoir une très haute sensibilité -- c'est à dire une excellente capacité à rejeter les champignons non comestibles -- sur une très large plage d'hyperparamètres, et une spécificité beaucoup plus variable en fonction des hyperparamètres. L'hyperparamètre semblant avoir le plus d'effet est le nombre de prédicteurs testés pour une scission (*predFixed*). L'efficience calculatoire est remarquable, avec $t_{moy} = `r BI_temps_Rborist`$ min ($n = `r nrow(BI_grid_Rborist)`$ itérations).
+L'interprétation visuelle des graphiques des indicateurs de performance laisse entrevoir une très haute sensibilité -- c'est à dire une excellente capacité à rejeter les champignons non comestibles -- sur une très large plage d'hyperparamètres, et une spécificité beaucoup plus variable en fonction des hyperparamètres. L'hyperparamètre semblant avoir le plus d'effet est le nombre de prédicteurs testés pour une scission (*predFixed*). L'efficience calculatoire est très bonne, avec $t_{moy} = `r BI_temps_Rborist`$ min ($n = `r nrow(BI_grid_Rborist)`$ itérations).
 \paragraph*{}
 Nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
 $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
@@ -1163,7 +1177,7 @@ Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est
 * Le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) 
 * La règle contrôlant cette séparation (*splitrule*).
 
-Les mesures de performance sur l'espace expérimental des hyperparamètres sont illustrées en figures \ref{fig:BI-ranger-gini}, \ref{fig:BI-ranger-ET} et \ref{fig:BI-ranger-Jw}, en pages \pageref{fig:BI-ranger-gini} et \pageref{fig:BI-ranger-Jw}.
+Les mesures de performance sur l'espace expérimental des hyperparamètres sont illustrées en figures \ref{fig:BI-ranger-gini}, \ref{fig:BI-ranger-ET} et \ref{fig:BI-ranger-Jw}, pages \pageref{fig:BI-ranger-gini} et \pageref{fig:BI-ranger-Jw}.
 
 ```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission\ : Gini)"}
 plot(ggarrange(
@@ -1195,7 +1209,7 @@ plot(ggarrange(
 
 \FloatBarrier
 \paragraph*{}
-L'interprétation graphique laisse entrevoir un comportement relativement similaire à celui du modèle Rborist, avec une sensibilité très élevée sur l'ensemble du domaine expérimental des hyperparamètres, et une spécificité dépendant largement du nombre de caractéristiques à séparer (*mtry*). L'efficience calculatoire est correcte, avec $t_{moy} = `r BI_temps_ranger`$ min ($n = `r nrow(BI_grid_ranger)`$ itérations).
+L'interprétation graphique laisse entrevoir un comportement relativement similaire à celui du modèle Rborist, avec une sensibilité très élevée sur l'ensemble du domaine expérimental des hyperparamètres, et une spécificité dépendant largement du nombre de caractéristiques à séparer (*mtry*). L'efficience calculatoire est excellente, avec $t_{moy} = `r BI_temps_ranger`$ min ($n = `r nrow(BI_grid_ranger)`$ itérations).
 
 \paragraph*{}
 Nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ :

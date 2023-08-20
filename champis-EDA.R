@@ -10,14 +10,12 @@ library(twinning)       # Découpage des jeux de données
 
 # Récupération, décompression, importation des données
 fichier_data <- tempfile()
-#URL <- "https://github.com/EKRihani/mushrooms/raw/master/MushroomDataset.zip"      # URL de mon repo
+#URL <- "https://github.com/EKRihani/champis/raw/master/lot_champis.zip"      # URL de mon repo
 # download.file(URL, fichier_data)
-fichier_data <- "~/projects/champis/MushroomDataset.zip" # FICHIER LOCAL
-
-fichier_data <- unzip(fichier_data, "MushroomDataset/secondary_data.csv")
-dataset <- read.csv(fichier_data, header = TRUE, sep = ";", stringsAsFactors = TRUE)
-dataset$class <- recode_factor(dataset$class, e = "comestible", p = "toxique")
-
+fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
+fichier_data <- unzip(fichier_data, "lot_champis.csv")
+dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
+dataset <- dataset %>% select(-c("Groupe", "Nom"))
 
 ########################################
 #  FORMATTAGE / NETTOYAGE DES DONNEES  #
@@ -81,14 +79,14 @@ for (n in 1:l){
 # Trace toutes les distributions monovariées du lot d'entrainement (toxique vs comestible)
 l <- nrow(structure_dataset)
 
-for (n in 2:l){    # La colonne 1 (class) n'est pas tracée (attribut de fill/couleur !)
+for (n in 2:l){    # La colonne 1 (Type) n'est pas tracée (attribut de fill/couleur !)
    titre_graphe <- paste("Distribution de", dataset_noms[n], "des champignons")
    plot <- lot_appr_opti %>%
-      ggplot(aes_string(x = dataset_noms[n], fill = lot_appr_opti$class)) + # aes_string permet l'utilisation de chaîne au lieu de nom de variable
+      ggplot(aes_string(x = dataset_noms[n], fill = lot_appr_opti$Type)) + # aes_string permet l'utilisation de chaîne au lieu de nom de variable
       ggtitle(titre_graphe) +
       ylab("Frequency") +
       xlab(dataset_noms[n]) +
-      scale_y_log10() +
+#      scale_y_log10() +
       theme_bw()
    if(structure_dataset$Type[n] %in% c("integer", "numeric"))   # Histogramme pour numériques, Barplot pour autres
    {plot <- plot + geom_histogram()}
@@ -101,10 +99,10 @@ for (n in 2:l){    # La colonne 1 (class) n'est pas tracée (attribut de fill/co
 # Graphes de corrélation pour une (petite) sélection de critères
 paires_graphes <- ggpairs(
       lot_appr_opti,
-      columns = c(2,15,17,10),
+      columns = c(2,4,9,10), #12,18,19,20,23,24,25,26
 #      lower = NULL,
       lower = list(continuous = wrap("density"), #densityDiag, dot, points, cor, smooth, smooth_loess, density
-                   combo = wrap("facetdensity", scale_x_continuous(trans = "log10")),  #dot, trends, box_no_facet, facethist, facetdensity, facetdensitystrip
+                   combo = wrap("facetdensity", #scale_x_continuous(trans = "log10")),  #dot, trends, box_no_facet, facethist, facetdensity, facetdensitystrip
                    discrete = wrap("count")  #barDiag, dot_no_facet, count, facetbar
       ),
       legend = 1,
@@ -115,7 +113,7 @@ paires_graphes <- ggpairs(
                    combo = wrap("dot", alpha = .3, shape = 20),
                    discrete = wrap("dot_no_facet", alpha = .3, shape = 20)
       ),
-      ggplot2::aes(color = class)
+      ggplot2::aes(color = Type)
    ) + 
    theme_bw() +
    scale_fill_viridis_d(begin = .1, end = .8, option = "D") + 
@@ -130,7 +128,7 @@ save.image(file = "EKR-Champis-EDA2.RData")     # Sauvegarde données pour rappo
 load(file = "EKR-Champis-EDA2.RData")     # Chargement données
 
 rm(dataset, index1, lot_appr_opti, unique_length)
-save.image(file = "EKR-Champis-EDA.RData")     # Sauvegarde données pour rapportb
+save.image(file = "EKR-Champis-EDA.RData")     # Sauvegarde données pour rapport
 
 
 load(file = "EKR-Champis-EDA.RData")     # Chargement données
