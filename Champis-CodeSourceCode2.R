@@ -1,53 +1,45 @@
 library(tidyverse)
-iris_lot <- iris %>% filter(Species != "virginica") %>% droplevels()
+RMD_Iris_Lot <- iris %>% filter(Species != "virginica") %>% droplevels()
+colnames(RMD_Iris_Lot) <- c("Long.Sep", "Larg.Sep", "Long.Pet", "Larg.Pet", "Espece")
 
 # Moyennes intraclasses
-iris_M <- iris_lot %>% 
-   aggregate(. ~ Species, mean) %>%
-   add_row(cbind("Species" = "difference", 
-                 .[1, names(.)!="Species"] - .[2, names(.)!="Species"])) %>%
-   column_to_rownames("Species")
+RMD_Iris_Moyennes <- RMD_Iris_Lot %>% 
+   aggregate(. ~ Espece, mean) %>%
+   add_row(cbind("Espece"="difference", 
+                 .[1, names(.) != "Espece"] - .[2, names(.) != "Espece"])) %>%
+   column_to_rownames("Espece")
 
 # Différences, puis carrés des différences (table III)
-iris_deltas <- iris_lot %>%
-   group_by(Species) %>%
+RMD_Iris_Deltas <- RMD_Iris_Lot %>%
+   group_by(Espece) %>%
    mutate_all(~. - mean(.)) %>%
-   ungroup() %>% select(!Species) %>%
+   ungroup() %>% select(!Espece) %>%
    as.matrix()
+RMD_Iris_Produits <- rbind(RMD_Iris_Deltas[,1] %*% RMD_Iris_Deltas,
+                    RMD_Iris_Deltas[,2] %*% RMD_Iris_Deltas,
+                    RMD_Iris_Deltas[,3] %*% RMD_Iris_Deltas,
+                    RMD_Iris_Deltas[,4] %*% RMD_Iris_Deltas)
+rownames(RMD_Iris_Produits) <- colnames(RMD_Iris_Produits)
 
-iris_prods <- rbind(iris_deltas[,1] %*% iris_deltas,
-                    iris_deltas[,2] %*% iris_deltas,
-                    iris_deltas[,3] %*% iris_deltas,
-                    iris_deltas[,4] %*% iris_deltas)
-rownames(iris_prods) <- colnames(iris_prods)
-
-iris_InvProds <- solve(iris_prods) %>% as.matrix() # Matrice inverse (table IV)
-iris_Coeffs <- as.matrix(iris_M["difference",]) %*% iris_InvProds # Coeffs bruts
-iris_CoeffsNorm <- iris_Coeffs/iris_Coeffs[1]  # Normalisation
+RMD_Iris_InvProduits <- solve(RMD_Iris_Produits) %>% as.matrix() # Matrice inverse (table IV)
+RMD_Iris_Coeffs <- as.matrix(RMD_Iris_Moyennes["difference",]) %*% RMD_Iris_InvProduits # Coeffs bruts
+RMD_Iris_CoeffsNorm <- RMD_Iris_Coeffs / RMD_Iris_Coeffs[1]  # Normalisation
 
 # Coeffs et graphiques LDA
-iris_lot <- iris_lot %>% 
-   mutate(X = rowSums(mapply(`*`,.[,names(.)!="Species"],iris_CoeffsNorm)))
+RMD_Iris_Lot <- RMD_Iris_Lot %>% 
+   mutate(X=rowSums(mapply(`*`,.[,names(.) != "Espece"],RMD_Iris_CoeffsNorm)))
 
-iris_grapheMAX <- iris_lot %>% 
-   ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
-   geom_point()
+RMD_Iris_GraphMAX <-ggplot(data=RMD_Iris_Lot, aes(x=Larg.Pet, y=Long.Pet, color=Espece)) + geom_point()
 
-iris_grapheMin <- iris_lot %>% 
-   ggplot(aes(x = Sepal.Width, y = Sepal.Length, color= Species)) +
-   geom_point()
+RMD_Iris_GraphMin <-ggplot(data=RMD_Iris_Lot, aes(x=Larg.Sep, y=Long.Sep, color=Espece)) + geom_point()
 
-iris_grapheX <- iris_lot %>% 
-   ggplot(aes(x = X, fill = Species)) +
-   geom_histogram()
+RMD_Iris_GraphX <- ggplot(data=RMD_Iris_Lot, aes(x=X, fill=Espece)) + geom_histogram()
 
-iris_norm <- iris_lot %>% 
-   mutate_at(., scale, .vars = which(names(.)!="Species")) %>% 
-   pivot_longer(data = ., cols = which(names(.)!="Species"))
+RMD_Iris_Norm <- RMD_Iris_Lot %>% 
+   mutate_at(., scale, .vars=which(names(.) != "Espece")) %>% 
+   pivot_longer(data=., cols=which(names(.) != "Espece"))
 
-iris_grapheTotale <- iris_norm %>%
-   ggplot(aes(x = name, y = value, fill = Species)) +
-   geom_boxplot()
+RMD_Iris_GraphTotale <- ggplot(data=RMD_Iris_Norm, aes(x=name, y=value, fill=Espece)) + geom_boxplot()
 
-save.image(file = "EKR-Champis-CodeSource2.RData")
-load(file = "EKR-Champis-CodeSource2.RData")
+save.image(file="EKR-Champis-CodeSourceIris.RData")
+load(file="EKR-Champis-CodeSourceIris.RData")

@@ -2179,3 +2179,102 @@ save.image(file = "EKR-Champis-CodeSourceBi.RData")
 \normalsize
 
 \newpage
+# Annexe 4\ : Langage de balisage Rmarkdown
+\paragraph*{}
+Rmarkdown est un langage de balisage particulièrement puissant, permettant de combiner les possibilités de R et de Latex. Ce langage a été intégralement utilisé pour rédiger cette étude, et cette annexe a pour but d'esquisser les possibilités offertes par ce langage, en reprenant succinctement la partie décrivant la LDA.
+\paragraph*{}
+Rmarkdown permet d'utiliser des blocs de code R afin d'effectuer certains calculs, ou d'importer les objets générés par un script R et enregistrés via la fonction *save.image*. C'est cette dernière approche que nous exploiterons.
+\paragraph*{}
+Le bloc suivant reprend les éléments principaux du script R chargé de calculer la LDA :
+\scriptsize
+```{r, eval = FALSE}
+library(tidyverse)
+RMD_Iris_Lot <- iris %>% filter(Species != "virginica") %>% droplevels()
+colnames(RMD_Iris_Lot) <- c("Long.Sep", "Larg.Sep", "Long.Pet", "Larg.Pet", "Espece")
+
+# Moyennes intraclasses
+RMD_Iris_Moyennes <- RMD_Iris_Lot %>% 
+   aggregate(. ~ Espece, mean) %>%
+   add_row(cbind("Espece"="difference", 
+                 .[1, names(.) != "Espece"] - .[2, names(.) != "Espece"])) %>%
+   column_to_rownames("Espece")
+
+# Différences, puis carrés des différences (table III)
+RMD_Iris_Deltas <- RMD_Iris_Lot %>%
+   group_by(Espece) %>%
+   mutate_all(~. - mean(.)) %>%
+   ungroup() %>% select(!Espece) %>%
+   as.matrix()
+RMD_Iris_Produits <- rbind(RMD_Iris_Deltas[,1] %*% RMD_Iris_Deltas,
+                    RMD_Iris_Deltas[,2] %*% RMD_Iris_Deltas,
+                    RMD_Iris_Deltas[,3] %*% RMD_Iris_Deltas,
+                    RMD_Iris_Deltas[,4] %*% RMD_Iris_Deltas)
+rownames(RMD_Iris_Produits) <- colnames(RMD_Iris_Produits)
+
+RMD_Iris_InvProduits <- solve(RMD_Iris_Produits) %>% as.matrix() # Matrice inverse (table IV)
+RMD_Iris_Coeffs <- as.matrix(RMD_Iris_Moyennes["difference",]) %*% RMD_Iris_InvProduits # Coeffs bruts
+RMD_Iris_CoeffsNorm <- RMD_Iris_Coeffs / RMD_Iris_Coeffs[1]  # Normalisation
+
+# Coeffs et graphiques LDA
+RMD_Iris_Lot <- RMD_Iris_Lot %>% 
+   mutate(X=rowSums(mapply(`*`,.[,names(.) != "Espece"],RMD_Iris_CoeffsNorm)))
+
+RMD_Iris_GraphMAX <-ggplot(data=RMD_Iris_Lot, aes(x=Larg.Pet, y=Long.Pet, color=Espece)) + geom_point()
+
+RMD_Iris_GraphMin <-ggplot(data=RMD_Iris_Lot, aes(x=Larg.Sep, y=Long.Sep, color=Espece)) + geom_point()
+
+RMD_Iris_GraphX <- ggplot(data=RMD_Iris_Lot, aes(x=X, fill=Espece)) + geom_histogram()
+
+RMD_Iris_Norm <- RMD_Iris_Lot %>% 
+   mutate_at(., scale, .vars=which(names(.) != "Espece")) %>% 
+   pivot_longer(data=., cols=which(names(.) != "Espece"))
+
+RMD_Iris_GraphTotale <- ggplot(data=RMD_Iris_Norm, aes(x=name, y=value, fill=Espece)) + geom_boxplot()
+
+save.image(file="EKR-Champis-CodeSourceIris.RData")
+```
+\normalsize
+\paragraph*{}
+Cette partie présente aussi une figure au format vectoriel, enregistrée sous le nom de fichier *LDA.pdf*, ainsi que des références bibliographiques, enregistrées dans un fichier au format Bibtex, sous le nom *Champis-SourceBiblio.bib*, dont le bloc suivant reprend le contenu :
+
+\scriptsize
+```{r, eval = FALSE}
+@article{fisher_use_1936,
+	title = {The {Use} of {Multiple} {Measurements} in {Taxonomic} {Problems}},
+	volume = {7},
+	issn = {2050-1439},
+	url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1469-1809.1936.tb02137.x},
+	doi = {10.1111/j.1469-1809.1936.tb02137.x},
+	number = {2},
+	journal = {Annals of Eugenics},
+	author = {Fisher, R. A.},
+	year = {1936},
+	pages = {179--188},
+}
+
+@article{anderson_r_1996,
+	title = {R. {A}. {Fisher} and {Multivariate} {Analysis}},
+	volume = {11},
+	issn = {0883-4237},
+	url = {https://www.jstor.org/stable/2246198},
+	number = {1},
+	journal = {Statistical Science},
+	author = {Anderson, T. W.},
+	year = {1996},
+	note = {Publisher: Institute of Mathematical Statistics},
+	pages = {20--34},
+}
+
+@book{hastie_elements_2016,
+	edition = {2nd},
+	series = {Springer {Series} in {Statistics}},
+	title = {The {Elements} of {Statistical} {Learning} - {Data} {Mining}, {Inference}, and {Prediction}},
+	isbn = {978-0-387-84857-0},
+	publisher = {Springer},
+	author = {Hastie, Trevor and Tibshirani, Robert and Friedman, Jerome},
+	year = {2016},
+}
+```
+\normalsize
+
+\newpage

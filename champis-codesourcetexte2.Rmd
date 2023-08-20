@@ -4,15 +4,15 @@ fontsize: 12pt
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: ["float", "placeins", "svg", "amssymb", "amsmath"]
+    extra_dependencies: ["float", "placeins", "amssymb", "amsmath"]
     toc: no
 indent: true
-bibliography: [Champis.bib]
-csl: https://www.zotero.org/styles/springer-vancouver
+bibliography: [Champis-SourceBiblio.bib]
+csl: https://www.zotero.org/styles/vancouver
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
-load(file = "EKR-Champis-CodeSource2.RData")
+load(file = "EKR-Champis-CodeSourceIris.RData")
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
 library(rmarkdown)
@@ -34,7 +34,7 @@ Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'ana
 \FloatBarrier
 
 \paragraph*{}
-L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
+L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.[@fisher_use_1936;@anderson_r_1996] La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
 
 \paragraph*{}
 \begin{figure}
@@ -63,12 +63,12 @@ avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaq
 L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd}\ :
 
 ```{r, LDA-TableMoy, echo = FALSE}
-kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
+kable(RMD_Iris_Moyennes, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
 ```{r, LDA-TableProd, echo = FALSE}
-kable(iris_prods, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor ($S_{pq}$)") %>%
+kable(RMD_Iris_Produits, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor ($S_{pq}$)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
@@ -105,24 +105,24 @@ Nous pouvons calculer les coefficients\ :
 \paragraph*{}
 $$\left \{
 \begin{array}{l}
-\lambda_{1} = `r iris_Coeffs[1]` \\
-\lambda_{2} = `r iris_Coeffs[2]` \\
-\lambda_{3} = `r iris_Coeffs[3]` \\
-\lambda_{4} = `r iris_Coeffs[4]` \\
+\lambda_{1} = `r RMD_Iris_Coeffs[1]` \\
+\lambda_{2} = `r RMD_Iris_Coeffs[2]` \\
+\lambda_{3} = `r RMD_Iris_Coeffs[3]` \\
+\lambda_{4} = `r RMD_Iris_Coeffs[4]` \\
 \end{array}
 \right.$$
 Soit, après normalisation sur le facteur $\lambda_{1}$\ :
 
 $$\left \{
 \begin{array}{l}
-\lambda_{1} = `r iris_CoeffsNorm[1]` \\
-\lambda_{2} = `r round(iris_CoeffsNorm[2],3)` \\
-\lambda_{3} = `r round(iris_CoeffsNorm[3],3)` \\
-\lambda_{4} = `r round(iris_CoeffsNorm[4],3)` \\
+\lambda_{1} = `r RMD_Iris_CoeffsNorm[1]` \\
+\lambda_{2} = `r round(RMD_Iris_CoeffsNorm[2],3)` \\
+\lambda_{3} = `r round(RMD_Iris_CoeffsNorm[3],3)` \\
+\lambda_{4} = `r round(RMD_Iris_CoeffsNorm[4],3)` \\
 \end{array}
 \right.$$
 
-$$ X = L_{s} + `r round(iris_CoeffsNorm[2],3)`.\ell_{s} `r round(iris_CoeffsNorm[3],3)`.L_{p} `r round(iris_CoeffsNorm[4],3)`.\ell_{p} $$
+$$ X = L_{s} + `r round(RMD_Iris_CoeffsNorm[2],3)`.\ell_{s} `r round(RMD_Iris_CoeffsNorm[3],3)`.L_{p} `r round(RMD_Iris_CoeffsNorm[4],3)`.\ell_{p} $$
 
 Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
 \paragraph*{}
@@ -131,8 +131,8 @@ La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous
 ```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
-   iris_grapheMAX + theme(legend.position = "none"),
-   iris_grapheMin
+   RMD_Iris_GraphMAX + theme(legend.position = "none"),
+   RMD_Iris_GraphMin
    )
 )
 ```
@@ -140,8 +140,8 @@ plot(ggarrange(widths = c(1, 1.5),
 ```{r LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction des espèces"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
-   iris_grapheX + theme(legend.position = "none"),
-   iris_grapheTotale
+   RMD_Iris_GraphX + theme(legend.position = "none"),
+   RMD_Iris_GraphTotale
    )
 )
 ```
