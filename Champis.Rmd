@@ -2180,8 +2180,9 @@ save.image(file = "EKR-Champis-CodeSourceBi.RData")
 
 \newpage
 # Annexe 4\ : Langage de balisage Rmarkdown
+## Introduction et préparation
 \paragraph*{}
-Rmarkdown est un langage de balisage particulièrement puissant, permettant de combiner les possibilités de R et de Latex. Ce langage a été intégralement utilisé pour rédiger cette étude, et cette annexe a pour but d'esquisser les possibilités offertes par ce langage, en reprenant succinctement la partie décrivant la LDA.
+Rmarkdown est un langage de balisage permettant d'associer les possibilités offertes par R et Latex. Ce langage a été utilisé pour rédiger cette étude, et cette annexe propose d'esquisser les possibilités qu'il offre, en reprenant succinctement la partie décrivant la LDA.
 \paragraph*{}
 Rmarkdown permet d'utiliser des blocs de code R afin d'effectuer certains calculs, ou d'importer les objets générés par un script R et enregistrés via la fonction *save.image*. C'est cette dernière approche que nous exploiterons.
 \paragraph*{}
@@ -2231,11 +2232,11 @@ RMD_Iris_Norm <- RMD_Iris_Lot %>%
 
 RMD_Iris_GraphTotale <- ggplot(data=RMD_Iris_Norm, aes(x=name, y=value, fill=Espece)) + geom_boxplot()
 
-save.image(file="EKR-Champis-CodeSourceIris.RData")
+save.image(file="CodeSourceIris.RData")
 ```
 \normalsize
 \paragraph*{}
-Cette partie présente aussi une figure au format vectoriel, enregistrée sous le nom de fichier *LDA.pdf*, ainsi que des références bibliographiques, enregistrées dans un fichier au format Bibtex, sous le nom *Champis-SourceBiblio.bib*, dont le bloc suivant reprend le contenu :
+Cette partie présente aussi une figure au format vectoriel, enregistrée sous le nom de fichier *LDA.pdf*, ainsi que des références bibliographiques, enregistrées dans un fichier au format Bibtex, sous le nom *IrisBiblio.bib*, dont le bloc suivant reprend le contenu :
 
 \scriptsize
 ```{r, eval = FALSE}

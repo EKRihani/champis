@@ -7,12 +7,12 @@ output:
     extra_dependencies: ["float", "placeins", "amssymb", "amsmath"]
     toc: no
 indent: true
-bibliography: [Champis-SourceBiblio.bib]
+bibliography: [IrisBiblio.bib]
 csl: https://www.zotero.org/styles/vancouver
 ---
 
 ```{r setup, include = FALSE, warning=FALSE}
-load(file = "EKR-Champis-CodeSourceIris.RData")
+load(file = "CodeSourceIris.RData")
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
 library(rmarkdown)
