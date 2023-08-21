@@ -1549,7 +1549,7 @@ La seule bibliothèque utilisée lors de la création du lot de données synthé
 library(tidyverse)
 ```
 \normalsize
-Notre algorithme charge ensuite le fichier csv contenant les caractéristiques typiques des champignons, qui est lu avec les paramètres de décimale et de séparateur utilisés lors de la création et de la sauvegarde du tableau csv (respectivement *,* et *;*), puis attribué à un *dataframe* que nous nommerons *data_champis*. Les lignes commentées correspondent à l'utilisation d'un fichier identique hébergé à distance sur un dépôt GitHub.
+Notre algorithme charge ensuite le fichier csv contenant les caractéristiques typiques des champignons, qui est lu avec les paramètres de décimale et de séparateur utilisés lors de la création et de la sauvegarde du tableau csv (respectivement *,* et *;*), puis attribué à un *dataframe* que nous nommerons \verb|data_champis|. Les lignes commentées correspondent à l'utilisation d'un fichier identique hébergé à distance sur un dépôt GitHub.
 
 \small
 ```{r, eval = FALSE}
@@ -1567,11 +1567,11 @@ data_champis <- read.csv(fichier_data,
 
 ## Préparation des données
 
-L'étape suivante consiste à extraire des données d'intérêt relatives à structure de notre objet *data_champis*, qui seront utiles pour les étapes ultérieures du générateur. 
+L'étape suivante consiste à extraire des données d'intérêt relatives à structure de notre objet \verb|data_champis|, qui seront utiles pour les étapes ultérieures du générateur. 
 \paragraph*{}
-La première partie de cette étape s'applique à déterminer le caractère numérique (*i.e.* dimensionnel) ou textuel de chaque variable, à l'aide de la fonction *class*, appliquée sur la totalité de notre objet via une fonction *sapply*. Les données numériques sont ici définies comme des données entières (*integer*) ou numériques (*numeric*). Les données textuelles sont quant à elles définies comme toutes les données n'obéissant pas à ces deux critères.
+La première partie de cette étape s'applique à déterminer le caractère numérique (*i.e.* dimensionnel) ou textuel de chaque variable, à l'aide de la fonction \verb|class|, appliquée sur la totalité de notre objet via une fonction \verb|sapply|. Les données numériques sont ici définies comme des données entières (\verb|integer|) ou numériques (\verb|numeric|). Les données textuelles sont quant à elles définies comme toutes les données n'obéissant pas à ces deux critères.
 \paragraph*{}
-La seconde partie de cette étape extrait le nombre d'espèces présentes dans notre lot de données et indice chacune d'entre elle dans une variable dédiée *N*.
+La seconde partie de cette étape extrait le nombre d'espèces présentes dans notre lot de données et indice chacune d'entre elle dans une variable dédiée \verb|N|.
 
 \small
 ```{r, eval = FALSE}
@@ -1587,7 +1587,7 @@ data_champis$N <- 1:n_especes
 \paragraph*{}
 Les données relatives à la saisonnalité des champignons ont été créées, dans notre tableau initial, sous la forme *mm-MM*, avec *mm* le mois de début, et *MM* le mois de fin de fructification. Afin de pouvoir générer chacun des mois de cet intervalle, nous pouvons créer un vecteur contenant chacune des valeurs de cet intervalle, à l'aide d'une fonction *ad hoc*.
 \paragraph*{}
-Cette fonction extrait tout d'abord les deux chaînes numériques *mm* et *MM*, avant d'effectuer une comparaison entre ces deux valeurs. En effet, si $mm > MM$, alors la saison de fructification devra inclure le passage de décembre à janvier, et donc générer toutes les valeurs entières de *mm* à 12, puis celles de 1 à *MM*. L'ensemble de ces valeurs est intégrée dans une chaîne de caractères via la fonction *str_flatten*, avec la séparation appropriée. Cette fonction est ensuite appliquée sur l'ensemble de la variable *Mois*.
+Cette fonction extrait tout d'abord les deux chaînes numériques *mm* et *MM*, avant d'effectuer une comparaison entre ces deux valeurs. En effet, si $mm > MM$, alors la saison de fructification devra inclure le passage de décembre à janvier, et donc générer toutes les valeurs entières de *mm* à 12, puis celles de 1 à *MM*. L'ensemble de ces valeurs est intégrée dans une chaîne de caractères via la fonction \verb|str_flatten\verb|, avec la séparation appropriée. Cette fonction est ensuite appliquée sur l'ensemble de la variable \verb|Mois\verb|.
 
 \small
 ```{r, eval = FALSE}
@@ -1609,13 +1609,13 @@ data_champis$Mois <- lapply(X = data_champis$Mois, FUN = ConversionMois)
 \paragraph*{}
 Une autre particularité de notre lot de données est la prise en compte de caractéristiques rares, parfois rencontrées chez certains individus, mais néanmoins mentionnées dans la littérature mycologique comme étant exceptionnelles. Ces données ont été enregistrées entre parenthèses dans le tableau csv.
 \paragraph*{}
-La stratégie retenue ici consiste à effectuer un tirage équiprobable, dans un vecteur contenant une occurrence unique de chaque valeur rare, et une répétition de chaque valeur commune. Le nombre de répétition de chaque valeur commune est ici défini par la variable *ratio_cr*.
+La stratégie retenue ici consiste à effectuer un tirage équiprobable, dans un vecteur contenant une occurrence unique de chaque valeur rare, et une répétition de chaque valeur commune. Le nombre de répétition de chaque valeur commune est ici défini par la variable \verb|ratio_cr|.
 \paragraph*{}
-La fonction créée afin de générer ce vecteur effectue tout d'abord un test visant à identifier les chaînes de caractères de type *(xxx)*, synonymes de présence d'une caractéristique rare. En l'absence d'une caractéristique rare, les données d'entrées seront inchangées par l'algorithme. En la présence d'une telle caractéristique, chaque valeur (séparée par une virgule) est extraite individuellement par la fonction *strsplit*.
+La fonction créée afin de générer ce vecteur effectue tout d'abord un test visant à identifier les chaînes de caractères de type \verb|(xxx)|, synonymes de présence d'une caractéristique rare. En l'absence d'une caractéristique rare, les données d'entrées seront inchangées par l'algorithme. En la présence d'une telle caractéristique, chaque valeur (séparée par une virgule) est extraite individuellement par la fonction \verb|strsplit|.
 \paragraph*{}
-Un vecteur *n_repet*, contenant le nombre de répétitions de chaque valeur (ici, 10 pour une valeur commune, 1 pour une rare) est généré, par détection de l'absence de parenthèses autour des valeurs. Ce vecteur servira d'argument à la fonction *rep* pour générer la liste complète. Les parenthèses sont ensuite ôtées, et toutes les valeurs concaténées, avec une virgule en tant que séparateur.
+Un vecteur \verb|n_repet|, contenant le nombre de répétitions de chaque valeur (ici, 10 pour une valeur commune, 1 pour une rare) est généré, par détection de l'absence de parenthèses autour des valeurs. Ce vecteur servira d'argument à la fonction \verb|rep| pour générer la liste complète. Les parenthèses sont ensuite ôtées, et toutes les valeurs concaténées, avec une virgule en tant que séparateur.
 \paragraph*{}
-La fonction ainsi créée sera appliquée à l'ensemble des variables précédemment identifiées comme textuelles, pour chaque ligne de l'objet *data_champis*, via la construction du texte constituant la commande, puis son exécution par la combinaison de fonctions *eval* et *parse*.
+La fonction ainsi créée sera appliquée à l'ensemble des variables précédemment identifiées comme textuelles, pour chaque ligne de l'objet \verb|data_champis|, via la construction du texte constituant la commande, puis son exécution par la combinaison de fonctions \verb|eval| et \verb|parse|.
 
 \small
 ```{r, eval = FALSE}
@@ -1652,9 +1652,9 @@ for (n in 1:n_especes){
 
 La génération du lot de données à proprement parler peut commencer. La stratégie globale est de générer un sous-lot de données par espèce, contenant un nombre défini de spécimens, puis de les regrouper dans le lot final, qui sera par la suite exporté sous forme d'un tableau csv.
 \paragraph*{}
-La première étape de la génération des sous-lots consiste à créer une liste par espèce, nommée *champN*, avec *N* l'indice attribué précédemment à chaque espèce. La génération implique tout d'abord de créer une liste des noms de listes, ainsi qu'une fonction *ad hoc* permettant de séparer toutes les valeurs séparées par des virgules.
+La première étape de la génération des sous-lots consiste à créer une liste par espèce, nommée \verb|champN|, avec \verb|N| l'indice attribué précédemment à chaque espèce. La génération implique tout d'abord de créer une liste des noms de listes, ainsi qu'une fonction *ad hoc* permettant de séparer toutes les valeurs séparées par des virgules.
 \paragraph*{}
-Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* *data_champis*. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction *str_split* étant par définition une chaîne de caractère, toutes valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront quant à elles forcées en tant que numériques via la fonction *as.numeric*.
+Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* \verb|data_champis|. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction \verb|str_split| étant par définition une chaîne de caractère, toutes valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront quant à elles forcées en tant que numériques via la fonction \verb|as.numeric|.
 
 \small
 ```{r, eval = FALSE}
@@ -1679,7 +1679,7 @@ for (n in 1:n_especes){
 \normalsize
 
 \paragraph*{}
-La préparation de la seconde et dernière étape de la génération des données consiste à définir la liste des lots de chaque espèce, appelés *lotN* (avec *N* l'indice attribué à chaque espèce), ainsi que quelques variables : nombre de champignons par espèce (*n_champis*), facteur de croissance appliqué à la loi bêta (*f_crois*), de même qu' une fonction permettant de générer la dispersion suivant la loi normale $\mathcal{N}(\mu = 1 ; \sigma = 0.05)$ et arrondissant la valeur finale à deux décimales.\footnote{cf. section \ref{chapitre:generation_quanti}, page \pageref{chapitre:generation_quanti} et suivantes.}
+La préparation de la seconde et dernière étape de la génération des données consiste à définir la liste des lots de chaque espèce, appelés \verb|lotN| (avec \verb|N| l'indice attribué à chaque espèce), ainsi que quelques variables : nombre de champignons par espèce (\verb|n_champis|), facteur de croissance appliqué à la loi bêta (\verb|f_crois|), de même qu'une fonction permettant de générer la dispersion suivant la loi normale $\mathcal{N}(\mu = 1 ; \sigma = 0.05)$ et arrondissant la valeur finale à deux décimales.\footnote{cf. section \ref{chapitre:generation_quanti}, page \pageref{chapitre:generation_quanti} et suivantes.}
 
 \small
 ```{r, eval = FALSE}
@@ -1701,17 +1701,17 @@ La génération des sous-lots se décompose fondamentalement en trois étapes :
 
 1. La construction d'un objet vide pour chaque lot,
 2. La construction des chaînes de caractères de chaque commande, 
-3. L'exécution de ces commandes par l'en chaînement de fonctions *eval*/*parse*
+3. L'exécution de ces commandes par l'enchaînement de fonctions \verb|parse| et \verb|eval|
 
 \paragraph*{}
 Les chaînes de caractères correspondent aux commandes suivantes :
 
-* *ordre_texte* insère, pour toutes les valeurs textuelles, une valeur piochée au hasard dans celles de la liste,
-* *ordre_fac* définit, en suivant une loi bêta, le facteur de taille,
-* *ordre_num1* multiplie ce facteur de taille par la valeur maximale de chaque caractéristique dimenstionnelle,
-* *ordre_num2* y applique la fonction de dispersion et d'arrondi définie précédemment,
-* *ordre_df* crée l'objet de type *dataframe* regroupant toutes ces données,
-* *ordre_suppr* et *ordre_rm* nettoient l'environnement en supprimant les données inutiles.
+* \verb|ordre_texte| insère, pour toutes les valeurs textuelles, une valeur piochée au hasard dans celles de la liste,
+* \verb|ordre_fac| définit, en suivant une loi bêta, le facteur de taille,
+* \verb|ordre_num1| multiplie ce facteur de taille par la valeur maximale de chaque caractéristique dimensionnelle,
+* \verb|ordre_num2| y applique la fonction de dispersion et d'arrondi définie précédemment,
+* \verb|ordre_df| crée l'objet de type *dataframe* regroupant toutes ces données,
+* \verb|ordre_suppr| et \verb|ordre_rm| nettoient l'environnement en supprimant les données inutiles.
 
 \small
 ```{r, eval = FALSE}
@@ -1755,7 +1755,7 @@ lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)), ]
 ```
 \normalsize
 
-La toute dernière étape dans la préparation du lot est de détecter toutes les valeurs *concolores* ou *subconcolores* caractérisant la couleur du stipe, de la chair ou des lames de certains spécimens et d'en extraire les indices respectifs. La liste de ces indices permettra d'aligner les valeurs concernées sur la valeur de couleur du chapeau.
+La toute dernière étape dans la préparation du lot est de détecter toutes les valeurs \verb|"concolores"| ou \verb|"subconcolores"| caractérisant la couleur du stipe, de la chair ou des lames de certains spécimens et d'en extraire les indices respectifs. La liste de ces indices permettra d'aligner les valeurs concernées sur la valeur de couleur du chapeau.
 \small
 ```{r, eval = FALSE}
 Concol_Pied <- which(lot_final$Pied.Couleur %in% c("concolore", "subconcolore"))
@@ -1796,11 +1796,11 @@ Nous détaillerons ici principalement les algorithmes utilisés pour le classifi
 \paragraph*{}
 Les bibliothèques utilisées lors des étapes d'apprentissage machine sont\ :
 
-* tidyverse,[@R-tidyverse] collection de bibliothèques spécialisées dans le domaine de la *data science*,
-* DiceDesign,[@R-DiceDesign] bibliothèque spécialisée dans la création de plans d'expériences hypercubiques,
-* DiceEval,[@R-DiceEval] bibliothèque spécialisée dans la modélisation des résultats de plans d'expériences hypercubiques,
-* caret,[@R-caret] collection d'outils dédiés à l'apprentissage machine.
-* twinning,[@R-twinning] outils dédiés à la génération de jeux de données d'entraînement, optimisation, validation équilibrés.
+* \verb|tidyverse|,[@R-tidyverse] collection de bibliothèques spécialisées dans le domaine de la *data science*,
+* \verb|DiceDesign|,[@R-DiceDesign] bibliothèque spécialisée dans la création de plans d'expériences hypercubiques,
+* \verb|DiceEval|,[@R-DiceEval] bibliothèque spécialisée dans la modélisation des résultats de plans d'expériences hypercubiques,
+* \verb|caret|,[@R-caret] collection d'outils dédiés à l'apprentissage machine.
+* \verb|twinning|,[@R-twinning] outils dédiés à la génération de jeux de données d'entraînement, optimisation, validation équilibrés.
 
 \small
 ```{r, eval = FALSE}
@@ -1813,9 +1813,9 @@ library(twinning)
 \normalsize
 
 \paragraph*{}
-Le chargement des données s'effectue de la même façon que lors des sections précédentes. L'argument *stringsAsFactors = TRUE* revêt une importance particulière, car la classe *factor* est essentielle au bon fonctionnement des classifieurs. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction *relevel*, la classe *"Rejeter"* comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
+Le chargement des données s'effectue de la même façon que lors des sections précédentes. L'argument \verb|stringsAsFactors = TRUE| revêt une importance particulière, car la classe \verb|factor| est essentielle au bon fonctionnement des classifieurs. Dans le cadre d'une classification binaire, nous définissons arbitrairement, à l'aide de la fonction \verb|relevel|, la classe \verb|"Rejeter"| comme étant la valeur positive. Cette définition n'est pas nécessaire pour les classifieurs multiclasses.
 
-Dans le cadre des classifications binaire et multiclasse, nous ôterons respectivement le nom de chaque spécimen (variable *Nom*), son groupe (variable *Groupe*), et/ou sa comestiblité (variable *Type*), ces variables étant censées être inconnues du modèle prédictif et ne représentant pas la caractéristique à prédire.
+Dans le cadre des classifications binaire et multiclasse, nous ôterons respectivement le nom de chaque spécimen (variable \verb|Nom|), son groupe (variable \verb|Groupe|), et/ou sa comestibilité (variable \verb|Type|), ces variables étant censées être inconnues du modèle prédictif et ne représentant pas la caractéristique à prédire.
 
 \small
 ```{r, eval = FALSE}
@@ -1843,7 +1843,7 @@ BI_split_facteur <- round(sqrt(BI_split_p)+1)
 ```
 \normalsize
 
-La seconde partie consiste à effectuer la scission proprement dite. Cette scission implique la définition d'une liste d'index, de fraction $1:f$ du nombre d'individus, qui servira via inclusion (jeu d'évaluation) ou exclusion (jeu d'apprentissage et d'évaluation) booléennes des lignes correspondantes, à de constituer chaque jeu de données. La fonction *set.seed* assure la reproductibilité.
+La seconde partie consiste à effectuer la scission proprement dite. Cette scission implique la définition d'une liste d'index, de fraction $1:f$ du nombre d'individus, qui servira via inclusion (jeu d'évaluation) ou exclusion (jeu d'apprentissage et d'évaluation) booléennes des lignes correspondantes, à de constituer chaque jeu de données. La fonction \verb|set.seed| assure la reproductibilité.
 \small
 ```{r, eval = FALSE}
 set.seed(7)
@@ -1868,7 +1868,7 @@ BI_RatioSens <- 2*BI_w/(BI_w+1)
 BI_RatioSpec <- 2*(1-BI_w/(BI_w+1))
 ```
 \normalsize
-La seconde définition à préciser est celle de l'espace expérimental des hyperparamètres. En l'espèce le seul hyperparamètre du modèle rpart est la variable *cp*.
+La seconde définition à préciser est celle de l'espace expérimental des hyperparamètres. En l'espèce le seul hyperparamètre du modèle rpart est la variable \verb|cp|.
 \small
 ```{r, eval = FALSE}
 BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
@@ -1876,15 +1876,15 @@ BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
 \normalsize
 
 \label{paragraphe:train-CART}
-L'étape suivante est de définir les paramètres d'entraînement et d'évaluation des performances du modèle en vue de son optimisation. La fonction *trainControl* permet ici de préciser les principaux paramètres régissant cette étape\ :
+L'étape suivante est de définir les paramètres d'entraînement et d'évaluation des performances du modèle en vue de son optimisation. La fonction \verb|trainControl| permet ici de préciser les principaux paramètres régissant cette étape\ :
 
-* *classProbs*, afin de permettre le calcul des indicateurs de performance (ROC, spécificité, sensibilité...)
-* *summaryFunction*, afin d'indiquer que les métriques de performance à utiliser sont celles d'un classifieur binaire (l'argument *multiClassSummary* sera utilisé pour un classifieur multiclasse)
-* *method*, afin de préciser la méthode de construction des jeux d'entraînement et d'optimisation, ici validation croisée (*CV\ : cross-validation*)
-* *number*, afin d'indiquer le nombre de blocs de la validation croisée, calculé précédemment.
+* \verb|classProbs|, afin de permettre le calcul des indicateurs de performance (ROC, spécificité, sensibilité...)
+* \verb|summaryFunction| indique que les métriques de performance à utiliser sont celles d'un classifieur binaire (l'argument \verb|multiClassSummary| sera utilisé pour un classifieur multiclasse)
+* \verb|method|, afin de préciser la méthode de construction des jeux d'entraînement et d'optimisation, ici validation croisée (*CV\ : cross-validation*)
+* \verb|number|, afin d'indiquer le nombre de blocs de la validation croisée, calculé précédemment.
 
 \paragraph*{}
-Ici aussi, la fonction *set.seed* assure la reproductibilité du processus.
+Ici aussi, la fonction \verb|set.seed| assure la reproductibilité du processus.
 \small
 ```{r, eval = FALSE}
 set.seed(1)
@@ -1895,7 +1895,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
 ```
 \normalsize
 
-L'entraînement du modèle peut avoir lieu. En l'espèce, le modèle mathématique retenu est l'attribution d'une prédiction sur *Type* en fonction de toutes les autres variables (*Type ~ .*). Les arguments *data*, *trControl*, *tuneGrid* font appel aux éléments décrits dans les paragraphes qui précèdent.
+L'entraînement du modèle peut avoir lieu. Ici, le modèle mathématique retenu est l'attribution d'une prédiction sur \verb|Type| en fonction de toutes les autres variables (\verb|Type ~ .|). Les arguments \verb|data|, \verb|trControl|, \verb|tuneGrid| font appel aux éléments décrits dans les paragraphes qui précèdent.
 
 \small
 ```{r, eval = FALSE}
@@ -1930,13 +1930,13 @@ kable(BI_fit_rpart_cp_resultats, caption = "Tableau des résultats de l'entraîn
 \paragraph*{}
 L'algorithme génère également un graphique synthétisant les performances du modèle (sensibilité, spécificité, $J_{w}$, $\kappa$, $R$ ou autre indicateur d'intérêt) en fonction de son hyperparamètre\ :
 
-* *ggplot* est la fonction de génération du graphique, et permet d'appeler l'objet servant à générer le graphique, ainsi que certains paramètres complémentaires via *aes*. Ici, la variable servant d’abscisse.
-* *geom_point* permet de tracer le nuage de points. Ici encore, *aes* permet de préciser, pour chaque nuage de points, la variable d'ordonnée (*Sens*, *Spec* ou *Jw*), ainsi que la légende associée à la couleur des points (*Sensibilité*, *Spécificité* ou *Jw*).
-* *geom_line* permet de tracer les lignes correspondant au nuage de points.
-* *labs* permet de légender correctement l'attribut *color* de notre légende.
-* *ylab* permet de définir la légende l'axe des ordonnées. Ici, de la supprimer, car nous avons trois variables différentes en ordonnées.
-* *scale_x_log10* nous permet ici de définir un axe logarithmique décimal en abscisse.
-* *theme_bw* attribue le thème(couleur de fond, d'axes, grilles) de type *bw* (*black and white*) à notre graphique.
+* \verb|ggplot| est la fonction de génération du graphique, et permet d'appeler l'objet servant à générer le graphique, ainsi que certains paramètres complémentaires via \verb|aes|. Ici, la variable servant d'abscisse.
+* \verb|geom_point| permet de tracer le nuage de points. Ici encore, \verb|aes| permet de préciser, pour chaque nuage de points, la variable d'ordonnée (\verb|Sens|, \verb|Spec| ou \verb|Jw|), ainsi que la légende associée à la couleur des points (*Sensibilité*, *Spécificité* ou *Jw*).
+* \verb|geom_line| permet de tracer les lignes correspondant au nuage de points.
+* \verb|labs| permet de légender correctement l'attribut \verb|color| de notre légende.
+* \verb|ylab| permet de définir la légende l'axe des ordonnées. Ici, de la supprimer, car nous avons trois variables différentes en ordonnées.
+* \verb|scale_x_log10| nous permet ici de définir un axe logarithmique décimal en abscisse.
+* \verb|theme_bw| attribue le thème(couleur de fond, d'axes, grilles) de type \verb|bw| (*black and white*) à notre graphique.
 
 \small
 ```{r, eval = FALSE}
@@ -1954,6 +1954,7 @@ BI_fit_rpart_cp_graphe <- ggplot(data = BI_fit_rpart_cp_resultats, aes(x = cp)) 
 ```
 \normalsize
 
+\paragraph*{}
 Le graphique ainsi généré peut être intégré dans notre rapport\ :
 \FloatBarrier
 
@@ -1965,7 +1966,7 @@ plot(BI_fit_rpart_cp_graphe)
 
 ### Rborist
 
-La première étape est, comme précédemment, de définir l'espace expérimental. Ici, s'agissant d'un modèle à plusieurs hyperparamètres, l'algorithme utilisera un plan d'expériences basé sur les hypercubes latins. La fonction *nolhDesign* permet de créer un hypercube latin quasi-orthogonal (NOLH\ : *Near Orthogonal Latin Hypercube*), ici paramétré avec 2 dimensions, dans l'espace $[0;1]^{2}$. Le plan d'expérience en est extrait, puis inséré dans un objet de type *dataframe*, avec colonnes nommées d'après nos variables réduites $X_{1}$ et $X_{2}$.
+La première étape est, comme précédemment, de définir l'espace expérimental. Ici, s'agissant d'un modèle à plusieurs hyperparamètres, l'algorithme utilisera un plan d'expériences basé sur les hypercubes latins. La fonction \verb|nolhDesign| permet de créer un hypercube latin quasi-orthogonal (NOLH\ : *Near Orthogonal Latin Hypercube*), ici paramétré avec 2 dimensions, dans l'espace $[0;1]^{2}$. Le plan d'expérience en est extrait, puis inséré dans un objet de type *dataframe*, avec colonnes nommées d'après nos variables réduites $X_{1}$ et $X_{2}$.
 
 \small
 ```{r, eval = FALSE}
@@ -1975,7 +1976,7 @@ colnames(BI_LHS) <- c("X1", "X2")
 ```
 \normalsize
 
-L'hypercube latin des hyperparamètres (*predFixed* et *minNode*) est généré à partir de l'hypercube latin des paramètres réduits. Ces hyperparamètres sont des valeurs entières. L'hypercube latin quasi-orthogonal de dimension 2 possédant 17 expériences équitablement réparties dans l'espace $[0;1]^{2}$, il apparaît souhaitable, pour des raisons d'homogénéité dans l'espace expérimental, que $F_{n} = k \times X_{n}$ avec $k$ multiple de 16. En pratique, nous n'avons jamais rencontré d'erreurs d'arrondi lors de cette étape mais l'usage de la fonction *round* constitue une précaution supplémentaire garantissant que le produit sera bien un entier.
+L'hypercube latin des hyperparamètres (\verb|predFixed| et \verb|minNode|) est généré à partir de l'hypercube latin des paramètres réduits. Ces hyperparamètres sont des valeurs entières. L'hypercube latin quasi-orthogonal de dimension 2 possédant 17 expériences équitablement réparties dans l'espace $[0;1]^{2}$, il apparaît souhaitable, pour des raisons d'homogénéité dans l'espace expérimental, que $F_{n} = k \times X_{n}$ avec $k$ multiple de 16. En pratique, nous n'avons jamais rencontré d'erreurs d'arrondi lors de cette étape mais l'usage de la fonction \verb|round| constitue une précaution supplémentaire garantissant que le produit sera bien un entier.
 
 \small
 ```{r, eval = FALSE}
@@ -2010,7 +2011,7 @@ BI_fit_Rborist <- train(Type ~ .,
 \normalsize
 
 \newpage
-L'algorithme extrait les résultats relatifs aux performances du modèle et y adjoint le calcul de $J_{w}$ (ou $\kappa$ pour les classifieurs multiclasses), comme précédemment. L'objet obtenu ne contenant que les facteurs expérimentaux (non réduits) des hyperparamètres, il convient d'y adjoindre les facteurs réduits. La table *BI_grid_Rborist* générée précédemment contient toutes les informations qui permettent, via une jonction, de lier facteurs réduits et facteurs expérimentaux.
+L'algorithme extrait les résultats relatifs aux performances du modèle et y adjoint le calcul de $J_{w}$ (ou $\kappa$ pour les classifieurs multiclasses), comme précédemment. L'objet obtenu ne contenant que les facteurs expérimentaux (non réduits) des hyperparamètres, il convient d'y adjoindre les facteurs réduits. La table \verb|BI_grid_Rborist| générée précédemment contient toutes les informations qui permettent, via une jonction, de lier facteurs réduits et facteurs expérimentaux.
 
 \small
 ```{r, eval = FALSE}
@@ -2034,7 +2035,7 @@ BI_mod_Rborist_jw <-  modelFit(X = BI_fit_Rborist_resultats[,c("X1", "X2")],
 ```
 \normalsize
 
-Ces résultats permettent notamment de modéliser les performances sur la totalité de l'espace expérimental des hyperparamètres. A cette fin, l'algorithme est chargé de générer l'ensemble des couples de valeurs $(X_{1},X_{2})$ possibles, à l'aide de la fonction *expand.grid*, avant de calculer la valeur $J_{w}$ correspondante à chaque couple de points.
+Ces résultats permettent notamment de modéliser les performances sur la totalité de l'espace expérimental des hyperparamètres. A cette fin, l'algorithme est chargé de générer l'ensemble des couples de valeurs $(X_{1},X_{2})$ possibles, à l'aide de la fonction \verb|expand.grid|, avant de calculer la valeur $J_{w}$ correspondante à chaque couple de points.
 
 \small
 ```{r, eval = FALSE}
@@ -2045,7 +2046,7 @@ CodBI_pred_Rborist <- expand.grid(CodBI_fit_Rborist_resultats[,c("X1","X2")]) %>
 
 L'ensemble des données expérimentales et modélisées obtenues permettent de générer un graphique bidimensionnel des performances en fonction des hyperparamètres. Pour des raisons didactiques, nous séparerons ici le graphique résultant de l'expérimentation de celui résultant de la modélisation quadratique.
 \paragraph*{}
-La génération du graphique reprend des principes similaires à ceux présentés précédemment pour le graphique des performances de rpart, notamment au niveau des arguments utilisés dans *aes*. Les seules fonctions appelant à commentaires sont l'utilisation de *geom_raster* pour la modélisation, à laquelle nous superposons le graphique généré via *geom_tile* pour les points expérimentaux. L'utilisation de la gamme de couleurs proposée par *viridis* permet une visualisation plus aisée des résultats obtenus.
+La génération du graphique reprend des principes similaires à ceux présentés précédemment pour le graphique des performances de rpart, notamment au niveau des arguments utilisés dans \verb|aes|. Les seules fonctions appelant à commentaires sont l'utilisation de \verb|geom_raster| pour la modélisation, à laquelle nous superposons le graphique généré via \verb|geom_tile| pour les points expérimentaux. L'utilisation de la gamme de couleurs proposée par viridis permet une visualisation plus aisée des résultats obtenus.
 
 \small
 ```{r, eval = FALSE}
@@ -2126,7 +2127,7 @@ BI_evaluation <- BI_lot_evaluation %>%
 \normalsize
 
 
-Les performances du modèle peuvent être évaluées, en termes d'efficience calculatoire, par son temps d'éxécution. Un moyen de mesurer le temps d'éxécution de n'importe quelle portion de code est de mesurer l'heure de début et de fin d'éxécution du code à l'aide de *Sys.time*, puis d'en mesurer la différence via la fonction *difftime*.
+Les performances du modèle peuvent être évaluées, en termes d'efficience calculatoire, par son temps d’exécution. Un moyen de mesurer le temps d'exécution de n'importe quelle portion de code est de mesurer l'heure de début et de fin d'exécution du code à l'aide de \verb|Sys.time|, puis d'en mesurer la différence via la fonction \verb|difftime|.
 \paragraph*{}
 Le code exécuté correspond ici à l'entraînement du modèle (cf. *supra*) et à la prédiction sur le lot d'évaluation, enregistré dans un objet dédié.
 
@@ -2169,7 +2170,7 @@ BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>%
 ```
 \normalsize
 
-Enfin, les principaux objets volumineux qui n'ont pas vocation à être exploités par la suite -- c'est-à-dire les jeux de données, ainsi que les objets issus des fonctions *train* -- sont retirés de l'environnement, qui est ensuite sauvegardé. Cette sauvegarde contient les graphiques, tableaux et valeurs d'intérêt, à fins d'insertion automatisée dans le fichier Rmarkdown qui constitue le corps de texte de cette thèse.
+Enfin, les principaux objets volumineux qui n'ont pas vocation à être exploités par la suite -- c'est-à-dire les jeux de données, ainsi que les objets issus des fonctions \verb|train| -- sont retirés de l'environnement, qui est ensuite sauvegardé. Cette sauvegarde contient les graphiques, tableaux et valeurs d'intérêt, à fins d'insertion automatisée dans le fichier Rmarkdown qui constitue le corps de texte de cette thèse.
 
 \small
 ```{r, eval = FALSE}
@@ -2186,7 +2187,7 @@ save.image(file = "EKR-Champis-CodeSourceBi.RData")
 \paragraph*{}
 Rmarkdown est un langage de balisage permettant d'associer les possibilités offertes par R et Latex. Ce langage a été utilisé pour rédiger cette étude, et cette annexe propose d'esquisser les possibilités qu'il offre, en reprenant succinctement la partie décrivant la LDA.
 \paragraph*{}
-Rmarkdown permet d'utiliser des blocs de code R afin d'effectuer certains calculs, ou d'importer les objets générés par un script R et enregistrés via la fonction *save.image*. C'est cette dernière approche que nous exploiterons.
+Rmarkdown permet d'utiliser des blocs de code R afin d'effectuer certains calculs, ou d'importer les objets générés par un script R et enregistrés via la fonction \verb|save.image|. C'est cette dernière approche que nous exploiterons.
 \paragraph*{}
 Le bloc suivant reprend les éléments principaux du script R chargé de calculer la LDA :
 \scriptsize
@@ -2238,7 +2239,7 @@ save.image(file="CodeSourceIris.RData")
 ```
 \normalsize
 \paragraph*{}
-Cette partie présente aussi une figure au format vectoriel, enregistrée sous le nom de fichier *LDA.pdf*, ainsi que des références bibliographiques, enregistrées dans un fichier au format Bibtex, sous le nom *IrisBiblio.bib*, dont le bloc suivant reprend le contenu :
+Cette partie présente aussi une figure au format vectoriel, enregistrée sous le nom de fichier \verb|LDA.pdf|, ainsi que des références bibliographiques, enregistrées dans un fichier au format Bibtex, sous le nom \verb|IrisBiblio.bib|, dont le bloc suivant reprend le contenu :
 
 \footnotesize
 ```{r, eval = FALSE, highlight = FALSE}
@@ -2286,7 +2287,7 @@ Cette partie présente aussi une figure au format vectoriel, enregistrée sous l
 
 L'initialisation de tout fichier Rmarkdown, commence par un préambule YAML chargé de définir les paramètres à appliquer pour le rendu.
 \paragraph*{}
-Ce préambule est délimité par les balises *\-\-\-*, et contient, entre autres possibilités :
+Ce préambule est délimité par les balises \verb|---|, et contient, entre autres possibilités :
 
 * La langue dans laquelle est rédigée le fichier,
 * La taille de police,
@@ -2316,9 +2317,9 @@ csl: https://www.zotero.org/styles/vancouver
 
 La rédaction du texte lui-même peut commencer. Toutefois, dans un souci de clarification du code, la première étape que nous réalisons est la préparation de R, avec le chargement des librairies souhaitées :
 
-* *knitr*, pour le paramétrage fin des blocs de code sous R,
-* *ggpubr* pour la génération et la mise en page des graphiques,
-* *kableExtra* pour la génération de tableaux
+* \verb|knitr|, pour le paramétrage fin des blocs de code sous R,
+* \verb|ggpubr| pour la génération et la mise en page des graphiques,
+* \verb|kableExtra| pour la génération de tableaux
 
 \small
 ```{r, eval = FALSE, highlight = FALSE}
@@ -2330,18 +2331,18 @@ library(knitr)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
 ```
 \normalsize
-Les blocs de code sous R commencent et toutes par ```r, et se terminent par ```. Le préambule de chaque bloc de code indique toujours les paramètres utilisés pour le bloc en question, ici :
+Les blocs de code sous R commencent tous par \verb|```r|, et se terminent par \verb|```|. Le préambule de chaque bloc de code indique toujours les paramètres utilisés pour le bloc en question, ici :
 
-* *include = FALSE* : ni le code, ni les résultats ne doivent apparaître dans le texte,
-* *warning = FALSE* : les messages d'avertissement ne doivent pas apparaître.
+* \verb|include = FALSE| : ni le code, ni les résultats ne doivent apparaître dans le texte,
+* \verb|warning = FALSE| : les messages d'avertissement ne doivent pas apparaître.
 
 Les lignes suivantes n'appellent pas à commentaire particulier, il s'agit du chargement des données générées par le code mentionné précédemment, et des trois librairies d'intérêt.
 \paragraph*{}
 La toute dernière ligne est plus intéressante, elle permet de définir les paramètres par défaut pour le reste de l’exécution du code :
 
-* *echo = TRUE* : les résultats du code doivent apparaître dans le texte,
-* *message = FALSE* : les messages relatifs au code ne doivent pas apparaître,
-* *fig.pos = "!H"* : les figures et tableaux "flottants" doivent être insérés au plus près de l'endroit où se situe le code qui les a générés.
+* \verb|echo = TRUE| : les résultats du code doivent apparaître dans le texte,
+* \verb|message = FALSE| : les messages relatifs au code ne doivent pas apparaître,
+* \verb|fig.pos = "!H"| : les figures et tableaux "flottants" doivent être insérés au plus près de l'endroit où se situe le code qui les a générés.
 
 \paragraph*{}
 La rédaction du texte peut commencer :
@@ -2360,10 +2361,63 @@ Discriminant Analysis*).
 \paragraph*{}
 Ce court passage permet de présenter quelques points typiques de la rédaction d'un texte sous Rmarkdown :
 
-* *#, ##, ###* servent respectivement à indiquer des sections, sous-sections et sous-sous-sections, ils sont l'équivalent des commandes *\section*, *\subsection* et *\subsubsection* sous Latex,
-* *\paragraph\*{}* est une commande Latex standard, permettant d'insérer un paragraphe non-numéroté,
-* *\ :* permet d'insérer un symbole deux-points précédé d'une espace insécable,
-* Les astérisques encadrant un texte permettent de l'écrire en italique (équivalent de *\emph* sous Latex).
+* \verb|#|, \verb|##| et \verb|###| servent respectivement à indiquer des sections, sous-sections et sous-sous-sections, ils sont l'équivalent des commandes \verb|\section|, \verb|\subsection| et \verb|\subsubsection| sous Latex,
+* \verb|\paragraph*{}| est une commande Latex standard, permettant d'insérer un paragraphe non-numéroté,
+* \verb|\ :| permet d'insérer un symbole deux-points précédé d'une espace insécable,
+* Les astérisques encadrant un texte permettent de l'écrire en italique (équivalent de \verb|\emph| sous Latex).
 
+\small
+```{r, eval = FALSE, highlight = FALSE}
+\paragraph*{}
+L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald 
+Fisher en 1936\footnote{Cette étude, proposant une méthode de classification des 
+variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est 
+par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} pour résoudre des 
+problèmes de classification taxonomique dans le domaine de la botanique.
+[@fisher_use_1936;@anderson_r_1996] La LDA est basée sur la construction de 
+l'hyperplan de projection permettant de maximiser la distance entre les moyennes 
+projetées des différentes classes et de minimiser la variance intraclasse (voir 
+figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée 
+à fins de classification, mais aussi pour effectuer des réductions de 
+dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de 
+certaines caractéristiques.
+```
+\normalsize
+
+\paragraph*{} 
+Le passage qui précède fait usage de certaines commandes Latex typiques :
+
+* \verb|\footnote| pour l'insertion d'une note de pied de page,
+* \verb|\emph| pour le texte en italique, les astérisques de Rmarkdown ne fonctionnant pas à l'intérieur d'un environnement Latex tel que \verb|footnote|,
+* \verb|\ref| pour indiquer le numéro de référence d'une figure, ici la figure étiquetée \verb|fig:Principe-LDA|.
+
+\paragraph*{} 
+Il y associe une commande Rmarkdown :
+
+* \verb|[@xxx]| qui permet d'insérer une citation (équivalent de \verb|\cite| sous Latex), avec \verb|xxx| étant ici la référence de la citation dans le fichier Bibtex.
+
+L'insertion de figures s'effectue en suivant la syntaxe Latex :
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+\paragraph*{}
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{LDA}
+  \caption{Séparation par distance maximale des moyennes interclasses (à gauche), 
+     et par projection sur l'hyperplan optimal tenant compte des variances 
+     intraclasses (LDA, à droite)}
+  \label{fig:Principe-LDA}
+\end{figure}
+```
+\normalsize
+
+Les commandes sont les suivantes :
+
+* \verb|\begin{figure}| et \verb|\end{figure}| permettent de délimiter l'environnement \verb|figure|, qui permet d'insérer une image,
+* \verb|\centering| indique que l'alignement de l'image doit être centré,
+* \verb|\includegraphics[width=\linewidth]{LDA}| indique d'insérer une image, dont le nom de fichier est \verb|LDA| (cf. *supra*), avec une largeur égale à la totalité de la largeur du texte (\verb|width = \linewidth|),
+* \verb|\caption{xxx}| indique la légende,
+* \verb|\label{xxx}| indique l'étiquette de la figure, qui servira pour les références (fonction \verb|\ref|).
 
 \newpage
