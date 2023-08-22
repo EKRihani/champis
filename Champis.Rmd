@@ -2420,4 +2420,40 @@ Les commandes sont les suivantes :
 * \verb|\caption{xxx}| indique la légende,
 * \verb|\label{xxx}| indique l'étiquette de la figure, qui servira pour les références (fonction \verb|\ref|).
 
+Le bloc suivant n'appelle pas à commentaires, étant constitué exclusivement de texte :
+\small
+```{r, eval = FALSE, highlight = FALSE}
+\paragraph*{}
+En pratique, la LDA consiste à construire un indice synthétique, combinaison 
+linéaire des caractéristiques des classes, dont les coefficients permettent de 
+rendre les points du problème originel le plus aisément "séparables". La LDA étant 
+utilisée dans cette étude pour construire un classifieur binaire, c'est ce type 
+de classifieur qui sera présenté dans cette section, et illustré avec un exemple 
+extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* 
+et *Iris setosa*.
+\paragraph*{}
+Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
+```
+\normalsize
+
+Nous pouvons ensuite introduire des notations mathématiques, toujours en notation Latex :
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+$$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
+avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
+\paragraph*{}
+
+$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
+avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre $i$, et
+$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
+avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
+```
+\normalsize
+
+Les notations mathématiques utilisent globalement deux types de balises :
+
+* \verb|$| pour les notations mathématiques intégrées au corps de texte,
+* \verb|$$| pour les notations mathématiques et équations à séparer du texte.
+
 \newpage
