@@ -1375,7 +1375,7 @@ L'évaluation finale du modèle ranger donne la matrice de confusion de la table
 
 ```{r FAM-CM, echo = FALSE}
 kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, références en haut)") %>%
-   kable_styling(latex_options = c("striped", "hold_position"),full_width = F, font_size = 8) %>%
+   kable_styling(latex_options = c("striped", "hold_position", "scale_down"),full_width = F) %>%
   row_spec(0, angle = -90) %>%
    landscape()
 ```
@@ -2319,18 +2319,20 @@ La rédaction du texte lui-même peut commencer. Toutefois, dans un souci de cla
 
 * \verb|knitr|, pour le paramétrage fin des blocs de code sous R,
 * \verb|ggpubr| pour la génération et la mise en page des graphiques,
-* \verb|kableExtra| pour la génération de tableaux
+* \verb|kableExtra| pour l'amélioration de la mise en page des tableaux.
 
 \small
 ```{r, eval = FALSE, highlight = FALSE}
-```{r, include = FALSE, warning = FALSE}
+'``{r, include = FALSE, warning = FALSE}
 load(file = "CodeSourceIris.RData")
 library(ggpubr)
 library(kableExtra)
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+'``
 ```
 \normalsize
+
 Les blocs de code sous R commencent tous par \verb|```r|, et se terminent par \verb|```|. Le préambule de chaque bloc de code indique toujours les paramètres utilisés pour le bloc en question, ici :
 
 * \verb|include = FALSE| : ni le code, ni les résultats ne doivent apparaître dans le texte,
@@ -2344,8 +2346,10 @@ La toute dernière ligne est plus intéressante, elle permet de définir les par
 * \verb|message = FALSE| : les messages relatifs au code ne doivent pas apparaître,
 * \verb|fig.pos = "!H"| : les figures et tableaux "flottants" doivent être insérés au plus près de l'endroit où se situe le code qui les a générés.
 
+## Rédaction du corps de texte
+
 \paragraph*{}
-La rédaction du texte peut commencer :
+Après la préparation des sources et l'initialisation via le préambule, la rédaction du texte proprement dit peut commencer :
 \small
 ```{r, eval = FALSE, highlight = FALSE}
 # Principes de l'apprentissage machine
@@ -2377,8 +2381,8 @@ problèmes de classification taxonomique dans le domaine de la botanique.
 [@fisher_use_1936;@anderson_r_1996] La LDA est basée sur la construction de 
 l'hyperplan de projection permettant de maximiser la distance entre les moyennes 
 projetées des différentes classes et de minimiser la variance intraclasse (voir 
-figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée 
-à fins de classification, mais aussi pour effectuer des réductions de 
+figure \ref{fig:RMD-Principe-LDA}).[@hastie_elements_2016] La LDA peut être 
+utilisée à fins de classification, mais aussi pour effectuer des réductions de 
 dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de 
 certaines caractéristiques.
 ```
@@ -2407,12 +2411,12 @@ L'insertion de figures s'effectue en suivant la syntaxe Latex :
   \caption{Séparation par distance maximale des moyennes interclasses (à gauche), 
      et par projection sur l'hyperplan optimal tenant compte des variances 
      intraclasses (LDA, à droite)}
-  \label{fig:Principe-LDA}
+  \label{fig:RMD-Principe-LDA}
 \end{figure}
 ```
 \normalsize
 
-Les commandes sont les suivantes :
+Les commandes utilisées dans ce bloc sont les suivantes :
 
 * \verb|\begin{figure}| et \verb|\end{figure}| permettent de délimiter l'environnement \verb|figure|, qui permet d'insérer une image,
 * \verb|\centering| indique que l'alignement de l'image doit être centré,
@@ -2420,7 +2424,7 @@ Les commandes sont les suivantes :
 * \verb|\caption{xxx}| indique la légende,
 * \verb|\label{xxx}| indique l'étiquette de la figure, qui servira pour les références (fonction \verb|\ref|).
 
-Le bloc suivant n'appelle pas à commentaires, étant constitué exclusivement de texte :
+Le bloc suivant n'appelle pas de commentaires particuliers, étant constitué exclusivement de texte :
 \small
 ```{r, eval = FALSE, highlight = FALSE}
 \paragraph*{}
@@ -2436,24 +2440,207 @@ Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
 ```
 \normalsize
 
-Nous pouvons ensuite introduire des notations mathématiques, toujours en notation Latex :
+Nous pouvons ensuite introduire des notations mathématiques, toujours au format Latex, ce qui permet d'exploiter un des points forts de ce language, qui propose un rendu de haute qualité des expression mathématiques :
 
 \small
 ```{r, eval = FALSE, highlight = FALSE}
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
-avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
+avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les 
+caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et 
+$\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ 
+maximise le rapport entre les différences des moyennes de chaque classe $D$ et la
+somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la 
+variance intraclasse), définis par\ :
 \paragraph*{}
 
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
-avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre $i$, et
+avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre 
+$i$, et
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
-avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
+avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque 
+combinaison de paramètres $p$ et $q$.
 ```
 \normalsize
 
-Les notations mathématiques utilisent globalement deux types de balises :
+Les notations mathématiques sous Latex utilisent globalement deux types de balises :
 
 * \verb|$| pour les notations mathématiques intégrées au corps de texte,
 * \verb|$$| pour les notations mathématiques et équations à séparer du texte.
 
+Les caractères les plus usuellement utilisés sont
+
+* \verb|\xxx{}| pour les fonctions et caractères typiques (fonctions trigonométriques, exponentielles, opérateurs de comparaison, flèches, lettres grecques...),
+* \verb|_{x}| pour l'insertion du caractère \verb|x| en indice,
+* \verb|^{x}| pour l'insertion du caractère \verb|x| en exposant,
+* \verb|\frac{x}{y}| pour insérer une fraction de numérateur \verb|x| et dénominateur \verb|^{y}|
+* \verb|\leftX| et \verb|\rightX| pour insérer des parenthèses, crochets, accolades en remplaçant X par le caractère approprié.
+
+Ainsi, l'expression \verb|$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$| sera rendue sous la forme d'une équation intégrée dans le texte, $X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$.
+
+L'expression \verb|$$S=\sum_{p=1}^n\sum_{q=1}^n\lambda{}_{p}.\lambda{}_{q}.S_{pq}$$| sera quant à elle rendue sous la forme : $$S=\sum_{p=1}^n\sum_{q=1}^n\lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
+
+\paragraph*{}
+Le bloc de code suivant illustre l'insertion de tableaux issus de *dataframes* générés par R.
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+\paragraph*{}
+L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les 
+résultats présentés dans les tables \ref{tab:RMD-LDA-TableMoy} et 
+\ref{tab:RMD-LDA-TableProd}\ :
+
+'``{r, RMD-LDA-TableMoy, echo = FALSE}
+kable(RMD_Iris_Moyennes, caption = "Moyennes et différences de moyennes des 4 
+      paramètres d'Iris setosa et versicolor") %>%
+   kable_styling(latex_options = c("striped", "hold_position"))
+'``
+
+'``{r, RMD-LDA-TableProd, echo = FALSE}
+kable(RMD_Iris_Produits, caption = "Produits des différences à la moyenne des 4 
+      paramètres d'Iris setosa et versicolor ($S_{pq}$)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"))
+'``
+
+```
+\normalsize
+
+\paragraph*{}
+L'insertion de tableaux sous Rmarkdown s'effectue grâce à la fonction \verb|kable|, et les paramètres de style psuvent être configurés plus finement à l'aide de la fonction \verb|kable_styling| apportée par la librairie *kableExtra*. Nous avons notamment ajouté des tons bicolores pour le fond des lignes du tableau (\verb|striped|), et bloqué la position des tableaux vis-à-vis du texte (\verb|hold_position|).
+\paragraph*{}
+Le code se poursuit par des éléments textuels et mathématiques n'appellant pas à commentaires particuliers.
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+\paragraph*{}
+La maximisation du rapport entre les carrés des distances des moyennes interclasses 
+et les variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient 
+$\lambda{}_{i}$ soit, par dérivation pour chacun des $\lambda{}_{i}$\ :
+$$\frac{\partial}{\partial{}\lambda{}_{i}}  \frac{D^2}{S} = 0 
+\Leftrightarrow{}
+\frac{1}{S} \frac{\partial}{\partial{}\lambda{}_{i}} D^{2} + D^{2} 
+\frac{\partial}{\partial{}\lambda{}_{i}} \frac{1}{S} = 0 
+\Leftrightarrow{} 
+\frac{D}{S^{2}} \left(2S\frac{\partial{}D}{\partial{}\lambda{}_{i}} - 
+D \frac{\partial{}S}{\partial{}\lambda{}_{i}} \right) = 0 
+\Leftrightarrow{} 
+\frac{1}{2} \frac{\partial{}S}{\partial{}\lambda{}_{i}} = 
+\frac{S}{D} \frac{\partial{}D}{\partial{}\lambda{}_{i}} $$
+
+En supposant que les distributions des classes soient unimodales, cette équation 
+admet une solution unique. Le rapport $S/D$ étant un facteur supposé constant pour 
+tous les coefficients $\lambda_{i}$ inconnus, ces coefficients sont donc les 
+solutions du système\ :
+$$\left \{
+\begin{array}{l}
+d_{1}=S_{11}\lambda_{1}+S_{12}\lambda_{2}+S_{13}\lambda_{3}+S_{14}\lambda_{4}\\
+d_{2}=S_{21}\lambda_{1}+S_{22}\lambda_{2}+S_{23}\lambda_{3}+S_{24}\lambda_{4}\\
+d_{3}=S_{31}\lambda_{1}+S_{32}\lambda_{2}+S_{33}\lambda_{3}+S_{34}\lambda_{4}\\
+d_{4}=S_{41}\lambda_{1}+S_{42}\lambda_{2}+S_{43}\lambda_{3}+S_{44}\lambda_{4}\\
+\end{array} 
+\Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
+\right.$$
+
+avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des 
+différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des 
+coefficients $\lambda_{i}$.
+\paragraph*{}
+En indiçant les facteurs\ :
+
+* $i = 1$ pour la longueur de sépale $L_{s}$,
+* $i = 2$ pour la largeur de sépale $\ell_{s}$,
+* $i = 3$ pour la longueur de pétale $L_{p}$,
+* $i = 4$ pour la largeur de pétale  $\ell_{p}$.
+```
+
+\paragraph*{}
+La section de code suivante mêle éléments mathématiques sous Latex et éléments numériques extraits du script R ayant effectué les calculs de la LDA, et permet à Rmarkdown de s'illustrer en exploitant pleinement l'association de Latex pour les formules mathématiques et de R pour les calculs numériques.
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+Nous pouvons calculer les coefficients\ :
+\paragraph*{}
+$$\left \{
+\begin{array}{l}
+\lambda_{1} = `r RMD_Iris_Coeffs[1]` \\
+\lambda_{2} = `r RMD_Iris_Coeffs[2]` \\
+\lambda_{3} = `r RMD_Iris_Coeffs[3]` \\
+\lambda_{4} = `r RMD_Iris_Coeffs[4]` \\
+\end{array}
+\right.$$
+Soit, après normalisation sur le facteur $\lambda_{1}$\ :
+
+$$\left \{
+\begin{array}{l}
+\lambda_{1} = `r RMD_Iris_CoeffsNorm[1]` \\
+\lambda_{2} = `r round(RMD_Iris_CoeffsNorm[2],3)` \\
+\lambda_{3} = `r round(RMD_Iris_CoeffsNorm[3],3)` \\
+\lambda_{4} = `r round(RMD_Iris_CoeffsNorm[4],3)` \\
+\end{array}
+\right.$$
+
+$$ X = L_{s} + 
+`r round(RMD_Iris_CoeffsNorm[2],3)`.\ell_{s} 
+`r round(RMD_Iris_CoeffsNorm[3],3)`.L_{p} 
+`r round(RMD_Iris_CoeffsNorm[4],3)`.\ell_{p} $$
+```
+
+L'insertion de valeurs -- ou de calculs plus complexes -- dans le texte s'effectue toujours très simplement, en ouvrant par \verb|`r| et en fermant par \verb|`|, qu'il s'agisse :
+
+* D'un environnement mathématique (encadré par \verb|$| ou \verb|$$|),
+* D'un tableau créé via Latex (environnement \verb|array|),
+* De texte conventionnel.
+
+\paragraph*{}
+Le dernier bloc de code présenté dans cette annexe permet d'insérer des graphiques. De même que pour les tables et les valeurs numériques, Rmarkdown s'illustre ici par ainsi sa grande souplesse qui permet la génération automatique de fichiers textes intégrant graphiques, tableaux et données numériques ou textuelles calculées et mises à jour automatiquement.
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+Le seuil de séparation est alors défini par\ : 
+$$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
+\paragraph*{}
+La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous 
+indique la pondération de chaque caractère dimensionnel dans l'indice synthétique 
+$X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les 
+figures \ref{fig:RMD-LDA-MinMax} et \ref{fig:RMD-LDA-Separation}.
+
+'``{r RMD-LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des 
+variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres 
+fortement pondérés à gauche, faiblement pondérés à droite)"}
+plot(ggarrange(widths = c(1, 1.5),
+   ncol = 2,
+   RMD_Iris_GraphMAX + theme(legend.position = "none"),
+   RMD_Iris_GraphMin
+   )
+)
+'``
+
+'``{r RMD-LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution 
+de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction 
+des espèces"}
+plot(ggarrange(widths = c(1, 1.5),
+   ncol = 2,
+   RMD_Iris_GraphX + theme(legend.position = "none"),
+   RMD_Iris_GraphTotale
+   )
+)
+'``
+
+\FloatBarrier
+```
+
+Ce bloc de code... [DESCRIPTION A FINIR]
+\paragraph*{}
+La fin du code n'appelle pas à commentaire particulier. La table des matières s’insérera automatiquement dans la toute dernière page, conformément au préambule, et avant les annexes éventuelles.
+
+\small
+```{r, eval = FALSE, highlight = FALSE}
+
+### Arbres de décision
+etc.
+
+\newpage
+# Mini-Bibliographie
+
+```
+\normalsize
 \newpage

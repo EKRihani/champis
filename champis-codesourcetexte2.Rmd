@@ -31,14 +31,14 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
 \paragraph*{}
 Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (LDA\ : *Linear Discriminant Analysis*).
 \paragraph*{}
-L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.[@fisher_use_1936;@anderson_r_1996] La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
+L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936\footnote{Cette étude, proposant une méthode de classification des variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.[@fisher_use_1936;@anderson_r_1996] La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:RMD-Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
 
 \paragraph*{}
 \begin{figure}
    \centering
    \includegraphics[width=\linewidth]{LDA}
   \caption{Séparation par distance maximale des moyennes interclasses (à gauche), et par projection sur l'hyperplan optimal tenant compte des variances intraclasses (LDA, à droite)}
-  \label{fig:Principe-LDA}
+  \label{fig:RMD-Principe-LDA}
 \end{figure}
 
 \FloatBarrier
@@ -57,16 +57,16 @@ avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètr
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
 avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
 \paragraph*{}
-L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd}\ :
+L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:RMD-LDA-TableMoy} et \ref{tab:RMD-LDA-TableProd}\ :
 
-```{r, LDA-TableMoy, echo = FALSE}
+```{r, RMD-LDA-TableMoy, echo = FALSE}
 kable(RMD_Iris_Moyennes, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
-   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = FALSE)
 ```
 
-```{r, LDA-TableProd, echo = FALSE}
+```{r, RMD-LDA-TableProd, echo = FALSE}
 kable(RMD_Iris_Produits, caption = "Produits des différences à la moyenne des 4 paramètres d'Iris setosa et versicolor ($S_{pq}$)") %>%
-   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = FALSE)
 ```
 
 \paragraph*{}
@@ -125,7 +125,7 @@ Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_
 \paragraph*{}
 La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
 
-```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
+```{r RMD-LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
    RMD_Iris_GraphMAX + theme(legend.position = "none"),
@@ -134,7 +134,7 @@ plot(ggarrange(widths = c(1, 1.5),
 )
 ```
 
-```{r LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction des espèces"}
+```{r RMD-LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction des espèces"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
    RMD_Iris_GraphX + theme(legend.position = "none"),
