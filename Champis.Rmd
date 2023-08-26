@@ -2191,7 +2191,7 @@ Rmarkdown permet d'utiliser des blocs de code R afin d'effectuer certains calcul
 \paragraph*{}
 Le bloc suivant reprend les éléments principaux du script R chargé de calculer la LDA :
 \scriptsize
-```{r, eval = FALSE}
+```{verbatim, lang = "r"}
 library(tidyverse)
 RMD_Iris_Lot <- iris %>% filter(Species != "virginica") %>% droplevels()
 colnames(RMD_Iris_Lot) <- c("Long.Sep", "Larg.Sep", "Long.Pet", "Larg.Pet", "Espece")
@@ -2242,7 +2242,7 @@ save.image(file="CodeSourceIris.RData")
 Cette partie présente aussi une figure au format vectoriel, enregistrée sous le nom de fichier \verb|LDA.pdf|, ainsi que des références bibliographiques, enregistrées dans un fichier au format Bibtex, sous le nom \verb|IrisBiblio.bib|, dont le bloc suivant reprend le contenu :
 
 \footnotesize
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "bibtex"}
 @article{fisher_use_1936,
 	title = {The {Use} of {Multiple} {Measurements} in {Taxonomic} {Problems}},
 	volume = {7},
@@ -2279,7 +2279,7 @@ Cette partie présente aussi une figure au format vectoriel, enregistrée sous l
 	author = {Hastie, Trevor and Tibshirani, Robert and Friedman, Jerome},
 	year = {2016},
 }
-```
+````
 \normalsize
 
 \newpage
@@ -2299,7 +2299,7 @@ Ce préambule est délimité par les balises \verb|---|, et contient, entre autr
 * Le fichier de définition du style de bibliographie.
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "r"}
 ---
 lang: fr
 fontsize: 12pt
@@ -2312,7 +2312,7 @@ indent: true
 bibliography: [IrisBiblio.bib]
 csl: https://www.zotero.org/styles/vancouver
 ---
-```
+````
 \normalsize
 
 La rédaction du texte lui-même peut commencer. Toutefois, dans un souci de clarification du code, la première étape que nous réalisons est la préparation de R, avec le chargement des librairies souhaitées :
@@ -2322,15 +2322,15 @@ La rédaction du texte lui-même peut commencer. Toutefois, dans un souci de cla
 * \verb|kableExtra| pour l'amélioration de la mise en page des tableaux.
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
-'``{r, include = FALSE, warning = FALSE}
+````{verbatim}
+```{r, include = FALSE, warning = FALSE}
 load(file = "CodeSourceIris.RData")
 library(ggpubr)
 library(kableExtra)
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
-'``
 ```
+````
 \normalsize
 
 Les blocs de code sous R commencent tous par \verb|```r|, et se terminent par \verb|```|. Le préambule de chaque bloc de code indique toujours les paramètres utilisés pour le bloc en question, ici :
@@ -2351,7 +2351,7 @@ La toute dernière ligne est plus intéressante, elle permet de définir les par
 \paragraph*{}
 Après la préparation des sources et l'initialisation via le préambule, la rédaction du texte proprement dit peut commencer :
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 # Principes de l'apprentissage machine
 ## Modèles utilisés
 ### Analyses discriminantes
@@ -2359,7 +2359,7 @@ Après la préparation des sources et l'initialisation via le préambule, la ré
 Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse 
 discriminante, en particulier l'analyse discriminante linéaire (LDA\ : *Linear 
 Discriminant Analysis*).
-```
+````
 \normalsize
 
 \paragraph*{}
@@ -2371,7 +2371,7 @@ Ce court passage permet de présenter quelques points typiques de la rédaction 
 * Les astérisques encadrant un texte permettent de l'écrire en italique (équivalent de \verb|\emph| sous Latex).
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 \paragraph*{}
 L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald 
 Fisher en 1936\footnote{Cette étude, proposant une méthode de classification des 
@@ -2385,7 +2385,7 @@ figure \ref{fig:RMD-Principe-LDA}).[@hastie_elements_2016] La LDA peut être
 utilisée à fins de classification, mais aussi pour effectuer des réductions de 
 dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de 
 certaines caractéristiques.
-```
+````
 \normalsize
 
 \paragraph*{} 
@@ -2403,7 +2403,7 @@ Il y associe une commande Rmarkdown :
 L'insertion de figures s'effectue en suivant la syntaxe Latex :
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 \paragraph*{}
 \begin{figure}
    \centering
@@ -2413,7 +2413,7 @@ L'insertion de figures s'effectue en suivant la syntaxe Latex :
      intraclasses (LDA, à droite)}
   \label{fig:RMD-Principe-LDA}
 \end{figure}
-```
+````
 \normalsize
 
 Les commandes utilisées dans ce bloc sont les suivantes :
@@ -2426,7 +2426,7 @@ Les commandes utilisées dans ce bloc sont les suivantes :
 
 Le bloc suivant n'appelle pas de commentaires particuliers, étant constitué exclusivement de texte :
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 \paragraph*{}
 En pratique, la LDA consiste à construire un indice synthétique, combinaison 
 linéaire des caractéristiques des classes, dont les coefficients permettent de 
@@ -2437,13 +2437,13 @@ extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versic
 et *Iris setosa*.
 \paragraph*{}
 Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
-```
+````
 \normalsize
 
 Nous pouvons ensuite introduire des notations mathématiques, toujours au format Latex, ce qui permet d'exploiter un des points forts de ce language, qui propose un rendu de haute qualité des expression mathématiques :
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
 avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les 
 caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et 
@@ -2459,7 +2459,7 @@ $i$, et
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
 avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque 
 combinaison de paramètres $p$ et $q$.
-```
+````
 \normalsize
 
 Les notations mathématiques sous Latex utilisent globalement deux types de balises :
@@ -2483,25 +2483,25 @@ L'expression \verb|$$S=\sum_{p=1}^n\sum_{q=1}^n\lambda{}_{p}.\lambda{}_{q}.S_{pq
 Le bloc de code suivant illustre l'insertion de tableaux issus de *dataframes* générés par R.
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 \paragraph*{}
 L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les 
 résultats présentés dans les tables \ref{tab:RMD-LDA-TableMoy} et 
 \ref{tab:RMD-LDA-TableProd}\ :
 
-'``{r, RMD-LDA-TableMoy, echo = FALSE}
+```{r, RMD-LDA-TableMoy, echo = FALSE}
 kable(RMD_Iris_Moyennes, caption = "Moyennes et différences de moyennes des 4 
       paramètres d'Iris setosa et versicolor") %>%
    kable_styling(latex_options = c("striped", "hold_position"))
-'``
+```
 
-'``{r, RMD-LDA-TableProd, echo = FALSE}
+```{r, RMD-LDA-TableProd, echo = FALSE}
 kable(RMD_Iris_Produits, caption = "Produits des différences à la moyenne des 4 
       paramètres d'Iris setosa et versicolor ($S_{pq}$)") %>%
    kable_styling(latex_options = c("striped", "hold_position"))
-'``
-
 ```
+
+````
 \normalsize
 
 \paragraph*{}
@@ -2510,7 +2510,7 @@ L'insertion de tableaux sous Rmarkdown s'effectue grâce à la fonction \verb|ka
 Le code se poursuit par des éléments textuels et mathématiques n'appellant pas à commentaires particuliers.
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 \paragraph*{}
 La maximisation du rapport entre les carrés des distances des moyennes interclasses 
 et les variances intraclasses revient à maximiser $D^{2}/S$ pour chaque coefficient 
@@ -2550,13 +2550,13 @@ En indiçant les facteurs\ :
 * $i = 2$ pour la largeur de sépale $\ell_{s}$,
 * $i = 3$ pour la longueur de pétale $L_{p}$,
 * $i = 4$ pour la largeur de pétale  $\ell_{p}$.
-```
+````
 
 \paragraph*{}
 La section de code suivante mêle éléments mathématiques sous Latex et éléments numériques extraits du script R ayant effectué les calculs de la LDA, et permet à Rmarkdown de s'illustrer en exploitant pleinement l'association de Latex pour les formules mathématiques et de R pour les calculs numériques.
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 Nous pouvons calculer les coefficients\ :
 \paragraph*{}
 $$\left \{
@@ -2582,7 +2582,7 @@ $$ X = L_{s} +
 `r round(RMD_Iris_CoeffsNorm[2],3)`.\ell_{s} 
 `r round(RMD_Iris_CoeffsNorm[3],3)`.L_{p} 
 `r round(RMD_Iris_CoeffsNorm[4],3)`.\ell_{p} $$
-```
+````
 
 L'insertion de valeurs -- ou de calculs plus complexes -- dans le texte s'effectue toujours très simplement, en ouvrant par \verb|`r| et en fermant par \verb|`|, qu'il s'agisse :
 
@@ -2594,7 +2594,7 @@ L'insertion de valeurs -- ou de calculs plus complexes -- dans le texte s'effect
 Le dernier bloc de code présenté dans cette annexe permet d'insérer des graphiques. De même que pour les tables et les valeurs numériques, Rmarkdown s'illustre ici par ainsi sa grande souplesse qui permet la génération automatique de fichiers textes intégrant graphiques, tableaux et données numériques ou textuelles calculées et mises à jour automatiquement.
 
 \small
-```{r, eval = FALSE, highlight = FALSE}
+````{verbatim, lang = "latex"}
 Le seuil de séparation est alors défini par\ : 
 $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
 \paragraph*{}
@@ -2603,7 +2603,7 @@ indique la pondération de chaque caractère dimensionnel dans l'indice synthét
 $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les 
 figures \ref{fig:RMD-LDA-MinMax} et \ref{fig:RMD-LDA-Separation}.
 
-'``{r RMD-LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des 
+```{r RMD-LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des 
 variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres 
 fortement pondérés à gauche, faiblement pondérés à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
@@ -2612,9 +2612,9 @@ plot(ggarrange(widths = c(1, 1.5),
    RMD_Iris_GraphMin
    )
 )
-'``
+```
 
-'``{r RMD-LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution 
+```{r RMD-LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution 
 de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction 
 des espèces"}
 plot(ggarrange(widths = c(1, 1.5),
@@ -2623,12 +2623,12 @@ plot(ggarrange(widths = c(1, 1.5),
    RMD_Iris_GraphTotale
    )
 )
-'``
+```
+````
 
 \FloatBarrier
-```
 
-Ce bloc de code... [DESCRIPTION A FINIR]
+Ce bloc de code... [DESCRIPTION DU BLOC PRECEDENT A FINIR]
 \paragraph*{}
 La fin du code n'appelle pas à commentaire particulier. La table des matières s’insérera automatiquement dans la toute dernière page, conformément au préambule, et avant les annexes éventuelles.
 
