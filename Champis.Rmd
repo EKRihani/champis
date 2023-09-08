@@ -37,6 +37,8 @@ load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLAS
 load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
 load("EKR-Champis-AnalyseMultiEsp-Light.RData")       # Chargement des résultats CLASSIF PAR ESPECES
 load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
+load("EKR-Generateur.RData")  # Chargement du générateur
+load("EKR-DataSets.RData")  # Chargement des données des lots Schlimmer/Wagner
 
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
@@ -133,9 +135,13 @@ Le troisième problème est le critère principal de la classification. Ce crit�
 Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques. Le but de cette étude est notamment de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies de classification.
 
 ## État de l'art des lots de données mycologiques
-Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987]
+Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987].
+\paragraph*{}
+Ce lot comprend `r DATA_n_Schlimmer` spécimens, caractérisés par `r DATA_quali_Schlimmer` variables qualitatives telles que la comestibilité, la forme et la surface du chapeau, la couleur et l'espacement des lames, l'odeur du champignon...
 \paragraph*{}
 Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@wagner_mushroom_2021] et mis en libre accès sous le nom de *Secondary Mushroom Dataset*.
+\paragraph*{}
+Ce lot de données inclut `r DATA_n_Wagner` spécimens et apporte une rationalisation des variables du lot précédent, se limitant ainsi à  `r DATA_quali_Wagner` variables qualitatives, et y ajoute `r DATA_quanti_Wagner` variables quantitatives apportant des caractéristiques dimensionnelles.
 \paragraph*{}
 Des bases de données dédiées à la mycologie sont également disponibles,[@noauthor_fongifrance_nodate; @noauthor_mycodb_nodate] mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
 
@@ -238,7 +244,7 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 
 \FloatBarrier
 \paragraph*{}
-Le premier critère n'est, en pratique, pas un facteur limitant, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant étant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
+L'efficience calculatoire n'est, en pratique, pas un facteur limitant dans notre cas, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant s'avérant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
 
 
 ```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
@@ -286,7 +292,7 @@ plot(ggarrange(
 En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence,[@johnson_continuous_1995] la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de\ :[@johnson_continuous_1995;@r_core_team_r_2022]
 $$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \chi^{2}_{2 \beta}}$$
 
-Avec, comme paramètres définis empiriquement pour cette étude\ : 
+Avec $\chi^{2}$ la loi du khi-deux, $\alpha{}$ et $\beta{}$ les paramètres de forme de la loi bêta, et $\lambda{}$ son paramètre de non-centralité. Nous définirons empiriquement pour cette étude les relations suivantes entre ces trois paramètres\ : 
 $$\left \{
 \begin{array}{l c c}
 \alpha = 6 \, F_{c} & & (shape1)\\
@@ -302,8 +308,9 @@ plot(lois_beta)
 ```
 
 \paragraph*{}
-Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, afin de proposer le modèle suivant\ :
-
+Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, chargé de générer de légères variations des rapports entre ces trois caractéristiques dimensionnelles. Il nous semble ici souhaitable de proposer une distribution en cloche pour ce facteur de dispersion, afin de favoriser la génération de champignons "harmonieux", c'est-à-dire de spécimens dont les proportions ne s'éloignent pas de celles typiques de leur espèce.
+\paragraph*{}
+Nous proposons ainsi le modèle suivant\ :
 $$\left \{
 \begin{array}{ll} 
 L_{S} = L_{Smax}.F_{T}.\delta_{Ls} & ~~~~avec~~ \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
@@ -349,7 +356,11 @@ plot(distrib_diametre)
 \paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
 \paragraph*{}
-L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question pour chaque spécimen.
+L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question pour chaque spécimen.
+\paragraph*{}
+Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. (cf. annexes, p. \pageref{ANNEXErares})
+\paragraph*{}
+Notre générateur permettra donc aux caractéristiques "communes" d'avoir une probabilité d'être sélectionnées `r GEN_ratio_cr` fois plus élevée  que celle de ces caractéristiques "rares".
 \paragraph*{}
 
 \cleardoublepage
@@ -529,6 +540,8 @@ $$\left \{
 $$ X = L_{s} + `r round(iris_CoeffsNorm[2],3)`.\ell_{s} `r round(iris_CoeffsNorm[3],3)`.L_{p} `r round(iris_CoeffsNorm[4],3)`.\ell_{p} $$
 
 Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
+\paragraph*{}
+Avec $\overline{X_{ver.}}$ et $\overline{X_{set.}}$ les moyennes respectives des $X$ pour *Iris setosa* et *Iris versicolor*.
 \paragraph*{}
 La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
 <!-- Ajouter petit paragraphe explicatif -->
@@ -722,15 +735,16 @@ De nombreux critères sont utilisables, en fonction du cahier des charges défin
 \paragraph*{}
 Dans une tâche de classification binaire, les critères usuels sont la spécificité, la sensibilité, et l'aire sous la courbe de fonction d'efficacité du récepteur (*AUC ROC*, parfois abrégé en *ROC*). Il conviendra bien évidemment, avant d'utiliser des indicateurs tels que la spécificité et la sensibilité, de définir la notion de test positif et test négatif.
 \paragraph*{}
-D'autres indicateurs d'intérêt existent, nous retiendrons ici l'index J de Youden[@youden_index_1950] pondéré, qui permet d'ajuster l'importance relative accordée à la spécificité et à la sensibilité, au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
+D'autres indicateurs d'intérêt existent, nous retiendrons ici l'indice de Youden[@youden_index_1950] pondéré, qui permet d'ajuster l'importance relative accordée à la spécificité et à la sensibilité, au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
 \paragraph*{}
 En l'espèce, l'index J de Youden pondéré nous permet d'élaborer un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible -- sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
 \paragraph*{}
-L'index J de Youden pondéré est donné par\ :[@rucker_summary_2010]
+L'indice de Youden pondéré est donné par\ :[@rucker_summary_2010]
 $$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
-
 \paragraph*{}
-Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur comestibilité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon toxique". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index J de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
+Avec $Sen$ la sensibilité et $Spe$ la spécificité du modèle.
+\paragraph*{}
+Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur comestibilité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon non-comestible". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index J de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
 \paragraph*{}
 Le problème de classification binaire étant relativement simple (*comestible* ou *non-comestible*), nous fixerons arbitrairement le critère de performance minimum à atteindre à $J_{w} \geq `r Jw_min`$, soit\ :
 $$\left \{
@@ -781,7 +795,7 @@ Malgré la simplicité apparente du critère binaire, la comestibilité ou la no
 * Champignons mortels.
 
 \paragraph*{}
-Si le classement des deux premières et des deux dernières catégories au sein d'un critère binaire est trivial, il n'en est pas de même pour les trois autres. L'acceptation ou le rejet des champignons appartenant de ces catégories intermédiaires sera par définition un critère arbitraire.
+Si le classement des deux premières et des deux dernières catégories au sein d'un critère binaire est trivial, il n'en est pas de même pour les trois autres. L'acceptation ou le rejet des champignons relevant de ces catégories intermédiaires constituera par définition un critère arbitraire.
 \paragraph*{}
 Nous pouvons toutefois esquisser des contours -- forcément subjectifs -- de notre critère de comestibilité en supposant que les champignons seront soumis à une cuisson, que tout champignon à la comestibilité médiocre sera à rejeter car susceptible de rendre la totalité du plat immangeable, et que tout champignon présentant une possible toxicité, même minime, sera à écarter par mesure de prudence : à titre d'exemple, le tricholome doré (*Tricholoma Auratum*) a pu être successivement qualifié de *comestible très réputé*, puis de champignon ayant provoqué des empoisonnements mortels par rhabdomyolyse.[@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
 \paragraph*{}
@@ -794,7 +808,7 @@ Nous choisirons donc de fixer les catégories binaires suivantes :
 
 ## Analyse exploratoire des données (EDA)
 
-*BROUILLON, à finir*
+*BROUILLON, à finir maintenant que j'ai mes données...*
 
 \FloatBarrier
 \paragraph*{}
@@ -832,11 +846,11 @@ plot(ggarrange(
 )
 ```
 
-La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5 cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx$ 50 cm. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
+La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5 cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx$ 75 cm. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013]
 \paragraph*{}
 La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en cloche avec une longue queue à droite, un mode principal à 5 cm et un mode secondaire à 0 cm. Cette valeur peut également sembler surprenante, mais certains champignons du lot n'ont pas de pied, ce qui explique cette valeur.
 \paragraph*{}
-La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
+La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longue queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives.
 \paragraph*{}
 L'étude des distributions dans un espace bidimensionnel (figure\ \ref{fig:EDA-bidistrib}, p.\ \pageref{fig:EDA-bidistrib}) permet déjà de dégager des associations de caractéristiques d'intérêt, ici représentées sous formes de zones unicolores où un type de champignons (comestible ou non) dominera, ce qui permet déjà d'élaborer des stratégies de classification basiques.\footnote{Ce type de classifieur sera développé ultérieurement, en section \ref{chapitre:naif}, page \pageref{chapitre:naif}}
 \paragraph*{}
@@ -858,7 +872,7 @@ Cette brève analyse exploratoire des données illustre donc l'intérêt de l'ED
 \paragraph*{}
 Il existe une grande variété de modèles exploitables pour bâtir un système d'apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles, ainsi que pour l'exploration de l'espace de leurs hyperparamètres à fins d'optimisation et la mesure de leurs performances. 
 \paragraph*{}
-Les modèles sélectionnés pour cette étude sont de types variés\ :\footnote{Les termes entre parenthèses font référence aux noms de modèles qu'utilise la librairie \emph{caret}}
+Les modèles sélectionnés pour cette étude sont de types variés\ :\footnote{Les termes entre parenthèses font référence aux noms de modèles qu'utilise la librairie \emph{caret}.}
 
 * Analyse naïve
 * Analyse discriminante linéaire\ : *Linear Discriminant Analysis* (lda2), *Penalized Discriminant Analysis* (pda)
@@ -1311,8 +1325,6 @@ kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et
 
 ### Modèles d'arbres de décision
 
-*Brouillon, à étoffer et finir, peut-être avec plus de modèles.*
-
 \paragraph*{}
 Le modèle d'arbre de décision présenté dans cette partie est rpart, le plus simple des modèles CART.
 
@@ -1606,7 +1618,7 @@ data_champis$Mois <- lapply(X = data_champis$Mois, FUN = ConversionMois)
 ```
 \normalsize
 
-\paragraph*{}
+\paragraph*{}\label{ANNEXErares}
 Une autre particularité de notre lot de données est la prise en compte de caractéristiques rares, parfois rencontrées chez certains individus, mais néanmoins mentionnées dans la littérature mycologique comme étant exceptionnelles. Ces données ont été enregistrées entre parenthèses dans le tableau csv.
 \paragraph*{}
 La stratégie retenue ici consiste à effectuer un tirage équiprobable, dans un vecteur contenant une occurrence unique de chaque valeur rare, et une répétition de chaque valeur commune. Le nombre de répétition de chaque valeur commune est ici défini par la variable \verb|ratio_cr|.
@@ -1781,7 +1793,7 @@ zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 
 # Annexe 2\ : Analyse exploratoire des données (EDA)
 
-*Code EDA...*
+*Code EDA... A finir.*
 
 
 \cleardoublepage
@@ -2597,6 +2609,9 @@ Le dernier bloc de code présenté dans cette annexe permet d'insérer des graph
 ````{verbatim, lang = "latex"}
 Le seuil de séparation est alors défini par\ : 
 $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
+\paragraph*{}
+Avec $\overline{X_{ver.}}$ et $\overline{X_{set.}}$ les moyennes respectives des 
+$X$ pour *Iris setosa* et *Iris versicolor*.
 \paragraph*{}
 La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous 
 indique la pondération de chaque caractère dimensionnel dans l'indice synthétique 

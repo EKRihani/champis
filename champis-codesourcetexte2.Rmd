@@ -123,6 +123,8 @@ $$ X = L_{s} + `r round(RMD_Iris_CoeffsNorm[2],3)`.\ell_{s} `r round(RMD_Iris_Co
 
 Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
 \paragraph*{}
+Avec $\overline{X_{ver.}}$ et $\overline{X_{set.}}$ les moyennes respectives des $X$ pour *Iris setosa* et *Iris versicolor*.
+\paragraph*{}
 La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
 
 ```{r RMD-LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}

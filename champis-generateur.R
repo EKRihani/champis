@@ -4,48 +4,48 @@
 
 # Chargement des bibliothèques et données initiales
 library(tidyverse)    # Outils génériques
-dataset <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+GEN_dataset <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
 ###### SIMPLIFICATION (à virer une fois appliqué?)
 
 # Retirer valeurs numériques EXCEPTIONNELLES (PROVISOIRE)
-dataset <- dataset %>% 
+GEN_dataset <- GEN_dataset %>% 
   mutate_all(funs(str_remove(., "[[:space:]]*\\[[[:digit:]]*\\]"))) %>% 
   mutate_all(funs(str_remove(., "[[:space:]]*\\[[[:digit:]]*.[[:digit:]]*\\]")))
 
 # Retire les MATURES (PROVISOIRE)
-dataset <- lapply(dataset, gsub, pattern='\\]', replacement='')
-dataset <- lapply(dataset, gsub, pattern='\\[', replacement='')
-dataset <- data.frame(dataset)
+GEN_dataset <- lapply(GEN_dataset, gsub, pattern='\\]', replacement='')
+GEN_dataset <- lapply(GEN_dataset, gsub, pattern='\\[', replacement='')
+GEN_dataset <- data.frame(GEN_dataset)
 
 # Suppression valeurs minimales (PROVISOIRE)
-dataset$Chapeau.Diametre <- dataset$Chapeau.Diametre %>% str_remove(., ".+-") %>% as.numeric(.)
-dataset$Pied.Hauteur <- dataset$Pied.Hauteur %>% str_remove(., ".+-") %>% as.numeric(.)
-dataset$Pied.Largeur <- dataset$Pied.Largeur %>% str_remove(., ".+-") %>% as.numeric(.)
+GEN_dataset$Chapeau.Diametre <- GEN_dataset$Chapeau.Diametre %>% str_remove(., ".+-") %>% as.numeric(.)
+GEN_dataset$Pied.Hauteur <- GEN_dataset$Pied.Hauteur %>% str_remove(., ".+-") %>% as.numeric(.)
+GEN_dataset$Pied.Largeur <- GEN_dataset$Pied.Largeur %>% str_remove(., ".+-") %>% as.numeric(.)
 
-dataset[is.na(dataset)] <- 0    # Remplace les dimensions NA par 0 (a priori inutile, mais bon...)
+GEN_dataset[is.na(GEN_dataset)] <- 0    # Remplace les dimensions NA par 0 (a priori inutile, mais bon...)
 
-dataset$Type <- recode_factor(dataset$Type, 
+GEN_dataset$Type <- recode_factor(GEN_dataset$Type, 
                                    bon = "Conserver", comestible = "Conserver", "comestible cuit" = "Conserver",
                                    mediocre = "Rejeter", "non comestible" = "Rejeter", toxique = "Rejeter", Mortel = "Rejeter")
 
-write_csv2(x = dataset, file = "donnees_champis.csv")
+write_csv2(x = GEN_dataset, file = "donnees_champis.csv")
 
 #############################
 #     NETTOYAGE DONNEES     #
 #############################
 
-fichier_data <- "donnees_champis.csv"
+GEN_fichier_data <- "donnees_champis.csv"
 
-dataset <- read.csv(fichier_data, header = TRUE, sep = ";", dec = "," , stringsAsFactors = FALSE)
+GEN_dataset <- read.csv(GEN_fichier_data, header = TRUE, sep = ";", dec = "," , stringsAsFactors = FALSE)
 
-structure <- sapply(X = dataset, FUN = class, simplify = TRUE)
-numeriques <- which(structure %in% c("integer", "numeric"))
+GEN_structure <- sapply(X = GEN_dataset, FUN = class, simplify = TRUE)
+GEN_numeriques <- which(GEN_structure %in% c("integer", "numeric"))
 
-textes <- names(structure[-numeriques])
-n_especes <- nrow(dataset)
-dataset$N <- 1:n_especes
-champ_liste <- paste0("champ", dataset$N)
+GEN_textes <- names(GEN_structure[-GEN_numeriques])
+GEN_n_especes <- nrow(GEN_dataset)
+GEN_dataset$N <- 1:GEN_n_especes
+GEN_champ_liste <- paste0("champ", GEN_dataset$N)
 
 
 #########################################
@@ -63,17 +63,17 @@ ConversionMois <- function(fcn_mois){
   str_flatten(liste_mois, collapse = ", ")
 }
 
-dataset$Mois <- lapply(X = dataset$Mois, FUN = ConversionMois)
+GEN_dataset$Mois <- lapply(X = GEN_dataset$Mois, FUN = ConversionMois)
 
 
-ratio_cr <- 10  # Ratio commun/rare
+GEN_ratio_cr <- 10  # Ratio commun/rare
 
 ConversionRares <- function(fcn_facteur){
   fcn_facteur <- as.character(fcn_facteur)
   if(str_detect(fcn_facteur, pattern ="\\([[:alpha:]]|[[:space:]]+\\)"))  # Détecte si présence effective de valeurs rares
     {
     valeurs <- strsplit(fcn_facteur, split = ",")[[1]]
-    n_repet <- valeurs %>% str_match(string = ., pattern ="\\([[:alpha:]]|[[:space:]]+\\)") %>% is.na() %>% "*"(ratio_cr-1)+1
+    n_repet <- valeurs %>% str_match(string = ., pattern ="\\([[:alpha:]]|[[:space:]]+\\)") %>% is.na() %>% "*"(GEN_ratio_cr-1)+1
     rep(valeurs, n_repet) %>% str_remove(., ' \\(') %>% str_remove(., '\\)') %>% str_flatten(., collapse = ", ")
     }
   else
@@ -82,8 +82,8 @@ ConversionRares <- function(fcn_facteur){
     }
 }
 
-for (n in 1:n_especes){
-  ordre_rares <- paste0("dataset[",n,",]$", textes, " <- ConversionRares(dataset[",n,",]$", textes, ")")
+for (n in 1:GEN_n_especes){
+  ordre_rares <- paste0("GEN_dataset[",n,",]$", GEN_textes, " <- ConversionRares(GEN_dataset[",n,",]$", GEN_textes, ")")
   #print(ordre_rares)
   eval(parse(text = ordre_rares))
 }
@@ -95,11 +95,11 @@ for (n in 1:n_especes){
 fonc_split <- function(x){str_split(x, ",\\s*", simplify = TRUE)}
 
 # Séparation des espèces et des critères
-for (n in 1:n_especes){
-  assign(champ_liste[n], NULL)
-  assign(champ_liste[n], as.list(dataset[n,]))
-  assign(champ_liste[n], map(.x = eval(parse(text = champ_liste[n])), .f = fonc_split))
-  ordre <- paste0(champ_liste[n],"[numeriques] <- map(.x = ", champ_liste[n], "[numeriques], .f = as.numeric)")
+for (n in 1:GEN_n_especes){
+  assign(GEN_champ_liste[n], NULL)
+  assign(GEN_champ_liste[n], as.list(GEN_dataset[n,]))
+  assign(GEN_champ_liste[n], map(.x = eval(parse(text = GEN_champ_liste[n])), .f = fonc_split))
+  ordre <- paste0(GEN_champ_liste[n],"[GEN_numeriques] <- map(.x = ", GEN_champ_liste[n], "[GEN_numeriques], .f = as.numeric)")
   eval(parse(text = ordre))
 }
 
@@ -108,27 +108,27 @@ for (n in 1:n_especes){
 #     CREATION DES LOTS     #
 #############################
 
-lots_liste <- paste0("lot", dataset$N)
+GEN_lots_liste <- paste0("lot", GEN_dataset$N)
 
-n_champis <- 3e2      # Nombre de champignons pour chaque espèce
-f_crois <- 2          # Facteur de croissance
-#tailles <- names(structure[numeriques[-c(1,2)]])    # Facteurs de taille
-tailles <- names(structure[numeriques])    # Facteurs de taille
+GEN_n_champis <- 3e2      # Nombre de champignons pour chaque espèce
+GEN_f_crois <- 2          # Facteur de croissance
+#GEN_tailles <- names(GEN_structure[GEN_numeriques[-c(1,2)]])    # Facteurs de taille
+GEN_tailles <- names(GEN_structure[GEN_numeriques])    # Facteurs de taille
 
 
-func_alea <- function(x){round(x * rnorm(n = n_champis, mean = 1, sd = .05), digits = 2)}
+func_alea <- function(x){round(x * rnorm(n = GEN_n_champis, mean = 1, sd = .05), digits = 2)}
 
-for (n in 1:n_especes){
-  assign(lots_liste[n], NULL)
-#  ordre_num0 <- paste0(lots_liste[n], "[1:2] <-", champ_liste[n], "[1:2]")
-  ordre_texte <- paste0(lots_liste[n], "$", textes, 
-                         "<- sample(x = ", champ_liste[n], "$", textes, ", size = n_champis, replace = TRUE)")
-  ordre_fac <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, shape1 = 6*f_crois, shape2 =4, ncp = .5*f_crois)")
-  ordre_num1 <- paste0(lots_liste[n], "[tailles] <- lapply(", 
-                       champ_liste[n], "[tailles], '*', ",
-                       lots_liste[n], "$FacteurTaille)")
-  ordre_num2 <- paste0(lots_liste[n], "[tailles] <- map(.x = ",
-                       lots_liste[n], "[tailles], .f = func_alea)")
+for (n in 1:GEN_n_especes){
+  assign(GEN_lots_liste[n], NULL)
+#  ordre_num0 <- paste0(GEN_lots_liste[n], "[1:2] <-", GEN_champ_liste[n], "[1:2]")
+  ordre_texte <- paste0(GEN_lots_liste[n], "$", GEN_textes, 
+                         "<- sample(x = ", GEN_champ_liste[n], "$", GEN_textes, ", size = GEN_n_champis, replace = TRUE)")
+  ordre_fac <-paste0(GEN_lots_liste[n], "$FacteurTaille <- rbeta(n = GEN_n_champis, shape1 = 6*GEN_f_crois, shape2 =4, ncp = .5*GEN_f_crois)")
+  ordre_num1 <- paste0(GEN_lots_liste[n], "[GEN_tailles] <- lapply(", 
+                       GEN_champ_liste[n], "[GEN_tailles], '*', ",
+                       GEN_lots_liste[n], "$FacteurTaille)")
+  ordre_num2 <- paste0(GEN_lots_liste[n], "[GEN_tailles] <- map(.x = ",
+                       GEN_lots_liste[n], "[GEN_tailles], .f = func_alea)")
   ordre_df <- paste0("lot",n, " <- data.frame(lot", n, ")")        # Transformation liste en dataframe
   ordre_suppr <- paste0("lot",n, "$FacteurTaille <- NULL ")       # Suppression du facteur de taille
   ordre_rm <- paste0("rm(champ",n, ")")   # Suppression de la table champi de base (devenue inutile)
@@ -142,23 +142,23 @@ for (n in 1:n_especes){
   eval(parse(text = ordre_rm))
 }
 
-lot_la_totale <- do.call(rbind, mget(paste0("lot",1:n_especes)))   # Fusion de tous les lots
-lot_final <- lot_la_totale[sample(1:nrow(lot_la_totale)), ]
+GEN_lot_la_totale <- do.call(rbind, mget(paste0("lot",1:GEN_n_especes)))   # Fusion de tous les lots
+GEN_lot_final <- GEN_lot_la_totale[sample(1:nrow(GEN_lot_la_totale)), ]
 
 # Ajustement des concolores
-Concol_Pied <- which(lot_final$Pied.Couleur %in% c("concolore", "subconcolore"))
-lot_final$Pied.Couleur[Concol_Pied] <- lot_final$Chapeau.Couleur[Concol_Pied]
-Concol_Chair <- which(lot_final$Chair.Couleur %in% c("concolore", "subconcolore"))
-lot_final$Chair.Couleur[Concol_Chair] <- lot_final$Chapeau.Couleur[Concol_Chair]
-Concol_Lames <- which(lot_final$Lames.Couleur %in% c("concolore", "subconcolore"))
-lot_final$Lames.Couleur[Concol_Lames] <- lot_final$Chapeau.Couleur[Concol_Lames]
+GEN_Concol_Pied <- which(GEN_lot_final$Pied.Couleur %in% c("concolore", "subconcolore"))
+GEN_lot_final$Pied.Couleur[GEN_Concol_Pied] <- GEN_lot_final$Chapeau.Couleur[GEN_Concol_Pied]
+GEN_Concol_Chair <- which(GEN_lot_final$Chair.Couleur %in% c("concolore", "subconcolore"))
+GEN_lot_final$Chair.Couleur[GEN_Concol_Chair] <- GEN_lot_final$Chapeau.Couleur[GEN_Concol_Chair]
+GEN_Concol_Lames <- which(GEN_lot_final$Lames.Couleur %in% c("concolore", "subconcolore"))
+GEN_lot_final$Lames.Couleur[GEN_Concol_Lames] <- GEN_lot_final$Chapeau.Couleur[GEN_Concol_Lames]
 
 # Sauvegarde
-write_csv(x = lot_final, file = "lot_champis.csv")
+write_csv(x = GEN_lot_final, file = "lot_champis.csv")
 zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 
 # Gros nettoyage
-for (n in 1:n_especes){
+for (n in 1:GEN_n_especes){
   ordre_rm1 <- paste0("rm(champ",n, ")")   # Suppression de la table champi de base
   ordre_rm2 <- paste0("rm(lot",n, ")")   # Suppression des lots champis de base
   eval(parse(text = ordre_rm1))
@@ -167,36 +167,32 @@ for (n in 1:n_especes){
 
 
 #Analyse niveaux pour nettoyage (A SUPPRIMER)
-fichier_data <- "~/projects/champis/lot_champis.zip"
-fichier_data <- unzip(fichier_data, "lot_champis.csv")
-dataset2 <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
-str(dataset2)
-summary(dataset2$Type)
-summary(dataset2$Hyménophore1)
-summary(dataset2$Hyménophore2)
-summary(dataset2$Chair.Type)
-summary(dataset2$Chair.Couleur)
-summary(dataset2$Chapeau.Forme)
-summary(dataset2$Chapeau.Surface)
-summary(dataset2$Chapeau.Couleur)
-summary(dataset2$Chapeau.Marge)
-summary(dataset2$Spore.Couleur)
-summary(dataset2$Lames.Attache)
-summary(dataset2$Lames.Espace)
-summary(dataset2$Lames.Couleur)
-summary(dataset2$Pied.Forme)
-summary(dataset2$Pied.Surface)
-summary(dataset2$Pied.Couleur)
-summary(dataset2$Habitat)
-summary(dataset2$Odeur)
-summary(dataset2$VG.Type)
-summary(dataset2$VG.Type2)
-summary(dataset2$VP.Type)
-summary(dataset2$VP.Type2)
+GEN_fichier_data <- "~/projects/champis/lot_champis.zip"
+GEN_fichier_data <- unzip(GEN_fichier_data, "lot_champis.csv")
+GEN_dataset2 <- read.csv(GEN_fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
+str(GEN_dataset2)
+summary(GEN_dataset2$Type)
+summary(GEN_dataset2$Hyménophore1)
+summary(GEN_dataset2$Hyménophore2)
+summary(GEN_dataset2$Chair.Type)
+summary(GEN_dataset2$Chair.Couleur)
+summary(GEN_dataset2$Chapeau.Forme)
+summary(GEN_dataset2$Chapeau.Surface)
+summary(GEN_dataset2$Chapeau.Couleur)
+summary(GEN_dataset2$Chapeau.Marge)
+summary(GEN_dataset2$Spore.Couleur)
+summary(GEN_dataset2$Lames.Attache)
+summary(GEN_dataset2$Lames.Espace)
+summary(GEN_dataset2$Lames.Couleur)
+summary(GEN_dataset2$Pied.Forme)
+summary(GEN_dataset2$Pied.Surface)
+summary(GEN_dataset2$Pied.Couleur)
+summary(GEN_dataset2$Habitat)
+summary(GEN_dataset2$Odeur)
+summary(GEN_dataset2$VG.Type)
+summary(GEN_dataset2$VG.Type2)
+summary(GEN_dataset2$VP.Type)
+summary(GEN_dataset2$VP.Type2)
 
-dataset[dataset$Pied.Surface=="chin",1]
-
-
-test <- dataset2[1:4,]
-
-
+rm(GEN_dataset2, GEN_lot_final, GEN_lot_la_totale)
+save.image(file="EKR-Generateur.RData")
