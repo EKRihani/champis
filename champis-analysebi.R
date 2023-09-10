@@ -231,10 +231,10 @@ BI_modelquad_rpartcost <- BI_modelquad_rpartcost %>%
 BI_modelquad_rpartcost_top <- BI_modelquad_rpartcost[which.max(BI_modelquad_rpartcost$Jw),]
 
 # Erreur de modélisation quadratique
-BI_Compar_rpartcost <- BI_fit_ranger_resultats[,c("X1","X2","Jw")] %>% 
+BI_Compar_rpartcost <- BI_fit_rpartcost_resultats[,c("X1","X2","Jw")] %>% 
    mutate(Jw2 = modelPredict(BI_mod_rpartcost_jw, .[,c("X1","X2")]))
-BI_NRMSE_rpartcost <-  RMSE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)/mean(BI_Compar_rpartcost$Jw)
-BI_NMAE_rpartcost <-  MAE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)/mean(BI_Compar_rpartcost$Jw)
+BI_RMSE_rpartcost <-  RMSE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
+BI_MAE_rpartcost <-  MAE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
 
 # Meilleur modèle rpartcost
 BI_best_rpartcostgrid <- BI_modelquad_rpartcost_top[c("cp", "Cost")]
@@ -319,8 +319,8 @@ BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", 
 # Erreur de modélisation quadratique
 BI_Compar_Ranger <- BI_fit_ranger_resultats[,c("X1","X2","X3","Jw")] %>% 
    mutate(Jw2 = modelPredict(BI_mod_ranger_jw, .[,c("X1","X2","X3")]))
-BI_NRMSE_Ranger <-  RMSE(BI_Compar_Ranger$Jw, BI_Compar_Ranger$Jw2)/mean(BI_Compar_Ranger$Jw)
-BI_NMAE_Ranger <-  MAE(BI_Compar_Ranger$Jw, BI_Compar_Ranger$Jw2)/mean(BI_Compar_Ranger$Jw)
+BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
+BI_MAE_ranger <-  MAE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
 
 # Optimisation quadratique
 BI_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))
@@ -389,8 +389,8 @@ BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultat
 # Erreur de modélisation quadratique
 BI_Compar_Rborist <- BI_fit_ranger_resultats[,c("X1","X2","Jw")] %>% 
    mutate(Jw2 = modelPredict(BI_mod_Rborist_jw, .[,c("X1","X2")]))
-BI_NRMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)/mean(BI_Compar_Rborist$Jw)
-BI_NMAE_Rborist <-  MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)/mean(BI_Compar_Rborist$Jw)
+BI_RMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
+BI_MAE_Rborist <-  MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
 
 
 # Optimisation quadratique

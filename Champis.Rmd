@@ -232,7 +232,7 @@ Avec\ :
 Toutefois, nos recherches bibliographiques n'ont pas permis de distinguer de différences de la cinétique de croissance de chacune de ces trois caractéristiques dimensionnelles du sporophore. Nous supposerons donc, en première approximation, que la croissance du stipe en longueur et en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques. Nous obtenons par conséquent\ :
 
 $$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
-Avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen, généré aléatoirement.
+avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen, généré aléatoirement.
 
 \paragraph*{}
 Ainsi, le problème de génération de nos trois variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire\ : le facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires. Il convient donc de définir le cahier des charges de la distribution la plus adaptée au sujet de cette étude.
@@ -293,8 +293,7 @@ plot(ggarrange(
 \paragraph*{}
 En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence,[@johnson_continuous_1995] la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de\ :[@johnson_continuous_1995;@r_core_team_r_2022]
 $$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \chi^{2}_{2 \beta}}$$
-
-Avec $\chi^{2}$ la loi du khi-deux, $\alpha{}$ et $\beta{}$ les paramètres de forme de la loi bêta, et $\lambda{}$ son paramètre de non-centralité. Nous définirons empiriquement pour cette étude les relations suivantes entre ces trois paramètres\ : 
+avec $\chi^{2}$ la loi du khi-deux, $\alpha{}$ et $\beta{}$ les paramètres de forme de la loi bêta, et $\lambda{}$ son paramètre de non-centralité. Nous définirons empiriquement pour cette étude les relations suivantes entre ces trois paramètres\ : 
 $$\left \{
 \begin{array}{l c c}
 \alpha = 6 \, F_{c} & & (shape1)\\
@@ -613,7 +612,7 @@ avec $p$ la fréquence relative de l'une des deux classes, au sein du n\oe{}ud c
 \paragraph*{}
 Les arbres obtenus peuvent enfin être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre. Cet algorithme effectue l'analyse de l'arbre des feuilles vers la racine -- donc dans le sens inverse de l'induction qui l'a construit -- et en évaluant si chaque n\oe{}ud intermédiaire pourrait être avantageusement remplacé par une feuille ou par une branche. Différents critères d'optimisation existent, parmi lesquels nous pouvons citer l'élagage coût-complexité,[@kretowski_evolutionary_2019] exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de notre arbre $T$\ :
 $$CC(T) = Erreur(T) + \alpha{}\times Taille(T)$$
-Avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{paragraphe:train-CART}, p.\ \pageref{paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{chapitre:doe}, p.\ \pageref{chapitre:doe}}
+avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{paragraphe:train-CART}, p.\ \pageref{paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{chapitre:doe}, p.\ \pageref{chapitre:doe}}
 \paragraph*{}
 Les résultats de la mise en \oe{}uvre d'une classification par arbre de décision sur le jeu de données Iris sont représentés par la figure \ref{fig:Iris-CART}. 
 \paragraph*{}
@@ -726,7 +725,11 @@ Dans le cadre de cette étude, nous utiliserons des hypercubes latins quasi-orth
 \paragraph*{}
 Le but des plans expérimentaux de cette étude ne sera pas l'obtention d'une prédiction exacte de la valeur de la réponse, mais plus modestement la recherche des facteurs permettant d'obtenir cette réponse optimale. A cet effet, la modélisation de la performance pourra s'effectuer à l'aide d'un modèle quadratique avec interactions, de formule générale\ :
 $$ Y = \beta_{0}  + \sum_{i = 1}^{k} \beta_{i}.X_{i} + \sum_{i <j}^{k} \sum_{j>1}^{k} \beta_{ij}.X_{i}.X_{j} + \sum_{i = 1}^{k} + \beta_{ii}.X_{i}^2 + \varepsilon$$
-Avec $\beta_{n}$ les coefficients des effets principaux, $X_{n}$ leurs facteurs réduits et $\varepsilon$ le terme d'erreur.
+avec $\beta_{n}$ les coefficients des effets principaux, $X_{n}$ leurs facteurs réduits et $\varepsilon$ le terme d'erreur.
+\paragraph*{}
+La précision de cette modélisation peut être évaluée par l'erreur absolue moyenne :
+$$MAE = \frac{1}{n}.\sum_{i=1}^{n}|y_{i}-\hat{y}_{i}| $$
+avec $n$ le nombre de points expérimentaux, $y_{i}$ la valeur expérimentale et $\hat{y}_{i}$ la valeur prédite de la performance en chaque point $i$ considéré. 
 \FloatBarrier
 
 ## Évaluation des performances des modèles {#chapitre:perf}
@@ -994,7 +997,6 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpart_cp_resultats[which.max(BI_fit_rpart_cp_re
 
 L'efficience calculatoire de ce modèle est remarquable, avec $t_{moy} = `r BI_temps_rpart`$ min ($n = `r nrow(BI_grid_rpart_cp)`$ itérations).
 
-\FloatBarrier
 \paragraph*{}
 Le second modèle CART utilisé dans cette étude (rpartCost) est plus élaboré et associe deux hyperparamètres :
 
@@ -1032,17 +1034,19 @@ En posant comme facteurs réduits\ :
 Nous pouvons modéliser la réponse Y ($J_{w}$) par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
 
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-
-Avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de complexité (*cp*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants\ :
+avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de complexité (*cp*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants\ :
 
 \begin{minipage}{0.4 \textwidth}
-$$\left \{
+$$\begin{array}{l}
+\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_rpartcost_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_rpartcost_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_rpartcost_jw$model@trend.coef[3],4)` \\
 \end{array}
-\right.$$
+\right. \\
+\quad MAE = `r signif(BI_MAE_rpartcost,4)`
+\end{array}$$
 \end{minipage}
 \begin{minipage}{0.4 \textwidth}
 $$\left \{
@@ -1150,19 +1154,21 @@ L'interprétation visuelle des graphiques des indicateurs de performance laisse 
 \paragraph*{}
 Nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
 $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-\paragraph*{}
-Avec $Y$ l'indice de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
+avec $Y$ l'indice de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
 \paragraph*{}
 Le calcul numérique nous permet d'obtenir les estimations des effets\ :
 
 \begin{minipage}{0.4 \textwidth}
-$$\left \{
+$$\begin{array}{l}
+\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
 \end{array}
-\right.$$
+\right. \\
+\quad MAE = `r signif(BI_MAE_Rborist,4)`
+\end{array}$$
 \end{minipage}
 \begin{minipage}{0.4 \textwidth}
 $$\left \{
@@ -1175,7 +1181,7 @@ b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \end{minipage}
 
 \paragraph*{}
-Ce modèle quadratique avec interactions semble confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
+Ce modèle quadratique avec interactions modélise bien les données expérimentales, avec une MAE très basse, et semble également confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
 \paragraph*{}
 Les performances obtenues par le modèle ainsi optimisé sont excellentes\ :
 
@@ -1237,14 +1243,17 @@ Avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit associé au para
 La modélisation permet de calculer les effets suivants\ :
 
 \begin{minipage}{0.4 \textwidth}
-$$\left \{
+$$\begin{array}{l}
+\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_ranger_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_ranger_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_ranger_jw$model@trend.coef[3],4)` \\
 b_{3} = `r round(BI_mod_ranger_jw$model@trend.coef[4],4)` \\
 \end{array}
-\right.$$
+\right. \\
+\quad MAE = `r signif(BI_MAE_ranger,4)`
+\end{array}$$
 \end{minipage}
 \begin{minipage}{0.4 \textwidth}
 $$\left \{
@@ -1258,9 +1267,8 @@ b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
 \right.$$
 \end{minipage}
 
-
 \paragraph*{}
-La modélisation quadratique confirme les conclusions de l'interprétation graphique, avec $b_{1} \gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats\ :
+La modélisation quadratique correspond bien aux données expérimentales, avec une MAE extrêmement basse, et confirme par ailleurs les conclusions de l'interprétation graphique, avec $b_{1} \gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_modelquad_ranger_top["min.node.size"]`$, $mtry = `r BI_modelquad_ranger_top["mtry"]`$ et $splitrule = `r BI_modelquad_ranger_top[1,"splitrule"]`$) a donné d'excellents résultats\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(BI_fit_ranger_best_resultats["Jw"],5)` \\
@@ -1368,10 +1376,11 @@ plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(leg
 ```
 
 \paragraph*{}
-Avec des paramètres optimaux (*predFixed* = `r MULFAM_best_Rboristgrid$predFixed` et *minNode* = `r MULFAM_best_Rboristgrid$minNode`), la performance est estimée à\ :
+La performance estimée sous hyperparamètres optimaux (*predFixed* = `r MULFAM_best_Rboristgrid$predFixed` et *minNode* = `r MULFAM_best_Rboristgrid$minNode`) est synthétisée dans la table \ref{tab:FAM-PerfRborist}.
+
 \FloatBarrier
 
-```{r, echo = FALSE}
+```{r FAM-PerfRborist, echo = FALSE}
 kable(MULFAM_fit_Rborist_best_resultats[c(1,2,6,7)], digits = 5, caption = "Performances du modèle Rborist (hyperparamètres optimaux)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
@@ -2046,10 +2055,17 @@ BI_mod_Rborist_jw <-  modelFit(X = BI_fit_Rborist_resultats[,c("X1", "X2")],
                                Y = BI_fit_Rborist_resultats$Jw,  
                                type="Kriging", 
                                formula= Y ~ X1 + X2 + X1:X2 + I(X1^2) + I(X2^2))
+
+BI_Compar_Rborist <- BI_fit_Rborist_resultats[,c("X1","X2","Jw")] %>% 
+               mutate(Jw2 = modelPredict(BI_mod_Rborist_jw, .[,c("X1","X2")]))
+BI_MAE_Rborist <- MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
+
 ```
 \normalsize
 
 Ces résultats permettent notamment de modéliser les performances sur la totalité de l'espace expérimental des hyperparamètres. A cette fin, l'algorithme est chargé de générer l'ensemble des couples de valeurs $(X_{1},X_{2})$ possibles, à l'aide de la fonction \verb|expand.grid|, avant de calculer la valeur $J_{w}$ correspondante à chaque couple de points.
+\paragraph*{}
+L'évaluation de la précision de la modélisation quadratique se base sur la juxtaposition des prédictions suivant le modèle quadratique à côté des valeurs expérimentales, puis le calcul de la MAE.
 
 \small
 ```{r, eval = FALSE}
@@ -2088,6 +2104,7 @@ plot(ggarrange(
 \FloatBarrier
 
 L'étape suivante est d'exploiter ce modèle quadratique pour évaluer les hyperparamètres permettant de maximiser $J_{w}$. A cet effet, une table de l'ensemble des points de l'espace expérimental des facteurs réduits est générée, puis la fonction quadratique évaluée précédemment est appliquée, afin d'obtenir une prédiction approximative de $J_{w}$. Les hyperparamètres sont également calculés, afin de pouvoir être appliqués par la suite.
+\newpage
 
 \small
 ```{r, eval = FALSE}
@@ -2553,7 +2570,6 @@ d_{4}=S_{41}\lambda_{1}+S_{42}\lambda_{2}+S_{43}\lambda_{3}+S_{44}\lambda_{4}\\
 \end{array} 
 \Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
 \right.$$
-
 avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des 
 différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des 
 coefficients $\lambda_{i}$.
