@@ -44,7 +44,7 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 \FloatBarrier
 
 \paragraph*{}
-En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* et *Iris setosa*.
+En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces *Iris versicolor* et *Iris setosa*.
 \paragraph*{}
 Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
 
@@ -125,7 +125,7 @@ Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_
 \paragraph*{}
 Avec $\overline{X_{ver.}}$ et $\overline{X_{set.}}$ les moyennes respectives des $X$ pour *Iris setosa* et *Iris versicolor*.
 \paragraph*{}
-La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
+La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:RMD-LDA-MinMax} et \ref{fig:RMD-LDA-Separation}.
 
 ```{r RMD-LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
 plot(ggarrange(widths = c(1, 1.5),

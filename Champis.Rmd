@@ -132,7 +132,9 @@ La seconde limite, plus profonde, est la logique inhérente au processus évolut
 \paragraph*{}
 Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème\ : en effet, il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
 \paragraph*{}
-Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques. Le but de cette étude est notamment de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies de classification.
+Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques.
+\paragraph*{}
+Le but principal de cette étude sera de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies et méthodes d'apprentissages machine dédiées à la classification.
 
 ## État de l'art des lots de données mycologiques
 Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987].
@@ -468,7 +470,7 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 \FloatBarrier
 
 \paragraph*{}
-En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* et *Iris setosa*.
+En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré un exemple extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces *Iris versicolor* et *Iris setosa*.
 \paragraph*{}
 Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
 
@@ -724,7 +726,7 @@ Dans le cadre de cette étude, nous utiliserons des hypercubes latins quasi-orth
 \paragraph*{}
 Le but des plans expérimentaux de cette étude ne sera pas l'obtention d'une prédiction exacte de la valeur de la réponse, mais plus modestement la recherche des facteurs permettant d'obtenir cette réponse optimale. A cet effet, la modélisation de la performance pourra s'effectuer à l'aide d'un modèle quadratique avec interactions, de formule générale\ :
 $$ Y = \beta_{0}  + \sum_{i = 1}^{k} \beta_{i}.X_{i} + \sum_{i <j}^{k} \sum_{j>1}^{k} \beta_{ij}.X_{i}.X_{j} + \sum_{i = 1}^{k} + \beta_{ii}.X_{i}^2 + \varepsilon$$
-Avec $\beta_{n}$ les coefficients des effets principaux et $X_{n}$ leurs facteurs réduits.
+Avec $\beta_{n}$ les coefficients des effets principaux, $X_{n}$ leurs facteurs réduits et $\varepsilon$ le terme d'erreur.
 \FloatBarrier
 
 ## Évaluation des performances des modèles {#chapitre:perf}
@@ -735,16 +737,16 @@ De nombreux critères sont utilisables, en fonction du cahier des charges défin
 \paragraph*{}
 Dans une tâche de classification binaire, les critères usuels sont la spécificité, la sensibilité, et l'aire sous la courbe de fonction d'efficacité du récepteur (*AUC ROC*, parfois abrégé en *ROC*). Il conviendra bien évidemment, avant d'utiliser des indicateurs tels que la spécificité et la sensibilité, de définir la notion de test positif et test négatif.
 \paragraph*{}
-D'autres indicateurs d'intérêt existent, nous retiendrons ici l'indice de Youden[@youden_index_1950] pondéré, qui permet d'ajuster l'importance relative accordée à la spécificité et à la sensibilité, au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
+D'autres indicateurs d'intérêt existent, nous retiendrons ici l'indice de Youden[@youden_index_1950] pondéré ($J_{w}$), qui permet d'ajuster l'importance relative accordée à la spécificité et à la sensibilité, au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
 \paragraph*{}
-En l'espèce, l'index J de Youden pondéré nous permet d'élaborer un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible -- sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
+En l'espèce, l'indice de Youden pondéré nous permet d'élaborer un indice synthétique tenant compte du fait qu'il est plus grave de classer à tort comme comestible un champignon toxique que d'écarter à tort un champignon parfaitement comestible -- sans pour autant autoriser le modèle à écarter un nombre inconsidéré de champignons comestibles.
 \paragraph*{}
 L'indice de Youden pondéré est donné par\ :[@rucker_summary_2010]
 $$ J_{w} = 2.\left(w.Sen+ \left(1-w\right).Spe \right) -1 ~~~~~~~~ avec ~~~~ w \in \left[0;1\right]$$ 
 \paragraph*{}
 Avec $Sen$ la sensibilité et $Spe$ la spécificité du modèle.
 \paragraph*{}
-Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur comestibilité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon non-comestible". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un index J de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
+Dans la classification binaire de cette étude, problème qui revient classiquement en mycologie à classer les espèces en fonction de leur comestibilité, la valeur positive sera ici arbitrairement attribuée à la valeur "champignon non-comestible". Nous cherchons donc à maximiser la sensibilité de la détection, afin d'écarter les espèces toxiques, la spécificité -- c'est-à-dire la capacité à ne pas écarter trop d'espèces comestibles -- apparaissant alors comme un critère relativement secondaire. En établissant arbitrairement un indice de Youden pondéré accordant `r Jw_ratio` fois plus d'importance à la sensibilité qu'à la spécificité, nous pouvons établir $w = `r Jw_ratio`/`r Jw_ratio+1`$.
 \paragraph*{}
 Le problème de classification binaire étant relativement simple (*comestible* ou *non-comestible*), nous fixerons arbitrairement le critère de performance minimum à atteindre à $J_{w} \geq `r Jw_min`$, soit\ :
 $$\left \{
@@ -937,7 +939,7 @@ plot(ggarrange(widths = c(1, 1.5),
 \paragraph*{}
 Comme l'illustre la figure \ref{fig:BIldapda}, les performances des modèles PDA et LDA sont très proches, et relativement constantes sur la totalité de l'espace expérimental de leurs hyperparamètres.
 \paragraph*{}
-Le paramètre *dimen* du modèle lda2 n'a absolument aucun effet sur les performances prédictives, avec un index J de Youden pondéré constant ($J_{w} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). Ce caractère constant était en réalité prévisible, car le nombre de fonctions discriminantes $n_{fd}$ dépend du nombre de prédicteurs $p$ et du nombre de degrés de libertés entre les $n_{g}$ groupes $(ddl = n_{g}-1)$, de sorte que :
+Le paramètre *dimen* du modèle lda2 n'a absolument aucun effet sur les performances prédictives, avec un indice de Youden pondéré constant ($J_{w} = `r round(mean(BI_fit_lda2_dim_resultats[,"Jw"]), 3)`$). Ce caractère constant était en réalité prévisible, car le nombre de fonctions discriminantes $n_{fd}$ dépend du nombre de prédicteurs $p$ et du nombre de degrés de libertés entre les $n_{g}$ groupes $(ddl = n_{g}-1)$, de sorte que :
 $$n_{fd} = \min(ddl, p) = \min\left( (n_{g}-1) , p \right)$$
 Dans une classification binaire, ($n_{g} = 2$) il n'y a qu'un degré de liberté, c'est-à-dire une seule séparation entre les groupes, donc une seule fonction discriminante à définir.
 \paragraph*{}
@@ -945,7 +947,7 @@ L'efficience calculatoire est correcte, avec $t_{moy} = `r BI_temps_lda2`$ min (
 \paragraph*{}
 De même, le paramètre *lambda* du modèle pda n'impacte ses performances que de matière très marginale, avec des lambdas faibles donnant une légère amélioration des résultats ($J_{w_{max}} = `r round(max(BI_fit_pda_lambda_resultats["Jw"]),3)`$). L'efficience calculatoire est nettement en retrait par rapport au modèle lda2, avec $t_{moy} = `r BI_temps_pda`$ min ($n = `r nrow(BI_grid_pda_lambda)`$ itérations).
 \paragraph*{}
-Toutefois, les performances de ces deux modèles restent malheureusement insuffisantes pour notre étude, aussi bien sur le J de Youden pondéré qu'en sensibilité ou en spécificité\ :
+Toutefois, les performances de ces deux modèles restent malheureusement insuffisantes pour notre étude, aussi bien sur l'indice de Youden pondéré qu'en sensibilité ou en spécificité\ :
 $$\left \{
 \begin{array}{l}
 J_{w} \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Jw"], BI_fit_pda_lambda_resultats[,"Jw"])),3)` \\
@@ -1016,7 +1018,7 @@ plot(ggarrange(
 ```
 
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.width = 5.2, fig.cap = paste0("Performances (index J de Youden pondéré ", Jw_ratio,":1) de rpartCost en classification binaire, en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)")}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.width = 5.2, fig.cap = paste0("Performances (indice de Youden pondéré ", Jw_ratio,":1) de rpartCost en classification binaire, en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)")}
 plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1031,7 +1033,7 @@ Nous pouvons modéliser la réponse Y ($J_{w}$) par un modèle quadratique avec 
 
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 
-Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de complexité (*cp*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants\ :
+Avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de complexité (*cp*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants\ :
 
 \begin{minipage}{0.4 \textwidth}
 $$\left \{
@@ -1072,7 +1074,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Sens"],4)` \\
 \right.$$
 
 \paragraph*{}
-Les performances du modèle rpartCost sont excellentes, dépassant celles de notre modèle précédent, au prix d'une efficience calculatoire amoindrie ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations). Ce modèle remplit pleinement notre critère concernant l'index J de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
+Les performances du modèle rpartCost sont excellentes, dépassant celles de notre modèle précédent, au prix d'une efficience calculatoire amoindrie ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations). Ce modèle remplit pleinement notre critère concernant l'indice de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. \paragraph*{}
 Les performances obtenues sont\ :
@@ -1139,7 +1141,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice J de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres réduits : nombre de prédicteurs X1 et de mbre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres réduits : nombre de prédicteurs X1 et de mbre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1149,7 +1151,7 @@ L'interprétation visuelle des graphiques des indicateurs de performance laisse 
 Nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
 $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 \paragraph*{}
-Avec $Y$ l'indice J de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
+Avec $Y$ l'indice de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
 \paragraph*{}
 Le calcul numérique nous permet d'obtenir les estimations des effets\ :
 
@@ -1173,7 +1175,7 @@ b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \end{minipage}
 
 \paragraph*{}
-Ce modèle quadratique avec interactions semble confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice J de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
+Ce modèle quadratique avec interactions semble confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice de Youden pondéré ($minNode = `r BI_modelquad_Rborist_top["minNode"]`$ et $predFixed = `r BI_modelquad_Rborist_top["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
 \paragraph*{}
 Les performances obtenues par le modèle ainsi optimisé sont excellentes\ :
 
@@ -1230,7 +1232,7 @@ L'interprétation graphique laisse entrevoir un comportement relativement simila
 \paragraph*{}
 Nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ :
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
-Avec Y l'indice J de Youden pondéré, $X_{1}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{2}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
+Avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{2}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
 \paragraph*{}
 La modélisation permet de calculer les effets suivants\ :
 
@@ -1268,7 +1270,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_ranger_best_resultats["Sens"],5)` \\
 \right.$$
 
 \paragraph*{}
-Le modèle Ranger a donné des résultats assez similaires à ceux du modèle Rborist, avec une sensibilité, une spécificité et un indice de Youden excellents.
+Le modèle Ranger a donné des résultats assez similaires à ceux du modèle Rborist, avec une sensibilité, une spécificité et un indice de Youden pondéré excellents.
 \paragraph*{}
 Ces résultats soulignent un fait intéressant\ : tous les modèles de forêts aléatoires ne sont pas égaux. Notre étude montre une différence considérable en sensibilité et spécificité entre les forêts aléatoires de type rFerns, Ranger et Rborist. Lors des étapes préliminaires de cette étude, d'autres algorithmes de forêts aléatoires ont également montré de grandes disparités d'efficience sur le plan calculatoire, ce qui nous a conduit à écarter certains modèles pour des raisons pratiques, alors que d'autres se sont avérés sensiblement plus rapides et ont donc pu être retenus pour notre étude.
 \paragraph*{}
@@ -1872,7 +1874,7 @@ Cette partie ne prétend pas à l'exhaustivité, elle se limitera à la présent
 
 ### Arbre de classification et régression {#chapitre:code-CART}
 
-La première étape est de définir l'indice J de Youden,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}} et les pondérations respectives de la sensibilité et de la spécificité. Cette définition n'est pas nécessaire pour les classifieurs multiclasse, le kappa ($\kappa$) et l'indice de Rand ($R$) étant des métriques évaluées nativement par la librairie *caret*.
+La première étape est de définir l'indice de Youden pondéré,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}} et les pondérations respectives de la sensibilité et de la spécificité. Cette définition n'est pas nécessaire pour les classifieurs multiclasse, le kappa ($\kappa$) et l'indice de Rand ($R$) étant des métriques évaluées nativement par la librairie *caret*.
 \small
 ```{r, eval = FALSE}
 BI_w <- 10
@@ -1919,7 +1921,7 @@ BI_fit_rpart_cp <- train(Type ~ .,
 ```
 \normalsize
 
-L'objet résultant est d'une structure relativement complexe. Notre algorithme peut notamment en extraire les résultats relatifs aux performances du modèle, et y adjoindre le calcul du J de Youden pondéré $J_{w}$. Dans le cadre des classifieurs multiclasses, ce calcul est inutile, l'objet généré à l'étape précédente contenant déjà les indicateurs de performance que nous utilisons\ : kappa ($\kappa$) et indice de Rand ($R$, *accuracy*).
+L'objet résultant est d'une structure relativement complexe. Notre algorithme peut notamment en extraire les résultats relatifs aux performances du modèle, et y adjoindre le calcul de l'indice de Youden pondéré $J_{w}$. Dans le cadre des classifieurs multiclasses, ce calcul est inutile, l'objet généré à l'étape précédente contenant déjà les indicateurs de performance que nous utilisons\ : kappa ($\kappa$) et indice de Rand ($R$, *accuracy*).
 \FloatBarrier
 
 \small
@@ -2445,8 +2447,8 @@ linéaire des caractéristiques des classes, dont les coefficients permettent de
 rendre les points du problème originel le plus aisément "séparables". La LDA étant 
 utilisée dans cette étude pour construire un classifieur binaire, c'est ce type 
 de classifieur qui sera présenté dans cette section, et illustré avec un exemple 
-extrait du jeu de données *Iris*, avec séparation entre l'espèce *Iris versicolor* 
-et *Iris setosa*.
+extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces 
+*Iris versicolor* et *Iris setosa*.
 \paragraph*{}
 Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
 ````
@@ -2658,4 +2660,8 @@ etc.
 
 ```
 \normalsize
+Le résultat ainsi obtenu est présenté dans les pages suivantes.
+\newpage
+\includepdf[scale=0.9,pagecommand={}, frame, pages=-]{champis-codesourcetexte2.pdf}
+
 \newpage

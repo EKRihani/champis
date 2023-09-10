@@ -230,6 +230,11 @@ BI_modelquad_rpartcost <- BI_modelquad_rpartcost %>%
                BI_mod_rpartcost_jw$model@trend.coef[6]*X1*X2)
 BI_modelquad_rpartcost_top <- BI_modelquad_rpartcost[which.max(BI_modelquad_rpartcost$Jw),]
 
+# Erreur de modélisation quadratique
+BI_Compar_rpartcost <- BI_fit_ranger_resultats[,c("X1","X2","Jw")] %>% 
+   mutate(Jw2 = modelPredict(BI_mod_rpartcost_jw, .[,c("X1","X2")]))
+BI_NRMSE_rpartcost <-  RMSE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)/mean(BI_Compar_rpartcost$Jw)
+BI_NMAE_rpartcost <-  MAE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)/mean(BI_Compar_rpartcost$Jw)
 
 # Meilleur modèle rpartcost
 BI_best_rpartcostgrid <- BI_modelquad_rpartcost_top[c("cp", "Cost")]
@@ -311,6 +316,12 @@ BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET"
 BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
 BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "X1", "X2", "Jw", "D")
 
+# Erreur de modélisation quadratique
+BI_Compar_Ranger <- BI_fit_ranger_resultats[,c("X1","X2","X3","Jw")] %>% 
+   mutate(Jw2 = modelPredict(BI_mod_ranger_jw, .[,c("X1","X2","X3")]))
+BI_NRMSE_Ranger <-  RMSE(BI_Compar_Ranger$Jw, BI_Compar_Ranger$Jw2)/mean(BI_Compar_Ranger$Jw)
+BI_NMAE_Ranger <-  MAE(BI_Compar_Ranger$Jw, BI_Compar_Ranger$Jw2)/mean(BI_Compar_Ranger$Jw)
+
 # Optimisation quadratique
 BI_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))
 BI_modelquad_ranger <- BI_modelquad_ranger %>% 
@@ -374,6 +385,13 @@ BI_pred_Rborist <- expand.grid(BI_fit_Rborist_resultats[,c("X1","X2")]) %>%
 BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Spec", "F")
 BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Sens", "G")
 BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "X1", "X2", "Jw", "D")
+
+# Erreur de modélisation quadratique
+BI_Compar_Rborist <- BI_fit_ranger_resultats[,c("X1","X2","Jw")] %>% 
+   mutate(Jw2 = modelPredict(BI_mod_Rborist_jw, .[,c("X1","X2")]))
+BI_NRMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)/mean(BI_Compar_Rborist$Jw)
+BI_NMAE_Rborist <-  MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)/mean(BI_Compar_Rborist$Jw)
+
 
 # Optimisation quadratique
 BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), X2 = seq(from = 0, to = 1, length.out = 17)) %>% 
