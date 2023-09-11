@@ -322,7 +322,6 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 
 \paragraph*{}
 L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \ref{fig:Lots-Dispersion2D} et \ref{fig:Lots-DispersionDensite}.
-\paragraph*{}
 
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 720, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
@@ -359,7 +358,7 @@ La génération des paramètres qualitatifs, tels que la couleur des spores ou l
 \paragraph*{}
 L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question pour chaque spécimen.
 \paragraph*{}
-Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. (cf. annexes, p. \pageref{ANNEXErares})
+Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. (cf. annexes, p. \pageref{ANNEXErares})
 \paragraph*{}
 Notre générateur permettra donc aux caractéristiques "communes" d'avoir une probabilité d'être sélectionnées `r GEN_ratio_cr` fois plus élevée  que celle de ces caractéristiques "rares".
 \paragraph*{}
@@ -380,8 +379,6 @@ L’apprentissage machine peut se dérouler suivant un certain nombre de paradig
 * Apprentissage machine supervisé\ : les données du problème sont disponibles sous forme de couples exemple-annotation. Chaque point de données possède des caractéristiques (covariables) et une annotation. Le principe de cet apprentissage est donc de générer une application liant les vecteurs des entrées (covariables) et une variable de sortie (annotation). L’apprentissage machine supervisé permet également de mesurer les performances du modèle obtenu.
 * Apprentissage machine semi-supervisé\ : les données du problème contiennent une petite quantité de données annotées, associée avec une grande quantité de données non annotées. La présence de cette grande quantité de données non-annotées peut apporter une amélioration considérable de la précision des prédictions par rapport à l’utilisation d’un seul lot de données annotées de plus petite taille.
 * Apprentissage machine non supervisé\ : les données ne sont pas annotées. Ce paradigme permet d’acquérir une connaissance concise de la structure du lot de données, notamment par des méthodes de partitionnement des données (*clustering*), de réduction de dimensionalité ou de réseaux neuronaux. Il peut notamment être utilisé pour l’analyse exploratoire de données ou pour diminuer la quantité de données fournie à des algorithmes supervisés afin d'augmenter l'efficience calculatoire du système.
-
-
 
 ## Jeux de données {#chapitre:split}
 
