@@ -150,30 +150,28 @@ MULESP_pred_ranger <- expand(MULESP_fit_ranger_resultats[,c("X1","X2","X3")], X1
    mutate(Kappa = modelPredict(MULESP_mod_ranger_kappa, .[,c("mtry", "min.node.size", "X3")])) %>%
    mutate(Accuracy = modelPredict(MULESP_mod_ranger_accu, .[,c("mtry", "min.node.size", "X3")]))
 
-# Erreur de modélisation quadratique
-MULESP_Compar_ranger <- MULESP_fit_ranger_resultats[,c("X1","X2","X3","Kappa")] %>% 
-   mutate(Kappa2 = modelPredict(MULESP_mod_ranger_kappa, .[,c("X1","X2","X3")]))
-MULESP_RMSE_ranger <-  RMSE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$Kappa2)
-MULESP_MAE_ranger <-  MAE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$Kappa2)
-
-
 MULESP_pred_ranger_ET <- MULESP_pred_ranger %>% filter(splitrule == "extratrees")
 MULESP_pred_ranger_GINI <- MULESP_pred_ranger %>% filter(splitrule == "gini")
 MULESP_fit_ranger_ET <- MULESP_fit_ranger$results %>% filter(splitrule == "extratrees")
 MULESP_fit_ranger_GINI <- MULESP_fit_ranger$results %>% filter(splitrule == "gini")
 
-MULESP_fit_ranger_Gini_kappa_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULESP_fit_ranger_GINI", "mtry", "min.node.size", "Kappa", "F")
-MULESP_fit_ranger_Gini_accu_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULESP_fit_ranger_GINI", "mtry", "min.node.size", "Accuracy", "G")
-MULESP_fit_ranger_ET_kappa_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Kappa", "F")
-MULESP_fit_ranger_ET_accu_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
-
 MULESP_best_ranger <- which.max(MULESP_fit_ranger_resultats$Kappa)
 MULESP_best_rangergrid <- data.frame(mtry = MULESP_fit_ranger_resultats[MULESP_best_ranger,]$mtry, min.node.size =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$min.node.size, splitrule =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$splitrule)
+
+
+
 
 # Lance modèle RANGER optimal
 MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
 MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
 MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
+
+#Graphiques 2D
+MULESP_fit_ranger_Gini_kappa_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULESP_fit_ranger_GINI", "mtry", "min.node.size", "Kappa", "F")
+MULESP_fit_ranger_Gini_accu_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULESP_fit_ranger_GINI", "mtry", "min.node.size", "Accuracy", "G")
+MULESP_fit_ranger_ET_kappa_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Kappa", "F")
+MULESP_fit_ranger_ET_accu_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
+
 
 ### RBORIST ###
 MULESP_grid_Rborist <- data.frame(MULESP_LHS) %>%
