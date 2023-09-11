@@ -211,12 +211,6 @@ BI_pred_rpartcost <- expand.grid(BI_fit_rpartcost_resultats[,c("X1", "X2")]) %>%
    mutate(Sens = modelPredict(BI_mod_rpartcost_sens, .[,c("cp", "Cost")])) %>%
    mutate(Jw =  modelPredict(BI_mod_rpartcost_jw, .[,c("X1", "X2")]))
 
-# Graphes 2D
-# BI_fit_rpartcost_spec_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Spec, "F")
-BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
-BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
-BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "X2", "X1", "Jw", "D")
-
 # Modélisation quadratique rpartcost
 BI_modelquad_rpartcost <- expand.grid(X1 = seq(from = 0, to = 1, by = 0.01), X2 = seq(from = 0, to = 1, by = 0.01))
 BI_modelquad_rpartcost <- BI_modelquad_rpartcost %>% 
@@ -231,8 +225,14 @@ BI_modelquad_rpartcost <- BI_modelquad_rpartcost %>%
 BI_modelquad_rpartcost_top <- BI_modelquad_rpartcost[which.max(BI_modelquad_rpartcost$Jw),]
 
 # Erreur de modélisation quadratique
-BI_Compar_rpartcost <- BI_fit_rpartcost_resultats[,c("X1","X2","Jw")] %>% 
-   mutate(Jw2 = modelPredict(BI_mod_rpartcost_jw, .[,c("X1","X2")]))
+BI_Compar_rpartcost <- BI_fit_rpartcost_resultats %>% 
+   select(c("X1","X2","Jw")) %>%
+   mutate(Jw2 = BI_mod_rpartcost_jw$model@trend.coef[1] +
+             BI_mod_rpartcost_jw$model@trend.coef[2]*X1 +
+             BI_mod_rpartcost_jw$model@trend.coef[3]*X2 +
+             BI_mod_rpartcost_jw$model@trend.coef[4]*X1^2 +
+             BI_mod_rpartcost_jw$model@trend.coef[5]*X2^2 +
+             BI_mod_rpartcost_jw$model@trend.coef[6]*X1*X2)
 BI_RMSE_rpartcost <-  RMSE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
 BI_MAE_rpartcost <-  MAE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
 
@@ -242,6 +242,15 @@ BI_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = BI_best_rpartcostgri
 BI_fit_rpartcost_best <- fit_test(BI_set_rpartcost_best)
 BI_fit_rpartcost_best_resultats <- BI_fit_rpartcost_best$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
+# Graphes 2D
+# BI_fit_rpartcost_spec_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Spec, "F")
+BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
+BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
+BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "X2", "X1", "Jw", "D")
+
+# + geom_point(x = BI_modelquad_rpartcost_top$X2, 
+#              y =BI_modelquad_rpartcost_top$X1, 
+#              shape = 3, color = "red", size = 4)
 
 #############################################
 #     BICLASSIFIEUR : FORETS ALEATOIRES     #
@@ -308,20 +317,6 @@ BI_fit_ranger_ET <- BI_fit_ranger_resultats %>% filter(splitrule == "extratrees"
 BI_fit_ranger_GINI <- BI_fit_ranger_resultats %>% filter(splitrule == "gini")
 
 
-# Graphes 2D
-BI_fit_ranger_Gini_spec_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Spec", "F")
-BI_fit_ranger_Gini_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
-BI_fit_ranger_Gini_jw_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "X1", "X2", "Jw", "D")
-BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "mtry", "min.node.size", "Spec", "F")
-BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
-BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "X1", "X2", "Jw", "D")
-
-# Erreur de modélisation quadratique
-BI_Compar_ranger <- BI_fit_ranger_resultats[,c("X1","X2","X3","Jw")] %>% 
-   mutate(Jw2 = modelPredict(BI_mod_ranger_jw, .[,c("X1","X2","X3")]))
-BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)
-BI_MAE_ranger <-  MAE(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)
-
 # Optimisation quadratique
 BI_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))
 BI_modelquad_ranger <- BI_modelquad_ranger %>% 
@@ -338,11 +333,39 @@ BI_modelquad_ranger <- BI_modelquad_ranger %>%
              BI_mod_ranger_jw$model@trend.coef[8]*X2*X3 +
              BI_mod_ranger_jw$model@trend.coef[9]*X1*X3)
 
+# Erreur de modélisation quadratique
+BI_Compar_Ranger <- BI_fit_ranger_resultats %>%
+   select(c("X1","X2","X3","Jw")) %>%
+   mutate(Jw2 = BI_mod_ranger_jw$model@trend.coef[1] +
+             BI_mod_ranger_jw$model@trend.coef[2]*X1 +
+             BI_mod_ranger_jw$model@trend.coef[3]*X2 +
+             BI_mod_ranger_jw$model@trend.coef[4]*X3 +
+             BI_mod_ranger_jw$model@trend.coef[5]*X1^2 +
+             BI_mod_ranger_jw$model@trend.coef[6]*X2^2 +
+             BI_mod_ranger_jw$model@trend.coef[7]*X1*X2 +
+             BI_mod_ranger_jw$model@trend.coef[8]*X2*X3 +
+             BI_mod_ranger_jw$model@trend.coef[9]*X1*X3)
+BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
+BI_MAE_ranger <-  MAE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
+
 set.seed(945)
-BI_modelquad_ranger_top <- BI_modelquad_ranger[which.max(BI_modelquad_ranger$Jw),c("mtry", "min.node.size", "splitrule")]
-BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_modelquad_ranger_top"))
+BI_modelquad_ranger_top <- BI_modelquad_ranger[which.max(BI_modelquad_ranger$Jw),]
+BI_best_rangergrid <- BI_modelquad_ranger_top %>% select(c("mtry", "min.node.size", "splitrule"))
+BI_set_ranger_best <- c("ranger", paste0("tuneGrid  = BI_best_rangergrid"))
 BI_fit_ranger_best <- fit_test(BI_set_ranger_best)
 BI_fit_ranger_best_resultats <- BI_fit_ranger_best$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
+
+# Graphes 2D
+BI_fit_ranger_Gini_spec_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Spec", "F")
+BI_fit_ranger_Gini_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
+BI_fit_ranger_Gini_jw_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "X1", "X2", "Jw", "D")
+BI_fit_ranger_ET_spec_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "mtry", "min.node.size", "Spec", "F")
+BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_GINI", "mtry", "min.node.size", "Sens", "G")
+BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "X1", "X2", "Jw", "D")
+
+# + geom_point(x = BI_modelquad_ranger_top$X1, 
+#              y =BI_modelquad_ranger_top$X2, 
+#              shape = 3, color = "red", size = 4)
 
 
 ### RBORIST ###
@@ -381,17 +404,6 @@ BI_pred_Rborist <- expand.grid(BI_fit_Rborist_resultats[,c("X1","X2")]) %>%
    mutate(Sens = modelPredict(BI_mod_Rborist_sens, .[,c("predFixed", "minNode")])) %>%
    mutate(Jw = modelPredict(BI_mod_Rborist_jw, .[,c("X1","X2")]))
 
-# Graphes 2D
-BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Spec", "F")
-BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Sens", "G")
-BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "X1", "X2", "Jw", "D")
-
-# Erreur de modélisation quadratique
-BI_Compar_Rborist <- BI_fit_ranger_resultats[,c("X1","X2","Jw")] %>% 
-   mutate(Jw2 = modelPredict(BI_mod_Rborist_jw, .[,c("X1","X2")]))
-BI_RMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
-BI_MAE_Rborist <-  MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
-
 
 # Optimisation quadratique
 BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), X2 = seq(from = 0, to = 1, length.out = 17)) %>% 
@@ -404,12 +416,34 @@ BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
              BI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
              BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
 
+# Erreur de modélisation quadratique
+BI_Compar_Rborist <- BI_fit_ranger_resultats %>% 
+   select(c("X1","X2","Jw")) %>%
+   mutate(Jw2 = BI_mod_Rborist_jw$model@trend.coef[1] +
+             BI_mod_Rborist_jw$model@trend.coef[2]*X1 +
+             BI_mod_Rborist_jw$model@trend.coef[3]*X2 +
+             BI_mod_Rborist_jw$model@trend.coef[4]*X1^2 +
+             BI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
+             BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
+BI_RMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
+BI_MAE_Rborist <-  MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
+
 set.seed(65)
-BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),c("predFixed", "minNode")]
+BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),]
+BI_best_Rboristgrid <- BI_modelquad_Rborist_top %>% select(c("predFixed", "minNode"))
 BI_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = BI_modelquad_Rborist_top, ntrees = 3"))
 BI_fit_Rborist_best <- fit_test(BI_set_Rborist_best)
 BI_fit_Rborist_best_resultats <- BI_fit_Rborist_best$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
+
+# Graphes 2D
+BI_fit_Rborist_spec_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Spec", "F")
+BI_fit_Rborist_sens_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "predFixed", "minNode", "Sens", "G")
+BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultats", "X1", "X2", "Jw", "D")
+
+# + geom_point(x = BI_modelquad_Rborist_top$X1, 
+#              y =BI_modelquad_Rborist_top$X2, 
+#              shape = 3, color = "red", size = 4)
 
 #########################################################
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
