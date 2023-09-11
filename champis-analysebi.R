@@ -317,10 +317,10 @@ BI_fit_ranger_ET_sens_graphe <- graphe2D("BI_pred_ranger_GINI", "BI_fit_ranger_G
 BI_fit_ranger_ET_jw_graphe <- graphe2D("BI_pred_ranger_ET", "BI_fit_ranger_ET", "X1", "X2", "Jw", "D")
 
 # Erreur de modélisation quadratique
-BI_Compar_Ranger <- BI_fit_ranger_resultats[,c("X1","X2","X3","Jw")] %>% 
+BI_Compar_ranger <- BI_fit_ranger_resultats[,c("X1","X2","X3","Jw")] %>% 
    mutate(Jw2 = modelPredict(BI_mod_ranger_jw, .[,c("X1","X2","X3")]))
-BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
-BI_MAE_ranger <-  MAE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
+BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)
+BI_MAE_ranger <-  MAE(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)
 
 # Optimisation quadratique
 BI_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))

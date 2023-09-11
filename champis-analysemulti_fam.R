@@ -110,39 +110,6 @@ MULFAM_fit_rpart_cp_resultats <- MULFAM_fit_rpart_cp$results
 MULFAM_fit_rpart_cp_graphe <- grapheKappa(MULFAM_fit_rpart_cp_resultats, cp)+ scale_x_log10()
 
 
-### RPARTCOST ###    Ne fonctionne pas ?
-# MULFAM_grid_rpartcost <- MULFAM_LHS
-# MULFAM_grid_rpartcost <- data.frame(X1=.5 , X2=.5)
-# MULFAM_grid_rpartcost <- MULFAM_grid_rpartcost %>%
-#    mutate(cp = X1*1e-2+1e-5) %>%
-#    mutate(Cost = X2*2.5+1e-3)
-# 
-# MULFAM_set_rpartcost <- c("rpartCost", "tuneGrid  = MULFAM_grid_rpartcost[c('cp', 'Cost')]")
-# MULFAM_fit_rpartcost <- fit_test(MULFAM_set_rpartcost)
-# MULFAM_fit_rpartcost_resultats <- MULFAM_fit_rpartcost$results
-# MULFAM_mod_rpartcost_kappa <- modelFit(X=MULFAM_fit_rpartcost_resultats[,1:2], 
-                                          # Y=MULFAM_fit_rpartcost_resultats$Kappa,
-                                          # type="Kriging",
-                                          # formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-# MULFAM_pred_rpartcost <- expand.grid(MULFAM_fit_rpartcost_resultats[,1:2])
-# colnames(MULFAM_pred_rpartcost) <- c("Cost", "cp")
-# MULFAM_pred_rpartcost2 <- NULL
-# MULFAM_pred_rpartcost2$Kappa <- modelPredict(MULFAM_mod_rpartcost_spec, MULFAM_pred_rpartcost)
-# MULFAM_pred_rpartcost <- cbind(MULFAM_pred_rpartcost, MULFAM_pred_rpartcost2)
-# MULFAM_fit_rpartcost_kappa_graphe <- ggplot() +
-#    geom_raster(data = MULFAM_pred_rpartcost, aes(x = Cost, y = cp, fill = Kappa), interpolate = TRUE) +
-#    geom_tile(data = MULFAM_fit_rpartcost_resultats, aes(x = Cost, y = cp, fill = Kappa), color = "black", linewidth =.5) +
-#    scale_fill_viridis_c(option = "F", direction = 1) +
-#    theme_bw() +
-#    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
-
-# MULFAM_best_rpartcost <- which.max(MULFAM_fit_rpartcost_resultats$Spec^MULFAM_ratioSpeSen*MULFAM_fit_rpartcost_resultats$Sens)
-# MULFAM_best_rpartcostgrid <- data.frame(Cost = MULFAM_fit_rpartcost_resultats[MULFAM_best_rpartcost,]$Cost, cp =MULFAM_fit_rpartcost_resultats[MULFAM_best_rpartcost,]$cp)
-# MULFAM_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = MULFAM_best_rpartcostgrid"))
-# MULFAM_fit_rpartcost_best <- fit_test(MULFAM_set_rpartcost_best)
-# MULFAM_fit_rpartcost_best_resultats <- MULFAM_fit_rpartcost_best$results
-
-
 ################################################
 #     MULTICLASSIFIEUR : FORETS ALEATOIRES     #
 ################################################
@@ -178,6 +145,12 @@ MULFAM_pred_ranger <- expand(MULFAM_fit_ranger_resultats[,c("X1","X2","X3")], X1
    mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees")) %>%
    mutate(Kappa = modelPredict(MULFAM_mod_ranger_kappa, .[,c("mtry", "min.node.size", "X3")])) %>%
    mutate(Accuracy = modelPredict(MULFAM_mod_ranger_accu, .[,c("mtry", "min.node.size", "X3")]))
+
+# Erreur de modélisation quadratique
+MULFAM_Compar_ranger <- MULFAM_fit_ranger_resultats[,c("X1","X2","X3","Kappa")] %>% 
+   mutate(Kappa2 = modelPredict(MULFAM_mod_ranger_kappa, .[,c("X1","X2","X3")]))
+MULFAM_RMSE_ranger <-  RMSE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)
+MULFAM_MAE_ranger <-  MAE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)
 
 MULFAM_pred_ranger_ET <- MULFAM_pred_ranger %>% filter(splitrule == "extratrees")
 MULFAM_pred_ranger_GINI <- MULFAM_pred_ranger %>% filter(splitrule == "gini")
@@ -219,13 +192,17 @@ MULFAM_mod_Rborist_accu <-  modelFit(X=MULFAM_fit_Rborist_resultats[,c("predFixe
                                      type="Kriging", 
                                      formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
 
-
-
 MULFAM_pred_Rborist <- expand.grid(MULFAM_fit_Rborist_resultats[,c("X1","X2")]) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
    mutate(minNode = round(1+X2*16,0)) %>%
    mutate(Kappa = modelPredict(MULFAM_mod_Rborist_kappa, .[,c("predFixed", "minNode")])) %>%
    mutate(Accuracy = modelPredict(MULFAM_mod_Rborist_accu, .[,c("predFixed", "minNode")]))
+
+# Erreur de modélisation quadratique
+MULFAM_Compar_Rborist <- MULFAM_fit_Rborist_resultats[,c("X1","X2","Kappa")] %>% 
+   mutate(Kappa2 = modelPredict(MULFAM_mod_Rborist_kappa, .[,c("X1","X2")]))
+MULFAM_RMSE_Rborist <-  RMSE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)
+MULFAM_MAE_Rborist <-  MAE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)
 
 MULFAM_fit_Rborist_kappa_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
 MULFAM_fit_Rborist_accu_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")

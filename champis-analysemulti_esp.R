@@ -113,38 +113,6 @@ MULESP_fit_rpart_cp_resultats <- MULESP_fit_rpart_cp$results
 MULESP_fit_rpart_cp_graphe <- grapheKappa(MULESP_fit_rpart_cp_resultats, cp)+ scale_x_log10()
 
 
-### RPARTCOST ###    Ne fonctionne pas ?
-# MULESP_grid_rpartcost <- MULESP_LHS
-# colnames(MULESP_grid_rpartcost) <- c("cp", "Cost")
-# MULESP_grid_rpartcost$cp <- (MULESP_grid_rpartcost$cp*1e-2+1e-5)
-# MULESP_grid_rpartcost$Cost <- MULESP_grid_rpartcost$Cost*2.5+1e-3
-
-# MULESP_set_rpartcost <- c("rpartCost", "tuneGrid  = MULESP_grid_rpartcost[c('cp', 'Cost')]")
-# MULESP_fit_rpartcost <- fit_test(MULESP_set_rpartcost)
-# MULESP_fit_rpartcost_resultats <- MULESP_fit_rpartcost$results
-# MULESP_mod_rpartcost_kappa <- modelFit(X=MULESP_fit_rpartcost_resultats[,1:2], 
-                                          # Y=MULESP_fit_rpartcost_resultats$Kappa,
-                                          # type="Kriging",
-                                          # formula=Y~cp+Cost+cp:Cost+I(cp^2)+I(Cost^2))
-# MULESP_pred_rpartcost <- expand.grid(MULESP_fit_rpartcost_resultats[,1:2])
-# colnames(MULESP_pred_rpartcost) <- c("Cost", "cp")
-# MULESP_pred_rpartcost2 <- NULL
-# MULESP_pred_rpartcost2$Kappa <- modelPredict(MULESP_mod_rpartcost_spec, MULESP_pred_rpartcost)
-# MULESP_pred_rpartcost <- cbind(MULESP_pred_rpartcost, MULESP_pred_rpartcost2)
-# MULESP_fit_rpartcost_kappa_graphe <- ggplot() +
-#    geom_raster(data = MULESP_pred_rpartcost, aes(x = Cost, y = cp, fill = Kappa), interpolate = TRUE) +
-#    geom_tile(data = MULESP_fit_rpartcost_resultats, aes(x = Cost, y = cp, fill = Kappa), color = "black", linewidth =.5) +
-#    scale_fill_viridis_c(option = "F", direction = 1) +
-#    theme_bw() +
-#    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5))
-
-# MULESP_best_rpartcost <- which.max(MULESP_fit_rpartcost_resultats$Spec^MULESP_ratioSpeSen*MULESP_fit_rpartcost_resultats$Sens)
-# MULESP_best_rpartcostgrid <- data.frame(Cost = MULESP_fit_rpartcost_resultats[MULESP_best_rpartcost,]$Cost, cp =MULESP_fit_rpartcost_resultats[MULESP_best_rpartcost,]$cp)
-# MULESP_set_rpartcost_best <- c("rpartCost", paste0("tuneGrid  = MULESP_best_rpartcostgrid"))
-# MULESP_fit_rpartcost_best <- fit_test(MULESP_set_rpartcost_best)
-# MULESP_fit_rpartcost_best_resultats <- MULESP_fit_rpartcost_best$results
-
-
 ################################################
 #     MULTICLASSIFIEUR : FORETS ALEATOIRES     #
 ################################################
@@ -158,7 +126,7 @@ MULESP_grid_ranger <- rbind(MULESP_LHS,MULESP_LHS) %>%
 
 MULESP_set_ranger <- c("ranger", "tuneGrid  = MULESP_grid_ranger[,c('mtry','min.node.size','splitrule')], num.trees = 6")
 MULESP_fit_ranger <- fit_test(MULESP_set_ranger)
-#save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
+
 MULESP_fit_ranger_resultats <- MULESP_fit_ranger$results %>% 
    left_join(., MULESP_grid_ranger, by = c("mtry", "min.node.size", "splitrule"))   # Ajout des facteurs réduits
 
@@ -182,6 +150,13 @@ MULESP_pred_ranger <- expand(MULESP_fit_ranger_resultats[,c("X1","X2","X3")], X1
    mutate(Kappa = modelPredict(MULESP_mod_ranger_kappa, .[,c("mtry", "min.node.size", "X3")])) %>%
    mutate(Accuracy = modelPredict(MULESP_mod_ranger_accu, .[,c("mtry", "min.node.size", "X3")]))
 
+# Erreur de modélisation quadratique
+MULESP_Compar_ranger <- MULESP_fit_ranger_resultats[,c("X1","X2","X3","Kappa")] %>% 
+   mutate(Kappa2 = modelPredict(MULESP_mod_ranger_kappa, .[,c("X1","X2","X3")]))
+MULESP_RMSE_ranger <-  RMSE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$Kappa2)
+MULESP_MAE_ranger <-  MAE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$Kappa2)
+
+
 MULESP_pred_ranger_ET <- MULESP_pred_ranger %>% filter(splitrule == "extratrees")
 MULESP_pred_ranger_GINI <- MULESP_pred_ranger %>% filter(splitrule == "gini")
 MULESP_fit_ranger_ET <- MULESP_fit_ranger$results %>% filter(splitrule == "extratrees")
@@ -192,16 +167,13 @@ MULESP_fit_ranger_Gini_accu_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULES
 MULESP_fit_ranger_ET_kappa_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Kappa", "F")
 MULESP_fit_ranger_ET_accu_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
 
-
 MULESP_best_ranger <- which.max(MULESP_fit_ranger_resultats$Kappa)
 MULESP_best_rangergrid <- data.frame(mtry = MULESP_fit_ranger_resultats[MULESP_best_ranger,]$mtry, min.node.size =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$min.node.size, splitrule =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$splitrule)
-save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")
 
 # Lance modèle RANGER optimal
 MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
 MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
 MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
-save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 
 ### RBORIST ###
 MULESP_grid_Rborist <- data.frame(MULESP_LHS) %>%
@@ -210,7 +182,6 @@ MULESP_grid_Rborist <- data.frame(MULESP_LHS) %>%
 
 MULESP_set_Rborist <- c("Rborist", "tuneGrid  = MULESP_grid_Rborist[,c('predFixed','minNode')]")
 MULESP_fit_Rborist <- fit_test(MULESP_set_Rborist)
-save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 
 MULESP_fit_Rborist_resultats <- MULESP_fit_Rborist$results %>%
    left_join(., MULESP_grid_Rborist, by = c("predFixed", "minNode"))   # Ajout des facteurs réduits
@@ -225,26 +196,28 @@ MULESP_mod_Rborist_accu <-  modelFit(X=MULESP_fit_Rborist_resultats[,c("predFixe
                                      type="Kriging", 
                                      formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
 
-
-
 MULESP_pred_Rborist <- expand.grid(MULESP_fit_Rborist_resultats[,c("X1","X2")]) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
    mutate(minNode = round(1+X2*16,0)) %>%
    mutate(Kappa = modelPredict(MULESP_mod_Rborist_kappa, .[,c("predFixed", "minNode")])) %>%
    mutate(Accuracy = modelPredict(MULESP_mod_Rborist_accu, .[,c("predFixed", "minNode")]))
 
+# Erreur de modélisation quadratique
+MULESP_Compar_Rborist <- MULESP_fit_Rborist_resultats[,c("X1","X2","Kappa")] %>% 
+   mutate(Kappa2 = modelPredict(MULESP_mod_Rborist_kappa, .[,c("X1","X2")]))
+MULESP_RMSE_Rborist <-  RMSE(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kappa2)
+MULESP_MAE_Rborist <-  MAE(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kappa2)
+
 MULESP_fit_Rborist_kappa_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
 MULESP_fit_Rborist_accu_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")
 
 MULESP_best_Rborist <- which.max(MULESP_fit_Rborist_resultats$Kappa)
 MULESP_best_Rboristgrid <- data.frame(predFixed = MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$predFixed, minNode =MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$minNode)
-save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")
 
 # Lance modèle RBORIST optimal
 MULESP_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULESP_best_Rboristgrid, ntrees = 2"))
 MULESP_fit_Rborist_best <- fit_test(MULESP_set_Rborist_best)
 MULESP_fit_Rborist_best_resultats <- MULESP_fit_Rborist_best$results
-save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 
 #########################################################
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
