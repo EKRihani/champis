@@ -1358,6 +1358,7 @@ plot(ggarrange(
 )
 ```
 
+\paragraph*{}
 Après optimisation des hyperparamètres (*min.node.size* = `r MULFAM_best_rangergrid$min.node.size`, *mtry* = `r MULFAM_best_rangergrid$mtry` et *splitrule* = `r MULFAM_best_rangergrid$splitrule`), ce modèle a donné d'excellents résultats.
 
 ```{r, echo = FALSE}

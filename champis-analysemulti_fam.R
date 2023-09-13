@@ -115,14 +115,19 @@ MULFAM_fit_rpart_cp_graphe <- grapheKappa(MULFAM_fit_rpart_cp_resultats, cp)+ sc
 ################################################
 
 ### RANGER ###
+set.seed(1337)
 MULFAM_grid_ranger <- rbind(MULFAM_LHS,MULFAM_LHS) %>%
    mutate(X3 = c(rep(0, 17), rep(1, 17))) %>%
    mutate(mtry = round(1+X1*48,0)) %>%    # Prendre des multiples de 16 (car 17 points pour 2d)
    mutate(min.node.size = round(1+X2*32,0)) %>%
    mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees"))
 
+temps_depart <- Sys.time()
 MULFAM_set_ranger <- c("ranger", "tuneGrid  = MULFAM_grid_ranger[,c('mtry','min.node.size','splitrule')], num.trees = 6")
 MULFAM_fit_ranger <- fit_test(MULFAM_set_ranger)
+temps_fin <- Sys.time()
+MULFAM_chrono_ranger <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
+MULFAM_chrono_ranger <- round(MULFAM_temps_ranger/nrow(MULFAM_grid_ranger) ,2)
 MULFAM_fit_ranger_resultats <- MULFAM_fit_ranger$results %>% 
    left_join(., MULFAM_grid_ranger, by = c("mtry", "min.node.size", "splitrule"))   # Ajout des facteurs réduits
 
@@ -137,6 +142,10 @@ MULFAM_mod_ranger_accu <-  modelFit(X=MULFAM_fit_ranger_resultats[,c("mtry", "mi
                                 Y=MULFAM_fit_ranger_resultats$Accuracy,  
                                 type="Kriging", 
                                 formula=Y~mtry+min.node.size+X3+mtry:min.node.size+min.node.size:X3+mtry:X3+I(mtry^2)+I(min.node.size^2))
+MULFAM_mod_ranger_kappaN <-  modelFit(X=MULFAM_fit_ranger_resultats[,c("X1", "X2", "X3")], 
+                                     Y=MULFAM_fit_ranger_resultats$Kappa,  
+                                     type="Kriging", 
+                                     formula=Y~X1+X2+X3+X1:X2+X2:X3+X1:X3+I(X1^2)+I(X2^2))
 
 MULFAM_pred_ranger <- expand(MULFAM_fit_ranger_resultats[,c("X1","X2","X3")], X1, X2, X3) %>%
    data.frame() %>%
@@ -146,25 +155,51 @@ MULFAM_pred_ranger <- expand(MULFAM_fit_ranger_resultats[,c("X1","X2","X3")], X1
    mutate(Kappa = modelPredict(MULFAM_mod_ranger_kappa, .[,c("mtry", "min.node.size", "X3")])) %>%
    mutate(Accuracy = modelPredict(MULFAM_mod_ranger_accu, .[,c("mtry", "min.node.size", "X3")]))
 
-# Erreur de modélisation quadratique
-MULFAM_Compar_ranger <- MULFAM_fit_ranger_resultats[,c("X1","X2","X3","Kappa")] %>% 
-   mutate(Kappa2 = modelPredict(MULFAM_mod_ranger_kappa, .[,c("X1","X2","X3")]))
-MULFAM_RMSE_ranger <-  RMSE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)
-MULFAM_MAE_ranger <-  MAE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)
-
 MULFAM_pred_ranger_ET <- MULFAM_pred_ranger %>% filter(splitrule == "extratrees")
 MULFAM_pred_ranger_GINI <- MULFAM_pred_ranger %>% filter(splitrule == "gini")
 MULFAM_fit_ranger_ET <- MULFAM_fit_ranger$results %>% filter(splitrule == "extratrees")
 MULFAM_fit_ranger_GINI <- MULFAM_fit_ranger$results %>% filter(splitrule == "gini")
 
+# Optimisation quadratique
+MULFAM_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))
+MULFAM_modelquad_ranger <- MULFAM_modelquad_ranger %>% 
+   mutate(mtry = round(1+X1*48,0)) %>%
+   mutate(min.node.size = round(1+X2*32,0)) %>%
+   mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees")) %>%
+   mutate(kappa = MULFAM_mod_ranger_kappa$model@trend.coef[1] +
+             MULFAM_mod_ranger_kappa$model@trend.coef[2]*X1 +
+             MULFAM_mod_ranger_kappa$model@trend.coef[3]*X2 +
+             MULFAM_mod_ranger_kappa$model@trend.coef[4]*X3 +
+             MULFAM_mod_ranger_kappa$model@trend.coef[5]*X1^2 +
+             MULFAM_mod_ranger_kappa$model@trend.coef[6]*X2^2 +
+             MULFAM_mod_ranger_kappa$model@trend.coef[7]*X1*X2 +
+             MULFAM_mod_ranger_kappa$model@trend.coef[8]*X2*X3 +
+             MULFAM_mod_ranger_kappa$model@trend.coef[9]*X1*X3)
+
+# Erreur de modélisation quadratique
+MULFAM_Compar_ranger <- MULFAM_fit_ranger_resultats %>%
+   select(c("X1","X2","X3","Kappa")) %>%
+   mutate(kappa2 = MULFAM_mod_ranger_kappaN$model@trend.coef[1] +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[2]*X1 +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[3]*X2 +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[4]*X3 +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[5]*X1^2 +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[6]*X2^2 +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[7]*X1*X2 +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[8]*X2*X3 +
+             MULFAM_mod_ranger_kappaN$model@trend.coef[9]*X1*X3)
+MULFAM_RMSE_ranger <-  RMSE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$kappa2)
+MULFAM_MAE_ranger <-  MAE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$kappa2)
+
+MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_resultats$Kappa)
+MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$splitrule)
+
+# Graphiques 2D
 MULFAM_fit_ranger_Gini_kappa_graphe <- graphe2D("MULFAM_pred_ranger_GINI", "MULFAM_fit_ranger_GINI", "mtry", "min.node.size", "Kappa", "F")
 MULFAM_fit_ranger_Gini_accu_graphe <- graphe2D("MULFAM_pred_ranger_GINI", "MULFAM_fit_ranger_GINI", "mtry", "min.node.size", "Accuracy", "G")
 MULFAM_fit_ranger_ET_kappa_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fit_ranger_ET", "mtry", "min.node.size", "Kappa", "F")
 MULFAM_fit_ranger_ET_accu_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
 
-
-MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_resultats$Kappa)
-MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$splitrule)
 
 # Lance modèle RANGER optimal
 MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid, num.trees = 6"))
@@ -177,8 +212,14 @@ MULFAM_grid_Rborist <- data.frame(MULFAM_LHS) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%     #32
    mutate(minNode = round(1+X2*16,0))
 
+temps_depart <- Sys.time()
 MULFAM_set_Rborist <- c("Rborist", "tuneGrid  = MULFAM_grid_Rborist[,c('predFixed','minNode')]")
 MULFAM_fit_Rborist <- fit_test(MULFAM_set_Rborist)
+temps_fin <- Sys.time()
+MULFAM_chrono_Rborist <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
+MULFAM_chrono_Rborist <- round(MULFAM_temps_Rborist/nrow(MULFAM_grid_Rborist) ,2)
+
+
 MULFAM_fit_Rborist_resultats <- MULFAM_fit_Rborist$results %>%
    left_join(., MULFAM_grid_Rborist, by = c("predFixed", "minNode"))   # Ajout des facteurs réduits
 MULFAM_fit_Rborist_bestTune <- MULFAM_fit_Rborist$bestTune
@@ -191,6 +232,11 @@ MULFAM_mod_Rborist_accu <-  modelFit(X=MULFAM_fit_Rborist_resultats[,c("predFixe
                                      Y=MULFAM_fit_Rborist_resultats$Accuracy, 
                                      type="Kriging", 
                                      formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+MULFAM_mod_Rborist_kappaN <-  modelFit(X=MULFAM_fit_Rborist_resultats[,c("X1", "X2")], 
+                               Y=MULFAM_fit_Rborist_resultats$Kappa,  
+                               type="Kriging", 
+                               formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
+
 
 MULFAM_pred_Rborist <- expand.grid(MULFAM_fit_Rborist_resultats[,c("X1","X2")]) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
@@ -198,20 +244,41 @@ MULFAM_pred_Rborist <- expand.grid(MULFAM_fit_Rborist_resultats[,c("X1","X2")]) 
    mutate(Kappa = modelPredict(MULFAM_mod_Rborist_kappa, .[,c("predFixed", "minNode")])) %>%
    mutate(Accuracy = modelPredict(MULFAM_mod_Rborist_accu, .[,c("predFixed", "minNode")]))
 
+# Optimisation quadratique
+MULFAM_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), X2 = seq(from = 0, to = 1, length.out = 17)) %>% 
+   mutate(predFixed = round(1+X1*16,0)) %>%
+   mutate(minNode = round(1+X2*16,0)) %>%
+   mutate(Kappa = MULFAM_mod_Rborist_kappaN$model@trend.coef[1] +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[2]*X1 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[3]*X2 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[4]*X1^2 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[5]*X2^2 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[6]*X1*X2)
+
 # Erreur de modélisation quadratique
-MULFAM_Compar_Rborist <- MULFAM_fit_Rborist_resultats[,c("X1","X2","Kappa")] %>% 
-   mutate(Kappa2 = modelPredict(MULFAM_mod_Rborist_kappa, .[,c("X1","X2")]))
+MULFAM_Compar_Rborist <- MULFAM_fit_Rborist_resultats %>% 
+   select(c("X1","X2","Kappa")) %>%
+   mutate(Kappa2 = MULFAM_mod_Rborist_kappaN$model@trend.coef[1] +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[2]*X1 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[3]*X2 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[4]*X1^2 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[5]*X2^2 +
+             MULFAM_mod_Rborist_kappaN$model@trend.coef[6]*X1*X2)
 MULFAM_RMSE_Rborist <-  RMSE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)
 MULFAM_MAE_Rborist <-  MAE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)
 
-MULFAM_fit_Rborist_kappa_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
-MULFAM_fit_Rborist_accu_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")
 
 MULFAM_best_Rborist <- which.max(MULFAM_fit_Rborist_resultats$Kappa)
 MULFAM_best_Rboristgrid <- data.frame(predFixed = MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$predFixed, minNode =MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$minNode)
 MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristgrid"))
 MULFAM_fit_Rborist_best <- fit_test(MULFAM_set_Rborist_best)
 MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results
+
+
+# Graphiques 2D
+MULFAM_fit_Rborist_kappa_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
+MULFAM_fit_Rborist_accu_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")
+
 
 # Lance modèle RBORIST optimal
 MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristgrid, ntrees = 2"))

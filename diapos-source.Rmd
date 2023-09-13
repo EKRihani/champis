@@ -1,0 +1,217 @@
+---
+title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
+author: "Emir Kaïs RIHANI"
+date: "03 nov. 2023"
+lang: fr
+fontsize: 10pt
+output:
+  beamer_presentation:
+    theme: "JuanLesPins"
+    #slide_level: 3
+
+header-includes:
+   - \institute[Pharma Lille]{Faculté de Pharmacie de Lille}
+   - \useoutertheme{smoothtree} # Pour Pharma : default, infolines, smoothbars, smoothtree, tree -->
+   - \AtBeginSection{}   # Retire diapos de début de section
+   - \AtBeginSubsection{}   # Retire diapos de début de sous-section
+---
+
+```{r, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(ggpubr)
+load(file = "CodeSourceIris.RData")
+```
+
+\frametitle{Table des matières}
+\tableofcontents
+<!-- \setcounter{tocdepth}{2} -->
+
+# Contexte industriel
+## Delpharm
+### Le groupe Delpharm
+- Top 5 des CDMO
+- 6500 collaborateurs, 19 sites
+- 1 Mds € de C.A.
+- 1 milliard de boîtes
+
+### Le site de Lille
+- Spécialiste des formes sèches hautement actives
+- Hormones sexuelles : contraceptifs, traitements substitutifs
+- Oncologie : immunosuppresseurs, anti-hormonaux, anti-néoplasiques
+- Produits hautement actifs : glucocorticoïdes
+  
+## Le Pharmacien Libérateur
+### Exercice de la Pharmacie
+- Rare acteur de l'industrie à effectuer des actes pharmaceutiques
+- Doit remplir les conditions de l'art. L4221-1 CSP
+- Evolution du spécialiste/chargé AQ
+
+### Missions du pharmacien libérateur
+- Garantir la qualité et la sécurité du médicament
+- Gestion de la qualité
+- Certification des lots
+
+## L'Assurance Qualité opérationnelle
+### Assurance Qualité (ISO 9000)
+- Qualité : "Aptitude d'un ensemble de caractéristiques intrinsèques à \alert{satisfaire des besoins ou des attentes}"
+- Management Qualité : "Activités \alert{coordonnées} permettant d'\alert{orienter et de contrôler} un organisme en matière de qualité"
+- Assurance Qualité : "Partie du management qualité visant à \alert{donner confiance} en ce que les exigences pour la qualité seront satisfaites"
+
+### Assurance Qualité opérationnelle
+- Orientée produit
+- Support à la production et au contrôle qualité
+- Déploiement de la stratégie qualité sur le terrain
+- Certification des lots
+
+# La formation aux missions du Pharmacien Libérateur
+## Prise de connaissance
+### Documents
+- Documents du site, de l'entreprise, du groupe
+  + Activités industrielles : hygiène, sécurité, informatique...
+  + Pharmaceutique : BPF, Manuel Qualité, plan de validation site...
+  + Poste : déviations et réclamations, libération MPUP, PSF, PF...
+
+### Processus de production et analytiques
+- Connaissances théoriques et connaissances pratiques
+  + Fabrication : pesées, mélanges, granulation, compression...
+  + Conditionnement : primaire (blister, pilulier), secondaire (étui)
+  + Analyse : essais des Pharmacopées, HPLC, dilution, solubilité...
+  + Spécificités du site : équipements, méthodes, facteurs humains
+
+## Aspects internes de l'AQ opérationnelle
+### Traitement des déviations
+- Déviation : écart par rapport à l'attendu
+- Investigation terrain (Ishikawa, 5 pourquoi, QQOQCCP)
+- Actions correctrices et correctives.
+
+### Traitement des OOS (Out of Specifications)
+- Déviation sortant le produit des spécifications (AMM)
+- Cause produit, méthodes ou instrumentale ?
+- Protocole d'investigation spécifique
+
+## Aspects externes de l'AQ opérationnelle
+### Gestion du portefeuille clients
+- Communication des événements majeurs
+- Préparation des audits
+- Traitement des déviations et réclamations
+
+### Traitement des réclamations
+- Une déviation... qui est arrivée sur le marché !
+  + Investigation \alert{rétrospective} (Ishikawa, 5 pourquoi, QQOQCCP...)
+  + Basée sur dossiers de lots, cahiers de route, échantillothèque...
+- Ecart à confirmer, responsabilité à attribuer
+- Actions à déployer, piloter et évaluer
+
+### Certification et libération des lots
+- Revue de dossiers de lot (complétude, déviations...)
+- Certification et libération (déviations, résultats analytiques...)
+
+# Missions réalisées
+## Phase de prise de connaissance
+### Organisation de l'acquisition des compétences
+- Activité cyclique des CDMO : montée en charge de fin de mois
+- Nouvelles missions en début de mois : extension des compétences
+- Mise en pratique en fin de mois : approfondissement des compétences
+
+### Acquisition de compétences
+- Traitement des déviations : procédures, outils informatiques (Ennov)
+- Utilisation de l'ERP (SAP)
+- Traitement des réclamations
+- Utilisation du LIMS (*Lab Information Management System*)
+- Envoi des dossiers de lots aux clients
+- Traitement des OOS (en cours)
+
+## Rapports de déviation
+### Le *Deviation Report*
+- Synthèse déviation & investigation
+- Communiqué au client par son chargé d'AQ client
+
+### Attribution de la communication client
+```{r, fig.height = 4.2, warning=FALSE} 
+plot(ggarrange(widths = c(1, 1.5),
+   ncol = 2,
+   RMD_Iris_GraphX + theme(legend.position = "none"),
+   RMD_Iris_GraphTotale
+   )
+)
+```
+
+
+## Exemples de déviations
+### Pelliculages
+- Collage et *picking* sur comprimés enrobés
+- Pelliculage composé d'*Opadry* pur
+  + Pas de rôle de contrôle de libération
+  + Impact purement esthétique
+- Tri visuel, communication client avec analyse d'impact
+
+### Formats de date
+- Format de date type "31-03-2027" au lieu de "31-MR-2027"
+- Lot refusé par le client en vertu de contraintes réglementaires
+  + Analyse des textes réglementaires canadiens (*Health Canada*)
+  + Négociation avec le client en s'appuyant sur la réglementation
+- Mise à jour des instructions de conditionnement "JJ-MM-AAAA"
+
+
+## Investigation et solution
+### Diagnostic
+- Réclamation surprenante :
+  + Défaut ayant échappé aux IPC
+  + Défaut présent à l'échantillothèque
+- Investigation de terrain :
+  + Colle et étui conformes
+  + Température, cadence de collage conformes
+  + Problèmes de réglages des rails d'appui
+  + Problèmes des critères d'acceptabilité
+
+### Solution
+- Sensibilisation des équipes à la double fonction du collage :
+  + Fermeture de l'étui
+  + Garantie d'inviolabilité
+
+## Gestion des déviations
+### Contexte et objectifs
+- Changement du logiciel de gestion des déviations (Ennov)
+- Implémentation d'une nouvelle procédure :
+  + Alignement avec terminologie BPF
+  + Reproductibilité de la cotation
+  + Critère de récurrence du défaut
+
+### Principe de fonctionnement
+- Significativité = Gravité $\times$ Récurrence
+- Si significative :
+  + Déploiement de moyens supplémentaires (ICH Q9)
+  + Investigation approfondie vers la *root cause*
+  + CAPA si Gravité $\times$ Récurrence $\times$ Non-Détectabilité > Seuil
+
+## Epuration de l'arriéré
+### Origines du *backlog*
+- Logiciel sans détection des déviations orphelines
+- Déviations sans impact sur la libération :
+  + Métrologie
+  + Stabilité
+  + Lots rejetés
+  + Projets arrêtés
+  
+### Stratégie de clôture
+- Identifier secteurs d'origine, et services compétents
+- Créer une stratégie efficiente
+- Déployer les moyens pour épurer l'arriéré
+- Piloter l'avancement du projet
+
+# Perspectives et Conclusion
+## Perspectives
+### A court terme
+- Chargé AQ clients depuis le 28 août 2023
+- Evolution vers Pharmacien Libérateur (thèse)
+
+### A long terme
+- Nombreuses perspectives en AQ opérationnelle
+  + Expertise AQ opérationnelle
+  + Management AQ opérationnelle
+  + Pharmacien Responsable
+- Et hors AQ opérationnelle
+  + Production
+  + Contrôle qualité
+  + AQ systèmes/projets

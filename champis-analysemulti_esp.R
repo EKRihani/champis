@@ -118,15 +118,19 @@ MULESP_fit_rpart_cp_graphe <- grapheKappa(MULESP_fit_rpart_cp_resultats, cp)+ sc
 ################################################
 
 ### RANGER ###
+set.seed(1337)
 MULESP_grid_ranger <- rbind(MULESP_LHS,MULESP_LHS) %>%
    mutate(X3 = c(rep(0, 17), rep(1, 17))) %>%
    mutate(mtry = round(1+X1*48,0)) %>%    # Prendre des multiples de 16 (car 17 points pour 2d)
    mutate(min.node.size = round(1+X2*32,0)) %>%
    mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees"))
 
+temps_depart <- Sys.time()
 MULESP_set_ranger <- c("ranger", "tuneGrid  = MULESP_grid_ranger[,c('mtry','min.node.size','splitrule')], num.trees = 6")
 MULESP_fit_ranger <- fit_test(MULESP_set_ranger)
-
+temps_fin <- Sys.time()
+MULESP_chrono_ranger <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
+MULESP_chrono_ranger <- round(MULESP_temps_ranger/nrow(MULESP_grid_ranger) ,2)
 MULESP_fit_ranger_resultats <- MULESP_fit_ranger$results %>% 
    left_join(., MULESP_grid_ranger, by = c("mtry", "min.node.size", "splitrule"))   # Ajout des facteurs réduits
 
@@ -141,6 +145,10 @@ MULESP_mod_ranger_accu <-  modelFit(X=MULESP_fit_ranger_resultats[,c("mtry", "mi
                                 Y=MULESP_fit_ranger_resultats$Accuracy,  
                                 type="Kriging", 
                                 formula=Y~mtry+min.node.size+X3+mtry:min.node.size+min.node.size:X3+mtry:X3+I(mtry^2)+I(min.node.size^2))
+MULESP_mod_ranger_kappaN <-  modelFit(X=MULESP_fit_ranger_resultats[,c("X1", "X2", "X3")], 
+                                      Y=MULESP_fit_ranger_resultats$Kappa,  
+                                      type="Kriging", 
+                                      formula=Y~X1+X2+X3+X1:X2+X2:X3+X1:X3+I(X1^2)+I(X2^2))
 
 MULESP_pred_ranger <- expand(MULESP_fit_ranger_resultats[,c("X1","X2","X3")], X1, X2, X3) %>%
    data.frame() %>%
@@ -158,13 +166,36 @@ MULESP_fit_ranger_GINI <- MULESP_fit_ranger$results %>% filter(splitrule == "gin
 MULESP_best_ranger <- which.max(MULESP_fit_ranger_resultats$Kappa)
 MULESP_best_rangergrid <- data.frame(mtry = MULESP_fit_ranger_resultats[MULESP_best_ranger,]$mtry, min.node.size =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$min.node.size, splitrule =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$splitrule)
 
+# Optimisation quadratique
+MULESP_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))
+MULESP_modelquad_ranger <- MULESP_modelquad_ranger %>% 
+   mutate(mtry = round(1+X1*48,0)) %>%
+   mutate(min.node.size = round(1+X2*32,0)) %>%
+   mutate(splitrule = case_when(X3 == 0 ~ "gini", X3 == 1 ~ "extratrees")) %>%
+   mutate(kappa = MULESP_mod_ranger_kappa$model@trend.coef[1] +
+             MULESP_mod_ranger_kappa$model@trend.coef[2]*X1 +
+             MULESP_mod_ranger_kappa$model@trend.coef[3]*X2 +
+             MULESP_mod_ranger_kappa$model@trend.coef[4]*X3 +
+             MULESP_mod_ranger_kappa$model@trend.coef[5]*X1^2 +
+             MULESP_mod_ranger_kappa$model@trend.coef[6]*X2^2 +
+             MULESP_mod_ranger_kappa$model@trend.coef[7]*X1*X2 +
+             MULESP_mod_ranger_kappa$model@trend.coef[8]*X2*X3 +
+             MULESP_mod_ranger_kappa$model@trend.coef[9]*X1*X3)
 
-
-
-# Lance modèle RANGER optimal
-MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
-MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
-MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
+# Erreur de modélisation quadratique
+MULESP_Compar_ranger <- MULESP_fit_ranger_resultats %>%
+   select(c("X1","X2","X3","Kappa")) %>%
+   mutate(kappa2 = MULESP_mod_ranger_kappaN$model@trend.coef[1] +
+             MULESP_mod_ranger_kappaN$model@trend.coef[2]*X1 +
+             MULESP_mod_ranger_kappaN$model@trend.coef[3]*X2 +
+             MULESP_mod_ranger_kappaN$model@trend.coef[4]*X3 +
+             MULESP_mod_ranger_kappaN$model@trend.coef[5]*X1^2 +
+             MULESP_mod_ranger_kappaN$model@trend.coef[6]*X2^2 +
+             MULESP_mod_ranger_kappaN$model@trend.coef[7]*X1*X2 +
+             MULESP_mod_ranger_kappaN$model@trend.coef[8]*X2*X3 +
+             MULESP_mod_ranger_kappaN$model@trend.coef[9]*X1*X3)
+MULESP_RMSE_ranger <-  RMSE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$kappa2)
+MULESP_MAE_ranger <-  MAE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$kappa2)
 
 #Graphiques 2D
 MULESP_fit_ranger_Gini_kappa_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULESP_fit_ranger_GINI", "mtry", "min.node.size", "Kappa", "F")
@@ -172,14 +203,25 @@ MULESP_fit_ranger_Gini_accu_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULES
 MULESP_fit_ranger_ET_kappa_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Kappa", "F")
 MULESP_fit_ranger_ET_accu_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
 
+# Lance modèle RANGER optimal
+MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
+MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
+MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
+
+
 
 ### RBORIST ###
 MULESP_grid_Rborist <- data.frame(MULESP_LHS) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%     #32
    mutate(minNode = round(1+X2*16,0))
 
+temps_depart <- Sys.time()
 MULESP_set_Rborist <- c("Rborist", "tuneGrid  = MULESP_grid_Rborist[,c('predFixed','minNode')]")
 MULESP_fit_Rborist <- fit_test(MULESP_set_Rborist)
+temps_fin <- Sys.time()
+MULESP_chrono_Rborist <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
+MULESP_chrono_Rborist <- round(MULESP_temps_Rborist/nrow(MULESP_grid_Rborist) ,2)
+
 
 MULESP_fit_Rborist_resultats <- MULESP_fit_Rborist$results %>%
    left_join(., MULESP_grid_Rborist, by = c("predFixed", "minNode"))   # Ajout des facteurs réduits
@@ -193,6 +235,10 @@ MULESP_mod_Rborist_accu <-  modelFit(X=MULESP_fit_Rborist_resultats[,c("predFixe
                                      Y=MULESP_fit_Rborist_resultats$Accuracy, 
                                      type="Kriging", 
                                      formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
+MULESP_mod_Rborist_kappaN <-  modelFit(X=MULESP_fit_Rborist_resultats[,c("X1", "X2")], 
+                                       Y=MULESP_fit_Rborist_resultats$Kappa,  
+                                       type="Kriging", 
+                                       formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
 MULESP_pred_Rborist <- expand.grid(MULESP_fit_Rborist_resultats[,c("X1","X2")]) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
@@ -200,17 +246,37 @@ MULESP_pred_Rborist <- expand.grid(MULESP_fit_Rborist_resultats[,c("X1","X2")]) 
    mutate(Kappa = modelPredict(MULESP_mod_Rborist_kappa, .[,c("predFixed", "minNode")])) %>%
    mutate(Accuracy = modelPredict(MULESP_mod_Rborist_accu, .[,c("predFixed", "minNode")]))
 
+# Optimisation quadratique
+MULESP_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17), X2 = seq(from = 0, to = 1, length.out = 17)) %>% 
+   mutate(predFixed = round(1+X1*16,0)) %>%
+   mutate(minNode = round(1+X2*16,0)) %>%
+   mutate(Kappa = MULESP_mod_Rborist_kappaN$model@trend.coef[1] +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[2]*X1 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[3]*X2 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[4]*X1^2 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[5]*X2^2 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[6]*X1*X2)
+
 # Erreur de modélisation quadratique
-MULESP_Compar_Rborist <- MULESP_fit_Rborist_resultats[,c("X1","X2","Kappa")] %>% 
-   mutate(Kappa2 = modelPredict(MULESP_mod_Rborist_kappa, .[,c("X1","X2")]))
+MULESP_Compar_Rborist <- MULESP_fit_Rborist_resultats %>% 
+   select(c("X1","X2","Kappa")) %>%
+   mutate(Kappa2 = MULESP_mod_Rborist_kappaN$model@trend.coef[1] +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[2]*X1 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[3]*X2 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[4]*X1^2 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[5]*X2^2 +
+             MULESP_mod_Rborist_kappaN$model@trend.coef[6]*X1*X2)
 MULESP_RMSE_Rborist <-  RMSE(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kappa2)
 MULESP_MAE_Rborist <-  MAE(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kappa2)
 
-MULESP_fit_Rborist_kappa_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
-MULESP_fit_Rborist_accu_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")
 
 MULESP_best_Rborist <- which.max(MULESP_fit_Rborist_resultats$Kappa)
 MULESP_best_Rboristgrid <- data.frame(predFixed = MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$predFixed, minNode =MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$minNode)
+
+# Graphiques 2D
+MULESP_fit_Rborist_kappa_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
+MULESP_fit_Rborist_accu_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")
+
 
 # Lance modèle RBORIST optimal
 MULESP_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULESP_best_Rboristgrid, ntrees = 2"))
