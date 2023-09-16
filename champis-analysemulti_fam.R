@@ -179,7 +179,7 @@ MULFAM_modelquad_ranger <- MULFAM_modelquad_ranger %>%
 # Erreur de modélisation quadratique
 MULFAM_Compar_ranger <- MULFAM_fit_ranger_resultats %>%
    select(c("X1","X2","X3","Kappa")) %>%
-   mutate(kappa2 = MULFAM_mod_ranger_kappaN$model@trend.coef[1] +
+   mutate(Kappa2 = MULFAM_mod_ranger_kappaN$model@trend.coef[1] +
              MULFAM_mod_ranger_kappaN$model@trend.coef[2]*X1 +
              MULFAM_mod_ranger_kappaN$model@trend.coef[3]*X2 +
              MULFAM_mod_ranger_kappaN$model@trend.coef[4]*X3 +
@@ -188,11 +188,13 @@ MULFAM_Compar_ranger <- MULFAM_fit_ranger_resultats %>%
              MULFAM_mod_ranger_kappaN$model@trend.coef[7]*X1*X2 +
              MULFAM_mod_ranger_kappaN$model@trend.coef[8]*X2*X3 +
              MULFAM_mod_ranger_kappaN$model@trend.coef[9]*X1*X3)
-MULFAM_RMSE_ranger <-  RMSE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$kappa2)
-MULFAM_MAE_ranger <-  MAE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$kappa2)
+MULFAM_RMSE_ranger <-  RMSE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)
+MULFAM_MAE_ranger <-  MAE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)
+MULFAM_R2_ranger <- cor(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)^2
+MULFAM_corr_ranger <- cor(x = MULFAM_Compar_ranger$Kappa, y = MULFAM_Compar_ranger$Kappa2, method = "spearman")
 
-MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_resultats$Kappa)
-MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$splitrule)
+#MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_resultats$Kappa)
+#MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$splitrule)
 
 # Graphiques 2D
 MULFAM_fit_ranger_Gini_kappa_graphe <- graphe2D("MULFAM_pred_ranger_GINI", "MULFAM_fit_ranger_GINI", "mtry", "min.node.size", "Kappa", "F")
@@ -202,6 +204,7 @@ MULFAM_fit_ranger_ET_accu_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fi
 
 
 # Lance modèle RANGER optimal
+MULFAM_best_ranger <- MULFAM_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
 MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid, num.trees = 6"))
 MULFAM_fit_ranger_best <- fit_test(MULFAM_set_ranger_best)
 MULFAM_fit_ranger_best_resultats <- MULFAM_fit_ranger_best$results
@@ -266,7 +269,8 @@ MULFAM_Compar_Rborist <- MULFAM_fit_Rborist_resultats %>%
              MULFAM_mod_Rborist_kappaN$model@trend.coef[6]*X1*X2)
 MULFAM_RMSE_Rborist <-  RMSE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)
 MULFAM_MAE_Rborist <-  MAE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)
-
+MULFAM_R2_Rborist <- cor(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)^2
+MULFAM_corr_Rborist <- cor(x = MULFAM_Compar_Rborist$Kappa, y = MULFAM_Compar_Rborist$Kappa2, method = "spearman")
 
 MULFAM_best_Rborist <- which.max(MULFAM_fit_Rborist_resultats$Kappa)
 MULFAM_best_Rboristgrid <- data.frame(predFixed = MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$predFixed, minNode =MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$minNode)

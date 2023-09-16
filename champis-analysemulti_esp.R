@@ -185,7 +185,7 @@ MULESP_modelquad_ranger <- MULESP_modelquad_ranger %>%
 # Erreur de modélisation quadratique
 MULESP_Compar_ranger <- MULESP_fit_ranger_resultats %>%
    select(c("X1","X2","X3","Kappa")) %>%
-   mutate(kappa2 = MULESP_mod_ranger_kappaN$model@trend.coef[1] +
+   mutate(Kappa2 = MULESP_mod_ranger_kappaN$model@trend.coef[1] +
              MULESP_mod_ranger_kappaN$model@trend.coef[2]*X1 +
              MULESP_mod_ranger_kappaN$model@trend.coef[3]*X2 +
              MULESP_mod_ranger_kappaN$model@trend.coef[4]*X3 +
@@ -194,8 +194,10 @@ MULESP_Compar_ranger <- MULESP_fit_ranger_resultats %>%
              MULESP_mod_ranger_kappaN$model@trend.coef[7]*X1*X2 +
              MULESP_mod_ranger_kappaN$model@trend.coef[8]*X2*X3 +
              MULESP_mod_ranger_kappaN$model@trend.coef[9]*X1*X3)
-MULESP_RMSE_ranger <-  RMSE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$kappa2)
-MULESP_MAE_ranger <-  MAE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$kappa2)
+MULESP_RMSE_ranger <-  RMSE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$Kappa2)
+MULESP_MAE_ranger <-  MAE(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$Kappa2)
+MULESP_R2_ranger <- cor(MULESP_Compar_ranger$Kappa, MULESP_Compar_ranger$Kappa2)^2
+MULESP_corr_ranger <- cor(x = MULESP_Compar_ranger$Kappa, y = MULESP_Compar_ranger$Kappa2, method = "spearman")
 
 #Graphiques 2D
 MULESP_fit_ranger_Gini_kappa_graphe <- graphe2D("MULESP_pred_ranger_GINI", "MULESP_fit_ranger_GINI", "mtry", "min.node.size", "Kappa", "F")
@@ -208,7 +210,10 @@ MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid
 MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
 MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
 
-
+MULESP_best_rangerQ <- MULESP_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
+MULESP_set_ranger_bestQ <- c("ranger", paste0("tuneGrid  = MULESP_best_rangerQ, num.trees = 6"))
+MULESP_fit_ranger_bestQ <- fit_test(MULESP_set_ranger_bestQ)
+MULESP_fit_ranger_bestQ_resultats <- MULESP_fit_ranger_best$results
 
 ### RBORIST ###
 MULESP_grid_Rborist <- data.frame(MULESP_LHS) %>%
@@ -268,6 +273,8 @@ MULESP_Compar_Rborist <- MULESP_fit_Rborist_resultats %>%
              MULESP_mod_Rborist_kappaN$model@trend.coef[6]*X1*X2)
 MULESP_RMSE_Rborist <-  RMSE(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kappa2)
 MULESP_MAE_Rborist <-  MAE(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kappa2)
+MULESP_R2_Rborist <- cor(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kappa2)^2
+MULESP_corr_Rborist <- cor(x = MULESP_Compar_Rborist$Kappa, y = MULESP_Compar_Rborist$Kappa2, method = "spearman")
 
 
 MULESP_best_Rborist <- which.max(MULESP_fit_Rborist_resultats$Kappa)

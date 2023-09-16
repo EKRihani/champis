@@ -235,6 +235,8 @@ BI_Compar_rpartcost <- BI_fit_rpartcost_resultats %>%
              BI_mod_rpartcost_jw$model@trend.coef[6]*X1*X2)
 BI_RMSE_rpartcost <-  RMSE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
 BI_MAE_rpartcost <-  MAE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
+BI_R2_rpartcost <- cor(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)^2
+BI_corr_rpartcost <- cor(x = BI_Compar_rpartcost$Jw, y = BI_Compar_rpartcost$Jw2, method = "spearman")
 
 # Meilleur modèle rpartcost
 BI_best_rpartcostgrid <- BI_modelquad_rpartcost_top[c("cp", "Cost")]
@@ -348,6 +350,8 @@ BI_Compar_ranger <- BI_fit_ranger_resultats %>%
              BI_mod_ranger_jw$model@trend.coef[9]*X1*X3)
 BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
 BI_MAE_ranger <-  MAE(BI_Compar_ranger$Jw, BI_Compar_Ranger$Jw2)
+BI_R2_ranger <- cor(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)^2
+BI_corr_ranger <- cor(x = BI_Compar_ranger$Jw, y = BI_Compar_ranger$Jw2, method = "spearman")
 
 set.seed(945)
 BI_modelquad_ranger_top <- BI_modelquad_ranger[which.max(BI_modelquad_ranger$Jw),]
@@ -428,6 +432,8 @@ BI_Compar_Rborist <- BI_fit_Rborist_resultats %>%
              BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
 BI_RMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
 BI_MAE_Rborist <-  MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
+BI_R2_Rborist <- cor(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)^2
+BI_corr_Rborist <- cor(x = BI_Compar_Rborist$Jw, y = BI_Compar_Rborist$Jw2, method = "spearman")
 
 set.seed(65)
 BI_modelquad_Rborist_top <- BI_modelquad_Rborist[which.max(BI_modelquad_Rborist$Jw),]
