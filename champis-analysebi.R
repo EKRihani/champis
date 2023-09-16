@@ -33,19 +33,13 @@ index1 <- twin(data = dataset, r = BI_split_facteur)
 BI_lot_appr_opti <- dataset[-index1,]
 BI_lot_evaluation <- dataset[index1,]
 
-
 ###################################################################
 #     BICLASSIFIEUR : INITIALISATION ET DEFINITIONS FONCTIONS     #
 ###################################################################
-# https://topepo.github.io/caret/available-models.html
-# names(getModelInfo())
-# getModelInfo(Rborist)
-
 # Définition index de Youden
 BI_w <- 10
 BI_RatioSens <- 2*BI_w/(BI_w+1)
 BI_RatioSpec <- 2*(1-BI_w/(BI_w+1))
-
 
 # Définition de fonction : lance le modèle avec les paramètres donnés, évalue la performance (spécificité), renvoie les résultats de fitting
 fit_test <- function(fcn_modele){
@@ -61,7 +55,6 @@ fit_test <- function(fcn_modele){
    fitting <- eval(parse(text = cmd))        # Lance commande
    fitting
 }
-
 
 # Définition de fonction : graphique 2D
 graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
