@@ -127,7 +127,7 @@ MULFAM_set_ranger <- c("ranger", "tuneGrid  = MULFAM_grid_ranger[,c('mtry','min.
 MULFAM_fit_ranger <- fit_test(MULFAM_set_ranger)
 temps_fin <- Sys.time()
 MULFAM_chrono_ranger <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
-MULFAM_chrono_ranger <- round(MULFAM_temps_ranger/nrow(MULFAM_grid_ranger) ,2)
+MULFAM_chrono_ranger <- round(MULFAM_chrono_ranger/nrow(MULFAM_grid_ranger) ,2)
 MULFAM_fit_ranger_resultats <- MULFAM_fit_ranger$results %>% 
    left_join(., MULFAM_grid_ranger, by = c("mtry", "min.node.size", "splitrule"))   # Ajout des facteurs réduits
 
@@ -204,7 +204,7 @@ MULFAM_fit_ranger_ET_accu_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fi
 
 
 # Lance modèle RANGER optimal
-MULFAM_best_ranger <- MULFAM_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
+MULFAM_best_rangergrid <- MULFAM_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
 MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid, num.trees = 6"))
 MULFAM_fit_ranger_best <- fit_test(MULFAM_set_ranger_best)
 MULFAM_fit_ranger_best_resultats <- MULFAM_fit_ranger_best$results
@@ -220,7 +220,7 @@ MULFAM_set_Rborist <- c("Rborist", "tuneGrid  = MULFAM_grid_Rborist[,c('predFixe
 MULFAM_fit_Rborist <- fit_test(MULFAM_set_Rborist)
 temps_fin <- Sys.time()
 MULFAM_chrono_Rborist <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
-MULFAM_chrono_Rborist <- round(MULFAM_temps_Rborist/nrow(MULFAM_grid_Rborist) ,2)
+MULFAM_chrono_Rborist <- round(MULFAM_chrono_Rborist/nrow(MULFAM_grid_Rborist) ,2)
 
 
 MULFAM_fit_Rborist_resultats <- MULFAM_fit_Rborist$results %>%
@@ -272,8 +272,7 @@ MULFAM_MAE_Rborist <-  MAE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Ka
 MULFAM_R2_Rborist <- cor(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)^2
 MULFAM_corr_Rborist <- cor(x = MULFAM_Compar_Rborist$Kappa, y = MULFAM_Compar_Rborist$Kappa2, method = "spearman")
 
-MULFAM_best_Rborist <- which.max(MULFAM_fit_Rborist_resultats$Kappa)
-MULFAM_best_Rboristgrid <- data.frame(predFixed = MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$predFixed, minNode =MULFAM_fit_Rborist_resultats[MULFAM_best_Rborist,]$minNode)
+MULFAM_best_Rboristgrid <- MULFAM_modelquad_Rborist %>% filter(Kappa == max(Kappa)) %>% select(c("predFixed", "minNode"))
 MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristgrid"))
 MULFAM_fit_Rborist_best <- fit_test(MULFAM_set_Rborist_best)
 MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results

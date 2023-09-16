@@ -130,7 +130,7 @@ MULESP_set_ranger <- c("ranger", "tuneGrid  = MULESP_grid_ranger[,c('mtry','min.
 MULESP_fit_ranger <- fit_test(MULESP_set_ranger)
 temps_fin <- Sys.time()
 MULESP_chrono_ranger <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
-MULESP_chrono_ranger <- round(MULESP_temps_ranger/nrow(MULESP_grid_ranger) ,2)
+MULESP_chrono_ranger <- round(MULESP_chrono_ranger/nrow(MULESP_grid_ranger) ,2)
 MULESP_fit_ranger_resultats <- MULESP_fit_ranger$results %>% 
    left_join(., MULESP_grid_ranger, by = c("mtry", "min.node.size", "splitrule"))   # Ajout des facteurs réduits
 
@@ -225,7 +225,7 @@ MULESP_set_Rborist <- c("Rborist", "tuneGrid  = MULESP_grid_Rborist[,c('predFixe
 MULESP_fit_Rborist <- fit_test(MULESP_set_Rborist)
 temps_fin <- Sys.time()
 MULESP_chrono_Rborist <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
-MULESP_chrono_Rborist <- round(MULESP_temps_Rborist/nrow(MULESP_grid_Rborist) ,2)
+MULESP_chrono_Rborist <- round(MULESP_chrono_Rborist/nrow(MULESP_grid_Rborist) ,2)
 
 
 MULESP_fit_Rborist_resultats <- MULESP_fit_Rborist$results %>%
