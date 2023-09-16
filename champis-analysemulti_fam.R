@@ -93,7 +93,6 @@ MULFAM_fit_rpart_cp <- fit_test(MULFAM_set_rpart_cp)
 MULFAM_fit_rpart_cp_resultats <- MULFAM_fit_rpart_cp$results
 MULFAM_fit_rpart_cp_graphe <- grapheKappa(MULFAM_fit_rpart_cp_resultats, cp)+ scale_x_log10()
 
-
 ################################################
 #     MULTICLASSIFIEUR : FORETS ALEATOIRES     #
 ################################################
@@ -115,8 +114,6 @@ MULFAM_chrono_ranger <- round(MULFAM_temps_ranger/nrow(MULFAM_grid_ranger) ,2)
 MULFAM_fit_ranger_resultats <- MULFAM_fit_ranger$results %>% 
    left_join(., MULFAM_grid_ranger, by = c("mtry", "min.node.size", "splitrule"))   # Ajout des facteurs réduits
 
-MULFAM_fit_ranger_bestTune <- MULFAM_fit_ranger$bestTune
-
 # Modélisation Kriging avec interactions
 MULFAM_mod_ranger_kappa <-  modelFit(X=MULFAM_fit_ranger_resultats[,c("mtry", "min.node.size", "X3")], 
                                 Y=MULFAM_fit_ranger_resultats$Kappa,  
@@ -126,10 +123,6 @@ MULFAM_mod_ranger_accu <-  modelFit(X=MULFAM_fit_ranger_resultats[,c("mtry", "mi
                                 Y=MULFAM_fit_ranger_resultats$Accuracy,  
                                 type="Kriging", 
                                 formula=Y~mtry+min.node.size+X3+mtry:min.node.size+min.node.size:X3+mtry:X3+I(mtry^2)+I(min.node.size^2))
-MULFAM_mod_ranger_kappaN <-  modelFit(X=MULFAM_fit_ranger_resultats[,c("X1", "X2", "X3")], 
-                                     Y=MULFAM_fit_ranger_resultats$Kappa,  
-                                     type="Kriging", 
-                                     formula=Y~X1+X2+X3+X1:X2+X2:X3+X1:X3+I(X1^2)+I(X2^2))
 
 MULFAM_pred_ranger <- expand(MULFAM_fit_ranger_resultats[,c("X1","X2","X3")], X1, X2, X3) %>%
    data.frame() %>%
@@ -151,6 +144,7 @@ MULFAM_fit_ranger_ET_kappa_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_f
 MULFAM_fit_ranger_ET_accu_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
 
 # Modèle RANGER optimal
+MULFAM_fit_ranger_bestTune <- MULFAM_fit_ranger$bestTune   # A TESTER !!!!
 MULFAM_best_rangergrid <- MULFAM_fit_ranger_resultats %>% select(Kappa == max(Kappa)) %>% filter(c("mtry", "min.node.size", "splitrule"))
 MULFAM_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULFAM_best_rangergrid, num.trees = 6"))
 MULFAM_fit_ranger_best <- fit_test(MULFAM_set_ranger_best)
@@ -180,10 +174,6 @@ MULFAM_mod_Rborist_accu <-  modelFit(X=MULFAM_fit_Rborist_resultats[,c("predFixe
                                      Y=MULFAM_fit_Rborist_resultats$Accuracy, 
                                      type="Kriging", 
                                      formula=Y~predFixed+minNode+predFixed:minNode+I(predFixed^2)+I(minNode^2))
-MULFAM_mod_Rborist_kappaN <-  modelFit(X=MULFAM_fit_Rborist_resultats[,c("X1", "X2")], 
-                               Y=MULFAM_fit_Rborist_resultats$Kappa,  
-                               type="Kriging", 
-                               formula=Y~X1+X2+X1:X2+I(X1^2)+I(X2^2))
 
 MULFAM_pred_Rborist <- expand.grid(MULFAM_fit_Rborist_resultats[,c("X1","X2")]) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%
@@ -201,10 +191,9 @@ MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristg
 MULFAM_fit_Rborist_best <- fit_test(MULFAM_set_Rborist_best)
 MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results
 
-
 #########################################################
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
-#########################################################    PAS ENCORE LANCE, A FAIRE !!!
+#########################################################
 
 # Règle la liste de prédiction et lance la classification
 MULFAM_evaluation <- MULFAM_lot_evaluation
@@ -239,8 +228,7 @@ rownames(MULFAM_RF_resultat) <- c("Ranger", "Rborist")
 save.image(file = "EKR-Champis-AnalyseMultiFam.RData")     # Sauvegarde données complètes
 # Suppression gros fichiers intermédiaires, avant sauvegarde
 rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_evaluation,
-   MULFAM_fit_rpart_cp, MULFAM_fit_ctree_criterion,
-   MULFAM_fit_Rborist, MULFAM_fit_Rborist_best, MULFAM_fit_Rborist_final,
+   MULFAM_fit_rpart_cp, MULFAM_fit_Rborist, MULFAM_fit_Rborist_best, MULFAM_fit_Rborist_final,
    MULFAM_fit_ranger, MULFAM_fit_ranger_best, MULFAM_fit_ranger_final)
 
 save.image(file = "EKR-Champis-AnalyseMultiFam-Light.RData")     # Sauvegarde données pour rapport
