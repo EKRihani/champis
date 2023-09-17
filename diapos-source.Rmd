@@ -3,24 +3,24 @@ title: "Application de modèles d'Intelligence Artificielle à la classification
 author: "Emir Kaïs RIHANI"
 date: "03 nov. 2023"
 lang: fr
+institute: "Faculté de Pharmacie de Lille"
 fontsize: 10pt
 output:
   beamer_presentation:
-    theme: "JuanLesPins"
-    #slide_level: 3
+    theme: "Darmstadt" #JuanLesPins, Darmstadt, Frankfurt, Ilmenau
+    slide_level: 2
 
 header-includes:
-   - \institute[Pharma Lille]{Faculté de Pharmacie de Lille}
-   - \useoutertheme{smoothtree} # Pour Pharma : default, infolines, smoothbars, smoothtree, tree -->
-   - \AtBeginSection{}   # Retire diapos de début de section
-   - \AtBeginSubsection{}   # Retire diapos de début de sous-section
+   #- \institute[Pharma Lille]{Faculté de Pharmacie de Lille}
+   #- \useoutertheme{smoothtree} # Pour Pharma : default, infolines, smoothbars, smoothtree, tree -->
+   #- \AtBeginSection{}   # Retire diapos de début de section
+   #- \AtBeginSubsection{}   # Retire diapos de début de sous-section
 ---
 
 ```{r, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(ggpubr)
-load(file = "CodeSourceIris.RData")
 ```
 
 \frametitle{Table des matières}
@@ -128,14 +128,6 @@ load(file = "CodeSourceIris.RData")
 - Communiqué au client par son chargé d'AQ client
 
 ### Attribution de la communication client
-```{r, fig.height = 4.2, warning=FALSE} 
-plot(ggarrange(widths = c(1, 1.5),
-   ncol = 2,
-   RMD_Iris_GraphX + theme(legend.position = "none"),
-   RMD_Iris_GraphTotale
-   )
-)
-```
 
 
 ## Exemples de déviations
