@@ -111,7 +111,7 @@ for (n in 1:n_especes){
 lots_liste <- paste0("lot", data_champis$N)
 
 n_champis <- 3e2      # Nombre de champignons pour chaque espèce
-f_crois <- 2          # Facteur de croissance
+f_crois <- 4          # Facteur de croissance
 #tailles <- names(structure[numeriques[-c(1,2)]])    # Facteurs de taille
 tailles <- names(structure[numeriques])    # Facteurs de taille
 
@@ -128,9 +128,9 @@ for (n in 1:n_especes){
                          "<- sample(x = ", champ_liste[n], "$", textes,
                          ", size = n_champis, replace = TRUE)")
    ordre_fac <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, 
-                                                             shape1 = 6*f_crois, 
+                                                             shape1 = 3*f_crois, 
                                                              shape2 =4, 
-                                                             ncp = .5*f_crois)")
+                                                             ncp = f_crois)")
    ordre_num1 <- paste0(lots_liste[n], "[tailles] <- lapply(", 
                         champ_liste[n], "[tailles], '*', ",
                         lots_liste[n], "$FacteurTaille)")

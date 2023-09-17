@@ -241,12 +241,14 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 
 * Efficience calculatoire,
 * Distribution continue,
-* Distribution bornée, ou aisément normalisable sur un intervalle $\left[ 0 ; 1 \right]$,
-* Distribution asymétrique.
+* Distribution asymétrique,
+* Distribution bornée, ou normalisable sur un intervalle $\left[ 0 ; 1 \right]$,
+
+\paragraph*{}
 
 \FloatBarrier
 \paragraph*{}
-L'efficience calculatoire n'est, en pratique, pas un facteur limitant dans notre cas, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant s'avérant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
+Le critère d'efficience calculatoire n'est, en pratique, pas un facteur limitant dans notre cas, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant s'avérant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
 
 
 ```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
@@ -254,7 +256,7 @@ plot(chrono_distrib2)
 ```
 
 \paragraph*{}
-Les critères de continuité et de normalité n'appellent que peu de commentaires. Ces critères permettent simplement de garantir la possibilité d'une infinité de valeurs dimensionnelles, dans l'intervalle considéré. Le critère de continuité proscrit toutefois l'utilisation de lois de distributions discrètes telles que la loi binomiale ou la loi de Poisson, et celui de normalité écarte des distributions telles que la loi de Weibull, dont la normalisation est parfois délicate.
+Les critères de continuité et de quasi-normalité n'appellent que peu de commentaires. Ces critères permettent simplement de garantir la possibilité d'une infinité de valeurs dimensionnelles, dans l'intervalle considéré. Le critère de continuité proscrit toutefois l'utilisation de lois de distributions discrètes telles que la loi binomiale ou la loi de Poisson, et celui de quasi-normalité écarte des distributions telles que la loi de Weibull, dont la normalisation est parfois délicate.
 \paragraph*{}
 \FloatBarrier
 Le critère d'asymétrie est un critère permettant de tenir compte des différents paramètres pouvant impacter la distribution de taille des spécimens prélevés, parmi lesquels\ :
@@ -296,9 +298,9 @@ $$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \ch
 avec $\chi^{2}$ la loi du khi-deux, $\alpha{}$ et $\beta{}$ les paramètres de forme de la loi bêta, et $\lambda{}$ son paramètre de non-centralité. Nous définirons empiriquement pour cette étude les relations suivantes entre ces trois paramètres\ : 
 $$\left \{
 \begin{array}{l c c}
-\alpha = 6 \, F_{c} & & (shape1)\\
+\alpha = 3 \, F_{c} & & (shape1)\\
 \beta = 4  & & (shape2)\\
-\lambda = F_{c}/2  & & (ncp)\\
+\lambda = F_{c}  & & (ncp)\\
 \end{array}
 \right.$$
 
@@ -335,8 +337,6 @@ plot(ggarrange(
 
 \paragraph*{}
 La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \ref{fig:Lots-DispersionDensite}). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
-<!-- [FAIRE CALCULS SUR R POUR RELIER AUTOMATIQUEMENT AUX CHIFFRES ?] -->
-
 
 ```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4, fig.cap = "Diagramme de densité de 2 paramètres de taille, avec dispersion"}
 plot(densite2d)
@@ -356,7 +356,7 @@ plot(distrib_diametre)
 \paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
 \paragraph*{}
-L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnée est insérée dans un vecteur de valeurs, et une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question pour chaque spécimen.
+L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnés est inséré dans un vecteur de valeurs. Une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question, et ce, pour chaque spécimen.
 \paragraph*{}
 Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. (cf. annexes, p. \pageref{ANNEXErares})
 \paragraph*{}
@@ -1704,7 +1704,7 @@ La préparation de la seconde et dernière étape de la génération des donnée
 lots_liste <- paste0("lot", data_champis$N)
 
 n_champis <- 3e2      # Nombre de champignons pour chaque espèce
-f_crois <- 2          # Facteur de croissance
+f_crois <- 4          # Facteur de croissance
 tailles <- names(structure[numeriques])
 
 func_alea <- function(x){round(x * rnorm(n = n_champis, 
@@ -1740,9 +1740,9 @@ for (n in 1:n_especes){
                          "<- sample(x = ", champ_liste[n], "$", textes,
                                     ", size = n_champis, replace = TRUE)")
   ordre_fac <-paste0(lots_liste[n], "$FacteurTaille <- rbeta(n = n_champis, 
-                                                             shape1 = 6*f_crois, 
+                                                             shape1 = 3*f_crois, 
                                                              shape2 =4, 
-                                                             ncp = .5*f_crois)")
+                                                             ncp = f_crois)")
   ordre_num1 <- paste0(lots_liste[n], "[tailles] <- lapply(", 
                        champ_liste[n], "[tailles], '*', ",
                        lots_liste[n], "$FacteurTaille)")

@@ -116,9 +116,9 @@ chrono_distrib <- ggplot(data = chrono_fonctions, aes(y = time/1e6, x = reorder(
          axis.ticks.x = element_blank())
 
 # Focus sur la loi Beta pour génération de champignons
-facteurs <- c(.5, 1, 1.5, 2)
+facteurs <- 1:4
 
-loi_beta <- function(facteur){rbeta(n = n_graph, shape1 = 6*facteur, shape2 = 4, ncp = .5*facteur)}
+loi_beta <- function(facteur){rbeta(n = n_graph, shape1 = 3*facteur, shape2 = 4, ncp = facteur)}
 
 beta <-lapply(X = facteurs, FUN = loi_beta)
 names(beta) <- facteurs
@@ -136,7 +136,6 @@ lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
   theme(axis.text.y = element_blank(),
         panel.grid = element_blank(),
         axis.ticks.y = element_blank())
-
 
 ###############################
 #       DISTRIBUTION 2D       #
