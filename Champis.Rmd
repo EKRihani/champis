@@ -956,7 +956,7 @@ Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Spec"], BI_fit_pda_lambd
 \right.$$
 
 \paragraph*{}
-Ces performances prédictives perfectibles, car légèrement en retrait par rapport à celles d'un modèle naïf bidimensionnel, s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
+Ces performances prédictives perfectibles, car assez comparables à celles d'un modèle naïf bidimensionnel, s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
 
 * Données binaires ou booléennes,
 * Données qualitatives ordinales.
@@ -982,7 +982,7 @@ plot(BI_fit_rpart_cp_graphe)
 
 
 \paragraph*{}
-Le modèle CART le plus simple propose des performances excellentes sur une large plage d'hyperparamètres (figure \ref{fig:BIrpart}, page \pageref{fig:BIrpart}), remplissant notre critère $Jw \geq `r Jw_min`$, avec les indicateurs de performance suivants\ :
+Le modèle CART le plus simple propose des performances honorables sur une large plage d'hyperparamètres (figure \ref{fig:BIrpart}, page \pageref{fig:BIrpart}), s'approchant du critère $Jw \geq `r Jw_min`$, avec les indicateurs de performance suivants\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),4)` \\
@@ -1072,7 +1072,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Sens"],4)` \\
 \right.$$
 
 \paragraph*{}
-Les performances du modèle rpartCost sont excellentes, dépassant celles de notre modèle précédent, au prix d'une efficience calculatoire amoindrie ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations). Ce modèle remplit pleinement notre critère concernant l'indice de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
+Les performances du modèle rpartCost sont honorables, dépassant celles de notre modèle précédent, au prix d'une efficience calculatoire amoindrie ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations). Ce modèle s'approche fortement de notre critère concernant l'indice de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
 \paragraph*{}
 Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. \paragraph*{}
 Les performances obtenues sont\ :
@@ -1084,9 +1084,9 @@ Sen = `r round(BI_fit_c50tree_resultats["Sens"],4)` \\
 \end{array}
 \right.$$
 \paragraph*{}
-Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, remplissant aisément le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée.
+Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, remplissant le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée.
 \paragraph*{}
-Le temps de calcul est relativement long ($t = `r BI_temps_c50tree`$ min), signe d'une efficience calculatoire modeste, mais cette remarque est à modérer en raison des gains que peut apporter un modèle s'affranchissant totalement de la phase d'optimisation des hyperparamètres :
+Le temps de calcul est plus long ($t = `r BI_temps_c50tree`$ min), signe d'une efficience calculatoire moindre, mais cette remarque est à modérer en raison des gains que peut apporter un modèle s'affranchissant totalement de la phase d'optimisation des hyperparamètres :
 
 * Pas de séparation entre lots d'entraînement et d'optimisation,
 * Pas de détermination du domaine expérimental et du plan d'expériences,
@@ -1096,9 +1096,9 @@ Le temps de calcul est relativement long ($t = `r BI_temps_c50tree`$ min), signe
 Ces gains potentiels sont à considérer *lato sensu* : en temps de calcul évidemment, mais aussi de développement et d'optimisation des algorithmes correspondants à ces étapes.
 
 \paragraph*{}
-Les modèles d'arbres de classification sont réputés pour être particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette tâche de classification en fournissant des résultats excellents. 
+Les modèles d'arbres de classification sont réputés pour être particulièrement adaptés aux problèmes de classification avec variables quantitatives et surtout qualitatives, et ont pu s'illustrer dans cette tâche de classification en fournissant des performances intéressantes. 
 \paragraph*{}
-En effet, la totalité des modèles d'arbres testés ici dépassent les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.
+Toutefois, un seul des modèles d'arbres testés ici dépasse les exigences imposées par le critère de performance que nous avions défini pour les classifieurs binaires de notre étude.
 \paragraph*{}
 
 \newpage
@@ -1261,7 +1261,7 @@ b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
 \end{minipage}
 
 \paragraph*{}
-La modélisation quadratique correspond bien aux données expérimentales, avec une MAE extrêmement basse, et confirme par ailleurs les conclusions de l'interprétation graphique, avec $b_{1} \gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_best_rangergrid["min.node.size"]`$, $mtry = `r BI_best_rangergrid["mtry"]`$ et $splitrule = `r BI_best_rangergrid[1,"splitrule"]`$) a donné d'excellents résultats\ :
+La modélisation quadratique correspond bien aux données expérimentales, avec une MAE extrêmement basse, et confirme par ailleurs les conclusions que permet l'interprétation graphique, avec $b_{1}\gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_best_rangergrid["min.node.size"]`$, $mtry = `r BI_best_rangergrid["mtry"]`$ et $splitrule = `r BI_best_rangergrid[1,"splitrule"]`$) a donné d'excellents résultats\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(BI_fit_ranger_best_resultats["Jw"],5)` \\
@@ -1287,7 +1287,7 @@ Les modèles ayant atteint les performances requises ($J_{w} \geq `r Jw_min`$) l
 * Forêt aléatoire avec algorithme de type Rborist.
 
 \paragraph*{}
-Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus précédemment\footnote{cf. section \ref{chapitre:BI-RF}} par modélisation des performances via un modèle quadratique avec interactions. Les performances de nos modèles face au jeu de données d'évaluation, auquel ils n'ont encore jamais été exposés\footnote{cf. section \ref{chapitre:split_methodes}, p. \ \pageref{chapitre:split_methodes}}, seront évaluées avec le même critère que précédemment\ : $J_{w} \geq `r Jw_min`$
+Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus précédemment\footnote{cf. section \ref{chapitre:BI-RF}} par modélisation des performances via un modèle quadratique avec interactions. Les performances de nos modèles face au jeu de données d'évaluation, auquel ils n'ont encore jamais été exposés,\footnote{cf. section \ref{chapitre:split_methodes} p. \ \pageref{chapitre:split_methodes}}, seront évaluées avec le même critère que précédemment\ : $J_{w} \geq `r Jw_min`$
 
 ### Performances des modèles de forêts aléatoires
 
