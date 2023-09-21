@@ -333,12 +333,13 @@ MULESP_erreur_ranger <- MULESP_n_eval*(1-MULESP_CM_ranger_final$overall["Accurac
 MULESP_erreur_Rborist <- MULESP_n_eval*(1-MULESP_CM_Rborist_final$overall["Accuracy"])
 
 # A DEBUGUER !
-MULESP_erreurs_ranger <- which(MULESP_CM_ranger_final$byClass[,'Precision'] != 1)
+#MULESP_erreurs_ranger <- which(MULESP_CM_ranger_final$byClass[,'Precision'] != 1)
+MULESP_erreurs_ranger <- which(MULESP_CM_ranger_final$byClass[,'F1'] != 1)
 #MULESP_CM_ranger_final$byClass[MULESP_erreurs_ranger,]
 MULESP_CMerreurs_ranger <- MULESP_CM_ranger_final$table[MULESP_erreurs_ranger,]
 MULESP_CMerreurs_ranger <- MULESP_CMerreurs_ranger[,colSums(MULESP_CMerreurs_ranger) > 0]
 
-MULESP_erreurs_Rborist <- which(MULESP_CM_Rborist_final$byClass[,'Precision'] != 1)
+MULESP_erreurs_Rborist <- which(MULESP_CM_Rborist_final$byClass[,'F1'] != 1)
 #MULESP_CM_Rborist_final$byClass[MULESP_erreurs_Rborist,]
 MULESP_CMerreurs_Rborist <- MULESP_CM_Rborist_final$table[MULESP_erreurs_Rborist,]
 # MULESP_CMerreurs_Rborist <- MULESP_CMerreurs_Rborist[,colSums(MULESP_CMerreurs_Rborist) > 0]

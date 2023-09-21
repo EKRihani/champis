@@ -307,110 +307,110 @@ load(file = "EKR-Champis-Naif.RData")
 #####################################################################
 #        REGLAGES HYPERPARAMETRES (MARGE) : LENT, A VIRER ???       #
 #####################################################################
-library(parallel)       # Calcul parallèle pour les sapply
-
-# Définir fonctions : mesure sensibilité/specificité selon la marge, pour réglage hyperparemètre monocritère
-tuning1a <- function(fcn_entrain, fcn_facteurs, fcn_marge){
-   nomfactliste <- deparse(substitute(fcn_facteurs))               # Extrait la liste des noms de facteurs comme chaîne
-   SCS <- paste0("recherche_simple(fcn_entrain, ", nomfactliste, ", fcn_marge)")      # Crée le texte correspondant à la recherche
-   fact_list <- eval(parse(text = SCS))               # Evalue la chaîne de caractères de la recherche (sinon les fonctions imbriquées ne vont pas détecter les noms de facteurs...)
-   critlist_prediction <- crit2string1(fact_list)
-   predictions$tuning <- TRUE                  # Règle .$tuning à VRAI (toxique) par défaut
-   predictions <- predictions %>% mutate(tuning = eval(parse(text = critlist_prediction[[1]])))    # Switch .$tuning to TRUE if criterion is met
-   predictions$tuning <- as.factor(predictions$tuning)
-   CM <- confusionMatrix(data = predictions$tuning, reference = predictions$reference, positive = "TRUE")
-   Sens <- round(CM$byClass["Sensitivity"], 4)
-   Spec <- round(CM$byClass["Specificity"], 4)
-   F1 <- round(CM$byClass["F1"], 4)
-   names(fcn_marge) <- "Marge"
-   c(fcn_marge, Sens, Spec, F1)    # Output 1-crit margin, sensitivity, specificity, F1-Score
-}
-
-tuning2a <- function(fcn_entrain, fcn_facteurs1, fcn_facteurs2, fcn_marge2){
-   nomfactliste2 <- deparse(substitute(fcn_facteurs2))            # Extrait la liste des noms de facteurs comme chaîne
-   DCS <- paste0("recherche_double(fcn_entrain, ", nomfactliste2, ", fcn_marge2)")      # Crée le texte correspondant à la recherche
-   fact2_list <- eval(parse(text = DCS))            # Evalue la chaîne de caractères de la recherche
-   critlist_prediction <- crit2string2(fcn_facteurs1, fact2_list)
-   predictions$tuning <- TRUE                  # Règle .$tuning à VRAI (toxique) par défaut
-   predictions <- predictions %>% mutate(tuning = eval(parse(text = critlist_prediction[[2]])))    # Switch .$tuning to TRUE if criteria are met
-   predictions$tuning <- as.factor(predictions$tuning)
-   CM <- confusionMatrix(data = predictions$tuning, reference = predictions$reference, positive = "TRUE")
-   Sens <- round(CM$byClass["Sensitivity"], 4)
-   Spec <- round(CM$byClass["Specificity"], 4)
-   F1 <- round(CM$byClass["F1"], 4)
-   names(fcn_marge2) <- "Marge"
-   c(fcn_marge2, Sens, Spec, F1)    # Output 2-crit margin, sensitivity, specificity, F1-Score
-}
-
-# Définir fonctions : réglage (1 entrée)
-tuning1b <- function(fcn_marge){
-   tuning1a(NAIF_lot_appr, facteurs_liste1, fcn_marge)
-}
-
-tuning2b <- function(fcn_marge){
-   tuning2a(NAIF_lot_appr, facteurs_liste1a, facteurs_liste2a, fcn_marge)
-}
-
-# Règle les marges et lance le réglage du modèle monocritère
-marge_1 <- c(seq(from = 0, to = 0.4, by = 0.1), seq(from = 0.5, to = 4, by = 0.5))
-START <- Sys.time()
-tuning_mono <- mclapply(X = marge_1, FUN = tuning1b)
-tuning_mono <- do.call(rbind.data.frame, tuning_mono)
-colnames(tuning_mono) <- c("Marge", "Sensitivity", "Specificity", "F1")
-#tuning_mono <- t(sapply(marge_1, FUN = tuning1b))
-tuning_mono <- as.data.frame(tuning_mono)
-STOP <- Sys.time()
-temps_mono <- STOP - START
-
-# Choisit la meilleure marge (haute spécificité, puis sensibilité, puis marge la plus sûre)
-best_marges1 <- tuning_mono %>% 
-   filter(Specificity == max(Specificity)) %>% 
-   filter(Sensitivity == max(Sensitivity)) %>% 
-   filter(Marge == max(Marge))
-
-# Lance classifieur monocritère avec marge optimale, règle la liste des critères pour le facteur2
-facteurs_liste1a <- recherche_simple(NAIF_lot_appr, facteurs_liste1, as.numeric(best_marges1["Marge"]))
-facteurs_liste2a <- retrait_simple(facteurs_liste1a, facteurs_liste2)
-
-# Run double list classifier tuning
-marge_2 <- seq(from = 0, to = 2, by = 0.2)
-dual_crit_tune <- t(sapply(marge_2, FUN = tuning2b))
-dual_crit_tune <- as.data.frame(dual_crit_tune)
-
-START <- Sys.time()
-test_tuning2 <- mclapply(X = marge_2, FUN = tuning2b)
-#test_tuning <- lapply(marge_1, FUN = tuning1b)
-test_tuning2 <- do.call(rbind.data.frame, test_tuning2)
-colnames(test_tuning2) <- c("Marge", "Sensitivity", "Specificity", "F1")
-STOP <- Sys.time()
-but_temps <- STOP - START
-
-# Get best margin (highest specificity, then highest sensitivity, then safest margin)
-best_marges2 <- dual_crit_tune %>% 
-   filter(Specificity == max(Specificity)) %>% 
-   filter(Sensitivity == max(Sensitivity)) %>% 
-   filter(Marge == max(Marge))
-
-# Définir fonction : Graphe Sensibilité, Spécificité, F1-Score
-SenSpeF1plot <- function(fcn_tuneresult, fcn_n){
-   fcn_tuneresult %>%
-      ggplot(aes_string(x = "Marge", y = names(fcn_tuneresult)[fcn_n])) + #aes_string permet d'utiliser des chaînes au lieu de noms de variables
-      geom_point() +
-      theme_bw()
-}
-
-# Graphe paramètres réglages monocritères
-l <- ncol(tuning_mono)
-for (n in 2:l){         # Ne pas tracer la première colonne, c'est l'axe des x
-   plot <- SenSpeF1plot(tuning_mono, n)
-   plotname <- paste0("SCtune", names(tuning_mono)[n])   # Concaténer "SCtune" avec nom colonne
-   assign(plotname, plot)     # Attribuer le graphe au nom SCtune_colonne
-}
-
-# Graphe paramètres réglages bicritères
-l <- ncol(dual_crit_tune)
-for (n in 2:l){         # Ne pas tracer la première colonne, c'est l'axe des x
-   plot <- SenSpeF1plot(dual_crit_tune, n)
-   plotname <- paste0("DCtune", names(dual_crit_tune)[n])   # Concaténer "DCtune" avec nom colonne
-   assign(plotname, plot)     # Attribuer le graphe au nom SCtune_colonne
-}
+# library(parallel)       # Calcul parallèle pour les sapply
+# 
+# # Définir fonctions : mesure sensibilité/specificité selon la marge, pour réglage hyperparemètre monocritère
+# tuning1a <- function(fcn_entrain, fcn_facteurs, fcn_marge){
+#    nomfactliste <- deparse(substitute(fcn_facteurs))               # Extrait la liste des noms de facteurs comme chaîne
+#    SCS <- paste0("recherche_simple(fcn_entrain, ", nomfactliste, ", fcn_marge)")      # Crée le texte correspondant à la recherche
+#    fact_list <- eval(parse(text = SCS))               # Evalue la chaîne de caractères de la recherche (sinon les fonctions imbriquées ne vont pas détecter les noms de facteurs...)
+#    critlist_prediction <- crit2string1(fact_list)
+#    predictions$tuning <- TRUE                  # Règle .$tuning à VRAI (toxique) par défaut
+#    predictions <- predictions %>% mutate(tuning = eval(parse(text = critlist_prediction[[1]])))    # Switch .$tuning to TRUE if criterion is met
+#    predictions$tuning <- as.factor(predictions$tuning)
+#    CM <- confusionMatrix(data = predictions$tuning, reference = predictions$reference, positive = "TRUE")
+#    Sens <- round(CM$byClass["Sensitivity"], 4)
+#    Spec <- round(CM$byClass["Specificity"], 4)
+#    F1 <- round(CM$byClass["F1"], 4)
+#    names(fcn_marge) <- "Marge"
+#    c(fcn_marge, Sens, Spec, F1)    # Output 1-crit margin, sensitivity, specificity, F1-Score
+# }
+# 
+# tuning2a <- function(fcn_entrain, fcn_facteurs1, fcn_facteurs2, fcn_marge2){
+#    nomfactliste2 <- deparse(substitute(fcn_facteurs2))            # Extrait la liste des noms de facteurs comme chaîne
+#    DCS <- paste0("recherche_double(fcn_entrain, ", nomfactliste2, ", fcn_marge2)")      # Crée le texte correspondant à la recherche
+#    fact2_list <- eval(parse(text = DCS))            # Evalue la chaîne de caractères de la recherche
+#    critlist_prediction <- crit2string2(fcn_facteurs1, fact2_list)
+#    predictions$tuning <- TRUE                  # Règle .$tuning à VRAI (toxique) par défaut
+#    predictions <- predictions %>% mutate(tuning = eval(parse(text = critlist_prediction[[2]])))    # Switch .$tuning to TRUE if criteria are met
+#    predictions$tuning <- as.factor(predictions$tuning)
+#    CM <- confusionMatrix(data = predictions$tuning, reference = predictions$reference, positive = "TRUE")
+#    Sens <- round(CM$byClass["Sensitivity"], 4)
+#    Spec <- round(CM$byClass["Specificity"], 4)
+#    F1 <- round(CM$byClass["F1"], 4)
+#    names(fcn_marge2) <- "Marge"
+#    c(fcn_marge2, Sens, Spec, F1)    # Output 2-crit margin, sensitivity, specificity, F1-Score
+# }
+# 
+# # Définir fonctions : réglage (1 entrée)
+# tuning1b <- function(fcn_marge){
+#    tuning1a(NAIF_lot_appr, facteurs_liste1, fcn_marge)
+# }
+# 
+# tuning2b <- function(fcn_marge){
+#    tuning2a(NAIF_lot_appr, facteurs_liste1a, facteurs_liste2a, fcn_marge)
+# }
+# 
+# # Règle les marges et lance le réglage du modèle monocritère
+# marge_1 <- c(seq(from = 0, to = 0.4, by = 0.1), seq(from = 0.5, to = 4, by = 0.5))
+# START <- Sys.time()
+# tuning_mono <- mclapply(X = marge_1, FUN = tuning1b)
+# tuning_mono <- do.call(rbind.data.frame, tuning_mono)
+# colnames(tuning_mono) <- c("Marge", "Sensitivity", "Specificity", "F1")
+# #tuning_mono <- t(sapply(marge_1, FUN = tuning1b))
+# tuning_mono <- as.data.frame(tuning_mono)
+# STOP <- Sys.time()
+# temps_mono <- STOP - START
+# 
+# # Choisit la meilleure marge (haute spécificité, puis sensibilité, puis marge la plus sûre)
+# best_marges1 <- tuning_mono %>% 
+#    filter(Specificity == max(Specificity)) %>% 
+#    filter(Sensitivity == max(Sensitivity)) %>% 
+#    filter(Marge == max(Marge))
+# 
+# # Lance classifieur monocritère avec marge optimale, règle la liste des critères pour le facteur2
+# facteurs_liste1a <- recherche_simple(NAIF_lot_appr, facteurs_liste1, as.numeric(best_marges1["Marge"]))
+# facteurs_liste2a <- retrait_simple(facteurs_liste1a, facteurs_liste2)
+# 
+# # Run double list classifier tuning
+# marge_2 <- seq(from = 0, to = 2, by = 0.2)
+# dual_crit_tune <- t(sapply(marge_2, FUN = tuning2b))
+# dual_crit_tune <- as.data.frame(dual_crit_tune)
+# 
+# START <- Sys.time()
+# test_tuning2 <- mclapply(X = marge_2, FUN = tuning2b)
+# #test_tuning <- lapply(marge_1, FUN = tuning1b)
+# test_tuning2 <- do.call(rbind.data.frame, test_tuning2)
+# colnames(test_tuning2) <- c("Marge", "Sensitivity", "Specificity", "F1")
+# STOP <- Sys.time()
+# but_temps <- STOP - START
+# 
+# # Get best margin (highest specificity, then highest sensitivity, then safest margin)
+# best_marges2 <- dual_crit_tune %>% 
+#    filter(Specificity == max(Specificity)) %>% 
+#    filter(Sensitivity == max(Sensitivity)) %>% 
+#    filter(Marge == max(Marge))
+# 
+# # Définir fonction : Graphe Sensibilité, Spécificité, F1-Score
+# SenSpeF1plot <- function(fcn_tuneresult, fcn_n){
+#    fcn_tuneresult %>%
+#       ggplot(aes_string(x = "Marge", y = names(fcn_tuneresult)[fcn_n])) + #aes_string permet d'utiliser des chaînes au lieu de noms de variables
+#       geom_point() +
+#       theme_bw()
+# }
+# 
+# # Graphe paramètres réglages monocritères
+# l <- ncol(tuning_mono)
+# for (n in 2:l){         # Ne pas tracer la première colonne, c'est l'axe des x
+#    plot <- SenSpeF1plot(tuning_mono, n)
+#    plotname <- paste0("SCtune", names(tuning_mono)[n])   # Concaténer "SCtune" avec nom colonne
+#    assign(plotname, plot)     # Attribuer le graphe au nom SCtune_colonne
+# }
+# 
+# # Graphe paramètres réglages bicritères
+# l <- ncol(dual_crit_tune)
+# for (n in 2:l){         # Ne pas tracer la première colonne, c'est l'axe des x
+#    plot <- SenSpeF1plot(dual_crit_tune, n)
+#    plotname <- paste0("DCtune", names(dual_crit_tune)[n])   # Concaténer "DCtune" avec nom colonne
+#    assign(plotname, plot)     # Attribuer le graphe au nom SCtune_colonne
+# }

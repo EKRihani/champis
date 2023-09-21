@@ -1311,10 +1311,7 @@ La forêt aléatoire de type Rborist a donné des résultats assez similaires, a
 kable(BI_RF_resultat, digits = 4, caption = "Performances des modèles Ranger et Rborist (jeu d'évaluation)") %>%
    kable_styling(latex_options = c("striped", "hold_position"), full_width = F)
 ```
-
 \FloatBarrier
-
-\paragraph*{}
 
 \cleardoublepage
 
@@ -1392,7 +1389,7 @@ L'évaluation finale du modèle ranger donne la matrice de confusion de la table
 
 ```{r FAM-CM, echo = FALSE}
 kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, références en haut)") %>%
-   kable_styling(latex_options = c("striped", "hold_position", "scale_down"),full_width = F) %>%
+   kable_styling(latex_options = c("striped", "hold_position", "scale_down"),full_width = F, font_size = 8) %>%
   row_spec(0, angle = -90) %>%
    landscape()
 ```
@@ -1803,7 +1800,7 @@ zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 
 <!-- \cleardoublepage -->
 
-# Annexe 3\ : Algorithmes d'apprentissage machine
+# Annexe 2\ : Algorithmes d'apprentissage machine
 
 \paragraph*{}
 Nous détaillerons ici principalement les algorithmes utilisés pour le classifieur binaire. Les particularités d'intérêt des classifieurs multiclasses seront évoquées brièvement lors des développements de cette section.
@@ -2207,7 +2204,7 @@ save.image(file = "EKR-Champis-CodeSourceBi.RData")
 \normalsize
 
 \newpage
-# Annexe 4\ : Langage de balisage Rmarkdown
+# Annexe 3\ : Langage de balisage Rmarkdown
 ## Introduction et préparation
 \paragraph*{}
 Rmarkdown est un langage de balisage permettant d'associer les possibilités offertes par R et Latex. Ce langage a été utilisé pour rédiger cette étude, et cette annexe propose d'esquisser les possibilités qu'il offre, en reprenant succinctement la partie décrivant la LDA.
