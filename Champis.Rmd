@@ -27,11 +27,10 @@ csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscr
 ---
 
 ```{r setup, include = FALSE, warning = FALSE}
-load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
 load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
 load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
-load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
+#load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-Naif.RData")            # Chargement des résultats CLASSIFIEUR NAIF
 load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
 load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
