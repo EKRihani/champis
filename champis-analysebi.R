@@ -420,7 +420,23 @@ BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
              BI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
              BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
 
+# Pareto
+BI_mod_Rborist_jwcoef <- data.frame((BI_mod_Rborist_jw$model@trend.coef))
+BI_mod_Rborist_jwcoef$nom <- c("b0", "b1", "b2", "b11", "b22", "b12")
+colnames(BI_mod_Rborist_jwcoef) <- c("valeur", "nom")
+BI_mod_Rborist_jwcoef %>%
+   mutate(nom = fct_reorder(nom, valeur)) %>%
+   ggplot( aes(x=nom, y=valeur)) +
+   geom_segment( aes(xend=nom, yend=0)) +
+   geom_point( size=2) +
+   coord_flip() +
+   xlab("") + ylab("Valeur absolue") +
+   geom_hline(yintercept = 0, color = "black", alpha = .5) +
+   theme_bw()
+
+
 # Erreur de modélisation quadratique
+
 BI_Compar_Rborist <- BI_fit_Rborist_resultats %>% 
    select(c("X1","X2","Jw")) %>%
    mutate(Jw2 = BI_mod_Rborist_jw$model@trend.coef[1] +
