@@ -1,0 +1,79 @@
+---
+lang: fr
+geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
+fontsize: 12pt
+classoption: twoside
+output: 
+  bookdown::pdf_document2: 
+    number_sections: yes
+    extra_dependencies: [""]
+    toc: no
+header-includes:
+   - \linespread{1.15}
+indent: true
+---
+
+```{r setup, include = FALSE, warning = FALSE}
+load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
+
+library(ggpubr)   # Combiner graphes (ggarrange)
+library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
+library(rmarkdown)
+library(knitr)
+library(tidyverse)
+library(bookdown)
+library(magick)
+library(rpart.plot) # Arbres de classification
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+```
+\pagestyle{plain}
+
+\newpage
+# Abréviations et conventions
+
+## Liste des abréviations
+
+
+
+```{r, echo = FALSE, fig.height = 3}
+BI_Rborist_pareto
+```
+
+
+$$
+\left \{
+\begin{array}{l}
+b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
+b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
+b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
+b_{12} = `r round(BI_mod_Rborist_jw$model@trend.coef[6],4)` \\
+b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
+b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
+\end{array}
+\right.$$
+
+\begin{minipage}{0.45 \textwidth}
+blabla
+\end{minipage}
+\begin{minipage}{0.45 \textwidth}
+blibli
+\end{minipage}
+
+\begin{minipage}[t]{0.5\textwidth}
+$$
+\left \{
+\begin{array}{l}
+b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
+b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
+b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
+b_{12} = `r round(BI_mod_Rborist_jw$model@trend.coef[6],4)` \\
+b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
+b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
+\end{array}
+\right.$$
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+```{r, echo = FALSE, fig.height = 3}
+BI_Rborist_pareto
+```
+\end{minipage}
