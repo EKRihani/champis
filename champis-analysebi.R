@@ -421,17 +421,19 @@ BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
              BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
 
 # Pareto
-BI_mod_Rborist_jwcoef <- data.frame((BI_mod_Rborist_jw$model@trend.coef))
-BI_mod_Rborist_jwcoef$nom <- c("b0", "b1", "b2", "b11", "b22", "b12")
+BI_mod_Rborist_jwcoef <- data.frame(abs(BI_mod_Rborist_jw$model@trend.coef))
+BI_mod_Rborist_jwcoef$nom <- c("b0", "X1", "X2", "X1.X1", "X2.2", "X1.X2")
 colnames(BI_mod_Rborist_jwcoef) <- c("valeur", "nom")
 BI_Rborist_pareto <- BI_mod_Rborist_jwcoef %>%
+   filter(nom != "b0") %>%
    mutate(nom = fct_reorder(nom, valeur)) %>%
-   ggplot( aes(x=nom, y=valeur)) +
-   geom_segment( aes(xend=nom, yend=0)) +
-   geom_point( size=2) +
+   ggplot(aes(x=nom, y=valeur)) +
+   ylim(c(0,1)) +
+   geom_segment(aes(xend=nom, yend=0)) +
+   geom_point(size=2) +
    coord_flip() +
    xlab("Coefficient") + ylab("Valeur") +
-   geom_hline(yintercept = 0, color = "black", alpha = .5) +
+#   geom_hline(yintercept = 0, color = "black", alpha = .5) +
    theme_bw()
 
 

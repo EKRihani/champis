@@ -8,6 +8,8 @@ output:
     number_sections: yes
     extra_dependencies: [""]
     toc: no
+    includes:
+      in_header: colonnes.tex
 header-includes:
    - \linespread{1.15}
 indent: true
@@ -34,12 +36,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
 ## Liste des abréviations
 
 
+:::::: {.cols data-latex=""}
 
-```{r, echo = FALSE, fig.height = 3}
-BI_Rborist_pareto
-```
-
-
+::: {.col data-latex="{0.35\textwidth}"}
 $$
 \left \{
 \begin{array}{l}
@@ -51,29 +50,11 @@ b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
 b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \end{array}
 \right.$$
+:::
 
-\begin{minipage}{0.45 \textwidth}
-blabla
-\end{minipage}
-\begin{minipage}{0.45 \textwidth}
-blibli
-\end{minipage}
-
-\begin{minipage}[t]{0.5\textwidth}
-$$
-\left \{
-\begin{array}{l}
-b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
-b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
-b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
-b_{12} = `r round(BI_mod_Rborist_jw$model@trend.coef[6],4)` \\
-b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
-b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
-\end{array}
-\right.$$
-\end{minipage}
-\begin{minipage}[t]{0.5\textwidth}
-```{r, echo = FALSE, fig.height = 3}
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
 BI_Rborist_pareto
 ```
-\end{minipage}
+:::
+::::::
