@@ -4,7 +4,7 @@
 
 # Chargement des bibliothèques et données initiales
 library(tidyverse)    # Outils génériques
-GEN_dataset <- read.csv("ChampiTest.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+GEN_dataset <- read.csv("Champignons.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
 ###### SIMPLIFICATION (à virer une fois appliqué?)
 
@@ -110,7 +110,7 @@ for (n in 1:GEN_n_especes){
 
 GEN_lots_liste <- paste0("lot", GEN_dataset$N)
 
-GEN_n_champis <- 5e1      # Nombre de champignons pour chaque espèce (300?)
+GEN_n_champis <- 1e2      # Nombre de champignons pour chaque espèce (300?)
 GEN_f_crois <- 2          # Facteur de croissance
 #GEN_tailles <- names(GEN_structure[GEN_numeriques[-c(1,2)]])    # Facteurs de taille
 GEN_tailles <- names(GEN_structure[GEN_numeriques])    # Facteurs de taille
@@ -171,27 +171,27 @@ GEN_fichier_data <- "~/projects/champis/lot_champis.zip"
 GEN_fichier_data <- unzip(GEN_fichier_data, "lot_champis.csv")
 GEN_dataset2 <- read.csv(GEN_fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 str(GEN_dataset2)
-summary(GEN_dataset2$Type)
-summary(GEN_dataset2$Hyménophore1)
-summary(GEN_dataset2$Hyménophore2)
-summary(GEN_dataset2$Chair.Type)
-summary(GEN_dataset2$Chair.Couleur)
+#summary(GEN_dataset2$Type)
+#summary(GEN_dataset2$Hymenophore1)
+summary(GEN_dataset2$Hymenophore2)
+#summary(GEN_dataset2$Chair.Type)
+#summary(GEN_dataset2$Chair.Couleur)
 summary(GEN_dataset2$Chapeau.Forme)
 summary(GEN_dataset2$Chapeau.Surface)
-summary(GEN_dataset2$Chapeau.Couleur)
+#summary(GEN_dataset2$Chapeau.Couleur)
 summary(GEN_dataset2$Chapeau.Marge)
-summary(GEN_dataset2$Spore.Couleur)
+#summary(GEN_dataset2$Spore.Couleur)
 summary(GEN_dataset2$Lames.Attache)
 summary(GEN_dataset2$Lames.Espace)
 summary(GEN_dataset2$Lames.Couleur)
 summary(GEN_dataset2$Pied.Forme)
 summary(GEN_dataset2$Pied.Surface)
-summary(GEN_dataset2$Pied.Couleur)
+#summary(GEN_dataset2$Pied.Couleur)
 summary(GEN_dataset2$Habitat)
 summary(GEN_dataset2$Odeur)
-summary(GEN_dataset2$VG.Type)
+#summary(GEN_dataset2$VG.Type)
 summary(GEN_dataset2$VG.Type2)
-summary(GEN_dataset2$VP.Type)
+#summary(GEN_dataset2$VP.Type)
 summary(GEN_dataset2$VP.Type2)
 
 rm(GEN_dataset2, GEN_lot_final, GEN_lot_la_totale)
