@@ -24,7 +24,7 @@ dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = T
 ##############################################################################
 # Suppression Nom/Type + renommage correct
 
-dataset <- dataset %>% select(!Type) %>% select(!Nom)
+dataset <- dataset %>% select(!c(Type, Nom, Groupe))
 
 MULFAM_n_champis <- nrow(dataset)
 MULFAM_split_p <- sqrt(MULFAM_n_champis)
@@ -49,7 +49,7 @@ fit_test <- function(fcn_model){
                            summaryFunction = multiClassSummary, 
                            method = "cv", 
                            number = MULFAM_split_facteur)   # Règle paramètres d'évaluation performance à multiClassSummary (kappa...), avec cross-validation
-   cmd <- paste0("train(Groupe ~ ., method = '",      # Construit commande, évaluation de performance
+   cmd <- paste0("train(Groupe2 ~ ., method = '",      # Construit commande, évaluation de performance
                  fcn_model[1], 
                  "', data = MULFAM_lot_appr_opti, trControl = tr_ctrl, ", 
                  fcn_model[2],")")
@@ -298,7 +298,7 @@ MULFAM_evaluation <- MULFAM_lot_evaluation
 MULFAM_evaluation$reference <- as.factor(MULFAM_evaluation$Groupe)
 
 start_time <- Sys.time()     # Démarre chrono
-cmd <- paste0("train(Groupe ~ ., method = 'ranger', data = MULFAM_lot_appr_opti,", MULFAM_set_ranger_best[2], ")") # Construction de la commande
+cmd <- paste0("train(Groupe2 ~ ., method = 'ranger', data = MULFAM_lot_appr_opti,", MULFAM_set_ranger_best[2], ")") # Construction de la commande
 MULFAM_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULFAM_pred_ranger_final <- predict(object = MULFAM_fit_ranger_final, newdata = MULFAM_lot_evaluation)
 MULFAM_CM_ranger_final <- confusionMatrix(data = MULFAM_pred_ranger_final, reference = MULFAM_lot_evaluation$Groupe)
@@ -308,7 +308,7 @@ MULFAM_temps_ranger <- difftime(end_time, start_time)
 MULFAM_temps_ranger <- MULFAM_temps_ranger %>% as.numeric %>% round(.,2)
 
 start_time <- Sys.time()            # Démarre chrono
-cmd <- paste0("train(Groupe ~ ., method = 'Rborist', data = MULFAM_lot_appr_opti,", MULFAM_set_Rborist_best[2], ")") # Construction de la commande
+cmd <- paste0("train(Groupe2 ~ ., method = 'Rborist', data = MULFAM_lot_appr_opti,", MULFAM_set_Rborist_best[2], ")") # Construction de la commande
 MULFAM_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULFAM_pred_Rborist_final <- predict(object = MULFAM_fit_Rborist_final, newdata = MULFAM_lot_evaluation)
 MULFAM_CM_Rborist_final <- confusionMatrix(data = MULFAM_pred_Rborist_final, reference = MULFAM_lot_evaluation$Groupe)
