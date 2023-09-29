@@ -15,6 +15,7 @@ output:
     toc: yes
     toc_depth: 3
     includes:
+      in_header: colonnes.tex
       before_body: couverture.tex
       after_body: quatrieme.tex
 header-includes:
@@ -472,16 +473,16 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 \paragraph*{}
 En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré un exemple extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces *Iris versicolor* et *Iris setosa*.
 \paragraph*{}
-Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
+Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire en $x_{i}$\ :
 
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
 avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
 \paragraph*{}
 
-$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
-avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre $i$, et
-$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
-avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
+$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
+$\overline{x_{i, n}}$ et $\overline{x_{i, n}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
+$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
+$x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres $p$ et $q$ pour chaque individu $i$.
 \paragraph*{}
 L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd}\ :
 
@@ -519,7 +520,6 @@ En indiçant les facteurs\ :
 * $i = 4$ pour la largeur de pétale  $\ell_{p}$.
 
 Nous pouvons calculer les coefficients\ :
-\paragraph*{}
 $$\left \{
 \begin{array}{l}
 \lambda_{1} = `r iris_Coeffs[1]` \\
@@ -1036,26 +1036,30 @@ Nous pouvons modéliser la réponse Y ($J_{w}$) par un modèle quadratique avec 
 
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de complexité (*cp*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de coût (*Cost*) et $b_{n}$ les coefficients des effets. La modélisation permet de calculer les effets suivants\ :
+\paragraph*{}
+:::::: {.cols data-latex=""}
 
-\begin{minipage}{0.4 \textwidth}
-$$\left \{
+::: {.col data-latex="{0.35\textwidth}"}
+$$
+\left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_rpartcost_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_rpartcost_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_rpartcost_jw$model@trend.coef[3],4)` \\
-\end{array}
-\right.$$
-\end{minipage}
-\begin{minipage}{0.4 \textwidth}
-$$\left \{
-\begin{array}{l}
 b_{12} = `r round(BI_mod_rpartcost_jw$model@trend.coef[6],4)` \\
 b_{11} = `r round(BI_mod_rpartcost_jw$model@trend.coef[4],4)` \\
 b_{22} = `r round(BI_mod_rpartcost_jw$model@trend.coef[5],4)` \\
 \end{array}
 \right.$$
-\end{minipage}
 $$MAE = `r signif(BI_MAE_rpartcost,4)`$$
+:::
+
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+BI_rpartcost_pareto
+```
+:::
+::::::
 
   \paragraph*{}
 Les performances maximales seront ici atteintes pour\ :
@@ -1156,27 +1160,30 @@ $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^
 avec $Y$ l'indice de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
 \paragraph*{}
 Le calcul numérique nous permet d'obtenir les estimations des effets\ :
+\paragraph*{}
+:::::: {.cols data-latex=""}
 
-\begin{minipage}{0.4 \textwidth}
+::: {.col data-latex="{0.35\textwidth}"}
 $$
 \left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
-\end{array}
-\right.$$
-\end{minipage}
-\begin{minipage}{0.4 \textwidth}
-$$\left \{
-\begin{array}{l}
 b_{12} = `r round(BI_mod_Rborist_jw$model@trend.coef[6],4)` \\
 b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
 b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
 \end{array}
 \right.$$
-\end{minipage}
 $$MAE = `r signif(BI_MAE_Rborist,4)`$$
+:::
+
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+BI_Rborist_pareto
+```
+:::
+::::::
 
 \paragraph*{}
 Ce modèle quadratique avec interactions modélise bien les données expérimentales, avec une MAE très basse, et semble également confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice de Youden pondéré ($minNode = `r BI_best_Rboristgrid["minNode"]`$ et $predFixed = `r BI_best_Rboristgrid["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
@@ -1240,22 +1247,17 @@ Avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit associé au para
 \paragraph*{}
 La modélisation permet de calculer les effets suivants\ :
 
-\begin{minipage}{0.4 \textwidth}
-$$\begin{array}{l}
+\paragraph*{}
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.35\textwidth}"}
+$$
 \left \{
 \begin{array}{l}
 b_{0} = `r round(BI_mod_ranger_jw$model@trend.coef[1],4)` \\
 b_{1} = `r round(BI_mod_ranger_jw$model@trend.coef[2],4)` \\
 b_{2} = `r round(BI_mod_ranger_jw$model@trend.coef[3],4)` \\
 b_{3} = `r round(BI_mod_ranger_jw$model@trend.coef[4],4)` \\
-\end{array}
-\right. \\
-\quad MAE = `r signif(BI_MAE_ranger,4)`
-\end{array}$$
-\end{minipage}
-\begin{minipage}{0.4 \textwidth}
-$$\left \{
-\begin{array}{l}
 b_{12} = `r round(BI_mod_ranger_jw$model@trend.coef[7],4)` \\
 b_{23} = `r round(BI_mod_ranger_jw$model@trend.coef[8],4)` \\
 b_{13} = `r round(BI_mod_ranger_jw$model@trend.coef[9],4)` \\
@@ -1263,7 +1265,15 @@ b_{11} = `r round(BI_mod_ranger_jw$model@trend.coef[5],4)` \\
 b_{22} = `r round(BI_mod_ranger_jw$model@trend.coef[6],4)` \\
 \end{array}
 \right.$$
-\end{minipage}
+$$MAE = `r signif(BI_MAE_ranger,4)`$$
+:::
+
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+BI_ranger_pareto
+```
+:::
+::::::
 
 \paragraph*{}
 La modélisation quadratique correspond bien aux données expérimentales, avec une MAE extrêmement basse, et confirme par ailleurs les conclusions que permet l'interprétation graphique, avec $b_{1}\gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_best_rangergrid["min.node.size"]`$, $mtry = `r BI_best_rangergrid["mtry"]`$ et $splitrule = `r BI_best_rangergrid[1,"splitrule"]`$) a donné d'excellents résultats\ :
@@ -2463,7 +2473,7 @@ de classifieur qui sera présenté dans cette section, et illustré avec un exem
 extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces 
 *Iris versicolor* et *Iris setosa*.
 \paragraph*{}
-Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
+Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire en $x_{i}$\ :
 ````
 \normalsize
 
@@ -2480,12 +2490,14 @@ somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la
 variance intraclasse), définis par\ :
 \paragraph*{}
 
-$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
-avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre 
-$i$, et
-$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
-avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque 
-combinaison de paramètres $p$ et $q$.
+$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad 
+d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
+$\overline{x_{i, n}}$ et $\overline{x_{i, n}}$ étant les moyennes respectives 
+de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
+$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} 
+\quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
+$x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres 
+$p$ et $q$ pour chaque individu $i$.
 ````
 \normalsize
 

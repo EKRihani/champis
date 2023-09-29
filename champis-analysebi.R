@@ -224,6 +224,20 @@ BI_modelquad_rpartcost <- BI_modelquad_rpartcost %>%
                BI_mod_rpartcost_jw$model@trend.coef[6]*X1*X2)
 BI_modelquad_rpartcost_top <- BI_modelquad_rpartcost[which.max(BI_modelquad_rpartcost$Jw),]
 
+# Pareto
+BI_mod_rpartcost_jwcoef <- data.frame(abs(BI_mod_rpartcost_jw$model@trend.coef))
+BI_mod_rpartcost_jwcoef$nom <- c("b0", "X1", "X2", "X1.X1", "X2.X2", "X1.X2")
+colnames(BI_mod_rpartcost_jwcoef) <- c("valeur", "nom")
+BI_rpartcost_pareto <- BI_mod_rpartcost_jwcoef %>%
+   mutate(nom = fct_reorder(nom, valeur)) %>%
+   ggplot(aes(x=nom, y=valeur)) +
+   ylim(c(0,NA)) +
+   geom_segment(aes(xend=nom, yend=0)) +
+   geom_point(size=2) +
+   coord_flip() +
+   xlab("Effet") + ylab("Pondération") +
+   theme_bw()
+
 # Erreur de modélisation quadratique
 BI_Compar_rpartcost <- BI_fit_rpartcost_resultats %>% 
    select(c("X1","X2","Jw")) %>%
@@ -336,6 +350,21 @@ BI_modelquad_ranger <- BI_modelquad_ranger %>%
              BI_mod_ranger_jw$model@trend.coef[8]*X2*X3 +
              BI_mod_ranger_jw$model@trend.coef[9]*X1*X3)
 
+# Pareto
+BI_mod_ranger_jwcoef <- data.frame(abs(BI_mod_ranger_jw$model@trend.coef))
+BI_mod_ranger_jwcoef$nom <- c("b0", "X1", "X2", "X3", "X1.X1", "X2.X2", "X1.X2", "X2.X3", "X1.X3")
+colnames(BI_mod_ranger_jwcoef) <- c("valeur", "nom")
+BI_ranger_pareto <- BI_mod_ranger_jwcoef %>%
+   #   filter(nom != "b0") %>%
+   mutate(nom = fct_reorder(nom, valeur)) %>%
+   ggplot(aes(x=nom, y=valeur)) +
+   ylim(c(0,NA)) +
+   geom_segment(aes(xend=nom, yend=0)) +
+   geom_point(size=2) +
+   coord_flip() +
+   xlab("Effet") + ylab("Pondération") +
+   theme_bw()
+
 # Erreur de modélisation quadratique
 BI_Compar_ranger <- BI_fit_ranger_resultats %>%
    select(c("X1","X2","X3","Jw")) %>%
@@ -422,23 +451,20 @@ BI_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 17),
 
 # Pareto
 BI_mod_Rborist_jwcoef <- data.frame(abs(BI_mod_Rborist_jw$model@trend.coef))
-BI_mod_Rborist_jwcoef$nom <- c("b0", "X1", "X2", "X1.X1", "X2.2", "X1.X2")
+BI_mod_Rborist_jwcoef$nom <- c("b0", "X1", "X2", "X1.X1", "X2.X2", "X1.X2")
 colnames(BI_mod_Rborist_jwcoef) <- c("valeur", "nom")
 BI_Rborist_pareto <- BI_mod_Rborist_jwcoef %>%
-   filter(nom != "b0") %>%
+#   filter(nom != "b0") %>%
    mutate(nom = fct_reorder(nom, valeur)) %>%
    ggplot(aes(x=nom, y=valeur)) +
-   ylim(c(0,1)) +
+   ylim(c(0,NA)) +
    geom_segment(aes(xend=nom, yend=0)) +
    geom_point(size=2) +
    coord_flip() +
-   xlab("Coefficient") + ylab("Valeur") +
-#   geom_hline(yintercept = 0, color = "black", alpha = .5) +
+   xlab("Effet") + ylab("Pondération") +
    theme_bw()
 
-
 # Erreur de modélisation quadratique
-
 BI_Compar_Rborist <- BI_fit_Rborist_resultats %>% 
    select(c("X1","X2","Jw")) %>%
    mutate(Jw2 = BI_mod_Rborist_jw$model@trend.coef[1] +

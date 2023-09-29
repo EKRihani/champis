@@ -46,16 +46,15 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
 \paragraph*{}
 En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré avec un exemple extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces *Iris versicolor* et *Iris setosa*.
 \paragraph*{}
-Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire\ :
+Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire en $x_{i}$\ :
 
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
 avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
 \paragraph*{}
-
-$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i}$$
-avec $d_{i}$ la différence des caractéristiques moyennes pour chaque paramètre $i$, et
-$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq}$$
-avec $S_{pq}$ la somme des produits des caractéristiques intraclasses pour chaque combinaison de paramètres $p$ et $q$.
+$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
+$\overline{x_{i, n}}$ et $\overline{x_{i, n}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
+$$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
+$x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres $p$ et $q$ pour chaque individu $i$.
 \paragraph*{}
 L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:RMD-LDA-TableMoy} et \ref{tab:RMD-LDA-TableProd}\ :
 
