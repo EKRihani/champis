@@ -113,9 +113,9 @@ YAML\ : *YAML Ain't Markup Language* (YAML n'est pas un langage de balisage)
 \paragraph*{}
 L'identification des macromycètes, c'est à dire des champignons visibles à l'\oe{}il nu est un sujet difficile, ne devant évidemment pas être pris à la légère. Les espèces rencontrées varient considérablement d'un écosystème à un autre, d'un continent à un autre, et aucun lot de données ni ouvrage sur les champignons ne saurait couvrir toute la diversité du monde fongique.
 \paragraph*{}
-Le lot de données mycologiques constitué dans cette étude, bien que constituant l'un des lots en libre accès les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
+Le lot de données mycologiques créé dans cette étude, bien que constituant l'un des lots les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
 \paragraph*{}
-Ce lot se concentre exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *psilocybe*, connus pour leurs propriétés psychédéliques. Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon\ : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).[@courtecuisse_initiation_2020]
+Ce lot se concentrera exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *psilocybe*, connus pour leurs propriétés psychédéliques. Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon\ : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).[@courtecuisse_initiation_2020]
 \paragraph*{}
 L'ingestion de certains de ces champignons est *mortelle*, même en faible quantité. Le diagnostic de l'intoxication fongique peut être difficile, et parfois trop tardif pour un traitement efficace. Des composés toxiques tels que les amanitines ne sont pas altérés ou détruits par cuisson ou congélation, et seront absorbés par l'intestin, avant de passer dans la circulation sanguine afin d'être filtrés par le foie, détruisant les cellules hépatiques, puis excrétées dans l'intestin, réabsorbées, refiltrées... chaque passe détruisant les cellules hépatiques ayant survécu à la précédente, dans un cycle connu sous le nom de réabsorption hépato-entérique.[@courtecuisse_champignons_2013]
 \paragraph*{}
@@ -145,6 +145,11 @@ Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@w
 Ce lot de données inclut `r DATA_n_Wagner` spécimens et apporte une rationalisation des variables du lot précédent, se limitant ainsi à  `r DATA_quali_Wagner` variables qualitatives, et y ajoute `r DATA_quanti_Wagner` variables quantitatives apportant des caractéristiques dimensionnelles.
 \paragraph*{}
 Des bases de données dédiées à la mycologie sont également disponibles,[@noauthor_fongifrance_nodate; @noauthor_mycodb_nodate] mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
+\paragraph*{}
+Ces lots de données présentent un intérêt certain pour le mycologue comme pour le *data sciencist*. Toutefois, nous choisissons ici de créer un lot de données dédié à cette étude, afin de :
+* Détailler et mettre en \oe{}uvre des stratégies et méthodes de création de lots de données synthétiques, dont l'intérêt et les applications s'étendent bien au delà du domaine de la mycologie,
+* Intégrer des données représentatives d'une fonge d'intérêt local, ici celle du nord de la France,
+* Proposer un lot de données plus vaste que les lots existants, tant en variété d'espèces qu'en nombre de spécimens.
 
 \cleardoublepage
 # Création du lot de données
@@ -342,7 +347,7 @@ plot(densite2d)
 ```
 
 \paragraph*{}
-Une simulation de Monte Carlo unidimensionnelle effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (voir figure \ref{fig:HorsNormes}). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
+Une simulation de Monte Carlo unidimensionnelle\footnote{En pratique, la méthode de Monte Carlo consiste ici à générer un grand nombre de champignons, puis à dénombrer ceux répondant aux critères d'intérêt, ici ceux ayant des dimensions dépassant les valeurs maximales usuelles.} effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (voir figure \ref{fig:HorsNormes}). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
 \paragraph*{}
 
 ```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
@@ -355,7 +360,7 @@ plot(distrib_diametre)
 \paragraph*{}
 La génération des paramètres qualitatifs, tels que la couleur des spores ou le type d'hyménophore, est nettement moins complexe que celle des paramètres quantitatifs.
 \paragraph*{}
-L'ensemble des valeurs quantitatives possibles pour un critère et pour une variété donnés est inséré dans un vecteur de valeurs. Une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question, et ce, pour chaque spécimen.
+L'ensemble des valeurs qualitatives possibles pour un critère et pour une variété donnés est inséré dans un vecteur de valeurs. Une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question, et ce, pour chaque spécimen.
 \paragraph*{}
 Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. (cf. annexes, p. \pageref{ANNEXErares})
 \paragraph*{}
@@ -375,7 +380,7 @@ En pratique, ce domaine se consacre à la génération d’algorithmes autonomes
 
 L’apprentissage machine peut se dérouler suivant un certain nombre de paradigmes, concernant en particulier la stratégie d’apprentissage -- définie à partir du type de données disponibles -- parmi lesquels nous pouvons notamment citer\ :[@bironneau_machine_2019;@amr_hands-machine_2020;@journal_officiel_de_la_republique_francaise_vocabulaire_2018]
 
-* Apprentissage machine supervisé\ : les données du problème sont disponibles sous forme de couples exemple-annotation. Chaque point de données possède des caractéristiques (covariables) et une annotation. Le principe de cet apprentissage est donc de générer une application liant les vecteurs des entrées (covariables) et une variable de sortie (annotation). L’apprentissage machine supervisé permet également de mesurer les performances du modèle obtenu.
+* Apprentissage machine supervisé\ : les données du problème sont disponibles sous forme de couples exemple-annotation. Chaque point de données possède des caractéristiques (covariables) et une annotation. Le principe de cet apprentissage est donc de générer une application liant les vecteurs des entrées (covariables) et une variable de sortie (annotation, ou étiquette). L’apprentissage machine supervisé permet également de mesurer les performances du modèle obtenu.
 * Apprentissage machine semi-supervisé\ : les données du problème contiennent une petite quantité de données annotées, associée avec une grande quantité de données non annotées. La présence de cette grande quantité de données non-annotées peut apporter une amélioration considérable de la précision des prédictions par rapport à l’utilisation d’un seul lot de données annotées de plus petite taille.
 * Apprentissage machine non supervisé\ : les données ne sont pas annotées. Ce paradigme permet d’acquérir une connaissance concise de la structure du lot de données, notamment par des méthodes de partitionnement des données (*clustering*), de réduction de dimensionalité ou de réseaux neuronaux. Il peut notamment être utilisé pour l’analyse exploratoire de données ou pour diminuer la quantité de données fournie à des algorithmes supervisés afin d'augmenter l'efficience calculatoire du système.
 
@@ -538,7 +543,7 @@ $$ X = L_{s} + `r round(iris_CoeffsNorm[2],3)`.\ell_{s} `r round(iris_CoeffsNorm
 
 Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_{ver.}} +\overline{X_{set.}}}{2}$$
 \paragraph*{}
-Avec $\overline{X_{ver.}}$ et $\overline{X_{set.}}$ les moyennes respectives des $X$ pour *Iris setosa* et *Iris versicolor*.
+Avec $\overline{X_{set.}}$ et $\overline{X_{ver.}}$ les moyennes respectives des $X$ pour *Iris setosa* et *Iris versicolor*.
 \paragraph*{}
 La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
 <!-- Ajouter petit paragraphe explicatif -->
@@ -683,11 +688,11 @@ En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pou
 
 Bien que les algorithmes de type forêts aléatoires soient des outils particulièrement performants, ils ont toutefois quelques limites, la principale étant la relative opacité du modèle obtenu, assimilable à une véritable "boîte noire", et donc inadapté en tant qu'outil descriptif permettant d'acquérir une meilleure compréhension des données.
 
-## Optimisation par plans d'expérience {#chapitre:doe}
+## Optimisation par plans d'expériences {#chapitre:doe}
 
-Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afin d'obtenir des performances maximales. Cette optimisation relève du domaine des plans d'expérience (*DOE\ : Design Of Experiments*). De nombreux plans et stratégies sont envisageables, le choix dépendant en partie des caractéristiques du processus à optimiser.
+Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afin d'obtenir des performances maximales. Cette optimisation relève du domaine des plans d'expériences (*DOE\ : Design Of Experiments*). De nombreux plans et stratégies sont envisageables, le choix dépendant en partie des caractéristiques du processus à optimiser.
 \paragraph*{}
-En effet, l'optimisation des paramètres d'un modèle informatique présente quelques particularités notables ayant un impact sur l'utilisation des plans d'expérience\ :
+En effet, l'optimisation des paramètres d'un modèle informatique présente quelques particularités notables ayant un impact sur l'utilisation des plans d'expériences\ :
 
 * La réalisation d'une expérience supplémentaire a un coût faible,
 * Plusieurs métriques relatives aux performances peuvent coexister,\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}}
@@ -789,7 +794,7 @@ Malgré la simplicité apparente du critère binaire, la comestibilité ou la no
 
 * Champignons particulièrement réputés pour leurs qualités gustatives,
 * Champignons réputés comestibles,
-* Champignons comestibles après cuisson,
+* Champignons comestibles après cuisson (morilles, *morchella* spp.),
 * Champignons non-toxiques, mais à la comestibilité médiocre en raison de leur amertume (bolet de fiel, *Tylopilus Felleus*), de leur piquant (lactaire poivré, *Lactarius piperatus*)...
 * Champignons dont la toxicité se manifeste à partir d'une certaine quantité consommée,
 * Champignons toxiques, avec des syndromes de sévérité variée,
@@ -956,7 +961,7 @@ Spe \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Spec"], BI_fit_pda_lambd
 \right.$$
 
 \paragraph*{}
-Ces performances prédictives perfectibles, car assez comparables à celles d'un modèle naïf bidimensionnel, s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classifications, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
+Ces performances prédictives perfectibles, car assez comparables à celles d'un modèle naïf bidimensionnel, s'expliquent par le fonctionnement même des modèles d'analyse discriminante qui, s'ils peuvent analyser des données qualitatives à fins de classification, ne peuvent le faire que si une quantification sous-jacente est possible, par exemple\ :
 
 * Données binaires ou booléennes,
 * Données qualitatives ordinales.
@@ -1980,7 +1985,7 @@ plot(BI_fit_rpart_cp_graphe)
 
 ### Rborist
 
-La première étape est, comme précédemment, de définir l'espace expérimental. Ici, s'agissant d'un modèle à plusieurs hyperparamètres, l'algorithme utilisera un plan d'expériences basé sur les hypercubes latins. La fonction \verb|nolhDesign| permet de créer un hypercube latin quasi-orthogonal (NOLH\ : *Near Orthogonal Latin Hypercube*), ici paramétré avec 2 dimensions, dans l'espace $[0;1]^{2}$. Le plan d'expérience en est extrait, puis inséré dans un objet de type *dataframe*, avec colonnes nommées d'après nos variables réduites $X_{1}$ et $X_{2}$.
+La première étape est, comme précédemment, de définir l'espace expérimental. Ici, s'agissant d'un modèle à plusieurs hyperparamètres, l'algorithme utilisera un plan d'expériences basé sur les hypercubes latins. La fonction \verb|nolhDesign| permet de créer un hypercube latin quasi-orthogonal (NOLH\ : *Near Orthogonal Latin Hypercube*), ici paramétré avec 2 dimensions, dans l'espace $[0;1]^{2}$. Le plan d'expériences en est extrait, puis inséré dans un objet de type *dataframe*, avec colonnes nommées d'après nos variables réduites $X_{1}$ et $X_{2}$.
 
 \small
 ```{r, eval = FALSE}
