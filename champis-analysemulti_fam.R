@@ -194,15 +194,11 @@ MULFAM_MAE_ranger <-  MAE(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa
 MULFAM_R2_ranger <- cor(MULFAM_Compar_ranger$Kappa, MULFAM_Compar_ranger$Kappa2)^2
 MULFAM_corr_ranger <- cor(x = MULFAM_Compar_ranger$Kappa, y = MULFAM_Compar_ranger$Kappa2, method = "spearman")
 
-#MULFAM_best_ranger <- which.max(MULFAM_fit_ranger_resultats$Kappa)
-#MULFAM_best_rangergrid <- data.frame(mtry = MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$mtry, min.node.size =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$min.node.size, splitrule =MULFAM_fit_ranger_resultats[MULFAM_best_ranger,]$splitrule)
-
 # Graphiques 2D
 MULFAM_fit_ranger_Gini_kappa_graphe <- graphe2D("MULFAM_pred_ranger_GINI", "MULFAM_fit_ranger_GINI", "mtry", "min.node.size", "Kappa", "F")
 MULFAM_fit_ranger_Gini_accu_graphe <- graphe2D("MULFAM_pred_ranger_GINI", "MULFAM_fit_ranger_GINI", "mtry", "min.node.size", "Accuracy", "G")
 MULFAM_fit_ranger_ET_kappa_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fit_ranger_ET", "mtry", "min.node.size", "Kappa", "F")
 MULFAM_fit_ranger_ET_accu_graphe <- graphe2D("MULFAM_pred_ranger_ET", "MULFAM_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
-
 
 # Lance modèle RANGER optimal
 MULFAM_best_rangergrid <- MULFAM_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
@@ -273,18 +269,12 @@ MULFAM_MAE_Rborist <-  MAE(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Ka
 MULFAM_R2_Rborist <- cor(MULFAM_Compar_Rborist$Kappa, MULFAM_Compar_Rborist$Kappa2)^2
 MULFAM_corr_Rborist <- cor(x = MULFAM_Compar_Rborist$Kappa, y = MULFAM_Compar_Rborist$Kappa2, method = "spearman")
 
-MULFAM_best_Rboristgrid <- MULFAM_modelquad_Rborist %>% filter(Kappa == max(Kappa)) %>% select(c("predFixed", "minNode"))
-MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristgrid"))
-MULFAM_fit_Rborist_best <- fit_test(MULFAM_set_Rborist_best)
-MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results
-
-
 # Graphiques 2D
 MULFAM_fit_Rborist_kappa_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
 MULFAM_fit_Rborist_accu_graphe <- graphe2D("MULFAM_pred_Rborist", "MULFAM_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")
 
-
 # Lance modèle RBORIST optimal
+MULFAM_best_Rboristgrid <- MULFAM_modelquad_Rborist %>% filter(Kappa == max(Kappa)) %>% select(c("predFixed", "minNode"))
 MULFAM_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULFAM_best_Rboristgrid, ntrees = 2"))
 MULFAM_fit_Rborist_best <- fit_test(MULFAM_set_Rborist_best)
 MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results

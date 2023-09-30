@@ -24,8 +24,9 @@ dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = T
 ##############################################################################
 
 # Suppression des variables inutiles et reformatage des noms
-dataset <- dataset  select(!c(Type, Groupe, Groupe2)) # La comestibilité et le groupe sont censés être inconnus..
-dataset$Nom <- str_replace_all(string = dataset$Nom, pattern = " ", replacement = "_")
+dataset <- dataset %>% select(!c(Type, Groupe, Groupe2)) # La comestibilité et le groupe sont censés être inconnus..
+dataset$Nom <- make.names(dataset$Nom)
+#dataset$Nom <- str_replace_all(string = dataset$Nom, pattern = " ", replacement = "_")
 dataset$Nom <- as.factor(dataset$Nom)
 
 MULESP_n_champis <- nrow(dataset)
@@ -207,14 +208,14 @@ MULESP_fit_ranger_ET_kappa_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_f
 MULESP_fit_ranger_ET_accu_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
 
 # Lance modèle RANGER optimal
-MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
+MULESP_best_ranger <- MULESP_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
+MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangerQ, num.trees = 6"))
 MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
 MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
 
-MULESP_best_rangerQ <- MULESP_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
-MULESP_set_ranger_bestQ <- c("ranger", paste0("tuneGrid  = MULESP_best_rangerQ, num.trees = 6"))
-MULESP_fit_ranger_bestQ <- fit_test(MULESP_set_ranger_bestQ)
-MULESP_fit_ranger_bestQ_resultats <- MULESP_fit_ranger_best$results
+# MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
+# MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
+# MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
 
 ### RBORIST ###
 MULESP_grid_Rborist <- data.frame(MULESP_LHS) %>%
@@ -278,18 +279,22 @@ MULESP_R2_Rborist <- cor(MULESP_Compar_Rborist$Kappa, MULESP_Compar_Rborist$Kapp
 MULESP_corr_Rborist <- cor(x = MULESP_Compar_Rborist$Kappa, y = MULESP_Compar_Rborist$Kappa2, method = "spearman")
 
 
-MULESP_best_Rborist <- which.max(MULESP_fit_Rborist_resultats$Kappa)
-MULESP_best_Rboristgrid <- data.frame(predFixed = MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$predFixed, minNode =MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$minNode)
-
 # Graphiques 2D
 MULESP_fit_Rborist_kappa_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Kappa", "F")     # A,B,D,F,G
 MULESP_fit_Rborist_accu_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rborist_resultats", "predFixed", "minNode", "Accuracy", "G")
 
 
 # Lance modèle RBORIST optimal
-MULESP_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULESP_best_Rboristgrid, ntrees = 2"))
+MULESP_best_Rborist <- MULESP_modelquad_Rborist %>% filter(Kappa == max(Kappa)) %>% select(c("predFixed", "minNode"))
+MULESP_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULESP_best_Rborist, ntrees = 2"))
 MULESP_fit_Rborist_best <- fit_test(MULESP_set_Rborist_best)
 MULESP_fit_Rborist_best_resultats <- MULESP_fit_Rborist_best$results
+
+# MULESP_best_Rborist <- which.max(MULESP_fit_Rborist_resultats$Kappa)
+# MULESP_best_Rboristgrid <- data.frame(predFixed = MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$predFixed, minNode =MULESP_fit_Rborist_resultats[MULESP_best_Rborist,]$minNode)
+# MULESP_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULESP_best_Rboristgrid, ntrees = 2"))
+# MULESP_fit_Rborist_best <- fit_test(MULESP_set_Rborist_best)
+# MULESP_fit_Rborist_best_resultats <- MULESP_fit_Rborist_best$results
 
 #########################################################
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
