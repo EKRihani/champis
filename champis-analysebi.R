@@ -64,15 +64,16 @@ fit_test <- function(fcn_modele){
 
 
 # Définition de fonction : graphique 2D
-graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
-   cmd <- paste0(fcn_donnees, " %>% ggplot() +
-   geom_raster(data =", fcn_donnees, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), interpolate = TRUE) +
-   geom_tile(data =", fcn_modele, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), color = 'black', linewidth =.5) +
+graphe2D <- function(fcn_modele, fcn_donnees, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
+   cmd <- paste0(fcn_modele, " %>% ggplot() +
+   geom_raster(data =", fcn_modele, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =pmax(pmin(", fcn_metrique, ",1),0) ), interpolate = TRUE) +
+   geom_tile(data =", fcn_donnees, ", aes(x =", fcn_x, ", y =", fcn_y, ", fill =", fcn_metrique, "), color = 'black', linewidth =.5) +
    scale_fill_viridis_c(option ='" , fcn_couleur, "', direction = 1) +
    theme_bw() +
    theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(legend.position='bottom') + 
-   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0))"
+   theme(legend.text = element_text(angle = -45, vjust = 1, hjust = 0)) +
+   labs(fill = '",fcn_metrique,"')"
    )
    eval(parse(text = cmd))
 }
