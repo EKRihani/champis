@@ -184,6 +184,21 @@ MULESP_modelquad_ranger <- MULESP_modelquad_ranger %>%
              MULESP_mod_ranger_kappa$model@trend.coef[8]*X2*X3 +
              MULESP_mod_ranger_kappa$model@trend.coef[9]*X1*X3)
 
+# Pareto
+MULESP_mod_ranger_kappacoef <- data.frame(abs(MULESP_mod_ranger_kappaN$model@trend.coef))
+MULESP_mod_ranger_kappacoef$nom <- c("b0", "X1", "X2", "X3", "X1.X1", "X2.X2", "X1.X2", "X2.X3", "X1.X3")
+colnames(MULESP_mod_ranger_kappacoef) <- c("valeur", "nom")
+MULESP_ranger_pareto <- MULESP_mod_ranger_kappacoef %>%
+   #   filter(nom != "b0") %>%
+   mutate(nom = fct_reorder(nom, valeur)) %>%
+   ggplot(aes(x=nom, y=valeur)) +
+   ylim(c(0,NA)) +
+   geom_segment(aes(xend=nom, yend=0)) +
+   geom_point(size=2) +
+   coord_flip() +
+   xlab("Effet") + ylab("Pondération") +
+   theme_bw()
+
 # Erreur de modélisation quadratique
 MULESP_Compar_ranger <- MULESP_fit_ranger_resultats %>%
    select(c("X1","X2","X3","Kappa")) %>%
@@ -263,6 +278,21 @@ MULESP_modelquad_Rborist <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 
              MULESP_mod_Rborist_kappaN$model@trend.coef[4]*X1^2 +
              MULESP_mod_Rborist_kappaN$model@trend.coef[5]*X2^2 +
              MULESP_mod_Rborist_kappaN$model@trend.coef[6]*X1*X2)
+
+# Pareto
+MULESP_mod_Rborist_kappacoef <- data.frame(abs(MULESP_mod_Rborist_kappaN$model@trend.coef))
+MULESP_mod_Rborist_kappacoef$nom <- c("b0", "X1", "X2", "X1.X1", "X2.X2", "X1.X2")
+colnames(MULESP_mod_Rborist_kappacoef) <- c("valeur", "nom")
+MULESP_Rborist_pareto <- MULESP_mod_Rborist_kappacoef %>%
+   #   filter(nom != "b0") %>%
+   mutate(nom = fct_reorder(nom, valeur)) %>%
+   ggplot(aes(x=nom, y=valeur)) +
+   ylim(c(0,NA)) +
+   geom_segment(aes(xend=nom, yend=0)) +
+   geom_point(size=2) +
+   coord_flip() +
+   xlab("Effet") + ylab("Pondération") +
+   theme_bw()
 
 # Erreur de modélisation quadratique
 MULESP_Compar_Rborist <- MULESP_fit_Rborist_resultats %>% 

@@ -1367,19 +1367,85 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-Après optimisation des hyperparamètres (*min.node.size* = `r MULFAM_best_rangergrid$min.node.size`, *mtry* = `r MULFAM_best_rangergrid$mtry` et *splitrule* = `r MULFAM_best_rangergrid$splitrule`), ce modèle a donné d'excellents résultats.
+Comme précédemment, nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ :
+$$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
+Avec Y le kappa, $X_{1}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{2}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets.
+\paragraph*{}
+Cette modélisation permet de calculer les effets suivants\ :
+\paragraph*{}
+:::::: {.cols data-latex=""}
 
+::: {.col data-latex="{0.35\textwidth}"}
+$$
+\left \{
+\begin{array}{l}
+b_{0} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[1],4)` \\
+b_{1} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[2],4)` \\
+b_{2} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[3],4)` \\
+b_{3} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[4],4)` \\
+b_{12} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[7],4)` \\
+b_{23} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[8],4)` \\
+b_{13} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[9],4)` \\
+b_{11} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[5],4)` \\
+b_{22} = `r round(MULFAM_mod_ranger_kappaN$model@trend.coef[6],4)` \\
+\end{array}
+\right.$$
+$$MAE = `r signif(MULFAM_MAE_ranger,4)`$$
+:::
+
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+MULFAM_ranger_pareto
+```
+:::
+::::::
+
+\paragraph*{}
+Après optimisation des hyperparamètres, ce modèle a donné d'excellents résultats.
+\paragraph*{}
 ```{r, echo = FALSE}
 kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
 \paragraph*{}
-Le dernier modèle de forêt aléatoire est Rborist.
+Le dernier modèle de forêt aléatoire est Rborist. Ce modèle présente lui aussi des performances excellentes sur une large plage d'hyperparamètres.
+\FloatBarrier
 
 ```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
+\FloatBarrier
+\paragraph*{}
+Comme lors de la classification binaire, nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
+$$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
+avec $Y$ le kappa, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
+\paragraph*{}
+Le calcul numérique nous permet d'obtenir les estimations des effets\ :
+\paragraph*{}
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.35\textwidth}"}
+$$
+\left \{
+\begin{array}{l}
+b_{0} = `r round(MULFAM_mod_Rborist_kappaN$model@trend.coef[1],4)` \\
+b_{1} = `r round(MULFAM_mod_Rborist_kappaN$model@trend.coef[2],4)` \\
+b_{2} = `r round(MULFAM_mod_Rborist_kappaN$model@trend.coef[3],4)` \\
+b_{12} = `r round(MULFAM_mod_Rborist_kappaN$model@trend.coef[6],4)` \\
+b_{11} = `r round(MULFAM_mod_Rborist_kappaN$model@trend.coef[4],4)` \\
+b_{22} = `r round(MULFAM_mod_Rborist_kappaN$model@trend.coef[5],4)` \\
+\end{array}
+\right.$$
+$$MAE = `r signif(MULFAM_MAE_Rborist,4)`$$
+:::
+
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+MULFAM_Rborist_pareto
+```
+:::
+::::::
 
 \paragraph*{}
 La performance estimée sous hyperparamètres optimaux (*predFixed* = `r MULFAM_best_Rboristgrid$predFixed` et *minNode* = `r MULFAM_best_Rboristgrid$minNode`) est synthétisée dans la table \ref{tab:FAM-PerfRborist}.
@@ -1462,6 +1528,38 @@ plot(ggarrange(
 ```
 
 \FloatBarrier
+
+\paragraph*{}
+\paragraph*{}
+Le calcul numérique des coefficients de la modélisation quadratique du kappa en fonction des hyperparamètres nous permet d'obtenir les estimations des effets suivantes\ :
+\paragraph*{}
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.35\textwidth}"}
+$$
+\left \{
+\begin{array}{l}
+b_{0} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[1],4)` \\
+b_{1} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[2],4)` \\
+b_{2} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[3],4)` \\
+b_{3} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[4],4)` \\
+b_{12} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[7],4)` \\
+b_{23} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[8],4)` \\
+b_{13} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[9],4)` \\
+b_{11} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[5],4)` \\
+b_{22} = `r round(MULESP_mod_ranger_kappaN$model@trend.coef[6],4)` \\
+\end{array}
+\right.$$
+$$MAE = `r signif(MULESP_MAE_ranger,4)`$$
+:::
+
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+MULESP_ranger_pareto
+```
+:::
+::::::
+
 \paragraph*{}
 Après optimisation des hyperparamètres (*min.node.size* = `r MULESP_best_rangergrid$min.node.size`, *mtry* = `r MULESP_best_rangergrid$mtry` et *splitrule* = `r MULESP_best_rangergrid$splitrule`), ce modèle a donné, comme lors des tests précédents, d'excellents résultats, malgré la complexité accrue du problème.
 \FloatBarrier
@@ -1477,6 +1575,33 @@ Le dernier modèle de forêt aléatoire exploité dans cette tâche de classific
 ```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULESP_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
+
+\paragraph*{}
+Comme précédemment, le calcul numérique permet d'estimer les effets des hyperparamètres\ :
+\paragraph*{}
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.35\textwidth}"}
+$$
+\left \{
+\begin{array}{l}
+b_{0} = `r round(MULESP_mod_Rborist_kappaN$model@trend.coef[1],4)` \\
+b_{1} = `r round(MULESP_mod_Rborist_kappaN$model@trend.coef[2],4)` \\
+b_{2} = `r round(MULESP_mod_Rborist_kappaN$model@trend.coef[3],4)` \\
+b_{12} = `r round(MULESP_mod_Rborist_kappaN$model@trend.coef[6],4)` \\
+b_{11} = `r round(MULESP_mod_Rborist_kappaN$model@trend.coef[4],4)` \\
+b_{22} = `r round(MULESP_mod_Rborist_kappaN$model@trend.coef[5],4)` \\
+\end{array}
+\right.$$
+$$MAE = `r signif(MULESP_MAE_Rborist,4)`$$
+:::
+
+::: {.col data-latex="{0.65\textwidth}"}
+```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+MULESP_Rborist_pareto
+```
+:::
+::::::
 
 \paragraph*{}
 Avec des paramètres optimaux (*predFixed* = `r MULESP_best_Rboristgrid$predFixed` et *minNode* = `r MULESP_best_Rboristgrid$minNode`), la performance est estimée à\ :
