@@ -165,9 +165,6 @@ MULESP_pred_ranger_GINI <- MULESP_pred_ranger %>% filter(splitrule == "gini")
 MULESP_fit_ranger_ET <- MULESP_fit_ranger$results %>% filter(splitrule == "extratrees")
 MULESP_fit_ranger_GINI <- MULESP_fit_ranger$results %>% filter(splitrule == "gini")
 
-MULESP_best_ranger <- which.max(MULESP_fit_ranger_resultats$Kappa)
-MULESP_best_rangergrid <- data.frame(mtry = MULESP_fit_ranger_resultats[MULESP_best_ranger,]$mtry, min.node.size =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$min.node.size, splitrule =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$splitrule)
-
 # Optimisation quadratique
 MULESP_modelquad_ranger <- expand.grid(X1 = seq(from = 0, to = 1, length.out = 49), X2 = seq(from = 0, to = 1, length.out = 33), X3 = c(0,1))
 MULESP_modelquad_ranger <- MULESP_modelquad_ranger %>% 
@@ -223,11 +220,13 @@ MULESP_fit_ranger_ET_kappa_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_f
 MULESP_fit_ranger_ET_accu_graphe <- graphe2D("MULESP_pred_ranger_ET", "MULESP_fit_ranger_ET", "mtry", "min.node.size", "Accuracy", "G")
 
 # Lance modèle RANGER optimal
-MULESP_best_ranger <- MULESP_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
-MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangerQ, num.trees = 6"))
+MULESP_best_rangergrid <- MULESP_modelquad_ranger %>% filter(kappa == max(kappa)) %>% select(c("mtry", "min.node.size", "splitrule"))
+MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
 MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
 MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
 
+#MULESP_best_ranger <- which.max(MULESP_fit_ranger_resultats$Kappa)
+#MULESP_best_rangergrid <- data.frame(mtry = MULESP_fit_ranger_resultats[MULESP_best_ranger,]$mtry, min.node.size =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$min.node.size, splitrule =MULESP_fit_ranger_resultats[MULESP_best_ranger,]$splitrule)
 # MULESP_set_ranger_best <- c("ranger", paste0("tuneGrid  = MULESP_best_rangergrid, num.trees = 6"))
 # MULESP_fit_ranger_best <- fit_test(MULESP_set_ranger_best)
 # MULESP_fit_ranger_best_resultats <- MULESP_fit_ranger_best$results
@@ -315,8 +314,8 @@ MULESP_fit_Rborist_accu_graphe <- graphe2D("MULESP_pred_Rborist", "MULESP_fit_Rb
 
 
 # Lance modèle RBORIST optimal
-MULESP_best_Rborist <- MULESP_modelquad_Rborist %>% filter(Kappa == max(Kappa)) %>% select(c("predFixed", "minNode"))
-MULESP_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULESP_best_Rborist, ntrees = 2"))
+MULESP_best_Rboristgrid <- MULESP_modelquad_Rborist %>% filter(Kappa == max(Kappa)) %>% select(c("predFixed", "minNode"))
+MULESP_set_Rborist_best <- c("Rborist", paste0("tuneGrid  = MULESP_best_Rboristgrid, ntrees = 2"))
 MULESP_fit_Rborist_best <- fit_test(MULESP_set_Rborist_best)
 MULESP_fit_Rborist_best_resultats <- MULESP_fit_Rborist_best$results
 
@@ -337,25 +336,25 @@ save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")
 
 MULESP_n_eval <- nrow(MULESP_evaluation)
 
-start_time <- Sys.time()     # Démarre chrono
+temps_depart <- Sys.time()     # Démarre chrono
 cmd <- paste0("train(Nom ~ ., method = 'ranger', data = MULESP_lot_appr_opti,", MULESP_set_ranger_best[2], ")") # Construction de la commande
 MULESP_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULESP_pred_ranger_final <- predict(object = MULESP_fit_ranger_final, newdata = MULESP_lot_evaluation)
 MULESP_CM_ranger_final <- confusionMatrix(data = MULESP_pred_ranger_final, reference = MULESP_lot_evaluation$Nom)
 MULESP_resultats_ranger <- c(MULESP_CM_ranger_final$byClass["Accuracy"], MULESP_CM_ranger_final$byClass["Kappa"])
-end_time <- Sys.time()     # Stop chrono
-MULESP_temps_ranger <- difftime(end_time, start_time)
+temps_fin <- Sys.time()     # Stop chrono
+MULESP_temps_ranger <- difftime(temps_fin, temps_depart)
 MULESP_temps_ranger <- MULESP_temps_ranger %>% as.numeric %>% round(.,2)
 save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 
-start_time <- Sys.time()            # Démarre chrono
+temps_depart <- Sys.time()            # Démarre chrono
 cmd <- paste0("train(Nom ~ ., method = 'Rborist', data = MULESP_lot_appr_opti,", MULESP_set_Rborist_best[2], ")") # Construction de la commande
 MULESP_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande
 MULESP_pred_Rborist_final <- predict(object = MULESP_fit_Rborist_final, newdata = MULESP_lot_evaluation)
 MULESP_CM_Rborist_final <- confusionMatrix(data = MULESP_pred_Rborist_final, reference = MULESP_lot_evaluation$Nom)
 MULESP_resultats_Rborist <- c(MULESP_CM_Rborist_final$byClass["Accuracy"], MULESP_CM_Rborist_final$byClass["Kappa"])
-end_time <- Sys.time()              # Stop chrono
-MULESP_temps_Rborist <- difftime(end_time, start_time)
+temps_fin <- Sys.time()              # Stop chrono
+MULESP_temps_Rborist <- difftime(temps_fin, temps_depart)
 MULESP_temps_Rborist <- MULESP_temps_Rborist %>% as.numeric %>% round(.,2)
 save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 

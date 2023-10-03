@@ -80,6 +80,8 @@ LDA\ : *Linear Discriminant Analysis* (analyse linéaire discriminante)
 
 LHS\ : *Latin Hypercube Sample* (échantillonnage par hypercube latin)
 
+MAE\ : *Mean Absolute Error* (erreur absolue moyenne)
+
 ML\ : *Machine Learning* (apprentissage machine)
 
 NOLH\ : *Nearly Orthogonal Latin Hypercube* (hypercube latin quasi orthogonal)
@@ -450,7 +452,7 @@ Comme démontré précédemment, une validation croisée *k-folds* avec $k = `r 
 \FloatBarrier
 
 ## Modèles utilisés
-### Analyses discriminantes {#chapitre:modeles_LDA}
+### Analyses discriminantes {#paragraphe:Modeles_LDA}
 
 \paragraph*{}
 Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (LDA\ : *Linear Discriminant Analysis*).
@@ -576,7 +578,7 @@ Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, so
 
 
 
-### Arbres de décision {#chapitre:modeles_arbres}
+### Arbres de décision {#paragraphe:Modeles_arbres}
 \FloatBarrier
 
 Les arbres de décision sont l'une des formes les plus populaires de représentation des connaissances utilisées dans le *data mining*.[@wu_top_2009] Une des raisons de cette popularité est que les modèles obtenus sont généralement considérés comme performants, et que l'apprentissage comme les prédictions sont aisément compréhensibles, contrairement à certaines approches dont la complexité peut les rapprocher de modèles assimilables à des boîtes noires.[@rokach_data_2015]
@@ -592,7 +594,7 @@ Le fonctionnement de l'arbre de décision s'articule donc sur une succession de 
 Les tests des arbres de décision peuvent être\ :
 
 * Univariés, usuellement sous forme de test d'inégalité de type $x_{i} < S$ avec $x_{i}$ la caractéristique à mesurer et $S$ un seuil permettant la décision. Ce test d'inégalité aboutit typiquement à une bifurcation, mais certains modèles peuvent regrouper plusieurs tests sur une caractéristique unique pour aboutir à une multifurcation.
-* Multivariés, qui exploitent plus d'une caractéristique. Le cas le plus habituel est la scission oblique (*oblique split*), basée sur un hyperplan représentant une combinaison linéaire de caractéristiques. Ce type de test multivarié se rapproche ainsi de la LDA.\footnote{cf. section \ref{chapitre:modeles_LDA}, page \pageref{chapitre:modeles_LDA}}
+* Multivariés, qui exploitent plus d'une caractéristique. Le cas le plus habituel est la scission oblique (*oblique split*), basée sur un hyperplan représentant une combinaison linéaire de caractéristiques. Ce type de test multivarié se rapproche ainsi de la LDA.\footnote{cf. section \ref{paragraphe:Modeles_LDA}, page \pageref{paragraphe:Modeles_LDA}}
 
 \paragraph*{}
 Les différents modèles d'arbres de classification pourront mettre en \oe{}uvre des tests purement univariés (ID3, C4.5, CHAID...), purement obliques (arbres dits *perceptron*) ou autoriser les deux types de tests (arbres CART\ : *Classification And Regression Trees*).[@loh_fifty_2014]
@@ -675,7 +677,7 @@ En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pou
 
 1. Prélever un échantillon bootstrap de taille $n$,
 2. Appliquer un partitionnement récursif sur cet échantillon bootstrap. A chaque n\oe{}ud, sélectionner aléatoirement $q$ prédicteurs parmi  les $p$ (avec $q \ll p$),
-3. Poursuivre le partitionnement récursif jusqu’à la création d’un arbre\footnote{cf. section \ref{chapitre:modeles_arbres}, page \pageref{chapitre:modeles_arbres}}\ : $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q$,
+3. Poursuivre le partitionnement récursif jusqu’à la création d’un arbre\footnote{cf. section \ref{paragraphe:Modeles_arbres}, page \pageref{paragraphe:Modeles_arbres}}\ : $\widehat{h}(., \Theta_{\ell}), 1 \leq \ell \leq q$,
 4. Répéter les étapes précédentes jusqu’à l’obtention d’une forêt, puis agréger les résultats, étape souvent présentée en classification comme le fruit du *vote des arbres*.
 
 \begin{figure}
@@ -728,9 +730,15 @@ Le but des plans expérimentaux de cette étude ne sera pas l'obtention d'une pr
 $$ Y = \beta_{0}  + \sum_{i = 1}^{k} \beta_{i}.X_{i} + \sum_{i <j}^{k} \sum_{j>1}^{k} \beta_{ij}.X_{i}.X_{j} + \sum_{i = 1}^{k} + \beta_{ii}.X_{i}^2 + \varepsilon$$
 avec $\beta_{n}$ les coefficients des effets principaux, $X_{n}$ leurs facteurs réduits et $\varepsilon$ le terme d'erreur.
 \paragraph*{}
-La précision de cette modélisation peut être évaluée par l'erreur absolue moyenne :
+La précision de cette modélisation peut être évaluée par un certain nombre d'indicateurs, parmi lesquels nous retiendrons l'erreur absolue moyenne (MAE : *Mean Absolute Error*), en raison de\ :
+
+* Sa facilité de mise en \oe{}uvre, la MAE ne se basant sur aucune hypothèse et ne nécessitant par conséquent aucun test préalablement à son utilisation,
+* Sa simplicité conceptuelle et d'interprétation, la MAE correspondant très simplement à la moyenne des erreurs.
+
+L'erreur absolue moyenne est donnée par
 $$MAE = \frac{1}{n}.\sum_{i=1}^{n}|y_{i}-\hat{y}_{i}| $$
-avec $n$ le nombre de points expérimentaux, $y_{i}$ la valeur expérimentale et $\hat{y}_{i}$ la valeur prédite de la performance en chaque point $i$ considéré. 
+avec $n$ le nombre de points expérimentaux, $y_{i}$ la valeur expérimentale et $\hat{y}_{i}$ la valeur prédite de la performance en chaque point $i$ considéré.
+\paragraph*{}
 \FloatBarrier
 
 ## Évaluation des performances des modèles {#chapitre:perf}
@@ -864,7 +872,7 @@ Nous choisirons donc de fixer les catégories binaires suivantes :
 <!-- \paragraph*{} -->
 <!-- La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives. -->
 <!-- \paragraph*{} -->
-<!-- De même, les graphiques de distribution des variables *cap.diameter* et *stem.height* en fonction des variables *veil.type* et *has.ring* montrent des distributions multimodales, qui mettront probablement en difficulté des modèles d'analyse discriminante linéaire, basées sur l'hypothèse de variables distribuées normalement -- ou a minima dotées de distributions monomodales.\footnote{cf. section  \ref{chapitre:modeles_LDA}, page \pageref{chapitre:LDA_limites}} -->
+<!-- De même, les graphiques de distribution des variables *cap.diameter* et *stem.height* en fonction des variables *veil.type* et *has.ring* montrent des distributions multimodales, qui mettront probablement en difficulté des modèles d'analyse discriminante linéaire, basées sur l'hypothèse de variables distribuées normalement -- ou a minima dotées de distributions monomodales.\footnote{cf. section  \ref{paragraphe:Modeles_LDA}, page \pageref{chapitre:LDA_limites}} -->
 <!-- \paragraph*{} -->
 <!-- Cette brève analyse exploratoire des données illustre donc l'intérêt de l'EDA, qui constitue un outil puissant permettant de mieux appréhender un lot de données, voire d'orienter le choix des stratégies d'apprentissage machine qui pourraient être exploitées à fins de classification. -->
 
@@ -1083,7 +1091,8 @@ Sen_{Jw_{max}} = `r round(BI_fit_rpartcost_best_resultats["Sens"],4)` \\
 \paragraph*{}
 Les performances du modèle rpartCost sont honorables, dépassant celles de notre modèle précédent, au prix d'une efficience calculatoire amoindrie ($t_{moy} = `r BI_temps_rpartcost`$ min, $n = `r nrow(BI_grid_rpartcost)`$ itérations). Ce modèle s'approche fortement de notre critère concernant l'indice de Youden pondéré minimal à atteindre. L'équilibre entre sensibilité et spécificité est à souligner, malgré la pondération `r Jw_ratio`:1 de ces critères dans notre indice synthétique.
 \paragraph*{}
-Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. \paragraph*{}
+Le dernier modèle d'arbre décisionnel proposé dans notre étude est C5.0 tree (c50tree). Ce modèle ne dispose d'aucun hyperparamètre. 
+\paragraph*{}
 Les performances obtenues sont\ :
 $$\left \{
 \begin{array}{l}
@@ -1148,14 +1157,14 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres réduits : nombre de prédicteurs X1 et de mbre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres réduits : nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
 \FloatBarrier
 L'interprétation visuelle des graphiques des indicateurs de performance laisse entrevoir une très haute sensibilité -- c'est à dire une excellente capacité à rejeter les champignons non comestibles -- sur une très large plage d'hyperparamètres, et une spécificité beaucoup plus variable en fonction des hyperparamètres. L'hyperparamètre semblant avoir le plus d'effet est le nombre de prédicteurs testés pour une scission (*predFixed*). L'efficience calculatoire est très bonne, avec $t_{moy} = `r BI_temps_Rborist`$ min ($n = `r nrow(BI_grid_Rborist)`$ itérations).
 \paragraph*{}
-Nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
+Nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ : \label{paragraphe:ModelBIRborist}
 $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 avec $Y$ l'indice de Youden pondéré $J_{w}$, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
 \paragraph*{}
@@ -1186,7 +1195,7 @@ BI_Rborist_pareto
 ::::::
 
 \paragraph*{}
-Ce modèle quadratique avec interactions modélise bien les données expérimentales, avec une MAE très basse, et semble également confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice de Youden pondéré ($minNode = `r BI_best_Rboristgrid["minNode"]`$ et $predFixed = `r BI_best_Rboristgrid["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
+Ce modèle quadratique avec interactions modélise bien les données expérimentales, avec une erreur absolue moyenne (MAE) très basse, et semble également confirmer l'interprétation graphique, avec $b_{1} \gg b_{2}$, et permet d'évaluer les hyperparamètres optimaux permettant de maximiser l'indice de Youden pondéré ($minNode = `r BI_best_Rboristgrid["minNode"]`$ et $predFixed = `r BI_best_Rboristgrid["predFixed"]`$) afin de lancer la prédiction sur un modèle optimisé. 
 \paragraph*{}
 Les performances obtenues par le modèle ainsi optimisé sont excellentes\ :
 
@@ -1241,7 +1250,7 @@ plot(ggarrange(
 L'interprétation graphique laisse entrevoir un comportement relativement similaire à celui du modèle Rborist, avec une sensibilité très élevée sur l'ensemble du domaine expérimental des hyperparamètres, et une spécificité dépendant largement du nombre de caractéristiques à séparer (*mtry*). L'efficience calculatoire est excellente, avec $t_{moy} = `r BI_temps_ranger`$ min ($n = `r nrow(BI_grid_ranger)`$ itérations).
 
 \paragraph*{}
-Nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ :
+Nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ : \label{paragraphe:ModelBIRanger}
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 Avec Y l'indice de Youden pondéré, $X_{1}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{2}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets. Le facteur $X_{3}$ n'ayant que deux niveaux, il est évidemment impossible de lui attribuer une composante quadratique.
 \paragraph*{}
@@ -1276,7 +1285,7 @@ BI_ranger_pareto
 ::::::
 
 \paragraph*{}
-La modélisation quadratique correspond bien aux données expérimentales, avec une MAE extrêmement basse, et confirme par ailleurs les conclusions que permet l'interprétation graphique, avec $b_{1}\gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_best_rangergrid["min.node.size"]`$, $mtry = `r BI_best_rangergrid["mtry"]`$ et $splitrule = `r BI_best_rangergrid[1,"splitrule"]`$) a donné d'excellents résultats\ :
+La modélisation quadratique correspond bien aux données expérimentales, avec une erreur absolue moyenne (MAE) extrêmement basse, et confirme par ailleurs les conclusions que permet l'interprétation graphique, avec $b_{1}\gg b_{2}$. Une optimisation des hyperparamètres grâce à la modélisation quadratique  ($min.node.size = `r BI_best_rangergrid["min.node.size"]`$, $mtry = `r BI_best_rangergrid["mtry"]`$ et $splitrule = `r BI_best_rangergrid[1,"splitrule"]`$) a donné d'excellents résultats\ :
 $$\left \{
 \begin{array}{l}
 J_{w_{max}} = `r round(BI_fit_ranger_best_resultats["Jw"],5)` \\
@@ -1367,7 +1376,7 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-Comme précédemment, nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ :
+Comme précédemment,\footnote{cf. section \ref{paragraphe:ModelBIRanger}, page \pageref{paragraphe:ModelBIRanger}} nous pouvons proposer pour ce modèle la modélisation quadratique suivante\ :\label{paragraphe:ModelMULFAMRanger}
 $$ Y = b_{0} + b_{1}.X_{1} + b_{2}.X_{2} + b_{3}.X_{3} + b_{12}.X_{1}.X_{2} + b_{23}.X_{2}.X_{3} + b_{13}.X_{1}.X_{3} + b_{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 Avec Y le kappa, $X_{1}$ le facteur réduit associé au paramètre de nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*), $X_{2}$ le facteur réduit associé au paramètre de taille minimale de n\oe{}ud (*min.node.size*), $X_{3}$ le facteur régissant la règle de séparation (*splitrule*, la valeur 0 étant attribuée à *gini*, 1 à *extratrees*) et $b_{n}$ les estimations des coefficients des effets.
 \paragraph*{}
@@ -1410,14 +1419,14 @@ kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 
 \paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Ce modèle présente lui aussi des performances excellentes sur une large plage d'hyperparamètres.
+\paragraph*{}
 \FloatBarrier
-
 ```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 \FloatBarrier
-\paragraph*{}
-Comme lors de la classification binaire, nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ :
+\paragraph*{} 
+Comme lors de la classification binaire,\footnote{cf. section \ref{paragraphe:ModelBIRborist}, page \pageref{paragraphe:ModelBIRborist}} nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ : \label{paragraphe:ModelMULFAMRborist}
 $$ Y = b _{0} + b _{1}.X_{1} + b_{2}.X_{2} + b_{12}.X_{1}.X_{2} + b _{11}.X_{1}^{2} + b_{22}.X_{2}^{2}$$
 avec $Y$ le kappa, $X_{1}$ le facteur réduit dans la plage [0;1] associé à l'hyperparamètre de nombre de prédicteurs testés par scission (*predFixed*), $X_{2}$ le facteur réduit associé à l'hyperparamètre de nombre minimal de références distinctes avant scission (*minNode*) et $b_{n}$ les coefficients des effets.
 \paragraph*{}
@@ -1530,8 +1539,7 @@ plot(ggarrange(
 \FloatBarrier
 
 \paragraph*{}
-\paragraph*{}
-Le calcul numérique des coefficients de la modélisation quadratique du kappa en fonction des hyperparamètres nous permet d'obtenir les estimations des effets suivantes\ :
+Le calcul numérique des coefficients de la modélisation quadratique du kappa en fonction des hyperparamètres nous permet d'obtenir les estimations des effets suivantes\ :\footnote{cf. section \ref{paragraphe:ModelBIRanger}, page \pageref{paragraphe:ModelBIRanger} et section \ref{paragraphe:ModelMULFAMRanger}, page \pageref{paragraphe:ModelMULFAMRanger}}
 \paragraph*{}
 :::::: {.cols data-latex=""}
 
@@ -1571,13 +1579,13 @@ kable(MULESP_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 \paragraph*{}
 Le dernier modèle de forêt aléatoire exploité dans cette tâche de classification par espèces est Rborist.
 \FloatBarrier
-
+\paragraph*{}
 ```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULESP_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
 \paragraph*{}
-Comme précédemment, le calcul numérique permet d'estimer les effets des hyperparamètres\ :
+Comme précédemment,\footnote{cf. section \ref{paragraphe:ModelBIRborist}, page \pageref{paragraphe:ModelBIRborist} et section \ref{paragraphe:ModelMULFAMRborist}, page \pageref{paragraphe:ModelMULFAMRborist}} le calcul numérique permet d'estimer les effets des hyperparamètres\ :
 \paragraph*{}
 :::::: {.cols data-latex=""}
 

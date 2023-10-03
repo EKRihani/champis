@@ -353,7 +353,8 @@ BI_modelquad_ranger <- BI_modelquad_ranger %>%
 
 # Pareto
 BI_mod_ranger_jwcoef <- data.frame(abs(BI_mod_ranger_jw$model@trend.coef))
-BI_mod_ranger_jwcoef$nom <- c("b0", "X1", "X2", "X3", "X1.X1", "X2.X2", "X1.X2", "X2.X3", "X1.X3")
+BI_mod_ranger_jwcoef$nom <- c("b0", "X1", "X2", "X3", "X1.X1", 
+                              "X2.X2", "X1.X2", "X2.X3", "X1.X3")
 colnames(BI_mod_ranger_jwcoef) <- c("valeur", "nom")
 BI_ranger_pareto <- BI_mod_ranger_jwcoef %>%
    #   filter(nom != "b0") %>%
@@ -561,3 +562,11 @@ rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_evaluation,
 
 save.image(file = "EKR-Champis-AnalyseBi-Light.RData")     # Sauvegarde données pour rapport
 load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données complètes
+
+
+### TESTS
+
+# Coefficients LDA
+BI_fit_lda2_dim$finalModel$scaling %>% data.frame() %>% slice_max(LD1, n = 10)
+BI_fit_lda2_dim$finalModel$scaling %>% data.frame() %>% slice_min(LD1, n = 10)
+
