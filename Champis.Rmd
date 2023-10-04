@@ -820,68 +820,6 @@ Nous choisirons donc de fixer les catégories binaires suivantes :
 
 \newpage
 
-<!-- ## Analyse exploratoire des données (EDA) -->
-
-<!-- *BROUILLON, à finir maintenant que j'ai mes données...* -->
-
-<!-- \FloatBarrier -->
-<!-- \paragraph*{} -->
-
-<!-- ```{r EDA-structure, echo = FALSE} -->
-<!-- kable(structure_dataset, caption = "Structure du lot de données initial") -->
-<!-- ``` -->
-
-<!-- \paragraph*{} -->
-<!-- Le lot de données d'origine contient `r EDA_n_champis` spécimens de champignons, caractérisés par `r EDA_n_cols` propriétés morphologiques ou environnementales. La structure de ce lot de données est résumée dans le tableau \ref{tab:EDA-structure}. -->
-<!-- \paragraph*{} -->
-<!-- Ce lot de données original a été découpé en un jeu d'apprentissage/optimisation et un jeu de données d'évaluation, avec un rapport `r EDA_split_facteur-1`:1, conformément aux principes mentionnés dans nos développements précédents.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.} -->
-<!-- \paragraph*{} -->
-<!-- Toutes les distributions des variables du lot d'entraînement ont ensuite été tracées par histogrammes pour les variables numériques, et diagrammes en barres pour les variables alphabétiques et catégorielles. -->
-<!-- \paragraph*{} -->
-<!-- Les diagrammes en barres n'ont rien illustré de particulièrement remarquable et n'ont pas été inclus dans le rapport. Toutefois, les distributions dimensionnelles sont plus intéressantes\ : à première vue, elles semblent suivre une courbe en cloche (figure \ref{fig:EDA-distrib}), avec une longue queue à droite. Une transformation logarithmique (figure \ref{fig:EDA-distrib-log}) montre plus nettement la forme de cette queue. -->
-
-<!-- ```{r EDA-distrib, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe"} -->
-<!-- plot(ggarrange( -->
-<!--    ncol = 3, -->
-<!--    study_distrib_Chapeau.Diametre + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL), -->
-<!--    study_distrib_Pied.Hauteur + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL), -->
-<!--    study_distrib_Pied.Largeur + ggtitle("") + ylab("") + scale_y_continuous(labels = NULL) -->
-<!--    ) -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- ```{r EDA-distrib-log, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des diamètres de chapeau, longueur de stipe, diamètre de stipe (échelle logarithmique en ordonnée)"} -->
-<!-- plot(ggarrange( -->
-<!--    ncol = 3, -->
-<!--    study_distrib_Chapeau.Diametre + ggtitle("") + ylab("") + scale_y_log10(labels = NULL), -->
-<!--    study_distrib_Pied.Hauteur + ggtitle("") + ylab("") + scale_y_log10(labels = NULL), -->
-<!--    study_distrib_Pied.Largeur + ggtitle("") + ylab("") + scale_y_log10(labels = NULL) -->
-<!--    ) -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- La distribution du diamètre du chapeau $D_{C}$ a l'apparence d'une courbe en cloche, avec une longue queue à droite, mais est en réalité bimodale, avec un mode principal à 5 cm, et un mode secondaire beaucoup plus petit pour $D_{C} \approx$ 75 cm. Cette taille exceptionnelle est attribuable à des variétés telles que *Polyporus squamosus*.[@courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013] -->
-<!-- \paragraph*{} -->
-<!-- La distribution de la longueur de stipe $L_{S}$ a également une forme de courbe en cloche avec une longue queue à droite, un mode principal à 5 cm et un mode secondaire à 0 cm. Cette valeur peut également sembler surprenante, mais certains champignons du lot n'ont pas de pied, ce qui explique cette valeur. -->
-<!-- \paragraph*{} -->
-<!-- La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longue queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives. -->
-<!-- \paragraph*{} -->
-<!-- L'étude des distributions dans un espace bidimensionnel (figure\ \ref{fig:EDA-bidistrib}, p.\ \pageref{fig:EDA-bidistrib}) permet déjà de dégager des associations de caractéristiques d'intérêt, ici représentées sous formes de zones unicolores où un type de champignons (comestible ou non) dominera, ce qui permet déjà d'élaborer des stratégies de classification basiques.\footnote{Ce type de classifieur sera développé ultérieurement, en section \ref{chapitre:naif}, page \pageref{chapitre:naif}} -->
-<!-- \paragraph*{} -->
-<!-- Ainsi, il est déjà possible de constater, d'après le nuage de points en haut à droite de la figure \ref{fig:EDA-bidistrib} que dans le lot de données, *tous* les champignons pour lesquels $cap.diameter \geq 40$ seront comestibles, et de même pour $stem.height \geq 20$. Toutefois, ainsi que l'illustre le graphique de densité situé dans le coin opposé, cette possible séparation ne concernera qu'une minorité de champignons, l'immense majorité des spécimens ayant des caractéristiques $stem.heigh \leq 10$ et $cap.diameter \leq 15$, où les courbes de densité se superposent, laissant entendre que cette association de critères ne sera que peu d'intérêt pour classer un grand nombre de champignons. -->
-<!-- \paragraph*{} -->
-<!-- La distribution du diamètre de stipe $D_{S}$ a aussi l'apparence d'une courbe en cloche avec une longueur queue à droite, et un pic à $D_{S} \approx$ 10-15 mm. Dans toutes ces distributions, la longue queue à droite peut probablement s'expliquer par l'utilisation, dans le *Secondary Mushroom Dataset*, d'une distribution normale pour chaque variété, associée à l'impossibilité d'avoir des valeur dimensionnelles négatives. -->
-<!-- \paragraph*{} -->
-<!-- De même, les graphiques de distribution des variables *cap.diameter* et *stem.height* en fonction des variables *veil.type* et *has.ring* montrent des distributions multimodales, qui mettront probablement en difficulté des modèles d'analyse discriminante linéaire, basées sur l'hypothèse de variables distribuées normalement -- ou a minima dotées de distributions monomodales.\footnote{cf. section  \ref{paragraphe:Modeles_LDA}, page \pageref{chapitre:LDA_limites}} -->
-<!-- \paragraph*{} -->
-<!-- Cette brève analyse exploratoire des données illustre donc l'intérêt de l'EDA, qui constitue un outil puissant permettant de mieux appréhender un lot de données, voire d'orienter le choix des stratégies d'apprentissage machine qui pourraient être exploitées à fins de classification. -->
-
- <!-- ```{r EDA-bidistrib, echo = FALSE, fig.height = 6.5, dev = "jpeg", dpi = 720, fig.cap = "Distributions bi-critères pour 4 critères d'intérêt"} -->
- <!-- paires_graphes -->
- <!-- ``` -->
-
-<!-- \newpage -->
-
 ## Optimisation et sélection des modèles
 \paragraph*{}
 Il existe une grande variété de modèles exploitables pour bâtir un système d'apprentissage machine. Cette section expliquera la stratégie utilisée pour l'évaluation de certains de ces modèles, ainsi que pour l'exploration de l'espace de leurs hyperparamètres à fins d'optimisation et la mesure de leurs performances. 
@@ -1699,7 +1637,25 @@ kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Range
 \cleardoublepage
 # (APPENDIX) Appendix {-} 
 
-# Annexe 1\ : Algorithme de génération de lot synthétique
+# Annexe 1\ : Notions de statistiques
+
+## Lois de densité usuelles
+
+
+## Modes et distributions
+
+\cleardoublepage
+# Annexe 2\ : Critères de classification des champignons
+
+## Critères écologiques
+
+
+
+## Critères morphologiques
+
+
+\cleardoublepage
+# Annexe 3\ : Algorithme de génération de lot synthétique
 
 Le principe de cet algorithme est de prendre un tableau au format csv contenant les caractéristiques typiques des macromycètes extraites de la littérature mycologique (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.) et de générer un lot de données exploitable, sous forme d'une liste de spécimens, de chaque espèce données, possédant des caractéristiques individuelles censées être représentatives de leur espèce.
 
@@ -1941,14 +1897,7 @@ zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 
 \cleardoublepage
 
-<!-- # Annexe 2\ : Analyse exploratoire des données (EDA) -->
-
-<!-- *Code EDA... A finir.* -->
-
-
-<!-- \cleardoublepage -->
-
-# Annexe 2\ : Algorithmes d'apprentissage machine
+# Annexe 4\ : Algorithmes d'apprentissage machine
 
 \paragraph*{}
 Nous détaillerons ici principalement les algorithmes utilisés pour le classifieur binaire. Les particularités d'intérêt des classifieurs multiclasses seront évoquées brièvement lors des développements de cette section.
@@ -2351,8 +2300,9 @@ save.image(file = "EKR-Champis-CodeSourceBi.RData")
 ```
 \normalsize
 
-\newpage
-# Annexe 3\ : Langage de balisage Rmarkdown
+
+\cleardoublepage
+# Annexe 5\ : Langage de balisage Rmarkdown
 ## Introduction et préparation
 \paragraph*{}
 Rmarkdown est un langage de balisage permettant d'associer les possibilités offertes par R et Latex. Ce langage a été utilisé pour rédiger cette étude, et cette annexe propose d'esquisser les possibilités qu'il offre, en reprenant succinctement la partie décrivant la LDA.
