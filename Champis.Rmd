@@ -9,7 +9,7 @@ classoption: twoside
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath", "alphalph"]
+    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath", "alphalph", "slantsc"]
     # "bbm" : Pour fonction caractéristique 1 (forêts aléatoires)
     # "sansmathaccent" : Pour tidles/chapeaux mal alignés avec maths sans accent...
     toc: yes
