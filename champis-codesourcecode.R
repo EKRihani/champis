@@ -1,6 +1,6 @@
 library(tidyverse)
 RMD_Iris_Lot <- iris %>% filter(Species != "virginica") %>% droplevels()
-colnames(RMD_Iris_Lot) <- c("Long.Sep", "Larg.Sep", "Long.Pet", "Larg.Pet", "Espece")
+colnames(RMD_Iris_Lot) <- c("Lon.S.", "Lar.S.", "Lon.P.", "Lar.P.", "Espece")
 
 # Moyennes intraclasses
 RMD_Iris_Moyennes <- RMD_Iris_Lot %>% 
@@ -29,9 +29,9 @@ RMD_Iris_CoeffsNorm <- RMD_Iris_Coeffs / RMD_Iris_Coeffs[1]  # Normalisation
 RMD_Iris_Lot <- RMD_Iris_Lot %>% 
    mutate(X=rowSums(mapply(`*`,.[,names(.) != "Espece"],RMD_Iris_CoeffsNorm)))
 
-RMD_Iris_GraphMAX <-ggplot(data=RMD_Iris_Lot, aes(x=Larg.Pet, y=Long.Pet, color=Espece)) + geom_point()
+RMD_Iris_GraphMAX <-ggplot(data=RMD_Iris_Lot, aes(x=Lar.P., y=Lon.P., color=Espece)) + geom_point()
 
-RMD_Iris_GraphMin <-ggplot(data=RMD_Iris_Lot, aes(x=Larg.Sep, y=Long.Sep, color=Espece)) + geom_point()
+RMD_Iris_GraphMin <-ggplot(data=RMD_Iris_Lot, aes(x=Lar.S., y=Lon.S., color=Espece)) + geom_point()
 
 RMD_Iris_GraphX <- ggplot(data=RMD_Iris_Lot, aes(x=X, fill=Espece)) + geom_histogram()
 

@@ -558,9 +558,8 @@ rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_evaluation,
    BI_fit_c50tree, BI_fit_rFerns_depth,
    BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)
-
-
 save.image(file = "EKR-Champis-AnalyseBi-Light.RData")     # Sauvegarde données pour rapport
+
 load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données complètes
 
 
@@ -569,4 +568,3 @@ load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données complètes
 # Coefficients LDA
 BI_fit_lda2_dim$finalModel$scaling %>% data.frame() %>% slice_max(LD1, n = 10)
 BI_fit_lda2_dim$finalModel$scaling %>% data.frame() %>% slice_min(LD1, n = 10)
-

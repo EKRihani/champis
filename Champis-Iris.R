@@ -8,33 +8,34 @@ data(iris)
 
 # Moyennes intraclasses
 iris_lot <- iris %>% filter(Species != "virginica") %>% droplevels()
+colnames(iris_lot) <- c("Lon.S.", "Lar.S.", "Lon.P.", "Lar.P.", "Espece")
 
 # iris_moyennes <- iris_lot %>%
-#    group_by(Species) %>% 
+#    group_by(Espece) %>% 
 #    summarise(across(where(is.numeric), mean)) %>%
 #    data.frame()
-iris_moyennes <- iris_lot %>% aggregate(. ~ Species, mean)
+iris_moyennes <- iris_lot %>% aggregate(. ~ Espece, mean)
 
 # Différences des moyennes interclasses (table II)
-# iris_D <- as.matrix(iris_moyennes[which(iris_moyennes$Species == "setosa"),2:5]
-#                     - iris_moyennes[which(iris_moyennes$Species == "versicolor"),2:5])
+# iris_D <- as.matrix(iris_moyennes[which(iris_moyennes$Espece == "setosa"),2:5]
+#                     - iris_moyennes[which(iris_moyennes$Espece == "versicolor"),2:5])
 # 
 # iris_M <- rbind(iris_moyennes[,2:5], iris_D)
 # rownames(iris_M) <- c("setosa", "versicolor", "diff.")
 
 iris_M <- iris_lot %>% 
-   aggregate(. ~ Species, mean) %>%
-   add_row(cbind("Species" = "difference", 
-                 .[1, names(.)!="Species"] - .[2, names(.)!="Species"])) %>%
-   column_to_rownames("Species")
+   aggregate(. ~ Espece, mean) %>%
+   add_row(cbind("Espece" = "difference", 
+                 .[1, names(.)!="Espece"] - .[2, names(.)!="Espece"])) %>%
+   column_to_rownames("Espece")
 
 # Produits des carrés : 1. Différences avec moyennes
 iris_deltas <- iris_lot %>%
-   group_by(Species) %>%
+   group_by(Espece) %>%
    mutate_all(~. - mean(.)) %>%
-   ungroup() %>% select(!Species) %>%
+   ungroup() %>% select(!Espece) %>%
    as.matrix()
-colnames(iris_deltas) <- c("S.l","S.w","P.l","P.w")
+colnames(iris_deltas) <- c("Lon.S.","Lar.S.","Lon.P.","Lar.P.")
 
 # Produits des carrés : 2. Carrés des différences (table III)
 iris_prods <- rbind(iris_deltas[,1] %*% iris_deltas,
@@ -54,7 +55,7 @@ iris_CoeffsNorm <- iris_Coeffs/iris_Coeffs[1]
 
 # Comparaison avec LDA via package MASS
 #library(MASS)
-iris_lda <- MASS::lda(formula = Species ~ ., 
+iris_lda <- MASS::lda(formula = Espece ~ ., 
                 data = iris_lot)
 iris_lda$means
 iris_moyennes
@@ -65,22 +66,22 @@ iris_CoeffsNorm
 # Coeffs et graphiques LDA
 
 iris_totale <- iris_lot %>% 
-   mutate(X = rowSums(mapply(`*`,.[,names(.)!="Species"],iris_CoeffsNorm)))
+   mutate(X = rowSums(mapply(`*`,.[,names(.)!="Espece"],iris_CoeffsNorm)))
 
-iris_grapheMAX <- iris_totale %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
+iris_grapheMAX <- iris_totale %>% ggplot(aes(x = Lar.P., y = Lon.P., color= Espece)) +
    labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
    geom_point() +
    scale_color_viridis_d(end = .75, option = "D") +
    theme_bw()
 
-iris_grapheMin <- iris_totale %>% ggplot(aes(x = Sepal.Width, y = Sepal.Length, color= Species)) +
+iris_grapheMin <- iris_totale %>% ggplot(aes(x = Lar.S., y = Lon.S., color= Espece)) +
    labs(x = "Largeur Sépale", y = "Longueur Sépale", color = "Variété") +
    geom_point() +
    scale_color_viridis_d(end = .75, option = "D") +
    theme_bw()
 
 iris_grapheX <- iris_totale %>%
-   ggplot(aes(x = X, fill = Species)) +
+   ggplot(aes(x = X, fill = Espece)) +
    labs(x = "X", y = "Nombre", fill = "Variété") +   
    geom_histogram(alpha = .8, color = "black") +
    #   geom_vline(xintercept = mean(iris_totale$X), color = "red", linetype = "dashed", alpha = .8) +
@@ -89,15 +90,15 @@ iris_grapheX <- iris_totale %>%
    theme_bw()
 
 iris_norm <- iris_totale %>% 
-   mutate_at(., scale, .vars = which(names(.)!="Species")) %>% 
-   pivot_longer(data = ., cols = which(names(.)!="Species"))
+   mutate_at(., scale, .vars = which(names(.)!="Espece")) %>% 
+   pivot_longer(data = ., cols = which(names(.)!="Espece"))
 
 iris_grapheTotale <- iris_norm %>%
-   ggplot(aes(x = name, y = value, fill = Species, color = Species)) +
+   ggplot(aes(x = name, y = value, fill = Espece, color = Espece)) +
    labs(x = "", y = "Valeur", color = "Variété", fill = "Variété") +   
    geom_boxplot(alpha = .8, color = "black") +
    scale_fill_viridis_d(end = .75, option = "D") +
-   theme_bw()
+   theme_bw()# + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 # rpart avec caret
 n_iris <- nrow(iris)
@@ -112,7 +113,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
                         method = "cv",
                         number = iris_split_facteur)
 
-iris_rpart <- train(Species ~ .,
+iris_rpart <- train(Espece ~ .,
                   method = "rpart",
                   data =  iris,
                   trControl = tr_ctrl,
@@ -124,7 +125,7 @@ pdf("IrisCARTArbre.pdf", width = 3, height = 3, pointsize = 16)
 rpart.plot(x = iris_rpart$finalModel, type = 4, extra = 8, branch = 1.0, under = TRUE, box.palette = "Blues")
 dev.off()
 
-iris_graphe_arbre <- iris %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Species)) +
+iris_graphe_arbre <- iris %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Espece)) +
    labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
    xlim(0,2.5) + ylim(1,7) +
    geom_point(size = 1) +

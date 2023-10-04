@@ -350,6 +350,6 @@ rm(dataset, MULFAM_evaluation, MULFAM_lot_appr_opti, MULFAM_lot_evaluation,
    MULFAM_fit_rpart_cp,
    MULFAM_fit_Rborist, MULFAM_fit_Rborist_best, MULFAM_fit_Rborist_final,
    MULFAM_fit_ranger, MULFAM_fit_ranger_best, MULFAM_fit_ranger_final)
-
 save.image(file = "EKR-Champis-AnalyseMultiFam-Light.RData")     # Sauvegarde données pour rapport
+
 load(file = "EKR-Champis-AnalyseMultiFam.RData")     # Chargement données complètes
