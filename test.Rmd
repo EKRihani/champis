@@ -1,22 +1,24 @@
 ---
+#title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
+#author: "Emir Kaïs RIHANI"
+#date: "`r format(Sys.time(), '%d %B, %Y')`"
 lang: fr
 geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
-fontsize: 12pt
+fontsize: 12pt          # Imposé par la fac
 classoption: twoside
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: [""]
-    toc: no
-    includes:
-      in_header: colonnes.tex
+    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath", "alphalph", "slantsc"]
 header-includes:
+   - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
+   - \renewcommand{\thefootnote}{\alphalph{\value{footnote}}}      # Pieds de page en lettres minuscules (autres: Roman, AlphAlph)
    - \linespread{1.15}
 indent: true
 ---
 
 ```{r setup, include = FALSE, warning = FALSE}
-load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
+load(file = "EKR-Champis-Outro.RData")    # Chargement des données de l'annexe statistique
 
 library(ggpubr)   # Combiner graphes (ggarrange)
 library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
@@ -31,30 +33,101 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
 \pagestyle{plain}
 
 \newpage
-# Abréviations et conventions
+# Annexe 1\ : Notions de statistiques
 
-## Liste des abréviations
+## Lois de densité usuelles
+\paragraph*{}
+Comme évoqué dans nos développements précédents,\footnote{Voir section ref{chapitre:lotsynth}, page pageref{chapitre:lotsynth}} la génération des données quantitatives est aléatoire, mais obéit à des lois statistiques définies.
+\paragraph*{}
+Une façon simple d'illustrer cette notion peu intuitive d'*aléa obéissant à une loi* est la génération de valeurs à l'aide de dés. Le dé le plus courant est le dé cubique à six faces, mais d'autres géométries existent, parmi lesquelles\ :
 
+* Dé à 4 faces (D4), de forme tétraédrique,
+* Dé à 6 faces (D6), de forme cubique,
+* Dé à 8 faces (D8), de forme octaédrique,
+* Dé à 12 faces (D12) de forme dodécaédrique,
+* Dé à 20 faces (D20), de forme icosaédrique.
 
-:::::: {.cols data-latex=""}
+Ainsi, la génération d'un score aléatoire peut aussi bien s'effectuer avec un lancer de dé unique qu'en calculant la somme de dés multiples. Malgré le caractère aléatoire du score final, aléatoire n'est pas synonymes d'équiprobable, et les modalités du tirage auront un impact sur la probabilité d'obtention -- et donc sur la forme de la loi de densité -- des scores, comme le montre la figure \ref{fig:Annexe-Des}.
 
-::: {.col data-latex="{0.35\textwidth}"}
-$$
-\left \{
-\begin{array}{l}
-b_{0} = `r round(BI_mod_Rborist_jw$model@trend.coef[1],4)` \\
-b_{1} = `r round(BI_mod_Rborist_jw$model@trend.coef[2],4)` \\
-b_{2} = `r round(BI_mod_Rborist_jw$model@trend.coef[3],4)` \\
-b_{12} = `r round(BI_mod_Rborist_jw$model@trend.coef[6],4)` \\
-b_{11} = `r round(BI_mod_Rborist_jw$model@trend.coef[4],4)` \\
-b_{22} = `r round(BI_mod_Rborist_jw$model@trend.coef[5],4)` \\
-\end{array}
-\right.$$
-:::
-
-::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
-BI_Rborist_pareto
+```{r Annexe-Des, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois de densité obtenues avec des jets de dés"}
+plot(OUT_graphe_des)
 ```
-:::
-::::::
+
+\paragraph*{}
+Une fois ce concept d'*aléa obéissant à une loi* éclairci, nous pouvons évoquer brièvement certaines lois qui ont pu être mentionnées précédemment dans cette étude.
+\paragraph*{}
+Les deux lois de densité les plus utilisées pour générer des valeurs aléatoires sont les lois\ :
+
+* Uniforme, qui assure une répartition uniforme des valeurs dans l'intervalle considéré,
+* Normale, qui est la *courbe en cloche* typique.
+
+
+\FloatBarrier
+
+```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois uniforme (à gauche) et normales (à droite)"}
+plot(ggarrange(
+   ncol = 2, widths = c(1,1),
+   OUT_graphe_uniforme,
+   OUT_graphe_normale))
+```
+
+\FloatBarrier
+
+De nombreuses autres lois de densité sont susceptibles d'être utilisées pour la génération de valeurs aléatoires. Nous pouvons notamment citer les lois :
+
+* Binomiale, loi discrète ne pouvant prendre que des valeurs entières, et qui peut être approximée par des lois continues telles que la loi binomiale ou la loi de Poisson,
+* De Weibull, loi dont la souplesse permet des utilisations multiples, notamment dans certains domaines techniques (modélisation de la fiabilité).
+
+```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois binomiale (à gauche) et de Weibull (à droite)"}
+plot(ggarrange(
+   ncol = 2, widths = c(1,1),
+   OUT_graphe_binomiale,
+   OUT_graphe_weibull))
+```
+
+\FloatBarrier
+Toutefois, notre choix s'est porté sur la loi bêta, en raison de son caractère continu, de sa grande souplesse, et du fait qu'elle soit normée sur l'intervalle [0;1], ce qui simplifie considérablement son utilisation pour la génération de valeurs dimensionnelles dont le maximum est défini -- ici par la littérature mycologique.
+\FloatBarrier
+
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois bêta"}
+plot(OUT_graphe_beta)
+```
+
+\FloatBarrier
+
+## Modes et distributions
+
+Lors des développements concernant la LDA (*Linear Discriminant Analysis*), nous avons évoqué certaines des conditions de son utilisation.\footnote{Voir section ref{paragraphe:Modeles-LDA}, page pageref{paragraphe:Modeles-LDA}}
+\paragraph*{}
+Nous reviendrons ici sur le critère d'unimodalité des distributions des valeurs. Cette condition, au delà des considérations évoquées lors des développements mathématiques mentionnés précédemment, peut s'expliquer par simple interprétation graphique.
+\paragraph*{}
+Nous utilisons ici la définition *lato sensu* de caractère uni ou multimodal d'une distribution : une distribution unimodale est une distribution dotée d'un unique maximum. Une distribution multimodale est une distribution dotée de plusieurs maximums locaux.\footnote{Dans la définition \emph{lato sensu} d'une distribution multimodale, ces maximums locaux ne constituent pas forcément tous des maximums sur l'ensemble du domaine}
+\paragraph*{}
+En termes plus simples, la loi de densité d'une distribution unimodale n'a qu'une seule "bosse", alors que celle d'une distribution multimodale en aura plusieurs.
+\paragraph*{}
+Il convient de rappeler que la LDA se base essentiellement sur la différence des moyennes entre une classe et une autre. Le critère d'unimodalité permet alors de simplifier le problème devant être résolu par la LDA en garantissant que toutes les valeurs des classes pourront alors être séparées par un unique critère, comme illustré par la figure \ref{fig:Annexe-LDAMono}.
+
+```{r Annexe-LDAMono, echo = FALSE, fig.height = 2.8, dev = "jpeg", dpi = 720, fig.cap = "Distributions unimodales et critère de séparation (en pointillés)"}
+plot(ggarrange(
+   ncol = 2, widths = c(1,1),
+   OUT_graphe_monomodale,
+   OUT_graphe_monomodale2D))
+```
+
+Dans le cas de distributions multimodales, la création d'une séparation pertinente peut devenir nettement plus complexe, et pourra parfois échapper totalement à un algorithme de type LDA comme l'illustre la figure \ref{fig:Annexe-LDABi}.
+
+```{r Annexe-LDABi, echo = FALSE, fig.height = 2.8, dev = "jpeg", dpi = 720, fig.cap = "Distributions bimodales et critère de séparation (en pointillés)"}
+plot(ggarrange(
+   ncol = 2, widths = c(1,1),
+   OUT_graphe_bimodale,
+   OUT_graphe_bimodale2D))
+```
+
+\cleardoublepage
+# Annexe 2\ : Critères de classification des champignons
+
+## Critères écologiques
+
+
+
+## Critères morphologiques
