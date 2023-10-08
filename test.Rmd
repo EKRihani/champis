@@ -38,9 +38,20 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
 
 # Annexe 2\ : Critères de classification des champignons
 
+La figure suivante rappelle les critères descriptifs exploités dans cette étude, dont nous développerons ici certains éléments.
+\FloatBarrier
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{AnatomieChampis}
+  \caption{\'Eléments anatomiques du sporophore et caractéristiques exploitées pour son identification.}
+  \label{fig:Anat-Champi}
+\end{figure}
+\FloatBarrier
+
 ## Critères morphologiques
 
-\paragraph*{}
+\FloatBarrier
 \begin{figure}
    \centering
    \includegraphics[width=\linewidth]{anat-chapeaux}
@@ -48,8 +59,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
   \label{fig:AnatChapeaux}
 \end{figure}
  
-
-\paragraph*{}
 \begin{figure}
    \centering
    \includegraphics[width=\linewidth]{anat-insertionslames}
@@ -57,12 +66,14 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
   \label{fig:AnatInsertionLames}
 \end{figure}
 
+\FloatBarrier
 ## Critères écologiques
 
+\FloatBarrier
 \paragraph*{}
 Les champignons sont, comme les animaux et contrairement aux végétaux, hétérotrophes vis-à-vis du carbone, c'est-à-dire qu'ils doivent puiser leur carbone dans leur environnement, sous forme de matière organique leur servant de nourriture.
 \paragraph*{}
-Pour répondre à cette contrainte, le monde fongique a adopté trois grandes stratégies, illustrées par la figure \ref{fig:EcologieChampis}\ : [@courtecuisse_champignons_2013]
+Pour répondre à cette contrainte, le monde fongique a adopté trois grandes stratégies, illustrées par la figure \ref{fig:EcologieChampis}, page \pageref{fig:EcologieChampis}\ : [@courtecuisse_champignons_2013]
 
 * La saprotrophie, c'est-à-dire l'exploitation de matière organique morte ou inerte : litière de feuilles mortes, débris végétaux, excréments...
 * Le parasitisme, le champignon exploitant alors la matière organique vivante, au détriment de l'organisme hôte, qui peut être animal, végétal, ou même un autre champignon,
@@ -73,13 +84,13 @@ Les champignons saprotrophes jouent un rôle essentiel dans les écosystèmes fo
 \paragraph*{}
 Les champignons parasites présentent également -- outre un intérêt de régulation des populations végétales, animales ou fongiques par l'élimination des individus faibles ou malades -- un grand intérêt scientifique et médical, en particulier dans le cas d'agents phytopathogènes ou des agents de parasitoses. Ici encore, les espèces fongiques sont spécialisées dans le parasitisme d'espèces végétales, animales ou fongiques particulières.
 \paragraph*{}
-Enfin, les relations symbiotiques entre règne fongique et relation végétal peuvent prendre des formes remarquables. C'est le cas de la symbiose lichénique, associant une algue et un champignon et aboutissant à un nouvel être vivant composite.
+Enfin, les relations symbiotiques entre règnes fongique et végétal peuvent prendre des formes remarquables. C'est le cas de la symbiose lichénique, associant une algue et un champignon et aboutissant à un nouvel être vivant composite : le lichen.
 \paragraph*{}
-Mais la relation symbiotique présentant le plus d'intérêt dans le cadre de cette étude est la relation mycorhizienne, associant un champignon et un végétal. Le végétal fournit la matière organique et autres nutriments au champignon, qui fournit en échange des nutriments, une protection contre certains parasites et compétiteurs potentiels ainsi qu'une augmentation considérable de la surface de contact avec le sol, permettant une optimisation de l'absorption des nutriments et de l'eau présents dans le sol. La relation mycorhizienne est un aspect fondamental de la biologie du champignon comme du végétal, et un facteur majeur du succès évolutif de certaines espèces végétales. Ici aussi, les relations symbiotiques sont spécialisées, le champignon mycorhizien s'associant préférentiellement à son espèce végétale de prédilection.
+Mais la relation symbiotique présentant le plus d'intérêt dans le cadre de cette étude est la relation mycorhizienne, associant un champignon et un végétal. Le végétal fournit la matière organique et autres nutriments au champignon, qui fournit en échange des nutriments, une protection contre certains parasites et compétiteurs potentiels ainsi qu'une augmentation considérable de la surface d'échange avec le sol via la structure filamenteuse du mycélium fongique, permettant une optimisation de l'absorption des nutriments et de l'eau présents dans le sol. La relation mycorhizienne est un aspect fondamental de la biologie du champignon comme du végétal, et un facteur majeur du succès évolutif de certaines espèces végétales. Ici aussi, les relations symbiotiques sont spécialisées, le champignon mycorhizien s'associant préférentiellement à son espèce végétale de prédilection.
 \paragraph*{}
-Certains types de champignons peuvent exploiter plusieurs modes d'absorption de la matière organique. C'est le cas de la truffe (*Tuber melanosporum*), parfois saprotrophe, essentiellement mycorhizienne des feuillus tels que le chêne et le noisetier, mais également parasite d'autres espèces végétales dont elle inhibe la croissance, formant le *cercle brûlé* entourant typiquement les chênes truffiers.
+Certains types de champignons peuvent exploiter plusieurs modes d'absorption de la matière organique. C'est le cas de la truffe (*Tuber melanosporum*), parfois saprotrophe, essentiellement mycorhizienne des feuillus tels que le chêne et le noisetier, mais également parasite d'autres espèces végétales dont elle inhibe la croissance, formant ainsi le *cercle brûlé* entourant typiquement les chênes truffiers.
 \paragraph*{}
-Les spécialisations que nous venons d'évoquer permettent d'affirmer que l'environnement et le substrat sur lesquels ont été prélevés le champignon peuvent constituer des indices majeurs de l'indentification d'un champignon, et justifient amplement la présence d'un indicateur environnemental parmi les critères de notre classification.
+Les spécialisations que nous venons d'évoquer permettent d'affirmer que l'environnement et le substrat sur lesquels ont été prélevés le champignon peuvent constituer des indices majeurs de l'identification d'un champignon, et justifient amplement la présence d'un indicateur environnemental parmi les critères de notre classification.
 
 \paragraph*{}
 \begin{figure}
@@ -88,3 +99,5 @@ Les spécialisations que nous venons d'évoquer permettent d'affirmer que l'envi
   \caption{Principaux modes de vie des champignons}
   \label{fig:EcologieChampis}
 \end{figure}
+
+\FloatBarrier

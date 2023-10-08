@@ -1652,7 +1652,7 @@ Une façon simple d'illustrer cette notion peu intuitive d'*aléa obéissant à 
 * Dé à 12 faces (D12) de forme dodécaédrique,
 * Dé à 20 faces (D20), de forme icosaédrique.
 
-Ainsi, la génération d'un score aléatoire peut aussi bien s'effectuer avec un lancer de dé unique qu'en calculant la somme de dés multiples. Malgré le caractère aléatoire du score final, aléatoire n'est pas synonymes d'équiprobable, et les modalités du tirage auront un impact sur la probabilité d'obtention -- et donc sur la forme de la loi de densité -- des scores, comme le montre la figure \ref{fig:Annexe-Des}.
+Ainsi, la génération d'un score aléatoire peut aussi bien s'effectuer avec un lancer de dé unique qu'en calculant la somme de dés multiples. Malgré le caractère aléatoire du score final, aléatoire n'est pas synonyme d'équiprobable, et les modalités du tirage auront un impact sur la probabilité d'obtention -- et donc sur la forme de la loi de densité -- des scores, comme le montre la figure \ref{fig:Annexe-Des}.
 
 ```{r Annexe-Des, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois de densité obtenues avec des jets de dés"}
 plot(OUT_graphe_des)
@@ -1732,12 +1732,69 @@ plot(ggarrange(
 \cleardoublepage
 # Annexe 2\ : Critères de classification des champignons
 
-## Critères écologiques
+La figure suivante rappelle les critères descriptifs exploités dans cette étude, dont nous développerons ici certains éléments.
+\FloatBarrier
 
-
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{AnatomieChampis}
+  \caption{\'Eléments anatomiques du sporophore et caractéristiques exploitées pour son identification.}
+  \label{fig:Anat-Champi}
+\end{figure}
+\FloatBarrier
 
 ## Critères morphologiques
 
+\FloatBarrier
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{anat-chapeaux}
+  \caption{Principales formes de chapeaux}
+  \label{fig:AnatChapeaux}
+\end{figure}
+ 
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{anat-insertionslames}
+  \caption{Principaux types d'insertion des lames}
+  \label{fig:AnatInsertionLames}
+\end{figure}
+
+\FloatBarrier
+## Critères écologiques
+
+\FloatBarrier
+\paragraph*{}
+Les champignons sont, comme les animaux et contrairement aux végétaux, hétérotrophes vis-à-vis du carbone, c'est-à-dire qu'ils doivent puiser leur carbone dans leur environnement, sous forme de matière organique leur servant de nourriture.
+\paragraph*{}
+Pour répondre à cette contrainte, le monde fongique a adopté trois grandes stratégies, illustrées par la figure \ref{fig:EcologieChampis}, page \pageref{fig:EcologieChampis}\ : [@courtecuisse_champignons_2013]
+
+* La saprotrophie, c'est-à-dire l'exploitation de matière organique morte ou inerte : litière de feuilles mortes, débris végétaux, excréments...
+* Le parasitisme, le champignon exploitant alors la matière organique vivante, au détriment de l'organisme hôte, qui peut être animal, végétal, ou même un autre champignon,
+* La symbiose, qui consiste en une association mutuellement bénéfique avec un autre être vivant.
+
+\paragraph*{}
+Les champignons saprotrophes jouent un rôle essentiel dans les écosystèmes forestiers, jouant le même rôle d'"éboueur" que les autres espèces spécialisées dans la décomposition de la matière organique morte, permettant ainsi la réintégration dans les cycles du carbone et de l'azote des composés appartenant aux plantes, animaux et autres champignons morts. Les champignons saprotrophes peuvent ainsi se spécialiser dans la décomposition de matière organique au sol (saprotrophes humicoles), de bois mort (saprotrophes lignicoles), de plantes herbacées mortes (saprotrophes herbicoles)...[@laurent_les_nodate]
+\paragraph*{}
+Les champignons parasites présentent également -- outre un intérêt de régulation des populations végétales, animales ou fongiques par l'élimination des individus faibles ou malades -- un grand intérêt scientifique et médical, en particulier dans le cas d'agents phytopathogènes ou des agents de parasitoses. Ici encore, les espèces fongiques sont spécialisées dans le parasitisme d'espèces végétales, animales ou fongiques particulières.
+\paragraph*{}
+Enfin, les relations symbiotiques entre règnes fongique et végétal peuvent prendre des formes remarquables. C'est le cas de la symbiose lichénique, associant une algue et un champignon et aboutissant à un nouvel être vivant composite : le lichen.
+\paragraph*{}
+Mais la relation symbiotique présentant le plus d'intérêt dans le cadre de cette étude est la relation mycorhizienne, associant un champignon et un végétal. Le végétal fournit la matière organique et autres nutriments au champignon, qui fournit en échange des nutriments, une protection contre certains parasites et compétiteurs potentiels ainsi qu'une augmentation considérable de la surface d'échange avec le sol via la structure filamenteuse du mycélium fongique, permettant une optimisation de l'absorption des nutriments et de l'eau présents dans le sol. La relation mycorhizienne est un aspect fondamental de la biologie du champignon comme du végétal, et un facteur majeur du succès évolutif de certaines espèces végétales. Ici aussi, les relations symbiotiques sont spécialisées, le champignon mycorhizien s'associant préférentiellement à son espèce végétale de prédilection.
+\paragraph*{}
+Certains types de champignons peuvent exploiter plusieurs modes d'absorption de la matière organique. C'est le cas de la truffe (*Tuber melanosporum*), parfois saprotrophe, essentiellement mycorhizienne des feuillus tels que le chêne et le noisetier, mais également parasite d'autres espèces végétales dont elle inhibe la croissance, formant ainsi le *cercle brûlé* entourant typiquement les chênes truffiers.
+\paragraph*{}
+Les spécialisations que nous venons d'évoquer permettent d'affirmer que l'environnement et le substrat sur lesquels ont été prélevés le champignon peuvent constituer des indices majeurs de l'identification d'un champignon, et justifient amplement la présence d'un indicateur environnemental parmi les critères de notre classification.
+
+\paragraph*{}
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{EcosystemeChampi}
+  \caption{Principaux modes de vie des champignons}
+  \label{fig:EcologieChampis}
+\end{figure}
+
+\FloatBarrier
 
 \cleardoublepage
 # Annexe 3\ : Algorithme de génération de lot synthétique
