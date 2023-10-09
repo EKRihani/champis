@@ -26,7 +26,7 @@ valeurs_binomiale <- data.frame(val = fonction_binomiale(x, n_graph))
 distrib_binomiale <- ggplot(data = valeurs_binomiale, aes(x = val)) +
   geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) +
   xlab("Valeur") +
-  ylab("") +
+  ylab(NULL) +
   theme_bw() +
 #  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(axis.text = element_blank(),
@@ -40,7 +40,7 @@ distrib_uniforme <- ggplot(data = valeurs_uniforme, aes(x = val)) +
   geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) +
   xlim(min =0, max = 1) +
   xlab("Valeur") +
-  ylab("") +
+  ylab(NULL) +
   theme_bw() +
   #theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(axis.text = element_blank(),
@@ -53,21 +53,21 @@ valeurs_normale <- data.frame(val = fonction_normale(x, n_graph))
 distrib_normale <- ggplot(data = valeurs_normale, aes(x = val)) +
   geom_histogram(fill = "grey40", bins = 4*binom_taille, center = 0.5) +
   xlab("Valeur") +
-  ylab("") +
+  ylab(NULL) +
   theme_bw() +
   #theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(axis.text = element_blank(),
          panel.grid = element_blank(),
          axis.ticks = element_blank())
 
-fonction_beta <- function(x,N){rbeta(n = N, shape1 = 6, shape2 = 4, ncp = .5)}
+fonction_beta <- function(x,N){rbeta(n = N, shape1 = 6, shape2 = 4, ncp = 1.5)}
 temps_beta <- microbenchmark(fonction_beta(x, n_chrono), times = fois_chrono, unit = "ms")
 valeurs_beta <- data.frame(val = fonction_beta(x, n_graph))
 distrib_beta <- ggplot(data = valeurs_beta, aes(x = val)) +
   geom_histogram(fill = "grey40", bins = 2*binom_taille, center = 0.5) + 
   xlim(min =0, max = 1) +
   xlab("Valeur") +
-  ylab("") +
+  ylab(NULL) +
   theme_bw() +
   #theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(axis.text = element_blank(),
@@ -80,7 +80,7 @@ valeurs_poisson <- data.frame(val = fonction_poisson(x, n_graph))
 distrib_poisson <- ggplot(data = valeurs_poisson, aes(x = val)) +
   geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_taille) + 
   xlab("Valeur") +
-  ylab("") +
+  ylab(NULL) +
   theme_bw() +
 #  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(axis.text = element_blank(),
@@ -93,7 +93,7 @@ valeurs_weibull <- data.frame(val = fonction_weibull(x, n_graph))
 distrib_weibull <- ggplot(data = valeurs_weibull, aes(x = val)) +
   geom_histogram(fill = "grey40", color = "grey40", center = 0.5, bins = 4*binom_taille) +
   xlab("Valeur") +
-  ylab("") +
+  ylab(NULL) +
   theme_bw() +
 #  theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
    theme(axis.text = element_blank(),

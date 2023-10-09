@@ -119,7 +119,9 @@ L'identification des macromycètes, c'est à dire des champignons visibles à l'
 \paragraph*{}
 Le lot de données mycologiques créé dans cette étude, bien que constituant l'un des lots les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
 \paragraph*{}
-Ce lot se concentrera exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *psilocybe*, connus pour leurs propriétés psychédéliques. Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon\ : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).[@courtecuisse_initiation_2020]
+Ce lot se concentrera exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *psilocybe*, connus pour leurs propriétés psychédéliques ou, plus proches de nous, celles du genre *tuber*\ : les truffes. 
+\paragraph*{}
+Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon\ : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).[@courtecuisse_initiation_2020]
 \paragraph*{}
 L'ingestion de certains de ces champignons est *mortelle*, même en faible quantité. Le diagnostic de l'intoxication fongique peut être difficile, et parfois trop tardif pour un traitement efficace. Des composés toxiques tels que les amanitines ne sont pas altérés ou détruits par cuisson ou congélation, et seront absorbés par l'intestin, avant de passer dans la circulation sanguine afin d'être filtrés par le foie, détruisant les cellules hépatiques, puis excrétées dans l'intestin, réabsorbées, refiltrées... chaque passe détruisant les cellules hépatiques ayant survécu à la précédente, dans un cycle connu sous le nom de réabsorption hépato-entérique.[@courtecuisse_champignons_2013]
 \paragraph*{}
@@ -131,7 +133,11 @@ L'identification des plantes et champignons est un problème de classification c
 \paragraph*{}
 La première limite est le nombre de chaînons manquants. Certaines espèces sont évidemment éteintes, ce qui signifie que certaines branches et n\oe{}uds de l'arbre phylogénétique seront manquants, ce qui peut compliquer l'analyse quand deux espèces apparentées ont un nombre élevé de chaînons et n\oe{}uds communs manquants. Certaines similarités entre espèces peuvent également ne pas être identifiables de façon macroscopique.
 \paragraph*{}
-La seconde limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu\ : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. La divergence évolutive explique par exemple la diversité des mammifères\ : les chauves-souris, baleines et chevaux sont apparentés, mais ont des aspects très dissemblables en raison de leur adaptation à des environnements très différents. D'un autre côté, la convergence évolutive explique la similarité entre l'aile de la chauve-souris et celle de l'abeille. Toutefois, malgré leur apparente dissimilarité, l'aile de la chauve-souris est plus proche de la main humaine ou de la nageoire de la baleine que de l'aile de l'abeille. La façon la plus fiable pour évaluer le processus évolutionnaire et trouver les liens phylogénétiques de la manière la plus précise possible est l'analyse des génomes\ : les caractéristiques visibles peuvent être trompeuses. Malheureusement, ces caractéristiques sont souvent les seules aisément identifiables.
+La seconde limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu\ : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. 
+\paragraph*{}
+La divergence évolutive explique par exemple la diversité des mammifères\ : les chauves-souris, baleines et chevaux sont apparentés, mais ont des aspects très dissemblables en raison de leur adaptation à des environnements très différents. 
+\paragraph*{}
+D'un autre côté, la convergence évolutive explique la similarité entre l'aile de la chauve-souris et celle de l'abeille. Toutefois, malgré leur apparente dissimilarité, l'aile de la chauve-souris est plus proche de la main humaine ou de la nageoire de la baleine que de l'aile de l'abeille. La façon la plus fiable pour évaluer le processus évolutionnaire et trouver les liens phylogénétiques de la manière la plus précise possible est l'analyse des génomes\ : les caractéristiques visibles peuvent être trompeuses. Malheureusement, ces caractéristiques sont souvent les seules aisément identifiables.
 \paragraph*{}
 Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème\ : en effet, il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
 \paragraph*{}
@@ -160,7 +166,7 @@ Ces lots de données présentent un intérêt certain pour le mycologue comme po
 ## Configuration matérielle et logicielle
 \paragraph*{}
 \FloatBarrier
-Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant, présenté ici à fins de reproductibilité\ :
+Le code de génération du lot de données, les algorithmes d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant, présenté ici à fins de reproductibilité\ :
 
 * CPU\ : AMD Ryzen 5 5600G
 * RAM\ : 2x16 Go DDR4-3200
@@ -173,8 +179,8 @@ Le code d'apprentissage machine, les méthodes d'évaluation, ainsi que cette th
 
 \FloatBarrier
 ## Description de l'objet de l'étude
-
-Notre étude portant sur la classification des champignons macroscopiques (macromycètes) par leur morphologie, il convient d'en apporter une définition succincte. 
+\paragraph*{}
+Notre étude portant sur la classification des champignons macroscopiques (macromycètes) par leur morphologie, il semble souhaitable d'en apporter une définition succincte. 
 \paragraph*{}
 Le règne fongique est l'un des grands règnes du vivant, se distinguant à la fois du règne animal et du règne végétal par des caractères propres.[@courtecuisse_champignons_2013; @courtecuisse_photo-guide_2000] 
 \paragraph*{}
@@ -182,7 +188,12 @@ L'élément le plus atypique du règne fongique est probablement sa morphologie,
 \paragraph*{}
 Les champignons se reproduisent à l'aide de spores, dont l'ensemble constitue la *sporée*, portée par un organe reproducteur spécialisé appelé le *sporophore*. Le terme de *champignon* du langage usuel et de *sporophore* du langage mycologique font tous deux référence à cet organe reproducteur susceptible d'être identifié, récolté et mangé.
 \paragraph*{}
-Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chapeau*, ce dernier portant en sa face inférieure un *hyménophore*, souvent constitué de *lames* ou de *tubes*, portant les spores. Certains sporophores peuvent également porter un *voile général* ou un *voile partiel*, qui les enrobaient avant leur "éclosion" et dont les restes peuvent être présents sur le sporophore adulte. Ces différents éléments anatomiques, ainsi que l'environnement dans lequel prospère le champignon, représentent autant de caractéristiques permettant l'identification d'une espèce, et qui seront exploitées dans cette étude (voir figure \ref{fig:Anatomie-Champis}).
+Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chapeau*, ce dernier portant en sa face inférieure un *hyménophore*, souvent constitué de *lames* ou de *tubes*, portant les spores qui, une fois disséminées, donneront naissances à de nouveaux individus.
+\paragraph*{}
+Certains sporophores peuvent également porter un *voile général* ou un *voile partiel*, qui les enrobaient avant leur "éclosion" et dont les restes peuvent être présents sur le sporophore adulte.
+\paragraph*{}
+Ces différents éléments anatomiques, ainsi que l'environnement dans lequel prospère le champignon, représentent autant de caractéristiques permettant l'identification d'une espèce, et qui seront exploitées dans cette étude (voir figure \ref{fig:Anatomie-Champis}).\footnote{Voir également annexe 2, page \pageref{chapitre:annexemyco} et suivantes.}
+\paragraph*{}
 
 \begin{figure}
    \centering
@@ -191,6 +202,7 @@ Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chap
   \label{fig:Anatomie-Champis}
 \end{figure}
 
+\newpage
 \FloatBarrier
 ## Principes de conception d'un lot de données synthétiques
 ### Principes généraux{#chapitre:lotsynth}
@@ -221,7 +233,9 @@ Dans le cadre de cette étude, les variables quantitatives générées aléatoir
 
 \FloatBarrier
 \paragraph*{}
-En première approximation, nous pouvons considérer que toutes ces valeurs sont intrinsèquement liées à la croissance du champignon. Ces trois variables peuvent, dans l'absolu, être susceptibles de varier indépendamment des autres au cours de la croissance du champignon, les variables $L_{S}$, $D_{S}$ et $D_{C}$ obéissant alors aux lois suivantes\ :
+En première approximation, nous pouvons considérer que toutes ces valeurs sont intrinsèquement liées à la croissance du champignon. Ces trois variables peuvent, dans l'absolu, être susceptibles de varier indépendamment des autres au cours de la croissance du champignon. 
+\paragraph*{}
+Les variables $L_{S}$, $D_{S}$ et $D_{C}$ obéissent alors aux lois suivantes\ :
 
 $$\left \{
 \begin{array}{l}
@@ -231,6 +245,7 @@ D_{C} = D_{C_{max}}.F_{Dc} \\
 \end{array}
 \right.$$
 
+\paragraph*{}
 Avec\ :
 
 * $L_{S_{max}}$, $D_{S_{max}}$ et $D_{C_{max}}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété fongique, extraites de la littérature, 
@@ -251,8 +266,6 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 * Distribution continue,
 * Distribution asymétrique,
 * Distribution bornée, ou normalisable sur un intervalle $\left[ 0 ; 1 \right]$,
-
-\paragraph*{}
 
 \FloatBarrier
 \paragraph*{}
@@ -282,16 +295,18 @@ Les deux derniers paramètres permettent de supposer que la distribution de tail
 Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
 \paragraph*{}
 
-```{r Lots-DistribSym, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
+```{r Lots-DistribSym, echo = FALSE, fig.height = 3.5, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
 plot(ggarrange(
+   widths = c(1.1, 1, 1),
    ncol = 3,
    distrib_uniforme + ylab("Densité"),
    distrib_binomiale,
    distrib_normale))
 ```
 
-```{r Lots-DistribAsym, echo = FALSE, fig.height = 3, fig.cap = "Exemples de distributions de la loi de Poisson (à gauche), de Weibull (au centre) et bêta (à droite)"}
+```{r Lots-DistribAsym, echo = FALSE, fig.height = 3.5, fig.cap = "Exemples de distributions de la loi de Poisson (à gauche), de Weibull (au centre) et bêta non-centrale (à droite)"}
 plot(ggarrange(
+   widths = c(1.1, 1, 1),
    ncol = 3,
    distrib_poisson + ylab("Densité"),
    distrib_weibull,
@@ -301,9 +316,12 @@ plot(ggarrange(
 ```
 
 \paragraph*{}
-En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence,[@johnson_continuous_1995] la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de\ :[@johnson_continuous_1995;@r_core_team_r_2022]
-$$ X = \frac{\chi^{2}_{2 \alpha} (\lambda)} {\chi^{2}_{2 \alpha} (\lambda) + \chi^{2}_{2 \beta}}$$
-avec $\chi^{2}$ la loi du khi-deux, $\alpha{}$ et $\beta{}$ les paramètres de forme de la loi bêta, et $\lambda{}$ son paramètre de non-centralité. Nous définirons empiriquement pour cette étude les relations suivantes entre ces trois paramètres\ : 
+En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence,[@johnson_continuous_1995] la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de la variable $X$ telle que\ :[@johnson_continuous_1995;@r_core_team_r_2022]
+$$ X = \frac{X_{1}}{X_{1}+X_{2}} \quad\text{avec}\quad X_{1} = \chi^{2}_{2 \alpha} (\lambda) \text{ et } X_{2} = \chi^{2}_{2 \beta}$$
+$\chi^{2}_{2\beta}$ étant la loi du khi-deux à $2\, \beta$ degrés de libertés et $\chi^{2}_{2\alpha}(\lambda)$ la loi du khi-deux non-centrale à $2\, \alpha$ degrés de libertés, de paramètre de non-centralité $\lambda$. 
+\paragraph*{}
+$\alpha{}$ et $\beta{}$ sont alors les paramètres de forme de la loi bêta, et $\lambda{}$ son paramètre de non-centralité. Nous définirons empiriquement pour cette étude les relations suivantes entre ces trois paramètres\ :
+
 $$\left \{
 \begin{array}{l c c}
 \alpha = 3 \, F_{c} & & (shape1)\\
@@ -311,17 +329,19 @@ $$\left \{
 \lambda = F_{c}  & & (ncp)\\
 \end{array}
 \right.$$
-
+\paragraph*{}
 $F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \ref{fig:Lots-LoisBeta}.
 
+\paragraph*{}
 ```{r Lots-LoisBeta, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
 plot(lois_beta)
 ```
 
 \paragraph*{}
-Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît souhaitable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, chargé de générer de légères variations des rapports entre ces trois caractéristiques dimensionnelles. Il nous semble ici souhaitable de proposer une distribution en cloche pour ce facteur de dispersion, afin de favoriser la génération de champignons "harmonieux", c'est-à-dire de spécimens dont les proportions ne s'éloignent pas de celles typiques de leur espèce.
+Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît préférable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, chargé de générer de légères variations des rapports entre ces trois caractéristiques dimensionnelles. Il nous semble ici souhaitable de proposer une distribution en cloche pour ce facteur de dispersion, afin de favoriser la génération de champignons "harmonieux", c'est-à-dire de spécimens dont les proportions ne s'éloignent pas de celles typiques de leur espèce.
 \paragraph*{}
 Nous proposons ainsi le modèle suivant\ :
+
 $$\left \{
 \begin{array}{ll} 
 L_{S} = L_{Smax}.F_{T}.\delta_{Ls} & ~~~~avec~~ \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
@@ -332,7 +352,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 
 \paragraph*{}
 L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \ref{fig:Lots-Dispersion2D} et \ref{fig:Lots-DispersionDensite}.
-
+\paragraph*{}
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 720, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
    ncol = 2,
@@ -342,19 +362,19 @@ plot(ggarrange(
 )
 ```
 
-
 \paragraph*{}
 La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \ref{fig:Lots-DispersionDensite}). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
-
-```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4, fig.cap = "Diagramme de densité de 2 paramètres de taille, avec dispersion"}
+\paragraph*{}
+```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4.5, fig.cap = "Diagramme de densité de 2 paramètres de taille, avec dispersion, les dimensions "maximales" sont indiquées en pointillés rouges"}
 plot(densite2d)
 ```
 
 \paragraph*{}
-Une simulation de Monte Carlo unidimensionnelle\footnote{En pratique, la méthode de Monte Carlo consiste ici à générer un grand nombre de champignons, puis à dénombrer ceux répondant aux critères d'intérêt, ici ceux ayant des dimensions dépassant les valeurs maximales usuelles.} effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (voir figure \ref{fig:HorsNormes}). La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
+Une simulation de Monte Carlo unidimensionnelle\footnote{En pratique, la méthode de Monte Carlo consiste ici à générer un grand nombre de champignons suivant les lois mathématiques que nous avons définies précédemment, puis à dénombrer ceux répondant aux critères d'intérêt, c'est-à-dire ceux ayant des dimensions dépassant les valeurs maximales usuelles.} effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (voir figure \ref{fig:HorsNormes}, page \pageref{fig:HorsNormes}).
 \paragraph*{}
-
-```{r HorsNormes, echo = FALSE, fig.height = 3, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
+La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
+\paragraph*{}
+```{r HorsNormes, echo = FALSE, fig.height = 4, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
 plot(distrib_diametre)
 ```
 
@@ -1730,7 +1750,7 @@ plot(ggarrange(
 
 
 \cleardoublepage
-# Annexe 2\ : Critères de classification des champignons
+# Annexe 2\ : Critères de classification des champignons{#chapitre:annexemyco}
 
 La figure suivante rappelle les critères descriptifs exploités dans cette étude, dont nous développerons ici certains éléments.
 \FloatBarrier
