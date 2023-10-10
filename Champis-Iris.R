@@ -101,7 +101,10 @@ iris_grapheTotale <- iris_norm %>%
    theme_bw()# + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 # rpart avec caret
-n_iris <- nrow(iris)
+iris2 <- iris
+colnames(iris2) <- c("Lon.S.", "Lar.S.", "Lon.P.", "Lar.P.", "Espece")
+
+n_iris <- nrow(iris2)
 iris_split_p <- sqrt(n_iris)
 iris_split_facteur <- round(sqrt(iris_split_p)+1)
 
@@ -115,7 +118,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
 
 iris_rpart <- train(Espece ~ .,
                   method = "rpart",
-                  data =  iris,
+                  data =  iris2,
                   trControl = tr_ctrl,
                   tuneGrid  = iris_grid_rpart_cp)
 
@@ -125,7 +128,7 @@ pdf("IrisCARTArbre.pdf", width = 3, height = 3, pointsize = 16)
 rpart.plot(x = iris_rpart$finalModel, type = 4, extra = 8, branch = 1.0, under = TRUE, box.palette = "Blues")
 dev.off()
 
-iris_graphe_arbre <- iris %>% ggplot(aes(x = Petal.Width, y = Petal.Length, color= Espece)) +
+iris_graphe_arbre <- iris2 %>% ggplot(aes(x = Lar.P., y = Lon.P., color= Espece)) +
    labs(x = "Largeur Pétale", y = "Longueur Pétale", color = "Variété") +
    xlim(0,2.5) + ylim(1,7) +
    geom_point(size = 1) +
@@ -160,7 +163,7 @@ fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
 fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 dataset$Type <- relevel(dataset$Type, ref = "Rejeter")
-dataset <- dataset %>% select(-c("Nom", "Groupe"))
+dataset <- dataset %>% select(!c(Nom, Groupe, Groupe2))
 
 # Création des lots d'entraînement, validation, évaluation
 

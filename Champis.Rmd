@@ -119,7 +119,7 @@ L'identification des macromycètes, c'est à dire des champignons visibles à l'
 \paragraph*{}
 Le lot de données mycologiques créé dans cette étude, bien que constituant l'un des lots les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
 \paragraph*{}
-Ce lot se concentrera exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *psilocybe*, connus pour leurs propriétés psychédéliques ou, plus proches de nous, celles du genre *tuber*\ : les truffes. 
+Ce lot se concentrera exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *Psilocybe*, connus pour leurs propriétés psychédéliques ou, plus proches de nous, ceux du genre *Tuber*\ : les truffes. 
 \paragraph*{}
 Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon\ : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).[@courtecuisse_initiation_2020]
 \paragraph*{}
@@ -156,7 +156,8 @@ Ce lot de données inclut `r DATA_n_Wagner` spécimens et apporte une rationalis
 \paragraph*{}
 Des bases de données dédiées à la mycologie sont également disponibles,[@noauthor_fongifrance_nodate; @noauthor_mycodb_nodate] mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
 \paragraph*{}
-Ces lots de données présentent un intérêt certain pour le mycologue comme pour le *data sciencist*. Toutefois, nous choisissons ici de créer un lot de données dédié à cette étude, afin de :
+Ces lots de données présentent un intérêt certain pour le mycologue comme pour le *data sciencist*. Toutefois, nous choisissons ici de créer un lot de données dédié à cette étude, afin de\ :
+
 * Détailler et mettre en \oe{}uvre des stratégies et méthodes de création de lots de données synthétiques, dont l'intérêt et les applications s'étendent bien au delà du domaine de la mycologie,
 * Intégrer des données représentatives d'une fonge d'intérêt local, ici celle du nord de la France,
 * Proposer un lot de données plus vaste que les lots existants, tant en variété d'espèces qu'en nombre de spécimens.
