@@ -1613,38 +1613,35 @@ kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Range
 
 \cleardoublepage
 
-<!-- # Robustesse de la classification -->
-
-<!-- *Partie facultative, assez ambitieux, voir si cette partie est compatible (en temps) avec la création du lot de données, qui va être assez chronophage...* -->
-
-<!-- *Evaluation de la robustesse, avec deux stratégies envisageables\ : * -->
-
-<!-- *1. Robustesse "intrinsèque"\ : lot d'entraînement standard, lot d'évaluation avec variations. Robustesse des modèles seuls.* -->
-
-<!-- *2. Robustesse "intégrée"\ : intégration de la robustesse dès le départ, avec lot d'entraînement intégrant des variations représentatives du lot d'évaluation.* -->
-
-<!-- ## Robustesse face aux déviations -->
-
-<!-- *Robustesse face à des données hors-normes, sans être extrêmes pour autant.* -->
-
-<!-- *Facile à coder pour valeurs quantitatives (simplement augmenter la SD du générateur...)* -->
-
-<!-- *DIFFICILE à coder pour les valeurs qualitatives (i.e. trouver des proximités, soit manuellement, soit via clustering / KNN)* -->
-
-<!-- *Robustesse "intrinsèque" et "intégrée" * -->
-
-<!-- ## Robustesse face aux erreurs -->
-
-<!-- *Robustesse face à des données complètement aberrantes.* -->
-
-<!-- *Facile à coder. Robustesse "intrinsèque" uniquement. * -->
-
-<!-- \FloatBarrier -->
-<!-- \newpage -->
-
 # Conclusion et perspectives
-
-*A écrire...*
+\paragraph*{}
+Cette étude a illustré les possibilités offertes par l'apprentissage machine dans le domaine de la classification mycologique.
+\paragraph*{}
+Nous avons ainsi montré l'efficacité de la génération de lots de données synthétiques à partir de données extraites de la littérature, méthode qui permet de construire des lots de données de plusieurs dizaines de milliers de spécimens à fins de déploiement et d'optimisation des algorithmes d'apprentissage machine.
+\paragraph*{}
+Cette étude a également pu illustrer certaines avancées dans le domaine des plans d'expériences, par l'utilisation de plans expérimentaux hypercubiques latins quasi-orthogonaux, permettant à la fois une exploration optimale de l'espace expérimental et une modélisation satisfaisante, tout en autorisant une détermination puis une mise en \oe{}uvre automatisées des hyperparamètres optimaux.
+\paragraph*{}
+Nous avons également pu mesurer et comparer les apports et performances relatives de différentes méthodes d'apprentissage, principalement l'analyse linéaire discriminante (LDA), les arbres de classification et les forêts aléatoires. L'analyse linéaire discriminante s'est avérée moins performante que les autres algorithmes, mais a toutefois permis de mettre en évidence les caractères principaux -- parfois surprenants -- permettant de déterminer la toxicité d'une espèce. A l'opposé du spectre, les forêts aléatoires se sont avérées extrêmement performantes, tant en classification binaire que dans des classifications multiclasses de difficulté croissante, par famille puis par espèce, au prix d'une certaine opacité pouvant les rapprocher de "boîtes noires". Les arbres de classification ont quant à eux montré un équilibre entre ces deux extrêmes ainsi qu'une grande souplesse.
+\paragraph*{}
+Cette étude présente toutefois quelques limites, qu'il convient de souligner.
+\paragraph*{}
+Tout d'abord, cette étude se base sur une fonge limitée dans l'espace, se concentrant exclusivement sur les champignons du Nord de la France. Ce choix, à notre sens défendable car la totalité des données a due être compilée manuellement à partir de la littérature, limite nécessairement la portée de l'étude.
+\paragraph*{}
+De plus, notre choix d'algorithmes s'est principalement porté sur trois grandes familles de méthodes d'apprentissage machine que sont les analyses discriminantes, les arbres de classification et les forêts aléatoires. Ce choix se justifie en raison des contraintes imposées par la puissance de calcul disponible, mais limite ici aussi la portée de notre étude.
+\paragraph*{}
+Enfin, les modèles proposés n'ont pas pu être soumis à des essais plus poussés permettant de déterminer la robustesse de la classification, face à des données aberrantes, manquantes ou à des spécimens hors normes. Ils n'ont pas non plus été confrontés à la réalité de la classification mycologique de terrain.
+\paragraph*{}
+Malgré ses limites, cette étude propose des perspectives intéressantes, et ce, dans chacun des aspects ayant pu être explorés.
+\paragraph*{}
+Tout d'abord, la génération de lots de données synthétiques a pu montrer qu'elle constituait une stratégie viable pour obtenir de grands lots de données. Cette méthode peut aisément trouver d'autres applications d'apprentissage machine, mais également d'essais de robustesse de systèmes informatisés ou de feuilles de calcul.
+\paragraph*{}
+De même, les plans d'expériences hypercubiques latins quasi-orthogonaux ont montré certaines qualités d'économie de mise en \oe{}uvre et de temps de calcul ainsi que d'exploration optimale de l'espace expérimental pouvant en faire une alternative aux plans d'expériences plus conventionnels.
+\paragraph*{}
+Les modèles d'apprentissage ont quant à eux montré qu'ils constituaient des outils d'une grande souplesse, permettant, selon le choix de l'algorithme utilisé, un classement automatisé d'une grande performance, ou une aide précieuse à la compréhension de la structure et des lois définissant les différentes classes d'un jeu de données.
+\paragraph*{}
+Enfin, la totalité de cette thèse a été générée avec l'aide d'outils libres et gratuits. La rédaction a impliqué la mise en \oe{}uvre d'une méthode hybride exploitant les possibilités de Rmarkdown, qui a ici permis de mêler texte intégralement rédigé de la main de l'humain (via Latex), avec extraction et insertion automatisées des graphiques et valeurs numériques (via R). Le diaporama présenté lors de la soutenance utilisera les mêmes méthodes. Les outils déployés lors de la rédaction de cette étude peuvent donc, sous certaines conditions, remplacer avantageusement la triade Word-Excel-Powerpoint.
+\paragraph*{}
+Ces outils n'ont évidemment pas vocation à remplacer l'humain, mais peuvent lui faciliter considérablement la tâche lors du traitement répétitif de données. Les applications sont vastes et incluent notamment l'exploitation automatisée d'extractions effectuées dans diverses bases de données, afin de permettre la génération automatique de rapports synthétiques, par exemple d'analyse de risques permettant une aide à la décision, notamment dans le domaine de la pharmacie industrielle.
 
 \newpage
 # Références bibliographiques
