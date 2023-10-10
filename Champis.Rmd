@@ -271,7 +271,7 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 \paragraph*{}
 Le critère d'efficience calculatoire n'est, en pratique, pas un facteur limitant dans notre cas, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant s'avérant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
 
-
+\paragraph*{}
 ```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
 plot(chrono_distrib2)
 ```
@@ -293,8 +293,8 @@ Le premier paramètre évoqué précédemment n'a pu être exploité dans le cad
 Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce issus d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
 \paragraph*{}
 Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
-\paragraph*{}
 
+\paragraph*{}
 ```{r Lots-DistribSym, echo = FALSE, fig.height = 3.5, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
 plot(ggarrange(
    widths = c(1.1, 1, 1),
@@ -352,6 +352,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 
 \paragraph*{}
 L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \ref{fig:Lots-Dispersion2D} et \ref{fig:Lots-DispersionDensite}.
+
 \paragraph*{}
 ```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 720, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
@@ -364,8 +365,9 @@ plot(ggarrange(
 
 \paragraph*{}
 La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \ref{fig:Lots-DispersionDensite}). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
+
 \paragraph*{}
-```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4.5, fig.cap = "Diagramme de densité de 2 paramètres de taille, avec dispersion, les dimensions "maximales" sont indiquées en pointillés rouges"}
+```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4.5, fig.cap = 'Diagramme de densité de 2 paramètres de taille, avec dispersion'}
 plot(densite2d)
 ```
 
@@ -373,6 +375,7 @@ plot(densite2d)
 Une simulation de Monte Carlo unidimensionnelle\footnote{En pratique, la méthode de Monte Carlo consiste ici à générer un grand nombre de champignons suivant les lois mathématiques que nous avons définies précédemment, puis à dénombrer ceux répondant aux critères d'intérêt, c'est-à-dire ceux ayant des dimensions dépassant les valeurs maximales usuelles.} effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (voir figure \ref{fig:HorsNormes}, page \pageref{fig:HorsNormes}).
 \paragraph*{}
 La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
+
 \paragraph*{}
 ```{r HorsNormes, echo = FALSE, fig.height = 4, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
 plot(distrib_diametre)
@@ -386,7 +389,7 @@ La génération des paramètres qualitatifs, tels que la couleur des spores ou l
 \paragraph*{}
 L'ensemble des valeurs qualitatives possibles pour un critère et pour une variété donnés est inséré dans un vecteur de valeurs. Une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question, et ce, pour chaque spécimen.
 \paragraph*{}
-Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. (cf. annexes, p. \pageref{ANNEXErares})
+Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. \footnote{cf. annexes, p. \pageref{ANNEXErares}}
 \paragraph*{}
 Notre générateur permettra donc aux caractéristiques "communes" d'avoir une probabilité d'être sélectionnées `r GEN_ratio_cr` fois plus élevée  que celle de ces caractéristiques "rares".
 \paragraph*{}
@@ -395,13 +398,13 @@ Notre générateur permettra donc aux caractéristiques "communes" d'avoir une p
 \FloatBarrier
 
 # Principes de l'apprentissage machine
-
+\paragraph*{}
 L’apprentissage machine est un domaine scientifique se situant à l’interface entre les statistiques et l’informatique, et constitue un domaine de l’intelligence artificielle. L’objet de l’apprentissage machine est conceptuellement de permettre aux machines d’ "apprendre" de manière autonome, c'est-à-dire d'évaluer et d'améliorer leurs performances sans l'intervention d'un programmeur, par l’entraînement.[@journal_officiel_de_la_republique_francaise_vocabulaire_2018]
 \paragraph*{}
 En pratique, ce domaine se consacre à la génération d’algorithmes autonomes capables d’améliorer leurs performances prédictives par exposition à un lot de données et de prédire par inférence la meilleure décision ou réponse à une question.[@bironneau_machine_2019]
 
 ## Types d'apprentissage machine
-
+\paragraph*{}
 L’apprentissage machine peut se dérouler suivant un certain nombre de paradigmes, concernant en particulier la stratégie d’apprentissage -- définie à partir du type de données disponibles -- parmi lesquels nous pouvons notamment citer\ :[@bironneau_machine_2019;@amr_hands-machine_2020;@journal_officiel_de_la_republique_francaise_vocabulaire_2018]
 
 * Apprentissage machine supervisé\ : les données du problème sont disponibles sous forme de couples exemple-annotation. Chaque point de données possède des caractéristiques (covariables) et une annotation. Le principe de cet apprentissage est donc de générer une application liant les vecteurs des entrées (covariables) et une variable de sortie (annotation, ou étiquette). L’apprentissage machine supervisé permet également de mesurer les performances du modèle obtenu.
@@ -409,7 +412,7 @@ L’apprentissage machine peut se dérouler suivant un certain nombre de paradig
 * Apprentissage machine non supervisé\ : les données ne sont pas annotées. Ce paradigme permet d’acquérir une connaissance concise de la structure du lot de données, notamment par des méthodes de partitionnement des données (*clustering*), de réduction de dimensionalité ou de réseaux neuronaux. Il peut notamment être utilisé pour l’analyse exploratoire de données ou pour diminuer la quantité de données fournie à des algorithmes supervisés afin d'augmenter l'efficience calculatoire du système.
 
 ## Jeux de données {#chapitre:split}
-
+\paragraph*{}
 Les jeux de données dédiés à l'apprentissage machine supervisé ou semi-supervisé sont tous construits sur la base de couples données-résultats. Selon l'étape de ces types d'apprentissage machine, le résultat peut être fourni à la machine ou lui être caché, le but étant dans le premier cas de permettre à la machine d'effectuer son apprentissage, et dans le second cas d'évaluer les performances de la prédiction par rapport au résultat réel.
 \paragraph*{}
 Le déroulement de l'apprentissage machine supervisé se décompose conceptuellement en trois étapes principales, mettant en jeu trois lots de données distincts\ :
@@ -440,10 +443,12 @@ Les rapports de taille entre jeux de données d'entraînement, d'optimisation et
 Ce nombre $p$ de coefficients peut être approché par l'expression $p \approx \sqrt{N_{u}}$, avec $N_{u}$ le nombre de lignes uniques de notre jeu de données, c'est-à-dire, dans notre cas, le nombre de champignons contenus dans le lot de données.[@joseph_optimal_2022]
 \paragraph*{}
 Il est possible d'obtenir ce rapport $p : \sqrt{p} : \sqrt{p}+1$ par une première scission entre jeu d'entraînement et optimisation d'une part (de taille relative $p +\sqrt{p}$) et jeu d'évaluation d'autre part (de taille relative $\sqrt{p}+1$), avec, pour ce dernier, une taille représentant la fraction du lot total\ :
+
 $$f_{test}= \frac{\sqrt{p}+1}{p+2\sqrt{p}+1} = \frac{1}{\sqrt{p}+1} $$
 
 \paragraph*{}
 Cette première dichotomie peut être suivie par une seconde dichotomie entre jeu d'entraînement (de taille relative $p$) et jeu d'optimisation (de taille relative $\sqrt{p}$), de fraction\ :
+
 $$ f_{opti} = \frac{\sqrt{p}}{p + \sqrt{p}} = \frac{1}{\sqrt{p}+1} \Rightarrow f_{test}= f_{opti} = \frac{1}{\sqrt{p}+1} $$
 
 \paragraph*{}
@@ -451,7 +456,7 @@ En pratique, pour notre lot de données contenant $N_{u} = `r BI_n_champis`$ sp�
 
 \FloatBarrier
 ## Méthodes de construction des jeux de données {#chapitre:split_methodes}
-
+\paragraph*{}
 Les méthodes de division mises en \oe{}uvre dans cette étude appellent quelques précisions, car elles apportent certaines améliorations par rapport à l'utilisation de deux scissions successives effectuées de manière purement aléatoire.
 \paragraph*{}
 La première division, entre jeu d'entraînement/optimisation et jeu d'évaluation, mettra en \oe{}uvre une méthode de découpage basée sur les points-supports[@mak_support_2018] (*support-points based splitting*) exploitant un algorithme du plus proche voisin (*nearest neighbour*), afin d'optimiser la représentativité des jeux de données par rapport à ceux pouvant être obtenus par un découpage aléatoire.[@joseph_split_2022;@vakayil_data_2022]
@@ -465,21 +470,17 @@ Comme démontré précédemment, une validation croisée *k-folds* avec $k = `r 
 \paragraph*{}
 \begin{figure}
    \centering
-   \includegraphics[width=\linewidth]{Cross-Validation}
+   \includegraphics[width=0.7\linewidth]{Cross-Validation}
   \caption{Principe de la validation croisée à k blocs (\emph{k-fold cross-validation}), pour \emph{k} = 4.}
   \label{fig:Cross-validation}
 \end{figure}
-
 \FloatBarrier
 
 ## Modèles utilisés
 ### Analyses discriminantes {#paragraphe:Modeles_LDA}
-
 \paragraph*{}
 Cette étude proposera plusieurs classifieurs s'appuyant sur des méthodes d'analyse discriminante, en particulier l'analyse discriminante linéaire (LDA\ : *Linear Discriminant Analysis*).
-
 \FloatBarrier
-
 \paragraph*{}
 L'analyse discriminante linéaire est une méthode ayant été proposée par Ronald Fisher en 1936[@fisher_use_1936;@anderson_r_1996] pour résoudre des problèmes de classification taxonomique dans le domaine de la botanique.\footnote{Cette étude, proposant une méthode de classification des 3 variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} en fonction de 4 paramètres dimensionnels (longueur et largeur, des sépales et pétales) est par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} La LDA est basée sur la construction de l'hyperplan de projection permettant de maximiser la distance entre les moyennes projetées des différentes classes et de minimiser la variance intraclasse (voir figure \ref{fig:Principe-LDA}).[@hastie_elements_2016] La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des réductions de dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de certaines caractéristiques.
 
@@ -491,24 +492,21 @@ L'analyse discriminante linéaire est une méthode ayant été proposée par Ron
   \label{fig:Principe-LDA}
 \end{figure}
 
-\FloatBarrier
-
-\paragraph*{}
-En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré un exemple extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces *Iris versicolor* et *Iris setosa*.
+En pratique, la LDA consiste à construire un indice synthétique, combinaison linéaire des caractéristiques des classes, dont les coefficients permettent de rendre les points du problème originel le plus aisément "séparables". La LDA étant utilisée dans cette étude pour construire un classifieur binaire, c'est ce type de classifieur qui sera présenté dans cette section, et illustré par un exemple extrait du jeu de données *Iris*, dans laquelle nous séparerons les espèces *Iris versicolor* et *Iris setosa*.
 \paragraph*{}
 Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire en $x_{i}$\ :
 
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
-avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
-\paragraph*{}
 
+avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
+
 $\overline{x_{i, n}}$ et $\overline{x_{i, n}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
 $x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres $p$ et $q$ pour chaque individu $i$.
 \paragraph*{}
 L'application sur les espèces *Iris versicolor* et *Iris setosa* nous donne les résultats présentés dans les tables \ref{tab:LDA-TableMoy} et \ref{tab:LDA-TableProd}\ :
-
+\paragraph*{}
 ```{r, LDA-TableMoy, echo = FALSE}
 kable(iris_M, caption = "Moyennes et différences de moyennes des 4 paramètres d'Iris setosa et versicolor") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
@@ -533,7 +531,7 @@ d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambd
 \end{array} \Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
 \right.$$
 
-<!-- soit \boldmath$S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D$ \unboldmath  --> avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
+avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
 \paragraph*{}
 En indiçant les facteurs\ :
 
@@ -542,6 +540,7 @@ En indiçant les facteurs\ :
 * $i = 3$ pour la longueur de pétale $L_{p}$,
 * $i = 4$ pour la largeur de pétale  $\ell_{p}$.
 
+\paragraph*{}
 Nous pouvons calculer les coefficients\ :
 $$\left \{
 \begin{array}{l}
@@ -551,6 +550,8 @@ $$\left \{
 \lambda_{4} = `r iris_Coeffs[4]` \\
 \end{array}
 \right.$$
+
+\paragraph*{}
 Soit, après normalisation sur le facteur $\lambda_{1}$\ :
 
 $$\left \{
@@ -569,8 +570,7 @@ Le seuil de séparation est alors défini par\ : $$X_{sep.} = \frac{\overline{X_
 Avec $\overline{X_{set.}}$ et $\overline{X_{ver.}}$ les moyennes respectives des $X$ pour *Iris setosa* et *Iris versicolor*.
 \paragraph*{}
 La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
-<!-- Ajouter petit paragraphe explicatif -->
-
+\paragraph*{}
 ```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
@@ -588,7 +588,6 @@ plot(ggarrange(widths = c(1, 1.5),
    )
 )
 ```
-
 \FloatBarrier
 \paragraph*{}
 Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, soulignées par certains développements de cette section\ : \label{chapitre:LDA_limites}
@@ -597,11 +596,9 @@ Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, so
 * Dans la LDA, la séparation entre les différentes classes est basée sur la construction d'un indice synthétique purement linéaire\ : sur l'hyperplan de projection, la séparation entre "territoires" des différentes classes sera toujours une droite,
 * La plupart des modèles d'analyse discriminante se basent sur des hypothèses tacites concernant les distributions des spécimens, notamment normalité et homoscédasticité.
 
-
-
 ### Arbres de décision {#paragraphe:Modeles_arbres}
 \FloatBarrier
-
+\paragraph*{}
 Les arbres de décision sont l'une des formes les plus populaires de représentation des connaissances utilisées dans le *data mining*.[@wu_top_2009] Une des raisons de cette popularité est que les modèles obtenus sont généralement considérés comme performants, et que l'apprentissage comme les prédictions sont aisément compréhensibles, contrairement à certaines approches dont la complexité peut les rapprocher de modèles assimilables à des boîtes noires.[@rokach_data_2015]
 \paragraph*{}
 Les arbres de décision peuvent aussi bien être utilisés pour des problèmes de classification (prédictions de classes) que de régression (prédiction de valeurs numériques). Les arbres de décision sont des structures hiérarchiques, séquentielles, composées de n\oe{}uds reliés par des branches. Ces n\oe{}uds sont conceptuellement de deux types\ :
@@ -674,7 +671,7 @@ Des exemples d'application sur les macromycètes sont également illustrés par 
 
 \FloatBarrier
 ### Forêts aléatoires
-
+\paragraph*{}
 Les arbres décisionnels conventionnels ont montré, au cours de leur utilisation dans le traitement des données, quelques limites récurrentes\ :[@zhang_recursive_2010, @zhang_ensemble_2012]
 
 * Tendance à l'instabilité des structures arborescentes, même avec des perturbations mineures\ : une petite modification du lot d'entraînement peut entraîner des modifications majeures de l'arborescence d'un arbre décisionnel,
@@ -712,7 +709,7 @@ En pratique, l’algorithme de génération d’une forêt aléatoire RF-RI, pou
 Bien que les algorithmes de type forêts aléatoires soient des outils particulièrement performants, ils ont toutefois quelques limites, la principale étant la relative opacité du modèle obtenu, assimilable à une véritable "boîte noire", et donc inadapté en tant qu'outil descriptif permettant d'acquérir une meilleure compréhension des données.
 
 ## Optimisation par plans d'expériences {#chapitre:doe}
-
+\paragraph*{}
 Certains modèles nécessiteront une optimisation de leurs hyperparamètres, afin d'obtenir des performances maximales. Cette optimisation relève du domaine des plans d'expériences (*DOE\ : Design Of Experiments*). De nombreux plans et stratégies sont envisageables, le choix dépendant en partie des caractéristiques du processus à optimiser.
 \paragraph*{}
 En effet, l'optimisation des paramètres d'un modèle informatique présente quelques particularités notables ayant un impact sur l'utilisation des plans d'expériences\ :
@@ -761,9 +758,9 @@ $$MAE = \frac{1}{n}.\sum_{i=1}^{n}|y_{i}-\hat{y}_{i}| $$
 avec $n$ le nombre de points expérimentaux, $y_{i}$ la valeur expérimentale et $\hat{y}_{i}$ la valeur prédite de la performance en chaque point $i$ considéré.
 \paragraph*{}
 \FloatBarrier
-
+\newpage
 ## Évaluation des performances des modèles {#chapitre:perf}
-
+\paragraph*{}
 L'optimisation des modèles ainsi que la comparaison de leurs performances relatives implique nécessairement de définir quel sera le critère vis-à-vis duquel cette performance sera évaluée.
 \paragraph*{}
 De nombreux critères sont utilisables, en fonction du cahier des charges défini pour la résolution du problème, mais également du type de tâche effectuée\ : régression, classification binaire, classification multiclasse.
@@ -799,7 +796,7 @@ Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle
 
 \begin{figure}
    \centering
-   \includegraphics[width=\linewidth]{Matrice-Confusion}
+   \includegraphics[width=0.55\linewidth]{Matrice-Confusion}
   \caption{Extrait d'une matrice de confusion, pour une classification multiclasse}
   \label{fig:Matrice-Confusion}
 \end{figure}
@@ -808,9 +805,6 @@ Avec $\pi_{0}$ la probabilité d'accord entre notre modèle et la classe réelle
 Landis et Koch ont élaboré une échelle de validité du kappa de Cohen, avec un accord qualifié de *quasi-parfait* pour $\kappa > 0.80$.[@landis_measurement_1977] Nous considérerons donc que ce critère sera le minimum requis pour qu'un modèle de classifieur multiclasse élaboré au cours de cette étude puisse être considéré comme ayant des performances acceptables.
 \paragraph*{}
 L'interprétation du kappa pouvant parfois être assez contre-intuitive, cette étude la complétera parfois par l'indice de Rand $R$, métrique moins robuste en présence de données non-équilibrées\footnote{Ce cas se présente habituellement lors d'une surreprésentation de certaines classes dans les jeux de données.}, mais présentant l'avantage d'être de compréhension plus aisée, car représentant le pourcentage de prédictions exactes.
-\paragraph*{}
-\FloatBarrier
-\phantom{blablabla}
 \cleardoublepage
 
 # Apprentissage machine et classification binaire
