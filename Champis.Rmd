@@ -355,7 +355,7 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu
 L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \ref{fig:Lots-Dispersion2D} et \ref{fig:Lots-DispersionDensite}.
 
 \paragraph*{}
-```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 720, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 600, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
    ncol = 2,
    nuage_sansdispersion,
@@ -973,7 +973,7 @@ En pratique, pour $cp \geq 0.05$, notre modèle d'IA basé sur ce type d'arbre d
 C'est dans la section inférieure de ces graphiques ($cp \leq 0.025$), pour des arbres bien plus complexes, que le modèle montrera une performance acceptable tant en sensibilité qu'en spécificité.
 
 
-```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en classification binaire, en fonction de la complexité et du coût (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, BIrpartcostSenSpe, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) de rpartCost en classification binaire, en fonction de la complexité et du coût (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_rpartcost_sens_graphe,
@@ -983,7 +983,7 @@ plot(ggarrange(
 ```
 
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.width = 5.2, fig.cap = paste0("Performances (indice de Youden pondéré ", Jw_ratio,":1) de rpartCost en classification binaire, en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)")}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.width = 5.2, fig.cap = paste0("Performances (indice de Youden pondéré ", Jw_ratio,":1) de rpartCost en classification binaire, en fonction des hyperparamètres réduits de complexité X1 et de coût X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)")}
 plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1017,7 +1017,7 @@ $$MAE = `r signif(BI_MAE_rpartcost,4)`$$
 :::
 
 ::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+```{r, echo = FALSE, dev = "jpeg", dpi = 600, fig.height = 2.5, fig.width=4}
 BI_rpartcost_pareto
 ```
 :::
@@ -1102,7 +1102,7 @@ Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. D
 * Le nombre de prédicteurs testés pour une scission (*predFixed*),
 * Le nombre minimal de lignes-références distinctes avant de scinder un n\oe{}ud (*minNode*).
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à g.) et spécificité (à d.) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres (interpolation Kriging quadratique, points expérimentaux en noir)"}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Sensibilité (à g.) et spécificité (à d.) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres (interpolation Kriging quadratique, points expérimentaux en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_Rborist_sens_graphe,
@@ -1111,7 +1111,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performance (indice de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres réduits : nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 600, fig.cap = "Performance (indice de Youden pondéré) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres réduits : nombre de prédicteurs X1 et de nombre de références avant scission X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(BI_fit_Rborist_jw_graphe + theme(legend.position='right') + theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1142,7 +1142,7 @@ $$MAE = `r signif(BI_MAE_Rborist,4)`$$
 :::
 
 ::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+```{r, echo = FALSE, dev = "jpeg", dpi = 600, fig.height = 2.5, fig.width=4}
 BI_Rborist_pareto
 ```
 :::
@@ -1171,7 +1171,7 @@ Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est
 
 Les mesures de performance sur l'espace expérimental des hyperparamètres sont illustrées en figures \ref{fig:BI-ranger-gini}, \ref{fig:BI-ranger-ET} et \ref{fig:BI-ranger-Jw}, pages \pageref{fig:BI-ranger-gini} et \pageref{fig:BI-ranger-Jw}.
 
-```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission\ : Gini)"}
+```{r, BI-ranger-gini, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission\ : Gini)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_Gini_sens_graphe,
@@ -1180,7 +1180,7 @@ plot(ggarrange(
 )
 ```
 
-```{r, BI-ranger-ET, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission\ : extratrees)"}
+```{r, BI-ranger-ET, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Sensibilité (à gauche) et spécificité (à droite) du modèle Ranger en classification binaire, en fonction des 2 hyperparamètres (algorithme de scission\ : extratrees)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_sens_graphe,
@@ -1190,7 +1190,7 @@ plot(ggarrange(
 ```
 
 
-```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Ranger en classification binaire, en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des hyperparamètres réduits\ : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, BI-ranger-Jw, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Ranger en classification binaire, en fonction de l'algorithme de scission (extratrees à gauche, gini à droite) et des hyperparamètres réduits\ : caractéristiques à séparer X1 et taille minimale de noeud X2 (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(ggarrange(
    ncol = 2,
    BI_fit_ranger_ET_jw_graphe,
@@ -1232,7 +1232,7 @@ $$MAE = `r signif(BI_MAE_ranger,4)`$$
 :::
 
 ::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+```{r, echo = FALSE, dev = "jpeg", dpi = 600, fig.height = 2.5, fig.width=4}
 BI_ranger_pareto
 ```
 :::
@@ -1320,7 +1320,7 @@ Ce modèle, pourtant très simple, donne déjà de très bons résultats globaux
 \paragraph*{}
 Le premier modèle de forêt aléatoire évalué dans cette partie est ranger, que nous avons déjà présenté précédemment. Les graphiques des performances en fonction des hyperparamètres laissent entrevoir d'excellentes caractéristiques sur une large plage d'hyperparamètres.
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Ranger dans une classification par familles, en fonction de ses 2 hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Ranger dans une classification par familles, en fonction de ses 2 hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
 plot(ggarrange(
    ncol = 2,
    MULFAM_fit_ranger_Gini_kappa_graphe,
@@ -1357,7 +1357,7 @@ $$MAE = `r signif(MULFAM_MAE_ranger,4)`$$
 :::
 
 ::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+```{r, echo = FALSE, dev = "jpeg", dpi = 600, fig.height = 2.5, fig.width=4}
 MULFAM_ranger_pareto
 ```
 :::
@@ -1375,7 +1375,7 @@ kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 Le dernier modèle de forêt aléatoire est Rborist. Ce modèle présente lui aussi des performances excellentes sur une large plage d'hyperparamètres.
 \paragraph*{}
 \FloatBarrier
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 \FloatBarrier
@@ -1404,7 +1404,7 @@ $$MAE = `r signif(MULFAM_MAE_Rborist,4)`$$
 :::
 
 ::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+```{r, echo = FALSE, dev = "jpeg", dpi = 600, fig.height = 2.5, fig.width=4}
 MULFAM_Rborist_pareto
 ```
 :::
@@ -1481,7 +1481,7 @@ Comme lors de la classification par familles, notre premier modèle de forêt al
 \FloatBarrier
 \paragraph*{}
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Ranger dans une classification par espèces, en fonction de ses 2 hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Ranger dans une classification par espèces, en fonction de ses 2 hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
 plot(ggarrange(
    ncol = 2,
    MULESP_fit_ranger_Gini_kappa_graphe,
@@ -1516,7 +1516,7 @@ $$MAE = `r signif(MULESP_MAE_ranger,4)`$$
 :::
 
 ::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+```{r, echo = FALSE, dev = "jpeg", dpi = 600, fig.height = 2.5, fig.width=4}
 MULESP_ranger_pareto
 ```
 :::
@@ -1534,7 +1534,7 @@ kable(MULESP_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Per
 Le dernier modèle de forêt aléatoire exploité dans cette tâche de classification par espèces est Rborist.
 \FloatBarrier
 \paragraph*{}
-```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 720, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Rborist dans une classification par espèces, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULESP_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
@@ -1559,7 +1559,7 @@ $$MAE = `r signif(MULESP_MAE_Rborist,4)`$$
 :::
 
 ::: {.col data-latex="{0.65\textwidth}"}
-```{r, echo = FALSE, dev = "jpeg", dpi = 720, fig.height = 2.5, fig.width=4}
+```{r, echo = FALSE, dev = "jpeg", dpi = 600, fig.height = 2.5, fig.width=4}
 MULESP_Rborist_pareto
 ```
 :::
@@ -1666,7 +1666,7 @@ Une façon simple d'illustrer cette notion peu intuitive d'*aléa obéissant à 
 
 Ainsi, la génération d'un score aléatoire peut aussi bien s'effectuer avec un lancer de dé unique qu'en calculant la somme de dés multiples. Malgré le caractère aléatoire du score final, aléatoire n'est pas synonyme d'équiprobable, et les modalités du tirage auront un impact sur la probabilité d'obtention -- et donc sur la forme de la loi de densité -- des scores, comme le montre la figure \ref{fig:Annexe-Des}.
 
-```{r Annexe-Des, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois de densité obtenues avec des jets de dés"}
+```{r Annexe-Des, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Exemples de lois de densité obtenues avec des jets de dés"}
 plot(OUT_graphe_des)
 ```
 
@@ -1681,7 +1681,7 @@ Les deux lois de densité les plus utilisées pour générer des valeurs aléato
 
 \FloatBarrier
 
-```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois uniforme (à gauche) et normales (à droite)"}
+```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 600, fig.cap = "Exemples de lois uniforme (à gauche) et normales (à droite)"}
 plot(ggarrange(
    ncol = 2, widths = c(1,1),
    OUT_graphe_uniforme,
@@ -1695,7 +1695,7 @@ De nombreuses autres lois de densité sont susceptibles d'être utilisées pour 
 * Binomiale, loi discrète ne pouvant prendre que des valeurs entières, et qui peut être approximée par des lois continues telles que la loi binomiale ou la loi de Poisson,
 * De Weibull, loi dont la souplesse permet des utilisations multiples, notamment dans certains domaines techniques (modélisation de la fiabilité).
 
-```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois binomiale (à gauche) et de Weibull (à droite)"}
+```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 600, fig.cap = "Exemples de lois binomiale (à gauche) et de Weibull (à droite)"}
 plot(ggarrange(
    ncol = 2, widths = c(1,1),
    OUT_graphe_binomiale,
@@ -1706,7 +1706,7 @@ plot(ggarrange(
 Toutefois, notre choix s'est porté sur la loi bêta, en raison de son caractère continu, de sa grande souplesse, et du fait qu'elle soit normée sur l'intervalle [0;1], ce qui simplifie considérablement son utilisation pour la génération de valeurs dimensionnelles dont le maximum est défini -- ici par la littérature mycologique.
 \FloatBarrier
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 720, fig.cap = "Exemples de lois bêta"}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Exemples de lois bêta"}
 plot(OUT_graphe_beta)
 ```
 
@@ -1724,7 +1724,7 @@ En termes plus simples, la loi de densité d'une distribution unimodale n'a qu'u
 \paragraph*{}
 Il convient de rappeler que la LDA se base essentiellement sur la différence des moyennes entre une classe et une autre. Le critère d'unimodalité permet alors de simplifier le problème devant être résolu par la LDA en garantissant que toutes les valeurs des classes pourront alors être séparées par un unique critère, comme illustré par la figure \ref{fig:Annexe-LDAMono}.
 
-```{r Annexe-LDAMono, echo = FALSE, fig.height = 2.8, dev = "jpeg", dpi = 720, fig.cap = "Distributions unimodales et critère de séparation (en pointillés)"}
+```{r Annexe-LDAMono, echo = FALSE, fig.height = 2.8, dev = "jpeg", dpi = 600, fig.cap = "Distributions unimodales et critère de séparation (en pointillés)"}
 plot(ggarrange(
    ncol = 2, widths = c(1,1),
    OUT_graphe_monomodale,
@@ -1733,7 +1733,7 @@ plot(ggarrange(
 
 Dans le cas de distributions multimodales, la création d'une séparation pertinente peut devenir nettement plus complexe, et pourra parfois échapper totalement à un algorithme de type LDA comme l'illustre la figure \ref{fig:Annexe-LDABi}.
 
-```{r Annexe-LDABi, echo = FALSE, fig.height = 2.8, dev = "jpeg", dpi = 720, fig.cap = "Distributions bimodales et critère de séparation (en pointillés)"}
+```{r Annexe-LDABi, echo = FALSE, fig.height = 2.8, dev = "jpeg", dpi = 600, fig.cap = "Distributions bimodales et critère de séparation (en pointillés)"}
 plot(ggarrange(
    ncol = 2, widths = c(1,1),
    OUT_graphe_bimodale,
@@ -2335,7 +2335,7 @@ BI_pred_Rborist %>% ggplot() +
 
 \FloatBarrier
 
-```{r, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 720, fig.cap = "Points expérimentaux (à gauche), modélisation (au centre) et superposition (à droite) des résultats obtenus avec Rborist"}
+```{r, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 600, fig.cap = "Points expérimentaux (à gauche), modélisation (au centre) et superposition (à droite) des résultats obtenus avec Rborist"}
 plot(ggarrange(
    ncol = 3, widths = c(1.05,1,1),
    CodBI_Rborist_graphe_tiles,
