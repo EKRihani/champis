@@ -15,7 +15,7 @@ library(DiceDesign)   # Hypercubes latins
 set.seed(1337)       # Pour reproductibilité
 n_chrono <- 1e6   # Nombre de valeurs pour microbenchmark
 fois_chrono <- 1e2    # Nombre d'itérations pour microbenchmark
-n_graph <- 1e5    # Nombre de valeurs pour graphiques
+n_graph <- 1e6    # Nombre de valeurs pour graphiques
 
 # Lois de distribution
 

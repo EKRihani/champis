@@ -31,7 +31,7 @@ csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscr
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
 load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
 load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
-load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
+#load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-Naif.RData")            # Chargement des résultats CLASSIFIEUR NAIF
 load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
 load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
@@ -572,7 +572,7 @@ Avec $\overline{X_{set.}}$ et $\overline{X_{ver.}}$ les moyennes respectives des
 \paragraph*{}
 La valeur absolue des coefficients $\lambda{}_{i}$ calculés précédemment nous indique la pondération de chaque caractère dimensionnel dans l'indice synthétique $X$ permettant d'obtenir une séparation optimale, ainsi que l'illustrent les figures \ref{fig:LDA-MinMax} et \ref{fig:LDA-Separation}.
 \paragraph*{}
-```{r LDA-MinMax, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
+```{r LDA-MinMax, echo = FALSE, fig.height = 2.3, fig.cap = "Distribution des variétés setosa et versicolor en fonction de leurs caractéristiques (paramètres fortement pondérés à gauche, faiblement pondérés à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
    iris_grapheMAX + theme(legend.position = "none"),
@@ -581,7 +581,7 @@ plot(ggarrange(widths = c(1, 1.5),
 )
 ```
 
-```{r LDA-Separation, echo = FALSE, fig.height = 2.5, fig.cap = "Distribution de X (à gauche) et des paramètres dimensionnels normalisés (à droite) en fonction des espèces"}
+```{r LDA-Separation, echo = FALSE, fig.height = 2.3, fig.cap = "Distribution de X (à gauche) et des paramètres dimensionnels normalisés (à droite)"}
 plot(ggarrange(widths = c(1, 1.5),
    ncol = 2,
    iris_grapheX + theme(legend.position = "none"),
@@ -589,14 +589,14 @@ plot(ggarrange(widths = c(1, 1.5),
    )
 )
 ```
-\FloatBarrier
-\paragraph*{}
+
 Nous pouvons conclure cette présentation de la LDA en évoquant ses limites, soulignées par certains développements de cette section\ : \label{chapitre:LDA_limites}
 
 * Les modèles d'analyse discriminante ne sont adaptés qu'à des données quantitatives ou qualitatives ordinales,
 * Dans la LDA, la séparation entre les différentes classes est basée sur la construction d'un indice synthétique purement linéaire\ : sur l'hyperplan de projection, la séparation entre "territoires" des différentes classes sera toujours une droite,
 * La plupart des modèles d'analyse discriminante se basent sur des hypothèses tacites concernant les distributions des spécimens, notamment normalité et homoscédasticité.
 
+\FloatBarrier
 ### Arbres de décision {#paragraphe:Modeles_arbres}
 \FloatBarrier
 \paragraph*{}
