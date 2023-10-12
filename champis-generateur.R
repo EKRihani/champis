@@ -110,7 +110,7 @@ for (n in 1:GEN_n_especes){
 
 GEN_lots_liste <- paste0("lot", GEN_dataset$N)
 
-GEN_n_champis <- 1e2      # Nombre de champignons pour chaque espèce (300?)
+GEN_n_champis <- 2e2      # Nombre de champignons pour chaque espèce (300?)
 GEN_f_crois <- 2          # Facteur de croissance
 #GEN_tailles <- names(GEN_structure[GEN_numeriques[-c(1,2)]])    # Facteurs de taille
 GEN_tailles <- names(GEN_structure[GEN_numeriques])    # Facteurs de taille
