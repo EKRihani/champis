@@ -131,6 +131,20 @@ temps_fin <- Sys.time()
 BI_temps_lda2 <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
 BI_temps_lda2 <- round(BI_temps_lda2/nrow(BI_grid_lda_dimen) ,2)
 
+# Coefficients LDA
+BI_lda2_facteurs <- BI_fit_lda2_dim$finalModel$scaling %>% 
+   data.frame() %>%  mutate (LD1 = -LD1) %>% mutate(facteur = row.names(.)) %>% slice_max(LD1, n = 10)
+
+BI_lda2_graphe_facteurs <- BI_lda2_facteurs %>% 
+   mutate(facteur = fct_reorder(facteur, LD1)) %>%
+   ggplot(aes(x=facteur, y=LD1)) +
+   ylim(c(0,NA)) +
+   geom_segment(aes(xend=facteur, yend=0)) +
+   geom_point(size=2) +
+   coord_flip() +
+   xlab("Caractéristique") + ylab("Coefficient") +
+   theme_bw()
+
  ### PDA ###
 set.seed(67)
 temps_depart <- Sys.time()
@@ -561,10 +575,3 @@ rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_evaluation,
 save.image(file = "EKR-Champis-AnalyseBi-Light.RData")     # Sauvegarde données pour rapport
 
 load(file = "EKR-Champis-AnalyseBi.RData")     # Chargement données complètes
-
-
-### TESTS
-
-# Coefficients LDA
-BI_fit_lda2_dim$finalModel$scaling %>% data.frame() %>% slice_max(LD1, n = 10)
-BI_fit_lda2_dim$finalModel$scaling %>% data.frame() %>% slice_min(LD1, n = 10)

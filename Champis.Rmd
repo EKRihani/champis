@@ -766,7 +766,7 @@ L'optimisation des modèles ainsi que la comparaison de leurs performances relat
 \paragraph*{}
 De nombreux critères sont utilisables, en fonction du cahier des charges défini pour la résolution du problème, mais également du type de tâche effectuée\ : régression, classification binaire, classification multiclasse.
 \paragraph*{}
-Dans une tâche de classification binaire, les critères usuels sont la spécificité, la sensibilité, et l'aire sous la courbe de fonction d'efficacité du récepteur (*AUC ROC*, parfois abrégé en *ROC*). Il conviendra bien évidemment, avant d'utiliser des indicateurs tels que la spécificité et la sensibilité, de définir la notion de test positif et test négatif.
+Dans une tâche de classification binaire, les critères usuels sont la spécificité, la sensibilité, et l'aire sous la courbe de la fonction d'efficacité du récepteur (*AUC ROC*, parfois abrégé en *ROC*). Il conviendra bien évidemment, avant d'utiliser des indicateurs tels que la spécificité et la sensibilité, de définir la notion de test positif et test négatif.
 \paragraph*{}
 D'autres indicateurs d'intérêt existent, nous retiendrons ici l'indice de Youden[@youden_index_1950] pondéré ($J_{w}$), qui permet d'ajuster l'importance relative accordée à la spécificité et à la sensibilité, au sein d'un index synthétique.[@rucker_summary_2010] Cet indicateur présente un intérêt particulier lorsqu'il apparaît souhaitable de tenir compte de la différence d'impact entre un faux positif et un faux négatif, sans pour autant autoriser des sensibilités ou spécificités trop faibles.
 \paragraph*{}
@@ -930,6 +930,17 @@ Ces performances prédictives perfectibles, car assez comparables à celles d'un
 
 \paragraph*{}
 L'inclusion de ces modèles d'analyse discriminante, qui présentent ici des performances correctes mais néanmoins insuffisantes, a un intérêt essentiellement didactique, permettant de souligner l'intérêt d'une connaissance élémentaire des fondamentaux mathématiques et algorithmiques des modèles d'apprentissage machine mis en \oe{}uvre, pour en connaître les limites ou évaluer les besoins de nettoyage préalable des données avant déploiement de l'apprentissage machine, afin d'éviter de confronter certains modèles face à des problèmes de classification pour lesquels ils n'ont pas été conçus.
+\paragraph*{}
+Au delà des performances prédictives pures, les modèles d'analyse discriminante permettent, par l'étude des coefficients affectés à la prédiction, une interprétation par l'humain de la pondération des coefficients permettant la prédiction. Pour des raisons évidentes, nous n'illustrerons ici que des facteurs prédictifs de non-comestibilité des champignons (figure \ref{fig:BIldacoef}).
+\paragraph*{}
+```{r, BIldacoef, echo = FALSE, fig.height = 2.7, fig.cap = "Dix premiers facteurs de LDA prédisant la non-comestibilité des champignons"}
+plot(BI_lda2_graphe_facteurs)
+```
+
+\FloatBarrier
+De manière pouvant sembler assez surprenante, la LDA indique ici que l'odeur du champignon pourrait constituer un indice utile permettant de distinguer certains spécimens à écarter absolument.
+\paragraph*{}
+Ces conclusions semblent étayées par la littérature mycologique\ : l'odeur de poire ou de liqueur de fruit constitue ainsi une caractéristique de certains inocybes -- tous toxiques -- tels qu'*Inocybe piriodora*, alors que l'odeur de rose fanée est spécifique des redoutables *Amanita phalloides* et *Amanita virosa*.[@courtecuisse_champignons_2013; @courtecuisse_photo-guide_2000; @noauthor_mycodb_nodate] La littérature scientifique semble également montrer un certain intérêt pour l'étude des volatilomes, et le monde fongique, qu'il s'agisse des macromycètes ou de leurs cousins microscopiques, n'y échappe pas.[@guo_sniffing_2020; @guo_volatile_2021; @gualtieri_volatile_2022; @fortier_characterization_2022]
 
 \FloatBarrier
 ### Modèles d'arbres de décision
@@ -1770,6 +1781,13 @@ La figure suivante rappelle les critères descriptifs exploités dans cette étu
    \includegraphics[width=\linewidth]{anat-insertionslames}
   \caption{Principaux types d'insertion des lames}
   \label{fig:AnatInsertionLames}
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{anat-nuancier}
+  \caption{Nuancier des couleurs décrivant les éléments des champignons}
+  \label{fig:AnatNuancier}
 \end{figure}
 
 \FloatBarrier
