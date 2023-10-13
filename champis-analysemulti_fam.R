@@ -18,7 +18,6 @@ fichier_data <- "~/projects/champis/lot_champis.zip" # FICHIER LOCAL
 fichier_data <- unzip(fichier_data, "lot_champis.csv")
 dataset <- read.csv(fichier_data, header = TRUE, sep = ",", stringsAsFactors = TRUE)
 
-
 ##############################################################################
 #     CREATION DES LOTS D'ENTRAINEMENT, VALIDATION, EVALUATION + GRAPHES     #
 ##############################################################################

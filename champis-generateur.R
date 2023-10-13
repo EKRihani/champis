@@ -4,7 +4,8 @@
 
 # Chargement des bibliothèques et données initiales
 library(tidyverse)    # Outils génériques
-GEN_dataset <- read.csv("Champignons.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+#GEN_dataset <- read.csv("Champignons.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+GEN_dataset <- readxl::read_excel("Champignons.xls") %>% data.frame()
 
 ###### SIMPLIFICATION (à virer une fois appliqué?)
 
