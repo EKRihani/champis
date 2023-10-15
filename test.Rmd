@@ -9,7 +9,7 @@ classoption: twoside
 output: 
   bookdown::pdf_document2: 
     number_sections: yes
-    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath", "alphalph", "slantsc"]
+    extra_dependencies: ["float", "placeins", "pdfpages", "svg", "amssymb", "amsmath", "sfmath", "alphalph", "slantsc", "subfigure"]
 header-includes:
    - \renewcommand{\familydefault}{\sfdefault}   # Police sans serif sur tout le doc (imposé par la fac)
    - \renewcommand{\thefootnote}{\alphalph{\value{footnote}}}      # Pieds de page en lettres minuscules (autres: Roman, AlphAlph)
@@ -38,6 +38,17 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "
 
 
 \newpage
+
+# Test Arbres rpartcost
+
+\begin{figure}
+    \centering
+        \includegraphics[width=0.495\linewidth]{BI_Arbre_Rpartcost_Sens}
+        \hfill
+        \includegraphics[width=0.495\linewidth]{BI_Arbre_Rpartcost_Spec}
+        \caption{Arbres de classification optimisant la sensibilité (à g.) ou la spécificité (à d.)}
+\end{figure}
+
 
 # Annexe 2\ : Critères de classification des champignons
 
@@ -80,6 +91,20 @@ Un autre caractère assez évident est la forme du chapeau. La figure \ref{fig:A
    \includegraphics[width=\linewidth]{anat-insertionslames}
   \caption{Principaux types d'insertion des lames}
   \label{fig:AnatInsertionLames}
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{anat-voilegeneral}
+  \caption{Principaux types et modes de rupture du voile général}
+  \label{fig:AnatVoileGeneral}
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{anat-voilepartiel}
+  \caption{Principaux types et modes de rupture du voile général}
+  \label{fig:AnatVoilePartiel}
 \end{figure}
 
 \FloatBarrier

@@ -999,6 +999,23 @@ plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right') + theme(legend.
 ```
 
 \FloatBarrier
+\begin{figure}
+   \centering
+   \includegraphics[width=0.495\linewidth]{BI_Arbre_Rpartcost_Sens}
+   \hfill
+   \includegraphics[width=0.495\linewidth]{BI_Arbre_Rpartcost_Spec}
+   \caption{Arbres simplifiés, optimisant la sensibilité (à g.) ou la spécificité (à d.)}
+   \label{fig:ArbresRpartCost}
+\end{figure}
+<!-- NE PAS OUBLIER DE CAVIARDER LES VALEURS ULTIMES DE L'ARBRE PRUDENT -->
+\paragraph*{}
+Les arbres de classification les plus simples obtenus (figure \ref{fig:ArbresRpartCost}) avec des valeurs d'hyperparamètre *Cost* se situant aux limites de notre espace expérimental présentent ainsi des structures et des critères assez différents, selon que l'on optimise la sensibilité pour obtenir un arbre "conservateur", ou la spécificité pour obtenir un arbre "optimiste" (voire suicidaire).
+\paragraph*{}
+Nous pouvons notamment remarquer la forte prévalence de n\oe{}uds intermédiaires dotés de valeurs *Rejeter* ou *Conserver*, selon que l'accent ait été porté sur la sensibilité (tendance au rejet) ou la spécificité (tendance à la consommation).
+\paragraph*{}
+Contrairement à la LDA, il n'est pas possible de déterminer
+
+\FloatBarrier
 \paragraph*{}
 En posant comme facteurs réduits\ :
 

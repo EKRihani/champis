@@ -78,21 +78,6 @@ graphe2D <- function(fcn_modele, fcn_donnees, fcn_x, fcn_y, fcn_metrique, fcn_co
    eval(parse(text = cmd))
 }
 
-# Version PLUS PROPRE, mais à débuguer...
-# graphe2D <- function(fcn_donnees, fcn_modele, fcn_x, fcn_y, fcn_metrique, fcn_couleur){
-#    fcn_x <- enquo(fcn_x)
-#    fcn_y <- enquo(fcn_y)
-#    fcn_metrique <- enquo(fcn_metrique)
-#    ggplot() +
-#       geom_raster(data = BI_pred_rpartcost, aes(x = !!fcn_x, y = !!fcn_y, fill = !!fcn_metrique), interpolate = TRUE) +
-#       geom_tile(data = fcn_modele, aes(x = !!fcn_x, y = !!fcn_y, fill = !!fcn_metrique), color = "black", linewidth =.5) +
-#       scale_fill_viridis_c(option = fcn_couleur, direction = 1) +
-#       theme_bw() +
-#       theme(axis.text.y = element_text(angle=90, vjust=.5, hjust=.5)) +
-#       theme(legend.position = "bottom")
-# }
-
-
 # Définition de fonction : graphique nuage/ligne de Sens+Spec+Youden
 grapheSpeSenJw <- function(fcn_donnees, fcn_abcisse){
    fcn_abcisse <- enquo(fcn_abcisse)
@@ -176,6 +161,7 @@ BI_fit_c50tree_resultats <- BI_fit_c50tree$results %>% mutate(Jw = Sens*BI_Ratio
 temps_fin <- Sys.time()
 BI_temps_c50tree <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric %>% round(.,2)
 
+
 ### RPART ###
 set.seed(262)
 temps_depart <- Sys.time()
@@ -187,6 +173,7 @@ BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_
 temps_fin <- Sys.time()
 BI_temps_rpart <- difftime(temps_fin, temps_depart, units = "mins") %>% as.numeric
 BI_temps_rpart <- round(BI_temps_rpart/nrow(BI_grid_rpart_cp) ,2)
+
 
 ### RPARTCOST ###
 set.seed(3)
@@ -261,10 +248,10 @@ BI_Compar_rpartcost <- BI_fit_rpartcost_resultats %>%
              BI_mod_rpartcost_jw$model@trend.coef[4]*X1^2 +
              BI_mod_rpartcost_jw$model@trend.coef[5]*X2^2 +
              BI_mod_rpartcost_jw$model@trend.coef[6]*X1*X2)
-BI_RMSE_rpartcost <-  RMSE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
+#BI_RMSE_rpartcost <-  RMSE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
 BI_MAE_rpartcost <-  MAE(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)
-BI_R2_rpartcost <- cor(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)^2
-BI_corr_rpartcost <- cor(x = BI_Compar_rpartcost$Jw, y = BI_Compar_rpartcost$Jw2, method = "spearman")
+#BI_R2_rpartcost <- cor(BI_Compar_rpartcost$Jw, BI_Compar_rpartcost$Jw2)^2
+#BI_corr_rpartcost <- cor(x = BI_Compar_rpartcost$Jw, y = BI_Compar_rpartcost$Jw2, method = "spearman")
 
 # Meilleur modèle rpartcost
 BI_best_rpartcostgrid <- BI_modelquad_rpartcost %>% filter(Jw == max(Jw)) %>% select(c("cp", "Cost"))
@@ -273,10 +260,12 @@ BI_fit_rpartcost_best <- fit_test(BI_set_rpartcost_best)
 BI_fit_rpartcost_best_resultats <- BI_fit_rpartcost_best$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 
 # Graphes 2D
-# BI_fit_rpartcost_spec_graphe <- graphe2D(BI_pred_rpartcost, BI_fit_rpartcost_resultats, Cost, cp, Spec, "F")
 BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
 BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
 BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "X2", "X1", "Jw", "D")
+# + geom_point(x = BI_modelquad_rpartcost_top$X2, 
+#              y =BI_modelquad_rpartcost_top$X1, 
+#              shape = 3, color = "red", size = 4)
 
 # Arbres démo
 BI_demo_spec_rpartcostgrid <- data.frame(cp = 25e-3, Cost = 0.1)
@@ -284,8 +273,8 @@ BI_set_rpartcost_demo_spec <- c("rpartCost", paste0("tuneGrid  = BI_demo_spec_rp
 BI_fit_rpartcost_demo_spec <- fit_test(BI_set_rpartcost_demo_spec)
 BI_fit_rpartcost_demo_spec_resultats <- BI_fit_rpartcost_demo_spec$results
 
-pdf("BI_Arbre_Rpartcost_Spec.pdf", width = 8, height = 5, pointsize = 16)
-rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_spec$finalModel, fallen.leaves = F,
+pdf("BI_Arbre_Rpartcost_Spec.pdf", width = 8, height = 5, pointsize = 12)
+rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_spec$finalModel, fallen.leaves = F, tweak = 1.1,
                        type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Reds")
 dev.off()
 
@@ -293,14 +282,12 @@ BI_demo_sens_rpartcostgrid <- data.frame(cp = 35e-3, Cost = 2.5) # > 38 ; < 39
 BI_set_rpartcost_demo_sens <- c("rpartCost", paste0("tuneGrid  = BI_demo_sens_rpartcostgrid"))
 BI_fit_rpartcost_demo_sens <- fit_test(BI_set_rpartcost_demo_sens)
 BI_fit_rpartcost_demo_sens_resultats <- BI_fit_rpartcost_demo_sens$results
-pdf("BI_Arbre_Rpartcost_Sens.pdf", width = 8, height = 5, pointsize = 16)
-rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_sens$finalModel, fallen.leaves = F,
-                       type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Blues")
+
+pdf("BI_Arbre_Rpartcost_Sens.pdf", width = 8, height = 5, pointsize = 12)
+rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_sens$finalModel, fallen.leaves = F, tweak = 1.2,
+                       type = 4, extra = 0, branch = 1.0, under = TRUE, box.palette = "Blues")
 dev.off()
 
-# + geom_point(x = BI_modelquad_rpartcost_top$X2, 
-#              y =BI_modelquad_rpartcost_top$X1, 
-#              shape = 3, color = "red", size = 4)
 
 #############################################
 #     BICLASSIFIEUR : FORETS ALEATOIRES     #
@@ -412,10 +399,10 @@ BI_Compar_ranger <- BI_fit_ranger_resultats %>%
              BI_mod_ranger_jw$model@trend.coef[7]*X1*X2 +
              BI_mod_ranger_jw$model@trend.coef[8]*X2*X3 +
              BI_mod_ranger_jw$model@trend.coef[9]*X1*X3)
-BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)
+#BI_RMSE_ranger <-  RMSE(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)
 BI_MAE_ranger <-  MAE(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)
-BI_R2_ranger <- cor(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)^2
-BI_corr_ranger <- cor(x = BI_Compar_ranger$Jw, y = BI_Compar_ranger$Jw2, method = "spearman")
+#BI_R2_ranger <- cor(BI_Compar_ranger$Jw, BI_Compar_ranger$Jw2)^2
+#BI_corr_ranger <- cor(x = BI_Compar_ranger$Jw, y = BI_Compar_ranger$Jw2, method = "spearman")
 
 set.seed(945)
 BI_best_rangergrid <- BI_modelquad_ranger %>% filter(Jw == max(Jw)) %>% select(c("mtry", "min.node.size", "splitrule"))
@@ -508,10 +495,10 @@ BI_Compar_Rborist <- BI_fit_Rborist_resultats %>%
              BI_mod_Rborist_jw$model@trend.coef[4]*X1^2 +
              BI_mod_Rborist_jw$model@trend.coef[5]*X2^2 +
              BI_mod_Rborist_jw$model@trend.coef[6]*X1*X2)
-BI_RMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
+#BI_RMSE_Rborist <-  RMSE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
 BI_MAE_Rborist <-  MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
-BI_R2_Rborist <- cor(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)^2
-BI_corr_Rborist <- cor(x = BI_Compar_Rborist$Jw, y = BI_Compar_Rborist$Jw2, method = "spearman")
+#BI_R2_Rborist <- cor(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)^2
+#BI_corr_Rborist <- cor(x = BI_Compar_Rborist$Jw, y = BI_Compar_Rborist$Jw2, method = "spearman")
 
 set.seed(65)
 BI_best_Rboristgrid <- BI_modelquad_Rborist %>% filter(Jw == max(Jw)) %>% select(c("predFixed", "minNode"))
@@ -537,12 +524,6 @@ BI_fit_Rborist_jw_graphe <- graphe2D("BI_pred_Rborist", "BI_fit_Rborist_resultat
 BI_evaluation <- BI_lot_evaluation %>%
    mutate(reference = as.factor(case_when(Type == "Rejeter" ~ TRUE, Type == "Conserver" ~ FALSE)))
 
-# A SUPPRIMER ???
-# BI_evaluation$reference <- as.logical(as.character(recode_factor(BI_evaluation$class, toxique = TRUE, comestible = FALSE))) # Bascule en booléen
-# 
-# # Passe .$reference de booléen à facteur, puis calcule la matrice de confusion
-# BI_evaluation$reference <- as.factor(BI_evaluation$reference)
-
 set.seed(695)
 temps_depart <- Sys.time()
 cmd <- paste0("train(Type ~ ., method = 'ranger', data = BI_lot_appr_opti,", BI_set_ranger_best[2], ")")
@@ -556,12 +537,6 @@ BI_resultats_ranger <- BI_CM_ranger_final$byClass %>%
    select(c(Sensitivity, Specificity)) %>% 
    mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
    mutate(temps = BI_temps_ranger)
-
-# Test Matrice de confusion plus belle... A TESTER/FINIR
-# BI_CM <- BI_CM_ranger_final$table %>%
-#    as.data.frame(.) %>%
-#    pivot_wider(., names_from = Reference, values_from= Freq) %>%
-#    as.data.frame(.)
 
 set.seed(45)
 temps_depart <- Sys.time()
