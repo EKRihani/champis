@@ -179,10 +179,9 @@ BI_temps_c50tree <- difftime(temps_fin, temps_depart, units = "mins") %>% as.num
 ### RPART ###
 set.seed(262)
 temps_depart <- Sys.time()
-BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
+BI_grid_rpart_cp <- data.frame(cp = 10^seq(from = -4, to = -1, length.out=10))
 BI_set_rpart_cp <- c("rpart", "tuneGrid  = BI_grid_rpart_cp")
 BI_fit_rpart_cp <- fit_test(BI_set_rpart_cp)
-#system.time(fit_test(BI_set_rpart_cp))    ####### CHRONO
 BI_fit_rpart_cp_resultats <- BI_fit_rpart_cp$results %>% mutate(Jw = Sens*BI_RatioSens + Spec*BI_RatioSpec - 1)
 BI_fit_rpart_cp_graphe <- grapheSpeSenJw(BI_fit_rpart_cp_resultats, cp) + scale_x_log10()
 temps_fin <- Sys.time()
@@ -278,6 +277,26 @@ BI_fit_rpartcost_best_resultats <- BI_fit_rpartcost_best$results %>% mutate(Jw =
 BI_fit_rpartcost_spec_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Spec", "F")
 BI_fit_rpartcost_sens_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "Cost", "cp", "Sens", "G")
 BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_resultats", "X2", "X1", "Jw", "D")
+
+# Arbres démo
+BI_demo_spec_rpartcostgrid <- data.frame(cp = 25e-3, Cost = 0.1)
+BI_set_rpartcost_demo_spec <- c("rpartCost", paste0("tuneGrid  = BI_demo_spec_rpartcostgrid"))
+BI_fit_rpartcost_demo_spec <- fit_test(BI_set_rpartcost_demo_spec)
+BI_fit_rpartcost_demo_spec_resultats <- BI_fit_rpartcost_demo_spec$results
+
+pdf("BI_Arbre_Rpartcost_Spec.pdf", width = 8, height = 5, pointsize = 16)
+rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_spec$finalModel, fallen.leaves = F,
+                       type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Reds")
+dev.off()
+
+BI_demo_sens_rpartcostgrid <- data.frame(cp = 35e-3, Cost = 2.5) # > 38 ; < 39
+BI_set_rpartcost_demo_sens <- c("rpartCost", paste0("tuneGrid  = BI_demo_sens_rpartcostgrid"))
+BI_fit_rpartcost_demo_sens <- fit_test(BI_set_rpartcost_demo_sens)
+BI_fit_rpartcost_demo_sens_resultats <- BI_fit_rpartcost_demo_sens$results
+pdf("BI_Arbre_Rpartcost_Sens.pdf", width = 8, height = 5, pointsize = 16)
+rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_sens$finalModel, fallen.leaves = F,
+                       type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Blues")
+dev.off()
 
 # + geom_point(x = BI_modelquad_rpartcost_top$X2, 
 #              y =BI_modelquad_rpartcost_top$X1, 
@@ -569,6 +588,7 @@ save.image(file = "EKR-Champis-AnalyseBi.RData")     # Sauvegarde données compl
 rm(dataset, BI_evaluation, BI_lot_appr_opti, BI_lot_evaluation,
    BI_fit_pda_lambda, BI_fit_lda2_dim, 
    BI_fit_rpart_cp, BI_fit_rpartcost, BI_fit_rpartcost_best,
+   BI_fit_rpartcost_demo_spec, BI_fit_rpartcost_demo_sens,
    BI_fit_c50tree, BI_fit_rFerns_depth,
    BI_fit_Rborist, BI_fit_Rborist_best, BI_fit_Rborist_final,
    BI_fit_ranger, BI_fit_ranger_best, BI_fit_ranger_final)

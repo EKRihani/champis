@@ -1116,7 +1116,7 @@ Le second modèle de forêt aléatoire évalué dans cette étude est Rborist. D
 ```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Sensibilité (à g.) et spécificité (à d.) du modèle Rborist en classification binaire, en fonction de ses hyperparamètres (interpolation Kriging quadratique, points expérimentaux en noir)"}
 plot(ggarrange(
    ncol = 2,
-   BI_fit_Rborist_sens_graphe,
+   BI_fit_Rborist_sens_graphe + scale_fill_viridis_c(limits = c(0.999,1),option = "D", direction = 1),
    BI_fit_Rborist_spec_graphe
    )
 )
