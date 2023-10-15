@@ -1436,11 +1436,21 @@ Le modèle Rborist a donné des résultats similaires à ceux du modèle Ranger,
 
 
 ### Résultats
-Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqués précédemment.
-
-\FloatBarrier
 \paragraph*{}
-L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}.
+Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqués précédemment.
+\paragraph*{}
+L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}. La précision finale est égale à $R = `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).
+\paragraph*{}
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré plutôt efficient sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
+\paragraph*{}
+Nous pouvons noter que le modèle ranger s'est ici avéré plus rapide que Rborist.
+\FloatBarrier
+
+```{r, echo = FALSE}
+kable(MULFAM_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)") %>%
+   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
+
+```
 
 ```{r FAM-CM, echo = FALSE}
 kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle Ranger (prédictions à gauche, références en haut)") %>%
@@ -1449,24 +1459,7 @@ kable(MULFAM_CM_ranger_final$table, caption = "Matrice de confusion du modèle R
    landscape()
 ```
 
-La précision finale est égale à $R = `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).
-\paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré plutôt efficient sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
-\paragraph*{}
-Nous pouvons noter que le modèle ranger s'est ici avéré plus rapide que Rborist.
-
-```{r, echo = FALSE}
-kable(MULFAM_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)") %>%
-   kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
-
-```
-
-\FloatBarrier
-
-\paragraph*{}
-
 \newpage
-
 ## Classification par espèce
 
 Dans cette partie, la difficulté de la classification augmente sensiblement, les modèles ne sont plus chargés de classifier les champignons par familles, mais de déterminer précisément l'espèce de chaque spécimen du lot de données. Les modèles utilisés dans cette partie sont les mêmes que ceux de la classification par familles.
