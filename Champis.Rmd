@@ -31,7 +31,6 @@ csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscr
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
 load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
 load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
-#load("EKR-Champis-EDA.RData")            # Chargement des résultats ANALYSE EXPLORATOIRE
 load("EKR-Champis-Naif.RData")            # Chargement des résultats CLASSIFIEUR NAIF
 load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
 load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
