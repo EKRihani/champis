@@ -285,7 +285,7 @@ BI_fit_rpartcost_demo_sens_resultats <- BI_fit_rpartcost_demo_sens$results
 
 pdf("BI_Arbre_Rpartcost_Sens.pdf", width = 8, height = 5, pointsize = 12)
 rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_sens$finalModel, fallen.leaves = F, tweak = 1.2,
-                       type = 4, extra = 0, branch = 1.0, under = TRUE, box.palette = "Blues")
+                       type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Blues")
 dev.off()
 
 
