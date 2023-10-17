@@ -165,7 +165,7 @@ for (n in 1:GEN_n_especes){
   eval(parse(text = ordre_rm1))
   eval(parse(text = ordre_rm2))
 }
-
+rm(GEN_lot_la_totale)
 
 #Analyse niveaux pour nettoyage (A SUPPRIMER)
 GEN_fichier_data <- "~/projects/champis/lot_champis.zip"
@@ -196,3 +196,7 @@ summary(GEN_dataset2$Odeur)
 summary(GEN_dataset2$VG.Type2)
 #summary(GEN_dataset2$VP.Type)
 summary(GEN_dataset2$VP.Type2)
+rm(GEN_fichier_data,GEN_dataset2)
+
+# Sauvegarde données
+save.image("EKR-Generateur.RData")
