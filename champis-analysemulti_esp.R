@@ -108,7 +108,7 @@ colnames(MULESP_LHS) <- c("X1", "X2")
 
 
 ### RPART ###
-MULESP_grid_rpart_cp <- data.frame(cp = 10^seq(from = -5, to = -1, by = .5))
+MULESP_grid_rpart_cp <- data.frame(cp = 10^seq(from = -4, to = -1, length.out=10))
 MULESP_set_rpart_cp <- c("rpart", "tuneGrid  = MULESP_grid_rpart_cp")
 MULESP_fit_rpart_cp <- fit_test(MULESP_set_rpart_cp)
 MULESP_fit_rpart_cp_resultats <- MULESP_fit_rpart_cp$results
