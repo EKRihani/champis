@@ -1012,7 +1012,7 @@ Les arbres de classification les plus simples obtenus (figure \ref{fig:ArbresRpa
 \paragraph*{}
 Nous pouvons notamment remarquer la forte prévalence de n\oe{}uds intermédiaires dotés de valeurs *Rejeter* ou *Conserver*, selon que l'accent ait été porté sur la sensibilité (tendance au rejet) ou la spécificité (tendance à la consommation).
 \paragraph*{}
-Contrairement à la LDA, il n'est pas possible de déterminer
+Contrairement à la LDA, il n'est pas possible de déterminer les critères les plus discriminants. Les critères apparaissant dans les étages supérieurs de l'arbre sont ceux permettant de mieux séparer l'ensemble des individus en sous-ensembles les plus homogènes possibles, sans pour autant s'avérer décisifs dans la classification, dans un sens comme dans l'autre.
 
 \FloatBarrier
 \paragraph*{}
