@@ -60,7 +60,7 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 
 \begingroup
 \flushleft
-<!-- AI\ : \emph{Artificial Intelligence} (intelligence artificielle) -->
+-- AI\ : \emph{Artificial Intelligence} (intelligence artificielle)
 
 AUC\ : *Area Under Curve* (aire sous la courbe)
 
@@ -74,7 +74,7 @@ DOE\ : *Design of Experiments* (plan d'expériences)
 
 ESE\ : *Enhanced Stochastic Evolutionnary* ([algorithme] évolutionnaire stochastique amélioré)
 
-<!-- IA\ : Intelligence Artificielle -->
+IA\ : Intelligence Artificielle
 
 LDA\ : *Linear Discriminant Analysis* (analyse linéaire discriminante)
 
@@ -265,7 +265,7 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 * Efficience calculatoire,
 * Distribution continue,
 * Distribution asymétrique,
-* Distribution bornée, ou normalisable sur un intervalle $\left[ 0 ; 1 \right]$,
+* Distribution bornée, ou normalisable sur un intervalle $\left[ 0 ; 1 \right]$.
 
 \FloatBarrier
 \paragraph*{}
@@ -338,7 +338,7 @@ plot(lois_beta)
 ```
 
 \paragraph*{}
-Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît préférable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, chargé de générer de légères variations des rapports entre ces trois caractéristiques dimensionnelles. Il nous semble ici souhaitable de proposer une distribution en cloche pour ce facteur de dispersion, afin de favoriser la génération de champignons "harmonieux", c'est-à-dire de spécimens dont les proportions ne s'éloignent pas de celles typiques de leur espèce.
+Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît préférable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, chargé de générer de légères variations des rapports entre ces trois caractéristiques dimensionnelles. Il nous semble ici souhaitable de proposer une distribution en cloche pour ce facteur de dispersion, afin de favoriser la génération de champignons "harmonieux", c'est-à-dire de spécimens dont les proportions ne s'éloignent pas exagérément de celles typiques de leur espèce.
 \paragraph*{}
 Nous proposons ainsi le modèle suivant\ :
 
@@ -389,10 +389,11 @@ La génération des paramètres qualitatifs, tels que la couleur des spores ou l
 \paragraph*{}
 L'ensemble des valeurs qualitatives possibles pour un critère et pour une variété donnés est inséré dans un vecteur de valeurs. Une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question, et ce, pour chaque spécimen.
 \paragraph*{}
-Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable. \footnote{cf. annexes, p. \pageref{ANNEXErares}}
+Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable.\footnote{cf. annexe 3, p. \pageref{ANNEXErares}}
 \paragraph*{}
 Notre générateur permettra donc aux caractéristiques "communes" d'avoir une probabilité d'être sélectionnées `r GEN_ratio_cr` fois plus élevée  que celle de ces caractéristiques "rares".
 \paragraph*{}
+Le lot de données ainsi obtenu contient $N = `r BI_n_champis`$ spécimens, de $n = `r GEN_n_especes`$ espèces, caractérisés par 25 facteurs morphologiques ou environnementaux, qualitatifs ou quantitatifs.
 
 \cleardoublepage
 \FloatBarrier
@@ -501,7 +502,7 @@ $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
 avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
 
-$\overline{x_{i, n}}$ et $\overline{x_{i, n}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
+$\overline{x_{i, n}}$ et $\overline{x_{i, m}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
 $x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres $p$ et $q$ pour chaque individu $i$.
 \paragraph*{}
@@ -528,7 +529,7 @@ d_{1} = S_{11}\lambda_{1} + S_{12}\lambda_{2} + S_{13}\lambda_{3} + S_{14}\lambd
 d_{2} = S_{21}\lambda_{1} + S_{22}\lambda_{2} + S_{23}\lambda_{3} + S_{24}\lambda_{4} \\
 d_{3} = S_{31}\lambda_{1} + S_{32}\lambda_{2} + S_{33}\lambda_{3} + S_{34}\lambda_{4} \\
 d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambda_{4} \\
-\end{array} \Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
+\end{array} \Rightarrow \mathbf{S.\boldsymbol{\lambda} = D \Leftrightarrow{} \boldsymbol{\lambda} = S^{-1}.D}
 \right.$$
 
 avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.

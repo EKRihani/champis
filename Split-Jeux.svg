@@ -40,9 +40,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.5411756"
-     inkscape:cx="354.92386"
-     inkscape:cy="221.58409"
+     inkscape:zoom="0.7705878"
+     inkscape:cx="147.93901"
+     inkscape:cy="248.51159"
      inkscape:window-width="1920"
      inkscape:window-height="1018"
      inkscape:window-x="-8"
@@ -114,7 +114,7 @@
        height="10"
        x="36.983795"
        y="34.023651"
-       inkscape:export-filename="rect31.pdf"
+       inkscape:export-filename="Split-Jeux.pdf"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
     <rect
@@ -141,9 +141,9 @@
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect9193);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
            y="95.076951"
-           id="tspan2037"><tspan
+           id="tspan663"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2035">DONNÉES</tspan></tspan></text>
+             id="tspan661">DONNÉES</tspan></tspan></text>
     </g>
     <g
        id="g23627"
@@ -155,13 +155,13 @@
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect23629);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
            y="95.076951"
-           id="tspan2041"><tspan
+           id="tspan667"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2039">ENTRAÎNEMENT &amp; OPTIMISATION</tspan></tspan></text>
+             id="tspan665">ENTRAÎNEMENT &amp; OPTIMISATION</tspan></tspan></text>
     </g>
     <g
        id="g27059"
-       transform="translate(56.220916,19.345776)">
+       transform="translate(56.725548,19.345776)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.397681,16.21125)"
@@ -169,9 +169,9 @@
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect27061);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
            y="95.076951"
-           id="tspan2045"><tspan
+           id="tspan671"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2043">ÉVAL</tspan></tspan></text>
+             id="tspan669">ÉVAL</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.848773;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
@@ -197,13 +197,13 @@
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28825);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
            y="95.076951"
-           id="tspan2049"><tspan
+           id="tspan675"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2047">ENTRAÎNEMENT</tspan></tspan></text>
+             id="tspan673">ENTRAÎNEMENT</tspan></tspan></text>
     </g>
     <g
        id="g28823"
-       transform="translate(56.220916,39.345776)">
+       transform="translate(56.725548,39.345776)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.397681,16.21125)"
@@ -211,9 +211,9 @@
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28827);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
            y="95.076951"
-           id="tspan2053"><tspan
+           id="tspan679"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2051">ÉVAL</tspan></tspan></text>
+             id="tspan677">ÉVAL</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#87de87;stroke:none;stroke-width:0.282924;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
@@ -232,9 +232,9 @@
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28837);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
            y="95.076951"
-           id="tspan2057"><tspan
+           id="tspan683"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2055">OPTI</tspan></tspan></text>
+             id="tspan681">OPTI</tspan></tspan></text>
     </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.26458299, 0.79374898;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Scissors);marker-mid:url(#Scissors)"
