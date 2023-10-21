@@ -1189,7 +1189,7 @@ Sen_{Jw_{max}} = `r round(BI_fit_Rborist_best_resultats["Sens"],5)` \\
 
 
 \paragraph*{}
-Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle ranger. Celui-ci dispose de trois hyperparamètres\ : 
+Le dernier modèle de forêt aléatoire que nous évaluons dans cette étude est le modèle Ranger. Celui-ci dispose de trois hyperparamètres\ : 
 
 * La taille minimale de n\oe{}ud (*min.node.size*), 
 * Le nombre de caractéristiques à séparer à chaque n\oe{}ud (*mtry*) 
@@ -1292,11 +1292,11 @@ Les modèles ayant atteint les performances requises ($J_{w} \geq `r Jw_min`$) l
 * Forêt aléatoire avec algorithme de type Rborist.
 
 \paragraph*{}
-Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus précédemment\footnote{cf. section \ref{chapitre:BI-RF}} par modélisation des performances via un modèle quadratique avec interactions. Les performances de nos modèles face au jeu de données d'évaluation, auquel ils n'ont encore jamais été exposés,\footnote{cf. section \ref{chapitre:split_methodes} p. \ \pageref{chapitre:split_methodes}}, seront évaluées avec le même critère que précédemment\ : $J_{w} \geq `r Jw_min`$
+Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus précédemment\footnote{cf. section \ref{chapitre:BI-RF}} par modélisation des performances via un modèle quadratique avec interactions. Les performances de nos modèles face au jeu de données d'évaluation, auquel ils n'ont encore jamais été exposés,\footnote{cf. section \ref{chapitre:split_methodes} p. \pageref{chapitre:split_methodes}} seront évaluées avec le même critère que précédemment\ : $J_{w} \geq `r Jw_min`$
 
 ### Performances des modèles de forêts aléatoires
 
-La matrice de confusion du modèle ranger (table \ref{tab:BI-CM}) donne les résultats détaillés de ses prédictions.
+La matrice de confusion du modèle Ranger (table \ref{tab:BI-CM}) donne les résultats détaillés de ses prédictions.
 \FloatBarrier
 
 ```{r BI-CM, echo = FALSE}
@@ -1339,12 +1339,12 @@ Ce choix est dicté par les nécessités suivantes \:
 * Inversement, éviter d'avoir un nombre trop faible de classes, dont certaines contiendraient un nombre considérable d'espèces.
 
 \paragraph*{}
-Nous avons retenu, pour cette étude, une classification plus souple, qui est celle proposée dans le Photoguide du Pr Courtecuisse.[@courtecuisse_photo-guide_2000] Les familles représentées ici peuvent être retrouvées dans la matrice de confusion, située à la fin de cette section (table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}).
+Nous avons retenu, pour cette étude, une classification plus souple, qui est celle proposée dans le Photoguide du Pr Courtecuisse.[@courtecuisse_photo-guide_2000] Les familles représentées ici peuvent être retrouvées dans la matrice de confusion située à la fin de cette section (table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}).
 
 ### Modèles d'arbres de décision
 
 \paragraph*{}
-Le modèle d'arbre de décision présenté dans cette partie est rpart, le plus simple des modèles CART. Ce modèle dispose d'un unique hyperparamètre \ : *cp* (complexité). Les performances maximales sont obtenues pour de faibles valeurs de l'hyperparamètre *cp* (figure \ref{fig:MULFAM-rpart}, page  \pageref{fig:MULFAM-rpart}).
+Le modèle d'arbre de décision présenté dans cette partie est rpart, le plus simple des modèles CART. Ce modèle dispose d'un unique hyperparamètre \ : *cp* (complexité). Les performances maximales sont obtenues pour de faibles valeurs de l'hyperparamètre *cp* (figure \ref{fig:MULFAM-rpart}).
 
 \FloatBarrier
 ```{r, MULFAM-rpart, echo = FALSE, fig.height = 3, fig.width = 5, fig.cap = "Performance de rpart en classification par famille, selon le paramètre de complexité"}
@@ -1359,9 +1359,9 @@ Ce modèle, pourtant très simple, donne déjà de très bons résultats globaux
 ### Forêts aléatoires
 
 \paragraph*{}
-Le premier modèle de forêt aléatoire évalué dans cette partie est ranger, que nous avons déjà présenté précédemment. Les graphiques des performances en fonction des hyperparamètres laissent entrevoir d'excellentes caractéristiques sur une large plage d'hyperparamètres.
+Le premier modèle de forêt aléatoire évalué dans cette partie est Ranger, que nous avons déjà présenté précédemment. Les graphiques des performances en fonction des hyperparamètres laissent entrevoir d'excellentes caractéristiques sur une large plage d'hyperparamètres.
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Ranger dans une classification par familles, en fonction de ses 2 hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Ranger dans une classification par familles, en fonction de ses hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
 plot(ggarrange(
    ncol = 2,
    MULFAM_fit_ranger_Gini_kappa_graphe,
@@ -1419,6 +1419,7 @@ Le dernier modèle de forêt aléatoire est Rborist. Ce modèle présente lui au
 ```{r, MULFAM2DRborist, echo = FALSE, fig.height = 4, fig.width = 5.2, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
+
 \FloatBarrier
 \paragraph*{} 
 Comme lors de la classification binaire,\footnote{cf. section \ref{paragraphe:ModelBIRborist}, page \pageref{paragraphe:ModelBIRborist}} nous pouvons modéliser la réponse par un modèle quadratique avec interaction\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}\ : \label{paragraphe:ModelMULFAMRborist}
@@ -1471,7 +1472,7 @@ Rborist a donné des résultats similaires à ceux de Ranger, avec d'excellentes
 \paragraph*{}
 Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqués précédemment.
 \paragraph*{}
-L'évaluation finale du modèle ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}. La précision finale est égale à $R = `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).
+L'évaluation finale du modèle Ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}. La précision finale est égale à $R = `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).
 \paragraph*{}
 La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré un peu moins efficient que ce dernier sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
 
@@ -1517,11 +1518,11 @@ Face à cette tâche de classification sensiblement plus complexe que la précé
 \paragraph*{}
 Comme lors de la classification multiclasses par familles présentée dans les développements de la section précédente, le premier modèle de forêt aléatoire évalué dans cette partie sera un algorithme de type Ranger. 
 \paragraph*{}
-L'interprétation des graphiques obtenus suite à l'exploration de l'espace expérimental des hyperparamètres de ce modèle laisse entrevoir de bonnes performances sur une large plage de cet espace des hyperparamètres, avec un effet nettement prédominant de *mtry* sur les performances globales du modèle.
+L'interprétation des graphiques obtenus suite à l'exploration de l'espace expérimental des hyperparamètres de ce modèle laisse entrevoir de bonnes performances sur une large plage de ce domaine, avec un effet nettement prédominant de *mtry* sur les performances globales du modèle.
 
 \FloatBarrier
 
-```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Ranger dans une classification par espèces, en fonction de ses 2 hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
+```{r, echo = FALSE, fig.height = 4, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Ranger dans une classification par espèces, en fonction de ses hyperparamètres (algorithme de scission\ : Gini à gauche, extratrees à droite)"}
 plot(ggarrange(
    ncol = 2,
    MULESP_fit_ranger_Gini_kappa_graphe,
@@ -1640,7 +1641,7 @@ La forêt aléatoire de type Rborist a donné des résultats très proches de ce
 \paragraph*{}
 La précision finale de Rborist est ainsi égale à `r round(MULESP_CM_Rborist_final$overall["Accuracy"],4)`, avec un intervalle de confiance à 95% de [`r round(MULESP_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULESP_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats proches à Ranger, s'est avéré un peu moins efficient sur le plan calculatoire (`r MULESP_temps_Rborist` min).
 \paragraph*{}
-Nous pouvons noter, comme précédemment, que si Rborist affiche des performances marginalement supérieures, le modèle ranger s'est avéré sensiblement plus rapide sur des problèmes complexes.
+Nous pouvons noter, comme précédemment, que si Rborist affiche des performances marginalement supérieures, le modèle Ranger s'est avéré sensiblement plus rapide sur des problèmes complexes.
 
 ```{r, echo = FALSE}
 kable(MULESP_RF_resultat, digits = 5, caption = "Performances des modèles Ranger et Rborist (évaluation)") %>%
@@ -1757,7 +1758,7 @@ Lors des développements concernant la LDA (*Linear Discriminant Analysis*), nou
 \paragraph*{}
 Nous reviendrons ici sur le critère d'unimodalité des distributions des valeurs. Cette condition, au delà des considérations évoquées lors des développements mathématiques mentionnés précédemment, peut s'expliquer par simple interprétation graphique.
 \paragraph*{}
-Nous utilisons ici la définition *lato sensu* de caractère uni ou multimodal d'une distribution : une distribution unimodale est une distribution dotée d'un unique maximum. Une distribution multimodale est une distribution dotée de plusieurs maximums locaux.
+Nous utilisons ici la définition *lato sensu* du caractère uni ou multimodal d'une distribution : une distribution unimodale est une distribution dotée d'un unique maximum. Une distribution multimodale est une distribution dotée de plusieurs maximums locaux.
 \paragraph*{}
 En termes plus triviaux, la loi de densité d'une distribution unimodale n'a qu'une seule "bosse", alors que celle d'une distribution multimodale en aura plusieurs.
 \paragraph*{}
@@ -1824,7 +1825,7 @@ La marge du chapeau (fig. \ref{fig:AnatMarges}) et sa texture sont également su
 \begin{figure}
    \centering
    \includegraphics[width=\linewidth]{anat-marge}
-  \caption{Principales formes marges de chapeaux}
+  \caption{Principales formes de marges de chapeaux}
   \label{fig:AnatMarges}
 \end{figure}
 
@@ -1915,7 +1916,7 @@ Mais la relation symbiotique présentant le plus d'intérêt dans le cadre de ce
 \paragraph*{}
 Certains types de champignons peuvent exploiter plusieurs modes d'absorption de la matière organique. C'est le cas de la truffe (*Tuber melanosporum*), parfois saprotrophe, essentiellement mycorhizienne des feuillus tels que le chêne et le noisetier, mais également parasite d'autres espèces végétales dont elle inhibe la croissance, formant ainsi le *cercle brûlé* entourant typiquement les chênes truffiers.
 \paragraph*{}
-Les spécialisations que nous venons d'évoquer permettent d'affirmer que l'environnement et le substrat sur lesquels ont été prélevés le champignon peuvent constituer des indices majeurs de l'identification d'un champignon, et justifient amplement la présence d'un indicateur environnemental parmi les critères de notre classification.
+Les spécialisations que nous venons d'évoquer permettent d'affirmer que l'environnement et le substrat sur lesquels ont été prélevés le champignon peuvent constituer des indices majeurs de l'identification de celui-ci, et justifient amplement la présence d'un indicateur environnemental parmi les critères de notre classification.
 \paragraph*{}
 Dans une moindre mesure, la période de fructification peut également constituer un indice, et a donc été incluse dans nos critères de classification.
 
