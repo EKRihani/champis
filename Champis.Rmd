@@ -389,7 +389,7 @@ La génération des paramètres qualitatifs, tels que la couleur des spores ou l
 \paragraph*{}
 L'ensemble des valeurs qualitatives possibles pour un critère et pour une variété donnés est inséré dans un vecteur de valeurs. Une valeur sera tirée aléatoirement, et de manière équiprobable, parmi celles contenues dans ce vecteur afin de caractériser le paramètre en question, et ce, pour chaque spécimen.
 \paragraph*{}
-Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable.\footnote{cf. annexe 3, p. \pageref{ANNEXErares}}
+Toutefois, certaines caractéristiques ont pu, lors de notre recherche bibliographique, être identifiées comme rares. Afin d'en tenir compte, nous avons, lorsqu'une telle valeur "rare" est présente dans notre vecteur contenant les valeurs possibles, choisi de dupliquer à `r GEN_ratio_cr` reprises les autres valeurs dans le vecteur de valeurs parmi lesquels aura lieu le tirage équiprobable.\footnote{cf. annexes, section \ref{ANNEXErares}, page \pageref{ANNEXErares}}
 \paragraph*{}
 Notre générateur permettra donc aux caractéristiques "communes" d'avoir une probabilité d'être sélectionnées `r GEN_ratio_cr` fois plus élevée  que celle de ces caractéristiques "rares".
 \paragraph*{}
@@ -634,7 +634,7 @@ avec $p$ la fréquence relative de l'une des deux classes, au sein du n\oe{}ud c
 \paragraph*{}
 Les arbres obtenus peuvent enfin être rationalisés à l'aide d'un algorithme d'élagage (*pruning*) visant à réduire la complexité de l'arbre. Cet algorithme effectue l'analyse de l'arbre des feuilles vers la racine -- donc dans le sens inverse de l'induction qui l'a construit -- et en évaluant si chaque n\oe{}ud intermédiaire pourrait être avantageusement remplacé par une feuille ou par une branche. Différents critères d'optimisation existent, parmi lesquels nous pouvons citer l'élagage coût-complexité,[@kretowski_evolutionary_2019] exploité par le modèle CART, et qui vise à minimiser le facteur coût-complexité $CC(T)$ de notre arbre $T$\ :
 $$CC(T) = Erreur(T) + \alpha{}\times Taille(T)$$
-avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. section \ref{paragraphe:train-CART}, p.\ \pageref{paragraphe:train-CART}} strictement positif évalué expérimentalement.\footnote{cf. section \ref{chapitre:doe}, p.\ \pageref{chapitre:doe}}
+avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. annexes, section \ref{paragraphe:train-CART}, page \pageref{paragraphe:train-CART} et suivantes} strictement positif évalué expérimentalement.\footnote{cf. section \ref{chapitre:doe}, page \pageref{chapitre:doe}}
 \paragraph*{}
 Les résultats de la mise en \oe{}uvre d'une classification par arbre de décision sur le jeu de données Iris sont représentés par la figure \ref{fig:Iris-CART}. 
 \paragraph*{}
@@ -1292,7 +1292,7 @@ Les modèles ayant atteint les performances requises ($J_{w} \geq `r Jw_min`$) l
 * Forêt aléatoire avec algorithme de type Rborist.
 
 \paragraph*{}
-Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus précédemment\footnote{cf. section \ref{chapitre:BI-RF}} par modélisation des performances via un modèle quadratique avec interactions. Les performances de nos modèles face au jeu de données d'évaluation, auquel ils n'ont encore jamais été exposés,\footnote{cf. section \ref{chapitre:split_methodes} p. \pageref{chapitre:split_methodes}} seront évaluées avec le même critère que précédemment\ : $J_{w} \geq `r Jw_min`$
+Tous les modèles ont été entraînés sur le jeu de données d'apprentissage, après application des hyperparamètres optimaux obtenus précédemment\footnote{cf. section \ref{chapitre:BI-RF}} par modélisation des performances via un modèle quadratique avec interactions. Les performances de nos modèles face au jeu de données d'évaluation, auquel ils n'ont encore jamais été exposés,\footnote{cf. section \ref{chapitre:split_methodes} page \pageref{chapitre:split_methodes}} seront évaluées avec le même critère que précédemment\ : $J_{w} \geq `r Jw_min`$
 
 ### Performances des modèles de forêts aléatoires
 
@@ -1933,7 +1933,7 @@ Dans une moindre mesure, la période de fructification peut également constitue
 \cleardoublepage
 # Annexe 3\ : Algorithme de génération de lot synthétique
 
-Le principe de cet algorithme est de prendre un tableau au format csv contenant les caractéristiques typiques des macromycètes extraites de la littérature mycologique (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.) et de générer un lot de données exploitable, sous forme d'une liste de spécimens, de chaque espèce données, possédant des caractéristiques individuelles censées être représentatives de leur espèce.
+Le principe de cet algorithme est de prendre un tableau au format csv contenant les caractéristiques typiques des macromycètes extraites de la littérature mycologique (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.) et de générer un lot de données exploitable, sous forme d'une liste de spécimens, de chaque espèce donnée, possédant des caractéristiques individuelles censées être représentatives de leur espèce.
 
 ## Initialisation
 La seule bibliothèque utilisée lors de la création du lot de données synthétique est le *tidyverse*,[@R-tidyverse] collection de bibliothèques spécialisées dans le domaine de la *data science* et notamment dédiées au traitement, au nettoyage et à la visualisation de données.
@@ -1981,7 +1981,7 @@ data_champis$N <- 1:n_especes
 \paragraph*{}
 Les données relatives à la saisonnalité des champignons ont été créées, dans notre tableau initial, sous la forme *mm-MM*, avec *mm* le mois de début, et *MM* le mois de fin de fructification. Afin de pouvoir générer chacun des mois de cet intervalle, nous pouvons créer un vecteur contenant chacune des valeurs de cet intervalle, à l'aide d'une fonction *ad hoc*.
 \paragraph*{}
-Cette fonction extrait tout d'abord les deux chaînes numériques *mm* et *MM*, avant d'effectuer une comparaison entre ces deux valeurs. En effet, si $mm > MM$, alors la saison de fructification devra inclure le passage de décembre à janvier, et donc générer toutes les valeurs entières de *mm* à 12, puis celles de 1 à *MM*. L'ensemble de ces valeurs est intégrée dans une chaîne de caractères via la fonction \verb|str_flatten\verb|, avec la séparation appropriée. Cette fonction est ensuite appliquée sur l'ensemble de la variable \verb|Mois\verb|.
+Cette fonction extrait tout d'abord les deux chaînes numériques *mm* et *MM*, avant d'effectuer une comparaison entre ces deux valeurs. En effet, si $mm > MM$, alors la saison de fructification devra inclure le passage de décembre à janvier, et donc générer toutes les valeurs entières de *mm* à 12, puis celles de 1 à *MM*. L'ensemble de ces valeurs est intégrée dans une chaîne de caractères via la fonction \verb|str_flatten|, avec la séparation appropriée. Cette fonction est ensuite appliquée sur l'ensemble de la variable \verb|Mois|.
 
 \small
 ```{r, eval = FALSE}
@@ -2048,7 +2048,7 @@ La génération du lot de données à proprement parler peut commencer. La strat
 \paragraph*{}
 La première étape de la génération des sous-lots consiste à créer une liste par espèce, nommée \verb|champN|, avec \verb|N| l'indice attribué précédemment à chaque espèce. La génération implique tout d'abord de créer une liste des noms de listes, ainsi qu'une fonction *ad hoc* permettant de séparer toutes les valeurs séparées par des virgules.
 \paragraph*{}
-Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* \verb|data_champis|. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction \verb|str_split| étant par définition une chaîne de caractère, toutes valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront quant à elles forcées en tant que numériques via la fonction \verb|as.numeric|.
+Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* \verb|data_champis|. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction \verb|str_split| étant par définition une chaîne de caractère, toutes les valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront forcées en tant que numériques via la fonction \verb|as.numeric|.
 
 \small
 ```{r, eval = FALSE}
@@ -2230,7 +2230,7 @@ BI_split_facteur <- round(sqrt(BI_split_p)+1)
 ```
 \normalsize
 
-La seconde partie consiste à effectuer la scission proprement dite. Cette scission implique la définition d'une liste d'index, de fraction $1:f$ du nombre d'individus, qui servira via inclusion (jeu d'évaluation) ou exclusion (jeu d'apprentissage et d'évaluation) booléennes des lignes correspondantes, à de constituer chaque jeu de données. La fonction \verb|set.seed| assure la reproductibilité.
+La seconde partie consiste à effectuer la scission proprement dite. Cette scission implique la définition d'une liste d'index, de fraction $1:f$ du nombre d'individus, qui servira via inclusion (jeu d'évaluation) ou exclusion (jeu d'apprentissage et d'évaluation) booléennes des lignes correspondantes, à constituer chaque jeu de données. La fonction \verb|set.seed| assure la reproductibilité.
 \small
 ```{r, eval = FALSE}
 set.seed(7)
@@ -2429,7 +2429,7 @@ BI_MAE_Rborist <- MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
 
 Ces résultats permettent notamment de modéliser les performances sur la totalité de l'espace expérimental des hyperparamètres. A cette fin, l'algorithme est chargé de générer l'ensemble des couples de valeurs $(X_{1},X_{2})$ possibles, à l'aide de la fonction \verb|expand.grid|, avant de calculer la valeur $J_{w}$ correspondante à chaque couple de points.
 \paragraph*{}
-L'évaluation de la précision de la modélisation quadratique se base sur la juxtaposition des prédictions suivant le modèle quadratique à côté des valeurs expérimentales, puis le calcul de la MAE.
+L'évaluation de la précision de la modélisation quadratique se base sur la juxtaposition des prédictions suivant le modèle quadratique à côté des valeurs expérimentales, puis le calcul de l'erreur absolue moyenne (MAE).
 
 \small
 ```{r, eval = FALSE}
