@@ -76,6 +76,16 @@ Un autre caractère assez évident est la forme du chapeau. La figure \ref{fig:A
 \end{figure}
 
 \FloatBarrier
+
+La marge du chapeau (fig. \ref{fig:AnatMarges}) et sa texture sont également susceptibles de fournir quelques indices utiles à la classification.
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{anat-marge}
+  \caption{Principales formes marges de chapeaux}
+  \label{fig:AnatMarges}
+\end{figure}
+
 Toutefois, l'un des premiers critères inspectés lors d'une identification manuelle des champignons est l'*hyménophore*, surface fertile portant les spores et dont la structure (lames, pores, aiguilles, lisse, interne...) constitue sans doute le critère le plus évident permettant d'orienter la classification vers certaines familles.
 \paragraph*{}
 La plupart des champignons étant dotés d'un hyménophore à lames, nous en illustrerons ici les principaux critères, avec quelques exemples :
