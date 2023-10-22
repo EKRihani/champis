@@ -2510,7 +2510,7 @@ BI_fit_Rborist_best_resultats <- BI_fit_Rborist_best$results %>%
 \normalsize
 
 ## Évaluation des performances des modèles
-
+\paragraph*{}
 L'étape finale est celle de l'évaluation des performances du modèle, ici présentée pour Rborist. Cette évaluation commence par l'extraction des valeurs réelles de comestibilité -- c'est à dire des réponses attendues de la part de notre modèle -- à partir du jeu de données d'évaluation, ainsi que leur conversion en valeurs booléennes, à fins de comparaison avec les valeurs qui seront prédites. Cette étape n'est évidemment pas nécessaire lors d'une classification multiclasse.
 
 \small
