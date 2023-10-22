@@ -2724,7 +2724,7 @@ load(file = "CodeSourceIris.RData")
 library(ggpubr)
 library(kableExtra)
 library(knitr)
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos= "!H")
 ```
 ````
 \normalsize
@@ -2774,13 +2774,14 @@ Fisher en 1936\footnote{Cette étude, proposant une méthode de classification d
 variétés \emph{Iris setosa}, \emph{Iris virginica} et \emph{Iris versicolor} est 
 par ailleurs à l'origine du célèbre jeu de données \emph{Iris}.} pour résoudre des 
 problèmes de classification taxonomique dans le domaine de la botanique.
-[@fisher_use_1936;@anderson_r_1996] La LDA est basée sur la construction de 
-l'hyperplan de projection permettant de maximiser la distance entre les moyennes 
-projetées des différentes classes et de minimiser la variance intraclasse (voir 
-figure \ref{fig:RMD-Principe-LDA}).[@hastie_elements_2016] La LDA peut être 
-utilisée à fins de classification, mais aussi pour effectuer des réductions de 
-dimensionnalité ou encore afin de faciliter l'interprétation de l'importance de 
-certaines caractéristiques.
+[@fisher_use_1936;@anderson_r_1996] 
+La LDA est basée sur la construction de l'hyperplan de projection permettant de 
+maximiser la distance entre les moyennes projetées des différentes classes et de 
+minimiser la variance intraclasse (voir figure \ref{fig:RMD-Principe-LDA}).
+[@hastie_elements_2016] 
+La LDA peut être utilisée à fins de classification, mais aussi pour effectuer des 
+réductions de dimensionnalité ou encore afin de faciliter l'interprétation de 
+l'importance de certaines caractéristiques.
 ````
 \normalsize
 
@@ -2812,7 +2813,8 @@ L'insertion de figures s'effectue en suivant la syntaxe Latex :
 ````
 \normalsize
 
-Les commandes utilisées dans ce bloc sont les suivantes :
+\newpage
+Les commandes utilisées dans le bloc précédent sont les suivantes :
 
 * \verb|\begin{figure}| et \verb|\end{figure}| permettent de délimiter l'environnement \verb|figure|, qui permet d'insérer une image,
 * \verb|\centering| indique que l'alignement de l'image doit être centré,
@@ -2820,7 +2822,7 @@ Les commandes utilisées dans ce bloc sont les suivantes :
 * \verb|\caption{xxx}| indique la légende,
 * \verb|\label{xxx}| indique l'étiquette de la figure, qui servira pour les références (fonction \verb|\ref|).
 
-Le bloc suivant n'appelle pas de commentaires particuliers, étant constitué exclusivement de texte :
+Le bloc suivant n'appelle pas de commentaires particuliers, étant purement textuel :
 \small
 ````{verbatim}
 \paragraph*{}
@@ -2948,7 +2950,9 @@ En indiçant les facteurs\ :
 * $i = 3$ pour la longueur de pétale $L_{p}$,
 * $i = 4$ pour la largeur de pétale  $\ell_{p}$.
 ````
+\normalsize
 
+\newpage
 \paragraph*{}
 La section de code suivante mêle éléments mathématiques sous Latex et éléments numériques extraits du script R ayant effectué les calculs de la LDA, et permet à Rmarkdown de s'illustrer en exploitant pleinement l'association de Latex pour les formules mathématiques et de R pour les calculs numériques.
 
@@ -2980,7 +2984,9 @@ $$ X = L_{s} +
 `r round(RMD_Iris_CoeffsNorm[3],3)`.L_{p} 
 `r round(RMD_Iris_CoeffsNorm[4],3)`.\ell_{p} $$
 ````
+\normalsize
 
+\paragraph*{}
 L'insertion de valeurs -- ou de calculs plus complexes -- dans le texte s'effectue toujours très simplement, en ouvrant par \verb|`r| et en fermant par \verb|`|, qu'il s'agisse :
 
 * D'un environnement mathématique (encadré par \verb|$| ou \verb|$$|),
@@ -2988,7 +2994,7 @@ L'insertion de valeurs -- ou de calculs plus complexes -- dans le texte s'effect
 * De texte conventionnel.
 
 \paragraph*{}
-Le dernier bloc de code présenté dans cette annexe permet d'insérer des graphiques. De même que pour les tables et les valeurs numériques, Rmarkdown s'illustre ici par ainsi sa grande souplesse qui permet la génération automatique de fichiers textes intégrant graphiques, tableaux et données numériques ou textuelles calculées et mises à jour automatiquement.
+Le dernier bloc de code présenté dans cette annexe permet d'insérer des graphiques. De même que pour les tables et les valeurs numériques, Rmarkdown s'illustre ici par ainsi sa grande souplesse qui permet la génération automatique de fichiers texte intégrant graphiques, tableaux et données numériques ou textuelles calculées et mises à jour automatiquement.
 
 \small
 ````{verbatim}
@@ -3025,7 +3031,7 @@ plot(ggarrange(widths = c(1, 1.5),
 )
 ```
 ````
-
+\normalsize
 \FloatBarrier
 
 Ce bloc de code exploite notamment les capacités de la fonction \verb|ggarrange|, appartenant à la librairie \verb|ggpubr|, pour l'insertion de plusieurs graphiques, avec les arguments suivants :
@@ -3033,8 +3039,9 @@ Ce bloc de code exploite notamment les capacités de la fonction \verb|ggarrange
 * \verb|ncol|, pour le nombre de colonnes dans lesquelles les graphiques sont agencés,
 * \verb|width|, pour les largeurs relatives des différents éléments, intégrées dans un vecteur de valeurs numériques.
 
+\newpage
 \paragraph*{}
-La fin du code n'appelle pas à commentaire particulier. La table des matières s’insérera automatiquement dans la toute dernière page, conformément au préambule, et avant les annexes éventuelles.
+La fin du code n'appelle pas à commentaires particuliers. La table des matières s’insérera automatiquement dans la toute dernière page, conformément au préambule, et avant les annexes éventuelles.
 
 \small
 ````{verbatim}
