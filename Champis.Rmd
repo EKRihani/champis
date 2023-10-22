@@ -1406,17 +1406,16 @@ MULFAM_ranger_pareto
 
 \paragraph*{}
 Après optimisation des hyperparamètres, ce modèle a donné d'excellents résultats dans la classification par familles de notre jeu de données d'essai.
-\paragraph*{}
+
 ```{r, echo = FALSE}
 kable(MULFAM_fit_ranger_best_resultats[c(1,2,3,7,8)], digits = 5, caption = "Performances du modèle Ranger (hyperparamètres optimaux)") %>%
    kable_styling(latex_options = c("striped", "hold_position"),full_width = F)
 ```
 
-\paragraph*{}
 Le dernier modèle de forêt aléatoire est Rborist. Ce modèle présente lui aussi des performances excellentes sur une large plage d'hyperparamètres.
-\paragraph*{}
+
 \FloatBarrier
-```{r, MULFAM2DRborist, echo = FALSE, fig.height = 4*.8, fig.width = 5.2*.8, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
+```{r, MULFAM2DRborist, echo = FALSE, fig.height = 4*.95, fig.width = 5.2*.95, dev = "jpeg", dpi = 600, fig.cap = "Performances du modèle Rborist dans une classification par familles, en fonction de ses deux hyperparamètres (interpolation Kriging quadratique, points expérimentaux encadrés en noir)"}
 plot(MULFAM_fit_Rborist_kappa_graphe + theme(legend.position='right')+ theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)))
 ```
 
