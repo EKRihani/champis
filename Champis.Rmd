@@ -188,7 +188,7 @@ L'élément le plus atypique du règne fongique est probablement sa morphologie,
 \paragraph*{}
 Les champignons se reproduisent à l'aide de spores, dont l'ensemble constitue la *sporée*, portée par un organe reproducteur spécialisé appelé le *sporophore*. Le terme de *champignon* du langage usuel et de *sporophore* du langage mycologique font tous deux référence à cet organe reproducteur susceptible d'être identifié, récolté et mangé.
 \paragraph*{}
-Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chapeau*, ce dernier portant en sa face inférieure un *hyménophore*, souvent constitué de *lames* ou de *tubes*, portant les spores qui, une fois disséminées, donneront naissances à de nouveaux individus.
+Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chapeau*, ce dernier portant en sa face inférieure un *hyménophore*, souvent constitué de *lames* ou de *tubes*, portant les spores qui, une fois disséminées, donneront naissance à de nouveaux individus.
 \paragraph*{}
 Certains sporophores peuvent également porter un *voile général* ou un *voile partiel*, qui les enrobaient avant leur "éclosion" et dont les restes peuvent être présents sur le sporophore adulte.
 \paragraph*{}
