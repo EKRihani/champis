@@ -638,7 +638,7 @@ avec $\alpha{}$ un hyperparamètre de complexité\footnote{cf. annexes, section 
 \paragraph*{}
 Les résultats de la mise en \oe{}uvre d'une classification par arbre de décision sur le jeu de données Iris sont représentés par la figure \ref{fig:Iris-CART}. 
 \paragraph*{}
-Des exemples d'application sur les macromycètes sont également illustrés par les figures \ref{fig:Iris-Champis-CARTa} et \ref{fig:Iris-Champis-CARTb}, qui permettent d'appréhender la potentielle complexité de la classification des champignons, même en limitant la prédiction à un critère binaire (comestible ou toxique).
+Des exemples d'application sur les macromycètes sont également illustrés par les figures \ref{fig:Iris-Champis-CARTa} et \ref{fig:Iris-Champis-CARTb}, qui permettent d'appréhender la potentielle complexité de la classification des champignons, même en limitant la prédiction à un critère binaire (comestible ou toxique).\footnote{Les n\oe{}uds aboutissant à des feuilles de type \emph{100\% comestibles} ont été censurés.}
 
 \begin{figure}
 \centering
@@ -1009,7 +1009,7 @@ plot(BI_fit_rpartcost_jw_graphe + theme(legend.position='right') + theme(legend.
 \end{figure}
 <!-- NE PAS OUBLIER DE CAVIARDER LES VALEURS ULTIMES DE L'ARBRE PRUDENT -->
 \paragraph*{}
-Les arbres de classification les plus simples obtenus (figure \ref{fig:ArbresRpartCost}) avec des valeurs d'hyperparamètre *Cost* se situant aux limites de notre espace expérimental présentent ainsi des structures et des critères assez différents, selon que l'on optimise la sensibilité pour obtenir un arbre "conservateur", ou la spécificité pour obtenir un arbre "optimiste" (voire suicidaire).
+Les arbres de classification les plus simples obtenus (figure \ref{fig:ArbresRpartCost}) avec des valeurs d'hyperparamètre *Cost* se situant aux limites de notre espace expérimental présentent ainsi des structures et des critères assez différents, selon que l'on optimise la sensibilité pour obtenir un arbre "conservateur", ou la spécificité pour obtenir un arbre "optimiste" (voire suicidaire).\footnote{Les n\oe{}uds aboutissant à des feuilles de type \emph{100\% comestibles} ont été censurés.}
 \paragraph*{}
 Nous pouvons notamment remarquer la forte prévalence de n\oe{}uds intermédiaires dotés de valeurs *Rejeter* ou *Conserver*, selon que l'accent ait été porté sur la sensibilité (tendance au rejet) ou la spécificité (tendance à la consommation).
 \paragraph*{}

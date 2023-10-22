@@ -125,7 +125,7 @@ iris_rpart <- train(Espece ~ .,
 
 library(rpart.plot)
 pdf("IrisCARTArbre.pdf", width = 3, height = 3, pointsize = 16)
-rpart.plot(x = iris_rpart$finalModel, type = 4, extra = 8, branch = 1.0, under = TRUE, box.palette = "Blues")
+rpart.plot(x = iris_rpart$finalModel, type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Blues")
 dev.off()
 
 iris_graphe_arbre <- iris2 %>% ggplot(aes(x = Lar.P., y = Lon.P., color= Espece)) +
@@ -193,7 +193,7 @@ INTRO_fit_rpart2 <- train(Type ~ .,
 
 
 pdf("IntroChampisCART2Arbre.pdf", width = 8, height = 5, pointsize = 16)
-rpart.plot(x = INTRO_fit_rpart2$finalModel, type = 4, extra = 8, branch = 1.0, under = TRUE, box.palette = "Blues")
+rpart.plot(x = INTRO_fit_rpart2$finalModel, type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Blues")
 dev.off()
 
 
