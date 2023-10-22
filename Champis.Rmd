@@ -60,7 +60,7 @@ knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGall
 
 \begingroup
 \flushleft
--- AI\ : \emph{Artificial Intelligence} (intelligence artificielle)
+AI\ : \emph{Artificial Intelligence} (intelligence artificielle)
 
 AUC\ : *Area Under Curve* (aire sous la courbe)
 
