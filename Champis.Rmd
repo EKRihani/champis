@@ -1463,7 +1463,7 @@ Les critères et le protocole de l'évaluation sont les mêmes que ceux évoqué
 \paragraph*{}
 L'évaluation finale du modèle Ranger donne la matrice de confusion de la table \ref{tab:FAM-CM}, page \pageref{tab:FAM-CM}. La précision finale est égale à $R = `r round(MULFAM_CM_ranger_final$overall["Accuracy"], 4)`$, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_ranger_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_ranger_final$overall["AccuracyUpper"], 4)`]. La forêt aléatoire de type Ranger a donné d'excellents résultats, en un temps très raisonnable (`r MULFAM_temps_ranger` min).
 \paragraph*{}
-La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré un peu moins efficient que ce dernier sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
+La forêt aléatoire de type Rborist a donné des résultats similaires, avec une précision finale égale à `r MULFAM_CM_Rborist_final$overall["Accuracy"]`, avec un intervalle de confiance à 95% de [`r round(MULFAM_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULFAM_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats sensiblement identiques à Ranger, s'est avéré nettement moins efficient que ce dernier sur le plan calculatoire (`r MULFAM_temps_Rborist` min).
 
 \FloatBarrier
 
@@ -1628,7 +1628,7 @@ kable(MULESP_CMerreurs_ranger, caption = "Matrice de confusion des erreurs de Ra
 
 La forêt aléatoire de type Rborist a donné des résultats très proches de ceux obtenus par le modèle Ranger, avec un taux d'erreur de `r MULESP_erreur_Rborist`:`r MULESP_n_eval`.
 \paragraph*{}
-La précision finale de Rborist est ainsi égale à `r round(MULESP_CM_Rborist_final$overall["Accuracy"],4)`, avec un intervalle de confiance à 95% de [`r round(MULESP_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULESP_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats proches de ceux de Ranger, s'est avéré un peu moins efficient sur le plan calculatoire (`r MULESP_temps_Rborist` min).
+La précision finale de Rborist est ainsi égale à `r round(MULESP_CM_Rborist_final$overall["Accuracy"],4)`, avec un intervalle de confiance à 95% de [`r round(MULESP_CM_Rborist_final$overall["AccuracyLower"], 4)` ; `r round(MULESP_CM_Rborist_final$overall["AccuracyUpper"], 4)`]. Le modèle Rborist, donnant des résultats marginalement supérieurs à ceux de Ranger, s'est avéré sensiblement moins efficient sur le plan calculatoire (`r MULESP_temps_Rborist` min).
 \paragraph*{}
 Nous pouvons noter, comme précédemment, que si les performances prédictives des deux modèles sont similaires, le modèle Ranger s'est avéré sensiblement plus rapide que Rborist sur des problèmes complexes.
 
