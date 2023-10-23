@@ -184,7 +184,7 @@ tr_ctrl <- trainControl(classProbs = TRUE,
                         number = INTRO_split_facteur)
 
 # Lancement du biclassifieur
-
+set.seed(1337)
 INTRO_fit_rpart2 <- train(Type ~ .,
                          method = "rpart2",
                          data = INTRO_lot_appr_opti,

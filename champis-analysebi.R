@@ -268,6 +268,7 @@ BI_fit_rpartcost_jw_graphe <- graphe2D("BI_pred_rpartcost", "BI_fit_rpartcost_re
 #              shape = 3, color = "red", size = 4)
 
 # Arbres démo
+set.seed(007)
 BI_demo_spec_rpartcostgrid <- data.frame(cp = 25e-3, Cost = 0.1)
 BI_set_rpartcost_demo_spec <- c("rpartCost", paste0("tuneGrid  = BI_demo_spec_rpartcostgrid"))
 BI_fit_rpartcost_demo_spec <- fit_test(BI_set_rpartcost_demo_spec)
@@ -278,6 +279,7 @@ rpart.plot::rpart.plot(x = BI_fit_rpartcost_demo_spec$finalModel, fallen.leaves 
                        type = 4, extra = 2, branch = 1.0, under = TRUE, box.palette = "Reds")
 dev.off()
 
+set.seed(007)
 BI_demo_sens_rpartcostgrid <- data.frame(cp = 35e-3, Cost = 2.5) # > 38 ; < 39
 BI_set_rpartcost_demo_sens <- c("rpartCost", paste0("tuneGrid  = BI_demo_sens_rpartcostgrid"))
 BI_fit_rpartcost_demo_sens <- fit_test(BI_set_rpartcost_demo_sens)

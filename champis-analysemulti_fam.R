@@ -222,6 +222,7 @@ MULFAM_fit_ranger_best_resultats <- MULFAM_fit_ranger_best$results
 
 
 ### RBORIST ###
+set.seed(007)
 MULFAM_grid_Rborist <- data.frame(MULFAM_LHS) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%     #32
    mutate(minNode = round(1+X2*16,0))
@@ -311,12 +312,13 @@ MULFAM_fit_Rborist_best_resultats <- MULFAM_fit_Rborist_best$results
 
 #########################################################
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
-#########################################################    PAS ENCORE LANCE, A FAIRE !!!
+#########################################################
 
 # Règle la liste de prédiction et lance la classification
 MULFAM_evaluation <- MULFAM_lot_evaluation
 MULFAM_evaluation$reference <- as.factor(MULFAM_evaluation$Groupe)
 
+set.seed(1337)
 start_time <- Sys.time()     # Démarre chrono
 cmd <- paste0("train(Groupe2 ~ ., method = 'ranger', data = MULFAM_lot_appr_opti,", MULFAM_set_ranger_best[2], ")") # Construction de la commande
 MULFAM_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
@@ -327,6 +329,7 @@ end_time <- Sys.time()     # Stop chrono
 MULFAM_temps_ranger <- difftime(end_time, start_time)
 MULFAM_temps_ranger <- MULFAM_temps_ranger %>% as.numeric %>% round(.,2)
 
+set.seed(1337)
 start_time <- Sys.time()            # Démarre chrono
 cmd <- paste0("train(Groupe2 ~ ., method = 'Rborist', data = MULFAM_lot_appr_opti,", MULFAM_set_Rborist_best[2], ")") # Construction de la commande
 MULFAM_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande

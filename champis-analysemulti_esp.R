@@ -108,6 +108,7 @@ colnames(MULESP_LHS) <- c("X1", "X2")
 
 
 ### RPART ###
+set.seed(1337)
 MULESP_grid_rpart_cp <- data.frame(cp = 10^seq(from = -4, to = -1, length.out=10))
 MULESP_set_rpart_cp <- c("rpart", "tuneGrid  = MULESP_grid_rpart_cp")
 MULESP_fit_rpart_cp <- fit_test(MULESP_set_rpart_cp)
@@ -236,6 +237,7 @@ MULESP_grid_Rborist <- data.frame(MULESP_LHS) %>%
    mutate(predFixed = round(1+X1*16,0)) %>%     #32
    mutate(minNode = round(1+X2*16,0))
 
+set.seed(1337)
 temps_depart <- Sys.time()
 MULESP_set_Rborist <- c("Rborist", "tuneGrid  = MULESP_grid_Rborist[,c('predFixed','minNode')]")
 MULESP_fit_Rborist <- fit_test(MULESP_set_Rborist)
@@ -327,7 +329,7 @@ MULESP_fit_Rborist_best_resultats <- MULESP_fit_Rborist_best$results
 
 #########################################################
 #     PERFORMANCE DES MODELES SUR LOT D'EVALUATION      #
-#########################################################    PAS ENCORE LANCE, A FAIRE !!!
+#########################################################
 
 # Règle la liste de prédiction et lance la classification
 MULESP_evaluation <- MULESP_lot_evaluation
@@ -336,6 +338,7 @@ save.image(file = "EKR-Champis-AnalyseMultiEsp.RData")
 
 MULESP_n_eval <- nrow(MULESP_evaluation)
 
+set.seed(1337)
 temps_depart <- Sys.time()     # Démarre chrono
 cmd <- paste0("train(Nom ~ ., method = 'ranger', data = MULESP_lot_appr_opti,", MULESP_set_ranger_best[2], ")") # Construction de la commande
 MULESP_fit_ranger_final <- eval(parse(text = cmd))     # Exécution de la commande
@@ -347,6 +350,7 @@ MULESP_temps_ranger <- difftime(temps_fin, temps_depart)
 MULESP_temps_ranger <- MULESP_temps_ranger %>% as.numeric %>% round(.,2)
 save.image(file = "EKR-Champis-AnalyseMultiEsp2.RData")
 
+set.seed(1337)
 temps_depart <- Sys.time()            # Démarre chrono
 cmd <- paste0("train(Nom ~ ., method = 'Rborist', data = MULESP_lot_appr_opti,", MULESP_set_Rborist_best[2], ")") # Construction de la commande
 MULESP_fit_Rborist_final <- eval(parse(text = cmd))     # Exécution de la commande

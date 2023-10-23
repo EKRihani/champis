@@ -14,4 +14,4 @@ rm(list = ls(all.names = TRUE))
 gc()
 
 Sys.time()
-#début 19:10
+#début 8:50

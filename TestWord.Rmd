@@ -1,0 +1,371 @@
+---
+#title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
+#author: "Emir Kaïs RIHANI"
+#date: "`r format(Sys.time(), '%d %B, %Y')`"
+lang: fr
+geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
+fontsize: 12pt          # Imposé par la fac
+classoption: twoside
+output:
+  odt_document:
+    reference_odt: style-odt.odt
+    fig_caption: true
+bibliography: [packages.bib,Champis.bib]
+csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscript
+---
+
+```{r setup, include = FALSE, warning = FALSE}
+load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
+load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
+load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
+load("EKR-Champis-Naif.RData")            # Chargement des résultats CLASSIFIEUR NAIF
+load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
+load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
+load("EKR-Champis-AnalyseMultiEsp-Light.RData")       # Chargement des résultats CLASSIF PAR ESPECES
+load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
+load("EKR-Generateur.RData")  # Chargement du générateur
+load("EKR-DataSets.RData")  # Chargement des données des lots Schlimmer/Wagner
+load("EKR-Champis-Outro.RData")    # Chargement des données de l'annexe statistique
+
+library(ggpubr)   # Combiner graphes (ggarrange)
+library(kableExtra)  # BLOQUER ces %#@$§£%#@$§£ de tables en float
+library(rmarkdown)
+library(knitr)
+library(tidyverse)
+library(bookdown)
+library(magick)
+library(rpart.plot) # Arbres de classification
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "!H")
+knitr::write_bib(c("tidyverse", "microbenchmark",  "caret",  "rmarkdown", "GGally", "plyr", "MASS", "mda", "rpart", "party", "ranger", "Rborist", "e1071", "rFerns", "knitr", "ggpubr", "SPlit", "DiceDesign", "DiceEval", "DiceKriging", "bookdown", "twinning", "rpart.plot"), "packages.bib")
+```
+\pagestyle{plain}
+
+\newpage
+# Abréviations et conventions
+
+## Liste des abréviations
+
+\begingroup
+\flushleft
+<!-- AI\ : \emph{Artificial Intelligence} (intelligence artificielle) -->
+
+AUC\ : *Area Under Curve* (aire sous la courbe)
+
+CART\ : *Classification And Regression Tree* (arbre de classification et de régression)
+
+CSV\ : *Comma Separated Values* ([fichier de] valeurs séparées par des virgules)
+
+DOE\ : *Design of Experiments* (plan d'expériences)
+
+<!-- EDA\ : *Exploratory Data Analysis* (analyse exploratoire des données) -->
+
+ESE\ : *Enhanced Stochastic Evolutionnary* ([algorithme] évolutionnaire stochastique amélioré)
+
+<!-- IA\ : Intelligence Artificielle -->
+
+LDA\ : *Linear Discriminant Analysis* (analyse linéaire discriminante)
+
+LHS\ : *Latin Hypercube Sample* (échantillonnage par hypercube latin)
+
+MAE\ : *Mean Absolute Error* (erreur absolue moyenne)
+
+ML\ : *Machine Learning* (apprentissage machine)
+
+NOLH\ : *Nearly Orthogonal Latin Hypercube* (hypercube latin quasi orthogonal)
+
+PDA\ : *Penalized Discriminant Analysis* (analyse discriminante pénalisée)
+
+RF\ : *Random Forest* (forêt aléatoire)
+
+RF-RI\ : *Random Forest Random Inputs* (forêt aléatoire à [variables d']entrées aléatoires)
+
+ROC\ : *Receiver Operating Characteristic* (fonction d'efficacité du récepteur)
+
+VCS\ : *Version Control System* (logiciel de contrôle des versions)
+
+YAML\ : *YAML Ain't Markup Language* (YAML n'est pas un langage de balisage)
+
+<!-- \endflushleft
+\endgroup -->
+
+## Conventions utilisées
+
+* Les références bibliographiques seront indiquées par des exposants numériques : ^1^, ^2^, ^3^...
+* Les références de pied de page seront indiquées par des exposants alphabétiques : ^a^, ^b^, ^c^...
+* Les notations scientifiques utiliseront la *notation E* : 3e --5 = $3 \times 10^{-5}$.
+
+\endflushleft
+\endgroup
+
+\cleardoublepage
+# Introduction
+## Propos liminaire
+\paragraph*{}
+L'identification des macromycètes, c'est à dire des champignons visibles à l'\oe{}il nu est un sujet difficile, ne devant évidemment pas être pris à la légère. Les espèces rencontrées varient considérablement d'un écosystème à un autre, d'un continent à un autre, et aucun lot de données ni ouvrage sur les champignons ne saurait couvrir toute la diversité du monde fongique.
+\paragraph*{}
+Le lot de données mycologiques créé dans cette étude, bien que constituant l'un des lots les plus complets du domaine de la *data science*, n'est bien entendu pas exhaustif.
+\paragraph*{}
+Ce lot se concentrera exclusivement sur les champignons habituellement rencontrés au Nord de la France. Nombre de variétés, parfois très connues, ne sont donc pas présentes, parmi lesquelles nous pouvons par exemple citer les représentants du genre  *Psilocybe*, connus pour leurs propriétés psychédéliques ou, plus proches de nous, ceux du genre *Tuber*\ : les truffes. 
+\paragraph*{}
+Certains critères pourront également varier de manière considérable selon le stade de maturité du champignon\ : alors que les chapeaux vert-olive de l'*Amanita phalloides* mature sont faciles à reconnaître, les spécimens jeunes sont blancs et pourraient facilement être confondus avec des espèces comestibles (par exemple du genre *Agaricus*).[@courtecuisse_initiation_2020]
+\paragraph*{}
+L'ingestion de certains de ces champignons est *mortelle*, même en faible quantité. Le diagnostic de l'intoxication fongique peut être difficile, et parfois trop tardif pour un traitement efficace. Des composés toxiques tels que les amanitines ne sont pas altérés ou détruits par cuisson ou congélation, et seront absorbés par l'intestin, avant de passer dans la circulation sanguine afin d'être filtrés par le foie, détruisant les cellules hépatiques, puis excrétées dans l'intestin, réabsorbées, refiltrées... chaque passe détruisant les cellules hépatiques ayant survécu à la précédente, dans un cycle connu sous le nom de réabsorption hépato-entérique.[@courtecuisse_champignons_2013]
+\paragraph*{}
+Il ne faut jamais, *sous aucune circonstance*, utiliser les lots de données générés par des méthodes similaires à celles de notre étude dans le but de déterminer si un champignon est comestible ou non.
+
+## But de l'étude
+\paragraph*{}
+L'identification des plantes et champignons est un problème de classification classique, qui est usuellement effectué de façon manuelle, à l'aide de clés d'identification. La plupart de ces clés sont basées sur un processus utilisant des arbres décisionnels, ce qui pourrait sembler logique car rappelant la logique en arbre de l'évolution. Quoique séduisant, cet argument rencontre certaines limites\ :
+\paragraph*{}
+La première limite est le nombre de chaînons manquants. Certaines espèces sont évidemment éteintes, ce qui signifie que certaines branches et n\oe{}uds de l'arbre phylogénétique seront manquants, ce qui peut compliquer l'analyse quand deux espèces apparentées ont un nombre élevé de chaînons et n\oe{}uds communs manquants. Certaines similarités entre espèces peuvent également ne pas être identifiables de façon macroscopique.
+\paragraph*{}
+La seconde limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu\ : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. 
+\paragraph*{}
+La divergence évolutive explique par exemple la diversité des mammifères\ : les chauves-souris, baleines et chevaux sont apparentés, mais ont des aspects très dissemblables en raison de leur adaptation à des environnements très différents. 
+\paragraph*{}
+D'un autre côté, la convergence évolutive explique la similarité entre l'aile de la chauve-souris et celle de l'abeille. Toutefois, malgré leur apparente dissimilarité, l'aile de la chauve-souris est plus proche de la main humaine ou de la nageoire de la baleine que de l'aile de l'abeille. La façon la plus fiable pour évaluer le processus évolutionnaire et trouver les liens phylogénétiques de la manière la plus précise possible est l'analyse des génomes\ : les caractéristiques visibles peuvent être trompeuses. Malheureusement, ces caractéristiques sont souvent les seules aisément identifiables.
+\paragraph*{}
+Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème\ : en effet, il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
+\paragraph*{}
+Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques.
+\paragraph*{}
+Le but principal de cette étude sera de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies et méthodes d'apprentissages machine dédiées à la classification.
+
+## État de l'art des lots de données mycologiques
+Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987].
+\paragraph*{}
+Ce lot comprend `r DATA_n_Schlimmer` spécimens, caractérisés par `r DATA_quali_Schlimmer` variables qualitatives telles que la comestibilité, la forme et la surface du chapeau, la couleur et l'espacement des lames, l'odeur du champignon...
+\paragraph*{}
+Un lot de données plus conséquent a été publié par Dennis Wagner en 2021[@wagner_mushroom_2021] et mis en libre accès sous le nom de *Secondary Mushroom Dataset*.
+\paragraph*{}
+Ce lot de données inclut `r DATA_n_Wagner` spécimens et apporte une rationalisation des variables du lot précédent, se limitant ainsi à  `r DATA_quali_Wagner` variables qualitatives, et y ajoute `r DATA_quanti_Wagner` variables quantitatives apportant des caractéristiques dimensionnelles.
+\paragraph*{}
+Des bases de données dédiées à la mycologie sont également disponibles,[@noauthor_fongifrance_nodate; @noauthor_mycodb_nodate] mais leur caractère généraliste empêche leur utilisation en data science sans un processus complexe de moissonnage (*data scraping*) et de nettoyage des données (*data cleaning*).
+\paragraph*{}
+Ces lots de données présentent un intérêt certain pour le mycologue comme pour le *data sciencist*. Toutefois, nous choisissons ici de créer un lot de données dédié à cette étude, afin de\ :
+
+* Détailler et mettre en \oe{}uvre des stratégies et méthodes de création de lots de données synthétiques, dont l'intérêt et les applications s'étendent bien au delà du domaine de la mycologie,
+* Intégrer des données représentatives d'une fonge d'intérêt local, ici celle du nord de la France,
+* Proposer un lot de données plus vaste que les lots existants, tant en variété d'espèces qu'en nombre de spécimens.
+
+\cleardoublepage
+# Création du lot de données
+## Configuration matérielle et logicielle
+\paragraph*{}
+\FloatBarrier
+Le code de génération du lot de données, les algorithmes d'apprentissage machine, les méthodes d'évaluation, ainsi que cette thèse ont été rédigés sur l'équipement suivant, présenté ici à fins de reproductibilité\ :
+
+* CPU\ : AMD Ryzen 5 5600G
+* RAM\ : 2x16 Go DDR4-3200
+* SSD\ : Crucial P5 M2 NVMe
+* OS\ : Xubuntu Linux 22.04.2 LTS
+* R\ : version `r paste0(R.version$major, ".", R.version$minor, " (", R.version$year, ")")`
+* IDE\ : RStudio version `r paste0(rstudioapi::versionInfo()$version, ', "', rstudioapi::versionInfo()$release_name, '"')`
+* VCS\ : `r system("git --version", intern = TRUE)`
+* Librairies\ : tidyverse[@R-tidyverse] (v`r packageVersion("tidyverse")`), microbenchmark[@R-microbenchmark] (v`r packageVersion("microbenchmark")`), MASS[@R-MASS] (v`r packageVersion("MASS")`), caret[@R-caret] (v`r packageVersion("caret")`), GGally[@R-GGally] (v`r packageVersion("GGally")`), twinning[@R-twinning] (v`r packageVersion("twinning")`), rpart[@R-rpart] (v`r packageVersion("rpart")`), rpart.plot[@R-rpart.plot] (v`r packageVersion("rpart.plot")`), party[@R-party] (v`r packageVersion("party")`), ranger[@R-ranger] (v`r packageVersion("ranger")`), rFerns[@R-rFerns] (v`r packageVersion("rFerns")`), Rborist[@R-Rborist] (v`r packageVersion("Rborist")`),  rmarkdown[@R-rmarkdown] (v`r packageVersion("rmarkdown")`), knitr[@R-knitr] (v`r packageVersion("knitr")`), ggpubr[@R-ggpubr] (v`r packageVersion("ggpubr")`), DiceDesign[@R-DiceDesign] (v`r packageVersion("DiceDesign")`), DiceEval[@R-DiceEval] (v`r packageVersion("DiceEval")`), bookdown[@R-bookdown] (v`r packageVersion("bookdown")`).
+
+\FloatBarrier
+## Description de l'objet de l'étude
+\paragraph*{}
+Notre étude portant sur la classification des champignons macroscopiques (macromycètes) par leur morphologie, il semble souhaitable d'en apporter une définition succincte. 
+\paragraph*{}
+Le règne fongique est l'un des grands règnes du vivant, se distinguant à la fois du règne animal et du règne végétal par des caractères propres.[@courtecuisse_champignons_2013; @courtecuisse_photo-guide_2000] 
+\paragraph*{}
+L'élément le plus atypique du règne fongique est probablement sa morphologie, caractérisée par son aspect essentiellement diffus, indéterminable et intimement lié à son substrat (sol, bois...), le champignon constituant ainsi un feutrage arachnéen, qualifié de *mycélium*.[@courtecuisse_champignons_2013] Cette particularité singulière permet à certains champignons de constituer des organismes extrêmement massifs, pouvant s'étendre sur des surfaces considérables : le plus grand être vivant de notre planète est ainsi un spécimen d'*Armillaria ostoyae*, mesurant près de quatre kilomètres de long sur deux de large et vieux de plusieurs millénaires.[@ferguson_coarse-scale_2003]
+\paragraph*{}
+Les champignons se reproduisent à l'aide de spores, dont l'ensemble constitue la *sporée*, portée par un organe reproducteur spécialisé appelé le *sporophore*. Le terme de *champignon* du langage usuel et de *sporophore* du langage mycologique font tous deux référence à cet organe reproducteur susceptible d'être identifié, récolté et mangé.
+\paragraph*{}
+Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chapeau*, ce dernier portant en sa face inférieure un *hyménophore*, souvent constitué de *lames* ou de *tubes*, portant les spores qui, une fois disséminées, donneront naissances à de nouveaux individus.
+\paragraph*{}
+Certains sporophores peuvent également porter un *voile général* ou un *voile partiel*, qui les enrobaient avant leur "éclosion" et dont les restes peuvent être présents sur le sporophore adulte.
+\paragraph*{}
+Ces différents éléments anatomiques, ainsi que l'environnement dans lequel prospère le champignon, représentent autant de caractéristiques permettant l'identification d'une espèce, et qui seront exploitées dans cette étude (voir figure \ref{fig:Anatomie-Champis}).^[Voir également annexe 2, page \pageref{chapitre:annexemyco} et suivantes.]
+\paragraph*{}
+
+\begin{figure}
+   \centering
+   \includegraphics[width=\linewidth]{AnatomieChampis}
+  \caption{\'Eléments anatomiques du sporophore et caractéristiques exploitées pour son identification.}
+  \label{fig:Anatomie-Champis}
+\end{figure}
+
+\newpage
+\FloatBarrier
+## Principes de conception d'un lot de données synthétiques
+### Principes généraux{#chapitre:lotsynth}
+\paragraph*{}
+Un lot de données synthétiques est un lot de données généré par un algorithme, par opposition aux lots de données issus d'une collecte effectuée en "vie réelle". 
+\paragraph*{}
+\FloatBarrier
+Trois stratégies sont usuellement utilisées\ :
+
+* Données factices (*dummy data*)\ : l'ensemble des données est généré aléatoirement.
+* Données générées à partir de règles (*rule-based data*)\ : l'ensemble des données est généré suivant des lois définies au préalable (distribution, valeurs moyennes, minimales, maximales...)
+* Données générées par intelligence artificielle (*AI generated*)\ : l'ensemble des données est généré suivant des lois extraites par l'IA suite à l'analyse d'un échantillon de données obtenues en "vie réelle".
+
+\FloatBarrier
+\paragraph*{}
+Les données générées par ces stratégies peuvent être de types variés, que nous pouvons grossièrement regrouper en données alphanumériques (quantitatives et qualitatives), en séries temporelles, et en données d'imagerie.
+\paragraph*{}
+Pour des raisons pratiques et de maturité des technologies disponibles à l'heure actuelle, la méthode retenue pour créer le lot de données exploité dans notre étude sera la génération de données alphanumériques à partir de règles, extraites d'ouvrages mycologiques de référence.[@courtecuisse_cle_1986; @courtecuisse_photo-guide_2000; @courtecuisse_champignons_2013; @courtecuisse_initiation_2020]
+
+### Principes de génération des paramètres quantitatifs {#chapitre:generation_quanti}
+\paragraph*{}
+\FloatBarrier
+Dans le cadre de cette étude, les variables quantitatives générées aléatoirement sont\ :
+
+* La longueur du stipe $L_{S}$,
+* Le diamètre du stipe $D_{S}$,
+* Le diamètre du chapeau $D_{C}$.
+
+\FloatBarrier
+\paragraph*{}
+En première approximation, nous pouvons considérer que toutes ces valeurs sont intrinsèquement liées à la croissance du champignon. Ces trois variables peuvent, dans l'absolu, être susceptibles de varier indépendamment des autres au cours de la croissance du champignon. 
+\paragraph*{}
+Les variables $L_{S}$, $D_{S}$ et $D_{C}$ obéissent alors aux lois suivantes\ :
+
+$$\left \{
+\begin{array}{l}
+L_{S} = L_{S_{max}}.F_{Ls} \\
+D_{S} = D_{S_{max}}.F_{Ds} \\
+D_{C} = D_{C_{max}}.F_{Dc} \\
+\end{array}
+\right.$$
+
+\paragraph*{}
+Avec\ :
+
+* $L_{S_{max}}$, $D_{S_{max}}$ et $D_{C_{max}}$ les valeurs maximales de longueur de stipe, diamètre du stipe et diamètre de chapeau de chaque variété fongique, extraites de la littérature, 
+* $F_{Ls}$, $F_{Ds}$, $F_{Dc}$ des variables générées aléatoirement dans l'intervalle $\left] 0 ; 1 \right]$, et représentatives de la croissance du spécimen.
+
+\paragraph*{}
+Toutefois, nos recherches bibliographiques n'ont pas permis de distinguer de différences de la cinétique de croissance de chacune de ces trois caractéristiques dimensionnelles du sporophore. Nous supposerons donc, en première approximation, que la croissance du stipe en longueur et en largeur, ainsi que la croissance du chapeau s'effectuent à des vitesses identiques. Nous obtenons par conséquent\ :
+
+$$F_{Ls} = F_{Ds} = F_{Dc} = F_{T}$$
+avec $F_{T}$ un facteur représentatif de la taille globale de chaque spécimen, généré aléatoirement.
+
+\paragraph*{}
+Ainsi, le problème de génération de nos trois variables aléatoires se simplifie en un problème de génération d'une seule variable aléatoire\ : le facteur de taille de chaque spécimen. Un certain nombre de distributions d'intérêt sont susceptibles d'être utilisées afin de générer des facteurs de taille $F_{T}$ aléatoires. Il convient donc de définir le cahier des charges de la distribution la plus adaptée au sujet de cette étude.
+\paragraph*{}
+Les critères de sélection retenus afin de choisir la loi la plus appropriée sont\ :
+
+* Efficience calculatoire,
+* Distribution continue,
+* Distribution asymétrique,
+* Distribution bornée, ou normalisable sur un intervalle $\left[ 0 ; 1 \right]$,
+
+\FloatBarrier
+\paragraph*{}
+Le critère d'efficience calculatoire n'est, en pratique, pas un facteur limitant dans notre cas, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant s'avérant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
+
+\paragraph*{}
+```{r Lots-Chrono, echo = FALSE, fig.height = 4, fig.cap = paste0("Temps de calcul des principales distributions d'intérêt pour ", n_chrono, " facteurs, (", fois_chrono, " iter.)")}
+plot(chrono_distrib2)
+```
+
+\paragraph*{}
+Les critères de continuité et de quasi-normalité n'appellent que peu de commentaires. Ces critères permettent simplement de garantir la possibilité d'une infinité de valeurs dimensionnelles, dans l'intervalle considéré. Le critère de continuité proscrit toutefois l'utilisation de lois de distributions discrètes telles que la loi binomiale ou la loi de Poisson, et celui de quasi-normalité écarte des distributions telles que la loi de Weibull, dont la normalisation est parfois délicate.
+\paragraph*{}
+\FloatBarrier
+Le critère d'asymétrie est un critère permettant de tenir compte des différents paramètres pouvant impacter la distribution de taille des spécimens prélevés, parmi lesquels\ :
+
+* Différences de cinétique de croissance d'une famille à une autre,
+* Particularités de la croissance fongique, notamment par la croissance hyphale,[@money_insights_2008; @porter_hyphal_2022]
+* Probabilité de prélèvement variable selon la taille du spécimen (par difficulté de détection, considérations éthiques, intérêt mycologique ou gastronomique...).
+
+\FloatBarrier
+\paragraph*{}
+Le premier paramètre évoqué précédemment n'a pu être exploité dans le cadre de cette étude en raison du manque de données concernant les cinétiques relatives de croissance des sporophores des différentes familles de macromycètes. Le modèle que nous proposons permet toutefois des développements ultérieurs dans ce domaine.
+\paragraph*{}
+Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce issus d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
+\paragraph*{}
+Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
+
+\paragraph*{}
+```{r Lots-DistribSym, echo = FALSE, fig.height = 3.5, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
+plot(ggarrange(
+   widths = c(1.1, 1, 1),
+   ncol = 3,
+   distrib_uniforme + ylab("Densité"),
+   distrib_binomiale,
+   distrib_normale))
+```
+
+```{r Lots-DistribAsym, echo = FALSE, fig.height = 3.5, fig.cap = "Exemples de distributions de la loi de Poisson (à gauche), de Weibull (au centre) et bêta non-centrale (à droite)"}
+plot(ggarrange(
+   widths = c(1.1, 1, 1),
+   ncol = 3,
+   distrib_poisson + ylab("Densité"),
+   distrib_weibull,
+   distrib_beta
+   )
+)
+```
+
+\paragraph*{}
+En raison des contraintes imposées précédemment ainsi que de par sa grande polyvalence,[@johnson_continuous_1995] la loi retenue dans le cadre de cette étude pour la génération des facteurs de taille aléatoires ($F_{T}$) est une loi bêta non-centrale, définie comme la fonction de distribution de la variable $X$ telle que\ :[@johnson_continuous_1995;@r_core_team_r_2022]
+$$ X = \frac{X_{1}}{X_{1}+X_{2}} \quad\text{avec}\quad X_{1} = \chi^{2}_{2 \alpha} (\lambda) \text{ et } X_{2} = \chi^{2}_{2 \beta}$$
+$\chi^{2}_{2\beta}$ étant la loi du khi-deux à $2\, \beta$ degrés de libertés et $\chi^{2}_{2\alpha}(\lambda)$ la loi du khi-deux non-centrale à $2\, \alpha$ degrés de libertés, de paramètre de non-centralité $\lambda$. 
+\paragraph*{}
+$\alpha{}$ et $\beta{}$ sont alors les paramètres de forme de la loi bêta, et $\lambda{}$ son paramètre de non-centralité. Nous définirons empiriquement pour cette étude les relations suivantes entre ces trois paramètres\ :
+
+$$\left \{
+\begin{array}{l c c}
+\alpha = 3 \, F_{c} & & (shape1)\\
+\beta = 4  & & (shape2)\\
+\lambda = F_{c}  & & (ncp)\\
+\end{array}
+\right.$$
+\paragraph*{}
+$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \ref{fig:Lots-LoisBeta}.
+
+\paragraph*{}
+```{r Lots-LoisBeta, echo = FALSE, fig.height = 4, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
+plot(lois_beta)
+```
+
+\paragraph*{}
+Le modèle défini à ce stade impose une stricte proportionnalité entre diamètre du chapeau $D_{c}$, diamètre du stipe $D_{s}$ et longueur du stipe $L_{s}$. Dans un souci de réalisme, il apparaît préférable d'améliorer ce modèle mathématique en y ajoutant un facteur de dispersion, chargé de générer de légères variations des rapports entre ces trois caractéristiques dimensionnelles. Il nous semble ici souhaitable de proposer une distribution en cloche pour ce facteur de dispersion, afin de favoriser la génération de champignons "harmonieux", c'est-à-dire de spécimens dont les proportions ne s'éloignent pas de celles typiques de leur espèce.
+\paragraph*{}
+Nous proposons ainsi le modèle suivant\ :
+
+$$\left \{
+\begin{array}{ll} 
+L_{S} = L_{Smax}.F_{T}.\delta_{Ls} & ~~~~avec~~ \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{S} = D_{Smax}.F_{T}.\delta_{Ds} & ~~~~avec~~ \delta_{Ds} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & ~~~~avec~~ \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+\end{array}
+\right.$$
+
+\paragraph*{}
+L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S}$, $D_{S}$ et $D_{C}$ est illustré par les figures \ref{fig:Lots-Dispersion2D} et \ref{fig:Lots-DispersionDensite}.
+
+\paragraph*{}
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 600, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
+plot(ggarrange(
+   ncol = 2,
+   nuage_sansdispersion,
+   nuage_avecdispersion
+   )
+)
+```
+
+\paragraph*{}
+La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \ref{fig:Lots-DispersionDensite}). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
+
+\paragraph*{}
+```{r Lots-DispersionDensite, echo = FALSE, fig.height = 4.5, fig.cap = 'Diagramme de densité de 2 paramètres de taille, avec dispersion'}
+plot(densite2d)
+```
+
+\paragraph*{}
+Une simulation de Monte Carlo unidimensionnelle^[En pratique, la méthode de Monte Carlo consiste ici à générer un grand nombre de champignons suivant les lois mathématiques que nous avons définies précédemment, puis à dénombrer ceux répondant aux critères d'intérêt, c'est-à-dire ceux ayant des dimensions dépassant les valeurs maximales usuelles.] effectuée sur `r INTRO_n_champis` spécimens nous permet ainsi d’évaluer la proportion de spécimens "hors normes" dépassant la valeur dimensionnelle maximale à environ `r INTRO_taux_gros_diam` % (voir figure \ref{fig:HorsNormes}, page \pageref{fig:HorsNormes}).
+\paragraph*{}
+La même simulation nous permet d'évaluer que la proportion de spécimens "exceptionnels", dépassant de plus de 10% cette valeur maximale, sera quant à elle inférieure à `r INTRO_taux_supergros_diam` %.
+
+\paragraph*{}
+```{r HorsNormes, echo = FALSE, fig.height = 4, fig.cap = paste0("Distribution du diamètre de stipe Ds, pour Dsmax = ", Chap.Diam)}
+plot(distrib_diametre)
+```
+
+\FloatBarrier
