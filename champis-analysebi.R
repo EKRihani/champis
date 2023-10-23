@@ -536,7 +536,7 @@ BI_resultats_ranger <- BI_CM_ranger_final$byClass %>%
    t(.) %>% as.data.frame(.) %>% 
    select(c(Sensitivity, Specificity)) %>% 
    mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
-   mutate(temps = BI_temps_ranger)
+   mutate(temps = BI_temps_ranger_final)
 
 set.seed(45)
 temps_depart <- Sys.time()
@@ -550,7 +550,7 @@ BI_resultats_Rborist <- BI_CM_Rborist_final$byClass %>%
    t(.) %>% as.data.frame(.) %>% 
    select(c(Sensitivity, Specificity)) %>% 
    mutate(Jw = Sensitivity*BI_RatioSens + Specificity*BI_RatioSpec - 1) %>%
-   mutate(temps = BI_temps_Rborist)
+   mutate(temps = BI_temps_Rborist_final)
 
 BI_RF_resultat <- rbind(BI_resultats_ranger, BI_resultats_Rborist)
 rownames(BI_RF_resultat) <- c("Ranger", "Rborist")

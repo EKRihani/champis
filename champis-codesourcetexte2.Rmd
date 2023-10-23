@@ -52,7 +52,7 @@ $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
 avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
 \paragraph*{}
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
-$\overline{x_{i, n}}$ et $\overline{x_{i, n}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
+$\overline{x_{i, n}}$ et $\overline{x_{i, m}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
 $x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres $p$ et $q$ pour chaque individu $i$.
 \paragraph*{}
@@ -85,7 +85,7 @@ d_{1} = S_{11}\lambda_{1} + S_{12}\lambda_{2} + S_{13}\lambda_{3} + S_{14}\lambd
 d_{2} = S_{21}\lambda_{1} + S_{22}\lambda_{2} + S_{23}\lambda_{3} + S_{24}\lambda_{4} \\
 d_{3} = S_{31}\lambda_{1} + S_{32}\lambda_{2} + S_{33}\lambda_{3} + S_{34}\lambda_{4} \\
 d_{4} = S_{41}\lambda_{1} + S_{42}\lambda_{2} + S_{43}\lambda_{3} + S_{44}\lambda_{4} \\
-\end{array} \Rightarrow \mathbf{S.\lambda = D \Leftrightarrow{} \lambda{} = S^{-1}.D}
+\end{array} \Rightarrow \mathbf{S.\boldsymbol{\lambda} = D \Leftrightarrow{} \boldsymbol{\lambda} = S^{-1}.D}
 \right.$$
 avec $\mathbf{S}$ la matrice des produits $S_{pq}$, $\mathbf{D}$ le vecteur des différences des moyennes $d_{i}$ et \boldmath$\lambda{}\,$\unboldmath celui des coefficients $\lambda_{i}$.
 \paragraph*{}
