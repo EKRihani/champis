@@ -31,7 +31,7 @@ csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscr
 load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
 load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
 load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
-load("EKR-Champis-Naif.RData")            # Chargement des résultats CLASSIFIEUR NAIF
+load("EKR-Champis-Naif-Light.RData")            # Chargement des résultats CLASSIFIEUR NAIF
 load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
 load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
 load("EKR-Champis-AnalyseMultiEsp-Light.RData")       # Chargement des résultats CLASSIF PAR ESPECES
@@ -1798,7 +1798,7 @@ Le nuancier suivant (figure \ref{fig:AnatNuancier}), construit à l'aide de l'é
 \end{figure}
 
 \FloatBarrier
-Un autre caractère assez évident est la forme du chapeau. La figure \ref{fig:AnatChapeaux} présente les formes de chapeau principales pour les sporophores de champignons de morphologie agaricoïde,\footnote{La morphologie agaricoïde correspond à la "représentation habituelle" du champignon et se caractérise par la présence d'un chapeau, d'un stipe, et d'un hyménophore à lames.} mais bien d'autres géométries existent : consoles, croûtes...
+Un autre caractère assez évident est la forme du chapeau. La figure \ref{fig:AnatChapeaux} présente les formes de chapeaux principales pour les sporophores de champignons de morphologie agaricoïde,\footnote{La morphologie agaricoïde correspond à la "représentation habituelle" du champignon et se caractérise par la présence d'un chapeau, d'un stipe, et d'un hyménophore à lames.} mais bien d'autres géométries existent : consoles, croûtes...
 \FloatBarrier
 \begin{figure}
    \centering
@@ -1834,7 +1834,7 @@ Ces critères étant couramment utilisés dans la classification des champignons
 \begin{figure}
    \centering
    \includegraphics[width=\linewidth]{anat-insertionslames}
-  \caption{Principaux types d'insertion des lames}
+  \caption{Principaux types d'insertions des lames}
   \label{fig:AnatInsertionLames}
 \end{figure}
 
@@ -1921,10 +1921,11 @@ Dans une moindre mesure, la période de fructification peut également constitue
 
 \cleardoublepage
 # Annexe 3\ : Algorithme de génération de lot synthétique
-
+\paragraph*{}
 Le principe de cet algorithme est de prendre un tableau au format csv contenant les caractéristiques typiques des macromycètes extraites de la littérature mycologique (type de sporophore, dimensions maximales du stipe, du chapeau, type de lames, couleur de sporée, etc.) et de générer un lot de données exploitable, sous forme d'une liste de spécimens, de chaque espèce donnée, possédant des caractéristiques individuelles censées être représentatives de leur espèce.
 
 ## Initialisation
+\paragraph*{}
 La seule bibliothèque utilisée lors de la création du lot de données synthétique est le *tidyverse*,[@R-tidyverse] collection de bibliothèques spécialisées dans le domaine de la *data science* et notamment dédiées au traitement, au nettoyage et à la visualisation de données.
 
 \small
@@ -1949,7 +1950,7 @@ data_champis <- read.csv(fichier_data,
 \normalsize
 
 ## Préparation des données
-
+\paragraph*{}
 L'étape suivante consiste à extraire des données d'intérêt relatives à structure de notre objet \verb|data_champis|, qui seront utiles pour les étapes ultérieures du générateur. 
 \paragraph*{}
 La première partie de cette étape s'applique à déterminer le caractère numérique (*i.e.* dimensionnel) ou textuel de chaque variable, à l'aide de la fonction \verb|class|, appliquée sur la totalité de notre objet via une fonction \verb|sapply|. Les données numériques sont ici définies comme des données entières (\verb|integer|) ou numériques (\verb|numeric|). Les données textuelles sont quant à elles définies comme toutes les données n'obéissant pas à ces deux critères.
@@ -2032,12 +2033,12 @@ for (n in 1:n_especes){
 \normalsize
 
 ## Génération du lot de données
-
+\paragraph*{}
 La génération du lot de données à proprement parler peut commencer. La stratégie globale est de générer un sous-lot de données par espèce, contenant un nombre défini de spécimens, puis de les regrouper dans le lot final, qui sera par la suite exporté sous forme d'un tableau csv.
 \paragraph*{}
 La première étape de la génération des sous-lots consiste à créer une liste par espèce, nommée \verb|champN|, avec \verb|N| l'indice attribué précédemment à chaque espèce. La génération implique tout d'abord de créer une liste des noms de listes, ainsi qu'une fonction *ad hoc* permettant de séparer toutes les valeurs séparées par des virgules.
 \paragraph*{}
-Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* \verb|data_champis|. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction \verb|str_split| étant par définition une chaîne de caractère, toutes les valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront forcées en tant que numériques via la fonction \verb|as.numeric|.
+Pour chaque variété sera ensuite créée une liste, simple copie de la ligne correspondante effectuée à partir de notre *dataframe* \verb|data_champis|. Chaque chaîne de caractères de la liste sera ensuite séparée à l'aide de la fonction définie précédemment, afin de définir des vecteurs. La sortie d'une fonction \verb|str_split| étant par définition une chaîne de caractères, toutes les valeurs dimensionnelles que nous avions précédemment identifiées comme numériques lors de l'analyse structurelle des données du lot seront forcées en tant que numériques via la fonction \verb|as.numeric|.
 
 \small
 ```{r, eval = FALSE}
@@ -2163,12 +2164,10 @@ zip(zipfile = "lot_champis.zip", files = "lot_champis.csv")
 \cleardoublepage
 
 # Annexe 4\ : Algorithmes d'apprentissage machine
-
 \paragraph*{}
 Nous détaillerons ici principalement les algorithmes utilisés pour le classifieur binaire. Les particularités d'intérêt des classifieurs multiclasses seront évoquées brièvement lors des développements de cette section.
 
 ## Initialisation
-
 \paragraph*{}
 Les bibliothèques utilisées lors des étapes d'apprentissage machine sont\ :
 
@@ -2208,7 +2207,7 @@ dataset <- dataset %>% select(!Nom) %>% select(!Groupe)
 \normalsize
 
 ## Création des jeux d'entraînement, optimisation et évaluation
-
+\paragraph*{}
 La création du jeu d'évaluation s'effectue en deux étapes. La première est la définition des rapports des dichotomies entre jeux d'entraînement et optimisation d'une part, et d'évaluation d'autre part. Cette définition implique l'évaluation du nombre d'individus, le calcul du nombre de coefficients $p$, puis du rapport de dichotomie $f = \sqrt(p) +1$.\footnote{cf. section \ref{chapitre:split}, page \pageref{paragraphe:split_ratio}.}
 
 \small
@@ -2231,12 +2230,12 @@ BI_lot_evaluation <- dataset[index1,]
 Les lots ainsi obtenus seront ensuite utilisés pour l'entraînement, l'optimisation et l'évaluation finale des performances des modèles.
 
 ## Entraînement et optimisation des modèles
-
-Cette partie ne prétend pas à l'exhaustivité, elle se limitera à la présentation de l'entraînement, l'optimisation et la génération de graphiques pour deux modèles\ : un modèle CART (rpart) et un modèle RF (Rborist). Un certain nombre de tâches telles que l'entraînement du modèle ou la génération de graphiques sont en réalité attribuées à des fonctions créées *adhoc* dans le but de clarifier l'organisation du code de l'algorithme, car elles sont effectuées à de nombreuses reprises. Nous décrirons ici le code source sans faire appel à ces fonctions.
+\paragraph*{}
+Cette partie ne prétend pas à l'exhaustivité, elle se limitera à la présentation de l'entraînement, l'optimisation et la génération de graphiques pour deux modèles\ : un modèle CART (rpart) et un modèle de forêt aléatoire (Rborist). Un certain nombre de tâches telles que l'entraînement du modèle ou la génération de graphiques sont en réalité attribuées à des fonctions créées *adhoc* dans le but de clarifier l'organisation du code de l'algorithme, car elles sont effectuées à de nombreuses reprises. Nous décrirons ici le code source sans faire appel à ces fonctions.
 
 ### Arbre de classification et régression {#chapitre:code-CART}
-
-La première étape est de définir l'indice de Youden pondéré, et les pondérations respectives de la sensibilité et de la spécificité.\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}} Cette définition n'est pas nécessaire pour les classifieurs multiclasse, le kappa ($\kappa$) et l'indice de Rand ($R$) étant des métriques évaluées nativement par la librairie *caret*.
+\paragraph*{}
+La première étape est de définir l'indice de Youden pondéré, et les pondérations respectives de la sensibilité et de la spécificité.\footnote{cf. section \ref{chapitre:perf}, page \pageref{chapitre:perf}} Cette définition n'est pas nécessaire pour les classifieurs multiclasses, le kappa ($\kappa$) et l'indice de Rand ($R$) étant des métriques évaluées nativement par la librairie *caret*.
 \small
 ```{r, eval = FALSE}
 BI_w <- 10
@@ -2341,7 +2340,7 @@ plot(BI_fit_rpart_cp_graphe)
 \FloatBarrier
 
 ### Rborist
-
+\paragraph*{}
 La première étape est, comme précédemment, de définir l'espace expérimental. Ici, s'agissant d'un modèle à plusieurs hyperparamètres, l'algorithme utilisera un plan d'expériences basé sur les hypercubes latins. La fonction \verb|nolhDesign| permet de créer un hypercube latin quasi-orthogonal (NOLH\ : *Near Orthogonal Latin Hypercube*), ici paramétré avec 2 dimensions, dans l'espace $[0;1]^{2}$. Le plan d'expériences en est extrait, puis inséré dans un objet de type *dataframe*, avec colonnes nommées d'après nos variables réduites $X_{1}$ et $X_{2}$.
 
 \small
@@ -2416,7 +2415,7 @@ BI_MAE_Rborist <- MAE(BI_Compar_Rborist$Jw, BI_Compar_Rborist$Jw2)
 ```
 \normalsize
 
-Ces résultats permettent notamment de modéliser les performances sur la totalité de l'espace expérimental des hyperparamètres. A cette fin, l'algorithme est chargé de générer l'ensemble des couples de valeurs $(X_{1},X_{2})$ possibles, à l'aide de la fonction \verb|expand.grid|, avant de calculer la valeur $J_{w}$ correspondante à chaque couple de points.
+Ces résultats permettent notamment de modéliser les performances sur la totalité de l'espace expérimental des hyperparamètres. A cette fin, l'algorithme est chargé de générer l'ensemble des couples de valeurs $(X_{1},X_{2})$ possibles, à l'aide de la fonction \verb|expand.grid|, avant de calculer la valeur $J_{w}$ correspondant à chaque couple de points.
 \paragraph*{}
 L'évaluation de la précision de la modélisation quadratique se base sur la juxtaposition des prédictions suivant le modèle quadratique à côté des valeurs expérimentales, puis le calcul de l'erreur absolue moyenne (MAE).
 
@@ -2511,9 +2510,9 @@ BI_evaluation <- BI_lot_evaluation %>%
 \normalsize
 
 
-Les performances du modèle peuvent être évaluées, en termes d'efficience calculatoire, par son temps d’exécution. Un moyen de mesurer le temps d'exécution de n'importe quelle portion de code est de mesurer l'heure de début et de fin d'exécution du code à l'aide de \verb|Sys.time|, puis d'en mesurer la différence via la fonction \verb|difftime|.
+Les performances du modèle peuvent être évaluées, en termes d'efficience calculatoire, par son temps d’exécution. Un moyen de mesurer le temps d'exécution de n'importe quelle portion de code est de mesurer l'heure de début et de fin d'exécution du code à l'aide de \verb|Sys.time|, puis d'en calculer la différence via la fonction \verb|difftime|.
 \paragraph*{}
-Le code exécuté correspond ici à l'entraînement du modèle (cf. *supra*) et à la prédiction sur le lot d'évaluation, enregistré dans un objet dédié.
+Le code exécuté correspond ici à l'entraînement du modèle (cf. *supra*) et à la prédiction sur le lot d'évaluation, enregistrée dans un objet dédié.
 
 \small
 ```{r, eval = FALSE}
@@ -2894,7 +2893,7 @@ kable(RMD_Iris_Produits, caption = "Produits des différences à la moyenne des 
 \normalsize
 
 \paragraph*{}
-L'insertion de tableaux sous Rmarkdown s'effectue grâce à la fonction \verb|kable|, et les paramètres de style peuvent être configurés plus finement à l'aide de la fonction \verb|kable_styling| apportée par la librairie *kableExtra*. Nous avons notamment ajouté des tons bicolores pour le fond des lignes du tableau (\verb|striped|), et bloqué la position des tableaux vis-à-vis du texte (\verb|hold_position|).
+L'insertion de tableaux sous Rmarkdown s'effectue grâce à la fonction \verb|kable|, et les paramètres de style peuvent être configurés plus finement à l'aide de la fonction \verb|kable_styling| apportée par la librairie \verb|kableExtra|. Nous avons notamment ajouté des tons bicolores pour le fond des lignes du tableau (\verb|striped|), et bloqué la position des tableaux vis-à-vis du texte (\verb|hold_position|).
 \paragraph*{}
 Le code se poursuit par des éléments textuels et mathématiques n'appelant pas à commentaires particuliers.
 
