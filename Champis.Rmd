@@ -1721,7 +1721,7 @@ plot(ggarrange(
 
 De nombreuses autres lois de densité sont susceptibles d'être utilisées pour la génération de valeurs aléatoires. Nous pouvons notamment citer les lois :
 
-* Binomiale, loi discrète ne pouvant prendre que des valeurs entières, et qui peut être approximée par des lois continues telles que la loi binomiale ou la loi de Poisson,
+* Binomiale, loi discrète ne pouvant prendre que des valeurs entières, et qui peut être approximée par des lois continues telles que la loi normale ou la loi de Poisson,
 * De Weibull, loi dont la souplesse permet des utilisations multiples, notamment dans certains domaines techniques (modélisation de la fiabilité).
 
 ```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 600, fig.cap = "Exemples de lois binomiale (à gauche) et de Weibull (à droite)"}
@@ -1798,7 +1798,7 @@ Le nuancier suivant (figure \ref{fig:AnatNuancier}), construit à l'aide de l'é
 \end{figure}
 
 \FloatBarrier
-Un autre caractère assez évident est la forme du chapeau. La figure \ref{fig:AnatChapeaux} présente les formes de chapeau principales pour les sporophores de champignon de morphologie agaricoïde,\footnote{La morphologie agaricoïde correspond à la "représentation habituelle" du champignon et se caractérise par la présence d'un chapeau, d'un stipe, et d'un hyménophore à lames.} mais bien d'autres géométries existent : consoles, croûtes...
+Un autre caractère assez évident est la forme du chapeau. La figure \ref{fig:AnatChapeaux} présente les formes de chapeau principales pour les sporophores de champignons de morphologie agaricoïde,\footnote{La morphologie agaricoïde correspond à la "représentation habituelle" du champignon et se caractérise par la présence d'un chapeau, d'un stipe, et d'un hyménophore à lames.} mais bien d'autres géométries existent : consoles, croûtes...
 \FloatBarrier
 \begin{figure}
    \centering
@@ -1854,7 +1854,7 @@ Ces critères étant couramment utilisés dans la classification des champignons
 
 \FloatBarrier
 
-La forme du stipe elle-même, ainsi que sa texture (fibreuse ou grenue), peuvent également fournir des indices utiles sur la famille de champignons.
+La forme du stipe elle-même, ainsi que la texture de sa chair (fibreuse, grenue...), peuvent également fournir des indices utiles sur la famille à laquelle appartient le champignon.
 
 \paragraph*{}
 Enfin, certaines structures protectrices caractéristiques, faisant partie de l'anatomie du très jeune sporophore (le *primordium*) peuvent exister à l'état de reliquats chez le spécimen adulte et constituer de précieux indices pour son identification :
