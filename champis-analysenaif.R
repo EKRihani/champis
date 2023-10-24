@@ -298,4 +298,9 @@ NAIF_Resultats <- NAIF_Resultats %>% mutate(Jw = round(Sens*NAIF_RatioSens + Spe
 NAIF_Resultats <- NAIF_Resultats[, c("n", "Sens", "Spec", "Jw", "Kappa", "Temps (s)")]
 
 save.image(file = "EKR-Champis-Naif.RData")
+
+rm(dataset, facteurs_liste2, facteurs_liste2a, facteurs_liste2b, facteurs_pertinents2,
+   moitie1_list2, moitie2_list2, index_list2, predictions,
+   NAIF_lot_appr, NAIF_lot_appr_opti, NAIF_lot_evaluation, NAIF_lot_opti)
+save.image(file = "EKR-Champis-Naif-Light.RData")
 load(file = "EKR-Champis-Naif.RData")
