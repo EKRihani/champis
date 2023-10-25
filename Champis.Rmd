@@ -353,7 +353,7 @@ L'impact de cette dispersion sur la distribution des paramètres de taille $L_{S
 \paragraph*{}
 La dispersion ainsi créée permet de générer de légères variations des rapports entre les différents paramètres de taille, tout en se situant à proximité de la première bissectrice et majoritairement dans la zone 50-90% de la taille maximale (voir figure \ref{fig:Lots-DispersionDensite}). Cette dispersion autorise par ailleurs l'existence d'une faible proportion de spécimens dépassant les valeurs dimensionnelles maximales généralement admises par la littérature.
 \paragraph*{}
-```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3, dev = "jpeg", dpi = 600, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
+```{r Lots-Dispersion2D, echo = FALSE, fig.height = 3.2, dev = "jpeg", dpi = 600, fig.cap = paste0("Nuages de points de 2 paramètres de taille (Ls et Dc), sans dispersion (à gauche) et avec dispersion (à droite), pour ", n_reduit, " champignons")}
 plot(ggarrange(
    ncol = 2,
    nuage_sansdispersion,
@@ -490,7 +490,7 @@ Dans ce cadre, la LDA vise ainsi à définir la fonction linéaire en $x_{i}$\ :
 $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
 
 avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
-$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
+$$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, a}} - \overline{x_{i, b}}$$
 
 $\overline{x_{i, a}}$ et $\overline{x_{i, b}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $a$ et $b$, et :
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
@@ -2840,7 +2840,7 @@ variance intraclasse), définis par\ :
 \paragraph*{}
 
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad 
-d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
+d_{i} = \overline{x_{i, a}} - \overline{x_{i, b}}$$
 $\overline{x_{i, a}}$ et $\overline{x_{i, b}}$ étant les moyennes respectives 
 de chaque caractéristique $x_{i}$ pour les groupes (espèces) $a$ et $b$, et :
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} 
