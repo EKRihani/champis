@@ -132,17 +132,17 @@ L'identification des plantes et champignons est un problème de classification c
 \paragraph*{}
 La première limite est le nombre de chaînons manquants. Certaines espèces sont évidemment éteintes, ce qui signifie que certaines branches et n\oe{}uds de l'arbre phylogénétique seront manquants, ce qui peut compliquer l'analyse quand deux espèces apparentées ont un nombre élevé de chaînons et n\oe{}uds communs manquants. Certaines similarités entre espèces peuvent également ne pas être identifiables de façon macroscopique.
 \paragraph*{}
-La seconde limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu\ : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. 
+La deuxième limite, plus profonde, est la logique inhérente au processus évolutionnaire. Deux phénomènes antagonistes sont en jeu\ : convergence et divergence évolutives. Ces deux phénomènes sont liés à la nécessaire adaptation des espèces à leurs environnements. 
 \paragraph*{}
 La divergence évolutive explique par exemple la diversité des mammifères\ : les chauves-souris, baleines et chevaux sont apparentés, mais ont des aspects très dissemblables en raison de leur adaptation à des environnements très différents. 
 \paragraph*{}
 D'un autre côté, la convergence évolutive explique la similarité entre l'aile de la chauve-souris et celle de l'abeille. Toutefois, malgré leur apparente dissimilarité, l'aile de la chauve-souris est plus proche de la main humaine ou de la nageoire de la baleine que de l'aile de l'abeille. La façon la plus fiable pour évaluer le processus évolutionnaire et trouver les liens phylogénétiques de la manière la plus précise possible est l'analyse des génomes\ : les caractéristiques visibles peuvent être trompeuses. Malheureusement, ces caractéristiques sont souvent les seules aisément identifiables.
 \paragraph*{}
-Le troisième problème est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème\ : en effet, il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
+La troisième limite est le critère principal de la classification. Ce critère peut être lié ou non au processus évolutionnaire ou aux critères visibles, surtout si ce critère principal est vague. Le critère de comestibilité ou de non-comestibilité retenu pour les lots de données mycologiques usuellement utilisés en *data science* souffre de ce problème\ : en effet, il est essentiellement centré sur la toxicité contre les humains, or de nombreux mécanismes de toxicité peuvent exister, et une toxicité ou non-toxicité d'un métabolite fongique ou végétal peut être liée à des variations métaboliques très ténues entre une espèce et une autre.
 \paragraph*{}
 Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habituellement dans l'identification des champignons et des plantes, et souvent justifiée par la nature arborescente du processus évolutionnaire, pourrait ne pas nécessairement être l'approche optimale à la classification des espèces basée sur des critères macroscopiques.
 \paragraph*{}
-Le but principal de cette étude sera de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies et méthodes d'apprentissages machine dédiées à la classification.
+Le but principal de cette thèse  sera de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies et méthodes d'apprentissages machine dédiées à la classification.
 
 ## État de l'art des lots de données mycologiques
 Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987].
@@ -235,7 +235,7 @@ Dans le cadre de cette étude, les variables quantitatives générées aléatoir
 \paragraph*{}
 En première approximation, nous pouvons considérer que toutes ces valeurs sont intrinsèquement liées à la croissance du champignon. Ces trois variables peuvent, dans l'absolu, être susceptibles de varier indépendamment des autres au cours de la croissance du champignon. 
 \paragraph*{}
-Les variables $L_{S}$, $D_{S}$ et $D_{C}$ obéissent alors aux lois suivantes\ :
+Nous pouvons alors modéliser $L_{S}$, $D_{S}$ et $D_{C}$ par les lois suivantes\ :
 
 $$\left \{
 \begin{array}{l}
@@ -290,7 +290,7 @@ Le premier paramètre évoqué précédemment n'a pu être exploité dans le cad
 \paragraph*{}
 Les deux derniers paramètres permettent de supposer que la distribution de taille des spécimens d'une même espèce issus d'une récolte en vie réelle ne sera pas symétrique, d'une part en raison de la rapidité de la croissance fongique, et d'autre part parce que le prélèvement se fera préférentiellement en épargnant les spécimens de petite taille.
 \paragraph*{}
-Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite ($G_{1} < 0$). Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
+Ainsi, la génération de la variable aléatoire $F_{T}$ obéira idéalement à une loi de distribution asymétrique vers la droite. Ce critère d'asymétrie écarte par conséquent les lois de distribution symétriques telles que la loi normale ou la loi uniforme.
 
 \paragraph*{}
 ```{r Lots-DistribSym, echo = FALSE, fig.height = 3.5, fig.cap = "Exemples de distributions de la loi uniforme (à gauche), binomiale (au centre) et normale (à droite)"}
@@ -492,7 +492,7 @@ $$X = \sum_{i=1}^n \lambda{}_{i}.x_{i}$$
 avec $n$ le nombre de paramètres caractérisant les individus, $x_{i}$ les caractéristiques mesurées pour chaque individu et chaque paramètre $i$, et $\lambda{}_{i}$ des coefficients à optimiser, de sorte que la fonction $X$ maximise le rapport entre les différences des moyennes de chaque classe $D$ et la somme des produits des caractéristiques intraclasses $S$ (proportionnelle à la variance intraclasse), définis par\ :
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
 
-$\overline{x_{i, n}}$ et $\overline{x_{i, m}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
+$\overline{x_{i, a}}$ et $\overline{x_{i, b}}$ étant les moyennes respectives de chaque caractéristique $x_{i}$ pour les groupes (espèces) $a$ et $b$, et :
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
 $x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres $p$ et $q$ pour chaque individu $i$.
 \paragraph*{}
@@ -1076,7 +1076,7 @@ Sen = `r round(BI_fit_c50tree_resultats["Sens"],4)` \\
 \paragraph*{}
 Bien que ne disposant d'aucun hyperparamètre, ce modèle a donné d'excellents résultats, frôlant le critère $J_w \geq `r Jw_min`$, sans aucune optimisation nécessaire. En outre, ce modèle s'illustre par une sensibilité -- c'est à dire une capacité à rejeter les champignons non comestibles -- particulièrement élevée.
 \paragraph*{}
-Le temps de calcul est plus long ($t = `r BI_temps_c50tree`$ min), signe d'une efficience calculatoire moindre, mais cette remarque est à modérer en raison des gains que peut apporter un modèle s'affranchissant totalement de la phase d'optimisation des hyperparamètres :
+Le temps de calcul est plus long ($t = `r BI_temps_c50tree`$ min), signe d'une efficience calculatoire moindre, mais cette remarque est à modérer en raison des gains que peut apporter un modèle permettant à l'utilisateur de s'affranchir de la phase d'optimisation des hyperparamètres\ :
 
 * Pas de séparation entre lots d'entraînement et d'optimisation,
 * Pas de détermination du domaine expérimental et du plan d'expériences,
@@ -1721,7 +1721,7 @@ plot(ggarrange(
 
 De nombreuses autres lois de densité sont susceptibles d'être utilisées pour la génération de valeurs aléatoires. Nous pouvons notamment citer les lois :
 
-* Binomiale, loi discrète ne pouvant prendre que des valeurs entières, et qui peut être approximée par des lois continues telles que la loi normale ou la loi de Poisson,
+* Binomiale, loi discrète ne pouvant prendre que des valeurs entières, et qui peut être approximée par des lois telles que la loi normale ou la loi de Poisson,
 * De Weibull, loi dont la souplesse permet des utilisations multiples, notamment dans certains domaines techniques (modélisation de la fiabilité).
 
 ```{r, echo = FALSE, fig.height = 2.5, dev = "jpeg", dpi = 600, fig.cap = "Exemples de lois binomiale (à gauche) et de Weibull (à droite)"}
@@ -2841,8 +2841,8 @@ variance intraclasse), définis par\ :
 
 $$D = \sum_{i=1}^n \lambda{}_{i}.d_{i} \quad\text{avec}\quad 
 d_{i} = \overline{x_{i, n}} - \overline{x_{i, m}}$$
-$\overline{x_{i, n}}$ et $\overline{x_{i, m}}$ étant les moyennes respectives 
-de chaque caractéristique $x_{i}$ pour les groupes (espèces) $n$ et $m$, et :
+$\overline{x_{i, a}}$ et $\overline{x_{i, b}}$ étant les moyennes respectives 
+de chaque caractéristique $x_{i}$ pour les groupes (espèces) $a$ et $b$, et :
 $$S = \sum_{p=1}^n \sum_{q=1}^n \lambda{}_{p}.\lambda{}_{q}.S_{pq} 
 \quad\text{avec}\quad S_{pq} = \sum_{i=1}^{n}(x_{p,i} . x_{q,i})$$
 $x_{p,i}$ et $x_{q,i}$ étant les caractéristiques mesurées pour les paramètres 
