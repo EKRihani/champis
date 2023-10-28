@@ -1,16 +1,18 @@
 ---
-#title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
-#author: "Emir Kaïs RIHANI"
-#date: "`r format(Sys.time(), '%d %B, %Y')`"
+# title: "Application de modèles d'Intelligence Artificielle à la classification des macromycètes"
+# author: "Emir Kaïs RIHANI"
+# date: "9 novembre 2023"
 lang: fr
 geometry: "left=2.5cm,right=2.5cm,top=1.5cm,bottom=2cm"        # Imposé par la fac
 fontsize: 12pt          # Imposé par la fac
 classoption: twoside
 always_allow_html: true
+# output:
+#    bookdown::word_document2: default
 output:
-  odt_document:
-    reference_odt: style-odt.odt
-    fig_caption: true
+   odt_document:
+     reference_odt: style-odt.odt
+     fig_caption: true
 bibliography: [packages.bib,Champis.bib]
 csl: vancouver-superscript.csl #https://www.zotero.org/styles/vancouver-superscript
 ---
@@ -131,7 +133,7 @@ Pour ces raisons parmi d'autres, la logique arborescente, bien qu'utilisée habi
 Le but principal de cette thèse  sera de déployer des algorithmes d'apprentissage machine afin d'effectuer cette tâche de classification basée sur des indices visuels limités, et d'évaluer les performances relatives de différentes stratégies et méthodes d'apprentissages machine dédiées à la classification.
 
 ## État de l'art des lots de données mycologiques
-Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987].
+Le tout premier lot de données mycologiques en libre accès mentionné en data science est probablement le *Mushroom Dataset* créé par Jeff Schlimmer en 1987.[@schlimmer_mushroom_1987]
 
 Ce lot comprend `r DATA_n_Schlimmer` spécimens, caractérisés par `r DATA_quali_Schlimmer` variables qualitatives telles que la comestibilité, la forme et la surface du chapeau, la couleur et l'espacement des lames, l'odeur du champignon...
 
@@ -176,7 +178,7 @@ Le sporophore "typique" est constitué d'un *stipe* (pied), surmonté d'un *chap
 
 Certains sporophores peuvent également porter un *voile général* ou un *voile partiel*, qui les enrobaient avant leur "éclosion" et dont les restes peuvent être présents sur le sporophore adulte.
 
-Ces différents éléments anatomiques, ainsi que l'environnement dans lequel prospère le champignon, représentent autant de caractéristiques permettant l'identification d'une espèce, et qui seront exploitées dans cette étude (voir figure \ref{fig:Anatomie-Champis}).^[Voir également annexes, page \pageref{chapitre:annexemyco} et suivantes.]
+Ces différents éléments anatomiques, ainsi que l'environnement dans lequel prospère le champignon, représentent autant de caractéristiques permettant l'identification d'une espèce, et qui seront exploitées dans cette étude (voir figure \@ref(fig:Anatomie-Champis).^[Voir également annexes, page \pageref{chapitre:annexemyco} et suivantes.]
 
 ![Eléments anatomiques du sporophore et caractéristiques exploitées pour son identification.](AnatomieChampis.jpg)
 
@@ -237,7 +239,7 @@ Les critères de sélection retenus afin de choisir la loi la plus appropriée s
 * Distribution asymétrique,
 * Distribution bornée, ou normalisable sur un intervalle $\left[ 0 ; 1 \right]$.
 
-Le critère d'efficience calculatoire n'est, en pratique, pas un facteur limitant dans notre cas, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant s'avérant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \ref{fig:Lots-Chrono}).
+Le critère d'efficience calculatoire n'est, en pratique, pas un facteur limitant dans notre cas, les temps de calcul pour la génération d'un nombre de facteurs de taille $F_{T}$ suffisant s'avérant typiquement inférieurs à `r chrono_typique` ms (pour `r n_chrono` facteurs générés) avec la plupart des distributions d'intérêt (voir figure \@ref(fig:Lots-Chrono)).
 
 Les critères de continuité et de quasi-normalité n'appellent que peu de commentaires. Ces critères permettent simplement de garantir la possibilité d'une infinité de valeurs dimensionnelles, dans l'intervalle considéré. Le critère de continuité proscrit toutefois l'utilisation de lois de distributions discrètes telles que la loi binomiale ou la loi de Poisson, et celui de quasi-normalité écarte des distributions telles que la loi de Weibull, dont la normalisation est parfois délicate.
 
@@ -291,7 +293,7 @@ $$\left \{
 \end{array}
 \right.$$
 
-$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \ref{fig:Lots-LoisBeta}.
+$F_{c}$ est ici défini comme un facteur de croissance permettant de rendre compte de la cinétique de croissance de chaque variété d'une part, et du prélèvement préférentiel des spécimens de plus grande taille d'autre part, comme l'illustre la figure \@ref(fig:Lots-LoisBeta).
 
 ```{r Lots-LoisBeta, echo = FALSE, fig.height = 4,  out.width = "100%", dev = "jpeg", dpi = 600, fig.cap = "Distribution de différentes lois bêta, en fonction du facteur de croissance Fc"}
 plot(lois_beta)
