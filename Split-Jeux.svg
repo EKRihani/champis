@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="126mm"
+   height="60mm"
+   viewBox="0 0 126 60"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="Split-Jeux.svg"
    inkscape:export-filename="Split-Jeux.pdf"
    inkscape:export-xdpi="96"
@@ -40,17 +40,18 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.7705878"
-     inkscape:cx="147.93901"
-     inkscape:cy="248.51159"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:zoom="1.5411756"
+     inkscape:cx="215.41997"
+     inkscape:cy="177.46193"
+     inkscape:window-width="1883"
+     inkscape:window-height="1062"
+     inkscape:window-x="37"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:snap-global="false" />
   <defs
      id="defs2">
     <marker
@@ -68,39 +69,39 @@
     </marker>
     <rect
        x="111.75613"
-       y="82.94569"
-       width="81.887015"
+       y="82.945686"
+       width="81.887016"
        height="21.057329"
        id="rect9193" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect23629" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect27061" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect28825" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect28827" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect28837" />
   </defs>
   <g
@@ -112,8 +113,8 @@
        id="rect31"
        width="110"
        height="10"
-       x="36.983795"
-       y="34.023651"
+       x="9.1353493"
+       y="5"
        inkscape:export-filename="Split-Jeux.pdf"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
@@ -122,128 +123,128 @@
        id="rect167"
        width="100"
        height="10"
-       x="34.517651"
-       y="54.023651" />
+       x="6.6692047"
+       y="25" />
     <rect
        style="opacity:1;fill:#87cdde;stroke:none;stroke-width:0.282924;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect169"
        width="10"
        height="10"
-       x="139.06816"
-       y="54.023651" />
+       x="111.21971"
+       y="25" />
     <g
        id="g20799"
-       transform="translate(6.2999996,-0.6442164)">
+       transform="translate(-21.548446,-29.667867)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,46.486042,16.21125)"
          id="text9191"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect9193);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan663"><tspan
+           y="94.742158"
+           id="tspan163"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan661">DONNÉES</tspan></tspan></text>
+             id="tspan161">DONNÉES</tspan></tspan></text>
     </g>
     <g
        id="g23627"
-       transform="translate(3.8338535,19.345776)">
+       transform="translate(-24.014592,-9.677875)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,18.427216,16.21125)"
          id="text23625"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect23629);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan667"><tspan
+           y="94.742158"
+           id="tspan167"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan665">ENTRAÎNEMENT &amp; OPTIMISATION</tspan></tspan></text>
+             id="tspan165">ENTRAÎNEMENT &amp; OPTIMISATION</tspan></tspan></text>
     </g>
     <g
        id="g27059"
-       transform="translate(56.725548,19.345776)">
+       transform="translate(28.200212,-9.677875)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.397681,16.21125)"
          id="text27057"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect27061);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan671"><tspan
+           y="94.742158"
+           id="tspan171"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan669">ÉVAL</tspan></tspan></text>
+             id="tspan169">ÉVAL</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.848773;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect28809"
        width="90"
        height="10"
-       x="32.848446"
-       y="74.023651" />
+       x="5"
+       y="45" />
     <rect
        style="opacity:1;fill:#87cdde;stroke:none;stroke-width:0.282924;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect28811"
        width="10"
        height="10"
-       x="139.06816"
-       y="74.023651" />
+       x="111.21971"
+       y="45" />
     <g
        id="g28817"
-       transform="translate(2.164649,39.345776)">
+       transform="translate(-25.683797,10.322125)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,30.377903,16.21125)"
          id="text28815"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28825);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan675"><tspan
+           y="94.742158"
+           id="tspan175"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan673">ENTRAÎNEMENT</tspan></tspan></text>
+             id="tspan173">ENTRAÎNEMENT</tspan></tspan></text>
     </g>
     <g
        id="g28823"
-       transform="translate(56.725548,39.345776)">
+       transform="translate(28.200212,10.322125)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.397681,16.21125)"
          id="text28821"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28827);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan679"><tspan
+           y="94.742158"
+           id="tspan179"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan677">ÉVAL</tspan></tspan></text>
+             id="tspan177">ÉVAL</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#87de87;stroke:none;stroke-width:0.282924;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect28829"
        width="10"
        height="10"
-       x="125.9583"
-       y="74.023651" />
+       x="98.109848"
+       y="45" />
     <g
        id="g28835"
-       transform="translate(43.111053,39.345776)">
+       transform="translate(15.262607,10.322125)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.701709,16.21125)"
          id="text28833"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28837);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan683"><tspan
+           y="94.742158"
+           id="tspan183"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan681">OPTI</tspan></tspan></text>
+             id="tspan181">OPTI</tspan></tspan></text>
     </g>
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.26458299, 0.79374898;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Scissors);marker-mid:url(#Scissors)"
-       d="M 136.9838,46.861748 V 34.023651"
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.264583, 0.793749;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Scissors);marker-mid:url(#Scissors)"
+       d="M 109.13535,17.838097 V 5"
        id="path32638"
        sodipodi:nodetypes="cc" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.26458299,0.79374898;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Scissors);marker-mid:url(#Scissors)"
-       d="M 124.51765,66.861748 V 54.023651"
+       style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.264583, 0.793749;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Scissors);marker-mid:url(#Scissors)"
+       d="M 96.6692,37.838097 V 25"
        id="path34121"
        sodipodi:nodetypes="cc" />
   </g>

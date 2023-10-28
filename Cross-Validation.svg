@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   width="134mm"
+   height="80mm"
+   viewBox="0 0 134 80"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="Cross-Validation.svg"
    inkscape:export-filename="Cross-Validation.pdf"
    inkscape:export-xdpi="96"
@@ -26,13 +26,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.5411756"
-     inkscape:cx="215.41997"
-     inkscape:cy="305.28644"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:zoom="1.0897757"
+     inkscape:cx="266.1098"
+     inkscape:cy="309.69675"
+     inkscape:window-width="1883"
+     inkscape:window-height="1062"
+     inkscape:window-x="37"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      showguides="false"
@@ -41,160 +41,93 @@
   <defs
      id="defs2">
     <rect
-       x="-66.597037"
-       y="188.63207"
-       width="84.649373"
+       x="-66.597038"
+       y="188.63206"
+       width="84.649376"
        height="16.859053"
        id="rect58171" />
-    <marker
-       style="overflow:visible"
-       id="Scissors"
-       refX="0.0"
-       refY="0.0"
-       orient="auto"
-       inkscape:stockid="Scissors"
-       inkscape:isstock="true">
-      <path
-         style="fill:context-stroke;"
-         d="M 9.0898857,-3.6061018 C 8.1198849,-4.7769976 6.3697607,-4.7358294 5.0623558,-4.2327734 L -3.1500488,-1.1548705 C -5.5383421,-2.4615840 -7.8983361,-2.0874077 -7.8983361,-2.7236578 C -7.8983361,-3.2209742 -7.4416699,-3.1119800 -7.5100293,-4.4068519 C -7.5756648,-5.6501286 -8.8736064,-6.5699315 -10.100428,-6.4884954 C -11.327699,-6.4958500 -12.599867,-5.5553341 -12.610769,-4.2584343 C -12.702194,-2.9520479 -11.603560,-1.7387447 -10.304005,-1.6532027 C -8.7816644,-1.4265411 -6.0857470,-2.3487593 -4.8210600,-0.082342643 C -5.7633447,1.6559151 -7.4350844,1.6607341 -8.9465707,1.5737277 C -10.201445,1.5014928 -11.708664,1.8611256 -12.307219,3.0945882 C -12.885586,4.2766744 -12.318421,5.9591904 -10.990470,6.3210002 C -9.6502788,6.8128279 -7.8098011,6.1912892 -7.4910978,4.6502760 C -7.2454393,3.4624530 -8.0864637,2.9043186 -7.7636052,2.4731223 C -7.5199917,2.1477623 -5.9728246,2.3362771 -3.2164999,1.0982979 L 5.6763468,4.2330688 C 6.8000164,4.5467672 8.1730685,4.5362646 9.1684433,3.4313614 L -0.051640930,-0.053722219 L 9.0898857,-3.6061018 z M -9.2179159,-5.5066058 C -7.9233569,-4.7838060 -8.0290767,-2.8230356 -9.3743431,-2.4433169 C -10.590861,-2.0196559 -12.145370,-3.2022863 -11.757521,-4.5207817 C -11.530373,-5.6026336 -10.104134,-6.0014137 -9.2179159,-5.5066058 z M -9.1616516,2.5107591 C -7.8108215,3.0096239 -8.0402087,5.2951947 -9.4138723,5.6023681 C -10.324932,5.9187072 -11.627422,5.4635705 -11.719569,4.3902287 C -11.897178,3.0851737 -10.363484,1.9060805 -9.1616516,2.5107591 z "
-         id="schere" />
-    </marker>
     <rect
        x="111.75613"
-       y="82.94569"
-       width="81.887015"
-       height="21.057329"
-       id="rect9193" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect23629" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect27061" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect28825" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect28827" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect28837" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect43020" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect43022" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect43295" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect46583" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect46585" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect46587" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect46605" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect46607" />
-    <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect48511" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect48513" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect48515" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect48541" />
     <rect
        x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
+       y="82.945686"
+       width="251.6899"
+       height="23.917139"
        id="rect48543" />
     <rect
-       x="111.75613"
-       y="82.94569"
-       width="251.68989"
-       height="23.91714"
-       id="rect48545" />
-    <rect
-       x="-66.597037"
-       y="188.63207"
-       width="84.649373"
+       x="-66.597038"
+       y="188.63206"
+       width="84.649376"
        height="16.859053"
        id="rect65663" />
     <rect
-       x="-66.597037"
-       y="188.63207"
-       width="84.649373"
+       x="-66.597038"
+       y="188.63206"
+       width="84.649376"
        height="16.859053"
        id="rect65669" />
     <rect
-       x="-66.597037"
-       y="188.63207"
-       width="84.649373"
+       x="-66.597038"
+       y="188.63206"
+       width="84.649376"
        height="16.859053"
        id="rect65675" />
   </defs>
@@ -207,283 +140,283 @@
        id="rect48648"
        width="25"
        height="10"
-       x="109.51801"
-       y="84.735352" />
+       x="103.76041"
+       y="35" />
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.550097;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect48547"
        width="50"
        height="10"
-       x="84.518005"
-       y="99.735352" />
+       x="78.760406"
+       y="50" />
     <g
        id="g48493"
-       transform="translate(35.10418,65.057482)">
+       transform="translate(29.346579,15.32213)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,30.377903,16.21125)"
          id="text48491"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect48511);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2163"><tspan
+           y="94.742158"
+           id="tspan193"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2161">ENTRAÎNEMENT</tspan></tspan></text>
+             id="tspan191">ENTRAÎNEMENT</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#ffb380;stroke:none;stroke-width:0.894685;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect167"
        width="100"
        height="10"
-       x="34.518002"
-       y="54.735352" />
+       x="28.760401"
+       y="5" />
     <g
        id="g23627"
-       transform="translate(3.8342045,20.057477)">
+       transform="translate(-1.923397,-29.677875)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,18.427216,16.21125)"
          id="text23625"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect23629);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2167"><tspan
+           y="94.742158"
+           id="tspan197"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2165">ENTRAÎNEMENT + OPTIMISATION</tspan></tspan></text>
+             id="tspan195">ENTRAÎNEMENT + OPTIMISATION</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.77482;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect28809"
        width="75"
        height="10"
-       x="34.518002"
-       y="69.735352" />
+       x="28.760401"
+       y="20" />
     <g
        id="g28817"
-       transform="translate(-3.6657951,35.05748)">
+       transform="translate(-9.4233966,-14.677872)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,30.377903,16.21125)"
          id="text28815"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28825);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2171"><tspan
+           y="94.742158"
+           id="tspan201"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2169">ENTRAÎNEMENT</tspan></tspan></text>
+             id="tspan199">ENTRAÎNEMENT</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#87de87;stroke:none;stroke-width:0.447342;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect28829"
        width="25"
        height="10"
-       x="109.51801"
-       y="69.735352" />
+       x="103.76041"
+       y="20" />
     <g
        id="g28835"
-       transform="translate(34.15272,35.05748)">
+       transform="translate(28.395119,-14.677872)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.701709,16.21125)"
          id="text28833"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28837);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2175"><tspan
+           y="94.742158"
+           id="tspan205"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2173">OPTI</tspan></tspan></text>
+             id="tspan203">OPTI</tspan></tspan></text>
     </g>
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.26499999,0.52999997;stroke-dashoffset:0.39750051;stroke-opacity:1;opacity:0.6"
-       d="M 59.518001,54.735352 V 64.73535"
+       style="opacity:0.6;fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53;stroke-dashoffset:0.397501;stroke-opacity:1"
+       d="M 53.7604,5.0000004 V 14.999998"
        id="path42394" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.26499999,0.52999997;stroke-dashoffset:0.39750051;stroke-opacity:1;opacity:0.6"
-       d="M 84.518001,54.735352 V 64.73535"
+       style="opacity:0.6;fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53;stroke-dashoffset:0.397501;stroke-opacity:1"
+       d="M 78.7604,5.0000004 V 14.999998"
        id="path42514" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.26499999,0.52999997;stroke-dashoffset:0.39750051;stroke-opacity:1;opacity:0.6"
-       d="M 109.518,54.735352 V 64.73535"
+       style="opacity:0.6;fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.265, 0.53;stroke-dashoffset:0.397501;stroke-opacity:1"
+       d="M 103.7604,5.0000004 V 14.999998"
        id="path42518" />
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.550097;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect43004"
        width="50"
        height="10"
-       x="34.518002"
-       y="84.735352" />
+       x="28.760401"
+       y="35" />
     <g
        id="g43010"
-       transform="translate(-15.526591,50.057482)">
+       transform="translate(-21.284192,0.32213044)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,30.377903,16.21125)"
          id="text43008"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect43020);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2179"><tspan
+           y="94.742158"
+           id="tspan209"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2177">ENTRAÎNEMENT</tspan></tspan></text>
+             id="tspan207">ENTRAÎNEMENT</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#87de87;stroke:none;stroke-width:0.447342;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect43108"
        width="25"
        height="10"
-       x="84.518021"
-       y="84.735352" />
+       x="78.760422"
+       y="35" />
     <g
        id="g43018"
-       transform="translate(8.2561143,50.057482)">
+       transform="translate(2.4985128,0.32213044)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.701709,16.21125)"
          id="text43016"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect43022);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2183"><tspan
+           y="94.742158"
+           id="tspan213"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2181">OPTI</tspan></tspan></text>
+             id="tspan211">OPTI</tspan></tspan></text>
     </g>
     <g
        id="g43293"
-       transform="translate(54.195238,50.057482)">
+       transform="translate(48.437637,0.32213044)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,29.182744,16.21125)"
          id="text43291"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect43295);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2187"><tspan
+           y="94.742158"
+           id="tspan217"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2185">ENTRAÎN.</tspan></tspan></text>
+             id="tspan215">ENTRAÎN.</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.388977;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect48487"
        width="25"
        height="10"
-       x="34.518002"
-       y="99.735352" />
+       x="28.760401"
+       y="50" />
     <rect
        style="opacity:1;fill:#87de87;stroke:none;stroke-width:0.447342;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect48495"
        width="25"
        height="10"
-       x="59.518002"
-       y="99.735352" />
+       x="53.760399"
+       y="50" />
     <g
        id="g48501"
-       transform="translate(-16.743905,65.057482)">
+       transform="translate(-22.501506,15.32213)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.701709,16.21125)"
          id="text48499"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect48513);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2191"><tspan
+           y="94.742158"
+           id="tspan221"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2189">OPTI</tspan></tspan></text>
+             id="tspan219">OPTI</tspan></tspan></text>
     </g>
     <g
        id="g48507"
-       transform="translate(-21.125648,65.057482)">
+       transform="translate(-26.883249,15.32213)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,29.182744,16.21125)"
          id="text48505"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect48515);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2195"><tspan
+           y="94.742158"
+           id="tspan225"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2193">ENTRAÎN.</tspan></tspan></text>
+             id="tspan223">ENTRAÎN.</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.777955;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect48517"
        width="75"
        height="10"
-       x="59.518002"
-       y="114.73535" />
+       x="53.760399"
+       y="65" />
     <g
        id="g48523"
-       transform="translate(21.334205,80.057482)">
+       transform="translate(15.576604,30.32213)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,30.377903,16.21125)"
          id="text48521"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect48541);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2199"><tspan
+           y="94.742158"
+           id="tspan229"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2197">ENTRAÎNEMENT</tspan></tspan></text>
+             id="tspan227">ENTRAÎNEMENT</tspan></tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#87de87;stroke:none;stroke-width:0.447342;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect48525"
        width="25"
        height="10"
-       x="34.518002"
-       y="114.73535" />
+       x="28.760401"
+       y="65" />
     <g
        id="g48531"
-       transform="translate(-41.743905,80.057482)">
+       transform="translate(-47.501506,30.32213)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.701709,16.21125)"
          id="text48529"
          style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect48543);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="95.076951"
-           id="tspan2203"><tspan
+           y="94.742158"
+           id="tspan233"><tspan
              style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan2201">OPTI</tspan></tspan></text>
+             id="tspan231">OPTI</tspan></tspan></text>
     </g>
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,28.094873,23.090791)"
+       transform="matrix(0.26458333,0,0,0.26458333,22.337272,-26.644561)"
        id="text58169"
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect58171);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="-66.597656"
-         y="200.76445"
-         id="tspan2207"><tspan
+         y="200.42966"
+         id="tspan237"><tspan
            style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-           id="tspan2205">Itération 1</tspan></tspan></text>
+           id="tspan235">Itération 1</tspan></tspan></text>
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,28.12674,38.090791)"
+       transform="matrix(0.26458333,0,0,0.26458333,22.369139,-11.644561)"
        id="text65661"
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect65663);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="-66.597656"
-         y="200.76445"
-         id="tspan2211"><tspan
+         y="200.42966"
+         id="tspan241"><tspan
            style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-           id="tspan2209">Itération 2</tspan></tspan></text>
+           id="tspan239">Itération 2</tspan></tspan></text>
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,28.113821,53.090791)"
+       transform="matrix(0.26458333,0,0,0.26458333,22.35622,3.3554394)"
        id="text65667"
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect65669);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="-66.597656"
-         y="200.76445"
-         id="tspan2215"><tspan
+         y="200.42966"
+         id="tspan245"><tspan
            style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-           id="tspan2213">Itération 3</tspan></tspan></text>
+           id="tspan243">Itération 3</tspan></tspan></text>
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,28.054393,68.090791)"
+       transform="matrix(0.26458333,0,0,0.26458333,22.296792,18.355439)"
        id="text65673"
        style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect65675);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="-66.597656"
-         y="200.76445"
-         id="tspan2219"><tspan
+         y="200.42966"
+         id="tspan249"><tspan
            style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-           id="tspan2217">Itération 4</tspan></tspan></text>
+           id="tspan247">Itération 4</tspan></tspan></text>
   </g>
 </svg>
