@@ -1,0 +1,73 @@
+---
+title: "Application de modèles d'apprentissage machine à la classification des macromycètes"
+author: "Emir Kaïs RIHANI"
+format:
+  revealjs:
+    theme: solarized
+    slide-number: true
+    embed-resources: true
+---
+
+```{r setup, include = FALSE, warning = FALSE}
+load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
+load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
+load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
+load("EKR-Champis-Naif-Light.RData")            # Chargement des résultats CLASSIFIEUR NAIF
+load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
+load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
+load("EKR-Champis-AnalyseMultiEsp-Light.RData")       # Chargement des résultats CLASSIF PAR ESPECES
+load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
+load("EKR-Generateur.RData")  # Chargement du générateur
+load("EKR-DataSets.RData")  # Chargement des données des lots Schlimmer/Wagner
+load("EKR-Champis-Outro.RData")    # Chargement des données de l'annexe statistique
+
+library(ggpubr)   # Combiner graphes (ggarrange)
+library(tidyverse)
+```
+
+## Objet de l'étude
+
+- "Application de modèles d'apprentissage machine à la classification des macromycètes"
+   - Apprentissage machine
+   - Classification
+   - Macromycètes
+
+## Macromycètes
+
+- Macro-Mycète = "grand champignon"
+- Le champignon (*mycélium*) est en réalité quasi-invisible et intimement lié à son substrat
+- La partie visible du champignon est le *sporophore*
+
+## Caractéristiques du sporophore
+
+![](AnatomieChampis.png)
+
+## Classification
+
+- Classification binaire : oui/non
+   - Comestible ou non ?
+   - Définition *précise* du critère
+- Classification multiclasse : plusieurs catégories
+   - Familles
+   - Espèces
+   - Syndromes
+
+## Notion de comestibilité
+
+- La comestibilité se situe sur un continuum :
+   - Excellents comestibles : *Tuber spp.*, *Amanita caesaria*...
+   - Comestibles : *Agaricus arvensis*...
+   - Comestibles cuits : *Morchella spp.*...
+   - Comestibles médiocres : *Boletus felleus*...
+   - Toxiques en grandes quantités : *Tricholoma equestre*...
+   - Toxiques : *Amanita muscaria*...
+   - Mortels : *Amanita phalloides*, *Amanita virosa*...
+
+## Notion de comestibilité
+- Critères du "gastronome"
+   - Comestibles médiocres : à rejeter.
+   - Comestibles cuits : à conserver
+   
+## Apprentissage machine
+
+-
