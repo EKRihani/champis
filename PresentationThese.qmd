@@ -70,4 +70,27 @@ library(tidyverse)
    
 ## Apprentissage machine
 
--
+- Test
+
+## Génération de champignons
+
+```{r, dev = "png", dev.args=list(bg="transparent")}
+lois_beta + theme(
+   panel.background = element_rect(fill = "transparent"),
+   plot.background = element_rect(fill = "transparent"),
+   legend.background = element_rect(fill="transparent"),
+   legend.box.background = element_rect(fill="transparent")
+)
+```
+
+## Induction de variabilité
+
+```{r}
+nuage3D_sansdispersion
+```
+
+## Induction de variabilité
+
+```{r}
+nuage3D_avecdispersion
+```

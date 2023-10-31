@@ -16,6 +16,7 @@ set.seed(1337)       # Pour reproductibilité
 n_chrono <- 1e6   # Nombre de valeurs pour microbenchmark
 fois_chrono <- 1e2    # Nombre d'itérations pour microbenchmark
 n_graph <- 1e6    # Nombre de valeurs pour graphiques
+n_graph_beta <- 1e5    # Nombre de valeurs pour graphique lois beta
 
 # Lois de distribution
 
@@ -117,8 +118,8 @@ chrono_distrib <- ggplot(data = chrono_fonctions, aes(y = time/1e6, x = reorder(
 
 # Focus sur la loi Beta pour génération de champignons
 facteurs <- 1:4
-
-loi_beta <- function(facteur){rbeta(n = n_graph, shape1 = 3*facteur, shape2 = 4, ncp = facteur)}
+set.seed(15)
+loi_beta <- function(facteur){rbeta(n = n_graph_beta, shape1 = 3*facteur, shape2 = 4, ncp = facteur)}
 
 beta <-lapply(X = facteurs, FUN = loi_beta)
 names(beta) <- facteurs
@@ -128,7 +129,7 @@ beta$name <- str_remove(beta$name, "X")
 
 lois_beta <- ggplot(data = beta, aes(x = value, colour = name)) +
   labs(colour= "Fc") +
-  geom_density(alpha = .7, bw = .025, linewidth = .6) +
+  geom_density(alpha = .7, bw = .027, linewidth = .6) +
   scale_color_viridis_d(option = "C", direction = -1, begin = 0, end = .85) +
   xlab("Valeur (Ft)") +
   ylab("Densité") +
@@ -190,21 +191,23 @@ distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
   geom_vline(xintercept = Chap.Diam, linetype = "dashed", color = "red")
 
 # Graphiques 3D (pas utilisés ?)
-#dens3Ddouble <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Pied.Hauteur, n= 500)
-#dens3Dsimple <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Chapeau.Diametre, n= 500)
+dens3Ddouble <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Pied.Hauteur, n= 500)
+dens3Dsimple <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Chapeau.Diametre, n= 500)
 
-# graphe3D_avecdispersion <- plot_ly(x=dens3Ddouble$x, y=dens3Ddouble$y, z=dens3Ddouble$z) %>% 
-#   add_surface(colorscale ="YlGnBu", contours = list(z = list(project=list(z=TRUE), show=TRUE, usecolormap=TRUE, start = 0, end = 1, size = max(dens3Ddouble$z)/20)))
-# #Blackbody, Cividis, Electric, Hot, Jet, Portland, RdBu, Viridis, YlGnBu, YlOrRd
-# graphe3D_sansdispersion <- plot_ly(x=dens3Dsimple$x, y=dens3Dsimple$y, z=dens3Dsimple$z) %>% 
-#   add_surface(colorscale ="Viridis", contours = list(z = list(project=list(z=TRUE), show=TRUE, usecolormap=TRUE, start = 0, end = 1, size = max(dens3Dsimple$z)/20)))
-# 
-# nuage3D_avecdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Pied.Hauteur, z=Champi_demo$Pied.Largeur, marker = list(size=1)) %>% 
-#   add_markers() %>% 
-#   layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds")))
-# nuage3D_sansdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau.Diametre, z=Champi_demo$Chapeau.Diametre, marker = list(size=1)) %>% 
-#   add_markers() %>% 
-#   layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds")))
+graphe3D_avecdispersion <- plot_ly(x=dens3Ddouble$x, y=dens3Ddouble$y, z=dens3Ddouble$z) %>% 
+   add_surface(colorscale ="YlGnBu", contours = list(z = list(project=list(z=TRUE), show=TRUE, usecolormap=TRUE, start = 0, end = 1, size = max(dens3Ddouble$z)/20)))
+ #Blackbody, Cividis, Electric, Hot, Jet, Portland, RdBu, Viridis, YlGnBu, YlOrRd
+graphe3D_sansdispersion <- plot_ly(x=dens3Dsimple$x, y=dens3Dsimple$y, z=dens3Dsimple$z) %>% 
+   add_surface(colorscale ="Viridis", contours = list(z = list(project=list(z=TRUE), show=TRUE, usecolormap=TRUE, start = 0, end = 1, size = max(dens3Dsimple$z)/20)))
+
+nuage3D_avecdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Pied.Hauteur, z=Champi_demo$Pied.Largeur, marker = list(size=1)) %>% 
+   add_markers(opacity = 0.2) %>% 
+   layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds"))) %>%
+   layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)")
+nuage3D_sansdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau.Diametre, z=Champi_demo$Chapeau.Diametre, marker = list(size=1)) %>% 
+   add_markers(opacity = 0.2) %>% 
+   layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds"))) %>%
+   layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)")
 
 ############################
 #     HYPERCUBES LATINS    #
@@ -271,8 +274,8 @@ densite2d                  # Graphique de densité 2D des tailles/diamètres
 
 #graphe3D_avecdispersion      # Graphique de densité 3D des tailles/diamètres
 #graphe3D_sansdispersion      # Graphique de densité 3D des diamètres/diamètres (sans dispersion)
-#nuage3D_avecdispersion           # Nuage de points 3D des tailles/diamètres
-#nuage3D_sansdispersion           # Nuage de points 3D des tailles/diamètres (sans dispersion)
+nuage3D_avecdispersion           # Nuage de points 3D des tailles/diamètres
+nuage3D_sansdispersion           # Nuage de points 3D des tailles/diamètres (sans dispersion)
 # orca() pour export en image ??????
 
 distrib_diametre    # Distribution du diamètre
