@@ -112,7 +112,7 @@ for (n in 1:GEN_n_especes){
 GEN_lots_liste <- paste0("lot", GEN_dataset$N)
 
 GEN_n_champis <- 2e2      # Nombre de champignons pour chaque espèce (300?)
-GEN_f_crois <- 2          # Facteur de croissance
+GEN_f_crois <- 4          # Facteur de croissance
 #GEN_tailles <- names(GEN_structure[GEN_numeriques[-c(1,2)]])    # Facteurs de taille
 GEN_tailles <- names(GEN_structure[GEN_numeriques])    # Facteurs de taille
 
@@ -124,7 +124,7 @@ for (n in 1:GEN_n_especes){
 #  ordre_num0 <- paste0(GEN_lots_liste[n], "[1:2] <-", GEN_champ_liste[n], "[1:2]")
   ordre_texte <- paste0(GEN_lots_liste[n], "$", GEN_textes, 
                          "<- sample(x = ", GEN_champ_liste[n], "$", GEN_textes, ", size = GEN_n_champis, replace = TRUE)")
-  ordre_fac <-paste0(GEN_lots_liste[n], "$FacteurTaille <- rbeta(n = GEN_n_champis, shape1 = 6*GEN_f_crois, shape2 =4, ncp = .5*GEN_f_crois)")
+  ordre_fac <-paste0(GEN_lots_liste[n], "$FacteurTaille <- rbeta(n = GEN_n_champis, shape1 = 3*GEN_f_crois, shape2 =4, ncp = GEN_f_crois)")
   ordre_num1 <- paste0(GEN_lots_liste[n], "[GEN_tailles] <- lapply(", 
                        GEN_champ_liste[n], "[GEN_tailles], '*', ",
                        GEN_lots_liste[n], "$FacteurTaille)")

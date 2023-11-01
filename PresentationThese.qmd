@@ -69,6 +69,10 @@ Source : MycoDB
 
 ## Critère écologique
 
+- Le champignon fait partie d'un écosystème
+   - Hétérotrophie, interactions avec l'environnement
+![](EcosystemeChampi.png)
+
 ## Caractéristiques du sporophore
 
 ![](AnatomieChampis.png)
@@ -120,16 +124,55 @@ Source : MycoDB
 
 ## Forêts aléatoires
 
+## Optimisation des modèles
+- Indicateur de performance
+   - Indice de Youden pondéré ($J_{w}$)
+      - Indice synthétique pondérant spécificité et sensibilité
+      - `r Jw_ratio`x plus grave d'accepter un non-comestible
+   - Indice de Rand, Kappa
+      - Reflet de la précision des prédictions (multiclasse)
+- Exploration de l'espace des hyperparamètres
+   - Plans d'expériences
+
+## Plans hypercubiques latins
+
+- Plan d'expérience occupant tout l'espace
+   - 1 ligne + 1 colonne = 1 expérience
+
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 3.5, fig.cap = "Carré latin aléatoire (à gauche), optimisé (au milieu), quasi-orthogonal (à droite)"}
+plot(ggarrange(
+   widths = c(1.05,1,1),
+   ncol = 3,
+   graphe_LHS + theme(
+   panel.background = element_rect(fill = "transparent"),
+   plot.background = element_rect(fill = "transparent"),
+   legend.background = element_rect(fill="transparent"),
+   legend.box.background = element_rect(fill="transparent")),
+   graphe_optiLHS + theme(
+   panel.background = element_rect(fill = "transparent"),
+   plot.background = element_rect(fill = "transparent"),
+   legend.background = element_rect(fill="transparent"),
+   legend.box.background = element_rect(fill="transparent")),
+   graphe_NOHLD + theme(
+   panel.background = element_rect(fill = "transparent"),
+   plot.background = element_rect(fill = "transparent"),
+   legend.background = element_rect(fill="transparent"),
+   legend.box.background = element_rect(fill="transparent"))
+   )
+)
+
+```
+
 # Génération du lot de données
 
 ## Construction du lot de données
 
-- 398 espèces de champignons du Nord de la France
+- `r GEN_n_especes` espèces de champignons du Nord de la France
    - 25 critères caractéristiques
       - 22 critères qualitatifs
       - 3 critères quantitatifs
       - Espèce, famille, comestibilité
-- 300 spécimens par espèce : 79600 champignons
+- `r GEN_n_champis` spécimens par espèce : `r BI_n_champis` champignons
 
 - Tirage aléatoire des critères qualitatifs parmi les critères possibles pour chaque caractéristique et chaque espèce
 
@@ -173,11 +216,33 @@ D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sig
 ## Induction de variabilité
 
 ```{r}
- nuage3D_sansdispersion
+#nuage3D_sansdispersion
 ```
 
 ## Induction de variabilité
 
 ```{r}
-nuage3D_avecdispersion
+#nuage3D_avecdispersion
 ```
+
+# Classification binaire
+
+## Modèle naïf
+
+## LDA
+
+## Arbres décisionnels
+
+## Forêts aléatoires
+
+# Classification par familles
+
+## LDA
+
+## Arbres décisionnels
+
+## Forêts aléatoires
+
+# Classification par espèces
+
+## Forêts aléatoires
