@@ -3,6 +3,7 @@ title: "Application de modèles d'apprentissage machine à la classification des
 author: "Emir Kaïs RIHANI"
 format:
   revealjs:
+    #theme: litera
     theme: solarized
     slide-number: true
     embed-resources: true
@@ -25,55 +26,129 @@ library(ggpubr)   # Combiner graphes (ggarrange)
 library(tidyverse)
 ```
 
+# Introduction et objet de l'étude
+
 ## Objet de l'étude
 
-- "Application de modèles d'apprentissage machine à la classification des macromycètes"
-   - Apprentissage machine
-   - Classification
-   - Macromycètes
+-   "Application de modèles d'apprentissage machine à la classification des macromycètes"
+    -   Apprentissage machine
+    -   Classification
+    -   Macromycètes
+
+# Notion de macromycète
 
 ## Macromycètes
 
-- Macro-Mycète = "grand champignon"
-- Le champignon (*mycélium*) est en réalité quasi-invisible et intimement lié à son substrat
-- La partie visible du champignon est le *sporophore*
+-   Macro-Mycète = "grand champignon"
+-   Le champignon (*mycélium*) est en réalité quasi-invisible et intimement lié à son substrat
+-   La partie visible du champignon est le *sporophore*
+
+## Critère de forme
+
+![](Photos/Formes/Craterellus_cornucopioides_2006_jg_1.jpg){fig-align="left" width="32%"} ![](Photos/Formes/Lycoperdon_perlatum_2010_mm_1.jpg){fig-align="center" width="32%"} ![](Photos/Formes/Morchella_esculenta_2007_ov_1.jpg){fig-align="right" width="32%"}
+
+![](Photos/Formes/Pezziza%20spp_2007_go_1.jpg){fig-align="left" width="32%"} ![](Photos/Formes/Pleurotus_ostreatus_2007_ov_1.jpg){fig-align="center" width="32%"} ![](Photos/Formes/Tremella_mesenterica_2006_jg_1.jpg){fig-align="right" width="32%"}
+
+![](Photos/Formes/Phallus_impudicus_2010_dg_1.jpg){.fragment .absolute bottom="40" left="360" height="540"}
+
+::: footer
+Source : MycoDB
+:::
+
+## Critère de couleur
+
+![](Photos/Couleurs/Amanita_muscaria_2005_ov_2.jpg){fig-align="left" width="32%"} ![](Photos/Couleurs/Entoloma_euchroum_2021_fm_2+.jpg){fig-align="center" width="32%"} ![](Photos/Couleurs/Hygrocybe_psittacinus_2008_jd_1.jpg){fig-align="right" width="32%"}
+
+![](Photos/Couleurs/Phellodon_niger_2013_jg_1.jpg){fig-align="left" width="32%"} ![](Photos/Couleurs/Laccaria_amethystina_1998_dr_1.jpg){fig-align="center" width="32%"} ![](Photos/Couleurs/Hygrocybe_psittacinus_2008_mp_1.jpg){fig-align="right" width="32%"}
+
+::: footer
+Source : MycoDB
+:::
+
+## Critère de texture
+
+## Critère écologique
 
 ## Caractéristiques du sporophore
 
 ![](AnatomieChampis.png)
 
+# Notion de classification
+
 ## Classification
 
-- Classification binaire : oui/non
-   - Comestible ou non ?
-   - Définition *précise* du critère
-- Classification multiclasse : plusieurs catégories
-   - Familles
-   - Espèces
-   - Syndromes
+-   Classification binaire : oui/non
+    -   Comestible ou non ?
+    -   Définition *précise* du critère
+-   Classification multiclasse : plusieurs catégories
+    -   Familles
+    -   Espèces
+    -   Syndromes
 
 ## Notion de comestibilité
 
-- La comestibilité se situe sur un continuum :
-   - Excellents comestibles : *Tuber spp.*, *Amanita caesaria*...
-   - Comestibles : *Agaricus arvensis*...
-   - Comestibles cuits : *Morchella spp.*...
-   - Comestibles médiocres : *Boletus felleus*...
-   - Toxiques en grandes quantités : *Tricholoma equestre*...
-   - Toxiques : *Amanita muscaria*...
-   - Mortels : *Amanita phalloides*, *Amanita virosa*...
+-   La comestibilité se situe sur un continuum :
+    -   Excellents comestibles : *Tuber spp.*, *Amanita caesaria*...
+    -   Comestibles : *Agaricus arvensis*...
+    -   Comestibles cuits : *Morchella spp.*...
+    -   Comestibles médiocres : *Boletus felleus*...
+    -   Toxiques en grandes quantités : *Tricholoma equestre*...
+    -   Toxiques : *Amanita muscaria*...
+    -   Mortels : *Amanita phalloides*, *Amanita virosa*...
 
 ## Notion de comestibilité
-- Critères du "gastronome"
-   - Comestibles médiocres : à rejeter.
-   - Comestibles cuits : à conserver
-   
-## Apprentissage machine
 
-- Test
+| | C+ | C | CC | C- | T- | T | T+ |
+|-|:--:|:-:|:--:|:--:|:--:|:-:|:--:|
+| Prudent           | [✓]{style="color:green;"} | [✓]{style="color:green;"} | [✓]{style="color:green;"} |  [✗]{style="color:red;"}  |  [✗]{style="color:red;"}  | [✗]{style="color:red;"} | [✗]{style="color:red;"} |
+| Gourmand          | [✓]{style="color:green;"} | [✓]{style="color:green;"} | [✓]{style="color:green;"} |  [✗]{style="color:red;"}  | [✓]{style="color:green;"} | [✗]{style="color:red;"} | [✗]{style="color:red;"} |
+| Toxicologue | [✓]{style="color:green;"} | [✓]{style="color:green;"} |  [✗]{style="color:red;"}  | [✓]{style="color:green;"} |  [✗]{style="color:red;"}  | [✗]{style="color:red;"} | [✗]{style="color:red;"} |
 
-## Génération de champignons
+-   Critères du "gastronome prudent"
+    -   Toxiques et comestibles médiocres : à rejeter
+    -   Comestibles cuits : à conserver (morilles !)
 
+# Notion d'apprentissage machine
+
+## Généralités
+
+
+## Analyse Discriminante Linéaire
+
+
+## Arbres de classification
+
+## Forêts aléatoires
+
+# Génération du lot de données
+
+## Construction du lot de données
+
+- 398 espèces de champignons du Nord de la France
+   - 25 critères caractéristiques
+      - 22 critères qualitatifs
+      - 3 critères quantitatifs
+      - Espèce, famille, comestibilité
+- 300 spécimens par espèce : 79600 champignons
+
+- Tirage aléatoire des critères qualitatifs parmi les critères possibles pour chaque caractéristique et chaque espèce
+
+## Génération des critères quantitatifs
+
+- Critères dimensionnels :
+   - Diamètre du chapeau $D_{c}$,
+   - Diamètre du pied (stipe) $D_{S}$,
+   - Hauteur du pied (stipe) $L_{S}$.
+ - Proportionnels, liés à la croissance du champignon $F_{C}$.
+$$\left \{
+\begin{array}{l}
+L_{S} = L_{S_{max}}.F_{C} \\
+D_{S} = D_{S_{max}}.F_{C} \\
+D_{C} = D_{C_{max}}.F_{C} \\
+\end{array}
+\right.$$
+
+## Génération des critères quantitatifs : loi bêta
 ```{r, dev = "png", dev.args=list(bg="transparent")}
 lois_beta + theme(
    panel.background = element_rect(fill = "transparent"),
@@ -84,9 +159,21 @@ lois_beta + theme(
 ```
 
 ## Induction de variabilité
+- Champignons générés "parfaitement proportionnés"
+- Nécessité d'induire des variations (dispersion $\delta~$)
+
+$$\left \{
+\begin{array}{ll} 
+L_{S} = L_{Smax}.F_{T}.\delta_{Ls} & \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{S} = D_{Smax}.F_{T}.\delta_{Ds} & \delta_{Ds} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+\end{array}
+\right.$$
+
+## Induction de variabilité
 
 ```{r}
-nuage3D_sansdispersion
+ nuage3D_sansdispersion
 ```
 
 ## Induction de variabilité
