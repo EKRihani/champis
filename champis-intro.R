@@ -190,7 +190,7 @@ distrib_diametre <- ggplot(data = Champi_demo, aes(x = Chapeau.Diametre)) +
   theme_bw() + xlab("Diamètre de stipe (Ds)") + ylab("Densité") +
   geom_vline(xintercept = Chap.Diam, linetype = "dashed", color = "red")
 
-# Graphiques 3D (pas utilisés ?)
+# Graphiques 3D
 dens3Ddouble <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Pied.Hauteur, n= 500)
 dens3Dsimple <- MASS::kde2d(Champi_demo$Chapeau.Diametre, Champi_demo$Chapeau.Diametre, n= 500)
 
@@ -204,7 +204,7 @@ nuage3D_avecdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$
    add_markers(opacity = 0.2) %>% 
    layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds"))) %>%
    layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)")
-nuage3D_sansdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau.Diametre, z=Champi_demo$Chapeau.Diametre, marker = list(size=1)) %>% 
+nuage3D_sansdispersion <- plot_ly(x=Champi_demo$Chapeau.Diametre, y=Champi_demo$Chapeau.Diametre/Chap.Diam*Pied.Haut, z=Champi_demo$Chapeau.Diametre/Chap.Diam*Pied.Large, marker = list(size=1)) %>% 
    add_markers(opacity = 0.2) %>% 
    layout(scene = list(xaxis = list(title = "Dc"), yaxis = list(title = "Ls"), zaxis = list(title = "Ds"))) %>%
    layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)")
