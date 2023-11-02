@@ -10,19 +10,18 @@ format:
 ---
 
 ```{r setup, include = FALSE, warning = FALSE}
-load("EKR-Champis-Valeurs.RData")      # Chargement des valeurs diverses utilisées/calculées dans la thèse
-load("EKR-Champis-Iris-Light.RData")  # Chargement des exemples Iris
-load("EKR-Champis-Intro-Light.RData")      # Chargement des résultats INTRO
-load("EKR-Champis-Naif-Light.RData")            # Chargement des résultats CLASSIFIEUR NAIF
-load("EKR-Champis-AnalyseBi-Light.RData")       # Chargement des résultats CLASSIFICATION BINAIRE
-load("EKR-Champis-AnalyseMultiFam-Light.RData")       # Chargement des résultats CLASSIF PAR FAMILLES
-load("EKR-Champis-AnalyseMultiEsp-Light.RData")       # Chargement des résultats CLASSIF PAR ESPECES
-load("EKR-Champis-CodeSourceBi-Light.RData")   # Chargement des données du code source (graphiques)
-load("EKR-Generateur.RData")  # Chargement du générateur
-load("EKR-DataSets.RData")  # Chargement des données des lots Schlimmer/Wagner
-load("EKR-Champis-Outro.RData")    # Chargement des données de l'annexe statistique
+load("EKR-Champis-Valeurs.RData")
+load("EKR-Champis-Iris-Light.RData")
+load("EKR-Champis-Intro-Light.RData")
+#load("EKR-Champis-Naif-Light.RData")
+load("EKR-Champis-AnalyseBi-Light.RData")
+#load("EKR-Champis-AnalyseMultiFam-Light.RData")
+load("EKR-Champis-AnalyseMultiEsp-Light.RData")
+load("EKR-Generateur.RData")
+load("EKR-DataSets.RData")
+load("EKR-Champis-Outro.RData")
 
-library(ggpubr)   # Combiner graphes (ggarrange)
+library(ggpubr)
 library(tidyverse)
 ```
 
@@ -81,13 +80,13 @@ Source : MycoDB
 
 ## Classification
 
--   Classification binaire : oui/non
+-   Classification binaire : 2 classes
     -   Comestible ou non ?
     -   Définition *précise* du critère
--   Classification multiclasse : plusieurs catégories
+-   Classification multiclasse : > 2 classes
     -   Familles
     -   Espèces
-    -   Syndromes
+    -   Syndromes ?
 
 ## Notion de comestibilité
 
@@ -249,13 +248,14 @@ nuage3D_avecdispersion
 * Performances prédictives insuffisantes ($J_{w} \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Jw"], BI_fit_pda_lambda_resultats[,"Jw"])),3)`$)
 
 ```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 4.5, fig.cap = "Dix premiers facteurs de LDA prédisant la non-comestibilité des champignons"}
-BI_lda2_graphe_facteurs + 
+plot(BI_lda2_graphe_facteurs + 
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
       legend.box.background = element_rect(fill="transparent", color="transparent")
    )
+)
 ```
 
 ## Arbres décisionnels
@@ -299,6 +299,9 @@ BI_fit_rpartcost_jw_graphe +
 ![Arbres simplifiés, optimisant la sensibilité (à g.) ou la spécificité (à d.)](BI_Arbre_Rpartcost_Duel.svg)
 
 ## Arbres décisionnels
+![Structure arborescente complète](IntroChampisCART1Arbre.svg)
+
+## Arbres décisionnels
 
 * Arbres interprétables par l'humain,
 * Performances prédictives et calculatoires correctes.
@@ -331,14 +334,9 @@ ggarrange(
 )
 ```
 
-# Classification par familles
-
-## LDA
+# Classification par espèces
 
 ## Arbres décisionnels
 
-## Forêts aléatoires
-
-# Classification par espèces
 
 ## Forêts aléatoires
