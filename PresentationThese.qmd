@@ -126,38 +126,43 @@ Source : MycoDB
 
 ## Optimisation des modèles
 - Indicateur de performance
-   - Indice de Youden pondéré ($J_{w}$)
+   - Indice de Youden pondéré ($J_{w} \geq `r Jw_min`$)
       - Indice synthétique pondérant spécificité et sensibilité
       - `r Jw_ratio`x plus grave d'accepter un non-comestible
-   - Indice de Rand, Kappa
-      - Reflet de la précision des prédictions (multiclasse)
+   - Kappa ($\kappa > 0.80$)
+      - Probabilité de prédiction exacte vs hasard
 - Exploration de l'espace des hyperparamètres
    - Plans d'expériences
 
 ## Plans hypercubiques latins
 
-- Plan d'expérience occupant tout l'espace
+- Plan d'expérience de type *Space-Filling Design*
    - 1 ligne + 1 colonne = 1 expérience
 
 ```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 3.5, fig.cap = "Carré latin aléatoire (à gauche), optimisé (au milieu), quasi-orthogonal (à droite)"}
-plot(ggarrange(
+ggarrange(
    widths = c(1.05,1,1),
    ncol = 3,
-   graphe_LHS + theme(
-   panel.background = element_rect(fill = "transparent"),
-   plot.background = element_rect(fill = "transparent"),
-   legend.background = element_rect(fill="transparent"),
-   legend.box.background = element_rect(fill="transparent")),
-   graphe_optiLHS + theme(
-   panel.background = element_rect(fill = "transparent"),
-   plot.background = element_rect(fill = "transparent"),
-   legend.background = element_rect(fill="transparent"),
-   legend.box.background = element_rect(fill="transparent")),
-   graphe_NOHLD + theme(
-   panel.background = element_rect(fill = "transparent"),
-   plot.background = element_rect(fill = "transparent"),
-   legend.background = element_rect(fill="transparent"),
-   legend.box.background = element_rect(fill="transparent"))
+   graphe_LHS + 
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   ),
+   graphe_optiLHS + 
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   ),
+   graphe_NOHLD + 
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
    )
 )
 
@@ -193,12 +198,13 @@ D_{C} = D_{C_{max}}.F_{C} \\
 
 ## Génération des critères quantitatifs : loi bêta
 ```{r, dev = "png", dev.args=list(bg="transparent")}
-lois_beta + theme(
-   panel.background = element_rect(fill = "transparent"),
-   plot.background = element_rect(fill = "transparent"),
-   legend.background = element_rect(fill="transparent"),
-   legend.box.background = element_rect(fill="transparent")
-)
+lois_beta + 
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   )
 ```
 
 ## Induction de variabilité
@@ -227,13 +233,103 @@ nuage3D_avecdispersion
 
 # Classification binaire
 
-## Modèle naïf
+## Algorithme de classification
+
+1. Découpage lots d'entraînement/optimisation/évaluation,
+2. Apprentissage sur lot d'entraînement,
+3. Exploration de l'espace des hyperparamètres,
+4. Mesure et modélisation des performances,
+5. Sélection des meilleurs hyperparamètres,
+6. Mesure de performance des meilleurs hyperparamètres,
+7. Sélection des meilleurs modèles, évaluation finale.
 
 ## LDA
 
+* Algorithme rapide ($t_{moy} =$ `r BI_temps_lda2` à `r BI_temps_pda` min)
+* Performances prédictives insuffisantes ($J_{w} \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Jw"], BI_fit_pda_lambda_resultats[,"Jw"])),3)`$)
+
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 4.5, fig.cap = "Dix premiers facteurs de LDA prédisant la non-comestibilité des champignons"}
+BI_lda2_graphe_facteurs + 
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   )
+```
+
 ## Arbres décisionnels
 
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Sensibilité (à g.) et spécificité (à d.) de rpartCost en fonction de la complexité et du coût"}
+ggarrange(
+   ncol = 2,
+   BI_fit_rpartcost_sens_graphe + 
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   ),
+   BI_fit_rpartcost_spec_graphe + 
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   )
+)
+
+```
+
+## Arbres décisionnels
+
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.width = 6.5, fig.cap = "Indice de Youden pondéré de rpartCost en fonction de ses hyperparamètres"}
+BI_fit_rpartcost_jw_graphe + 
+   theme(legend.position='right') + 
+   #theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)) +
+   theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   )
+```
+
+## Arbres décisionnels
+![Arbres simplifiés, optimisant la sensibilité (à g.) ou la spécificité (à d.)](BI_Arbre_Rpartcost_Duel.svg)
+
+## Arbres décisionnels
+
+* Arbres interprétables par l'humain,
+* Performances prédictives et calculatoires correctes.
+$$\left \{
+\begin{array}{l}
+J_{w_{Rpart}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),4)` \\
+J_{w_{RpartCost}} = `r round(BI_fit_rpartcost_best_resultats["Jw"],4)` \\
+J_{w_{c5.0tree}} = `r round(BI_fit_c50tree_resultats["Jw"],4)` \\
+\end{array}
+\right.$$
+
 ## Forêts aléatoires
+
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Sensibilité (à g.) et spécificité (à d.) du modèle Rborist"}
+ggarrange(
+   ncol = 2,
+   BI_fit_Rborist_sens_graphe + 
+      scale_fill_viridis_c(limits = c(0.999,1),option = "G", direction = 1) + 
+      theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")),
+      BI_fit_Rborist_spec_graphe+ theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   )
+)
+```
 
 # Classification par familles
 
