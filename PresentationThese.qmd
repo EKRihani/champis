@@ -248,14 +248,13 @@ nuage3D_avecdispersion
 * Performances prédictives insuffisantes ($J_{w} \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Jw"], BI_fit_pda_lambda_resultats[,"Jw"])),3)`$)
 
 ```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 4.5, fig.cap = "Dix premiers facteurs de LDA prédisant la non-comestibilité des champignons"}
-plot(BI_lda2_graphe_facteurs + 
+BI_lda2_graphe_facteurs + 
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
       legend.box.background = element_rect(fill="transparent", color="transparent")
    )
-)
 ```
 
 ## Arbres décisionnels
@@ -325,7 +324,8 @@ ggarrange(
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
       legend.box.background = element_rect(fill="transparent", color="transparent")),
-      BI_fit_Rborist_spec_graphe+ theme(
+      BI_fit_Rborist_spec_graphe + 
+      theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
@@ -337,6 +337,36 @@ ggarrange(
 # Classification par espèces
 
 ## Arbres décisionnels
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8,  fig.cap = "Performances de rpart, en fonction du paramètre de complexité"}
+MULESP_fit_rpart_cp_graphe +
+      theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   )
+```
 
+- Performances médiocres ($\kappa \ll 0.80 $), le modèle atteint ses limites.
 
 ## Forêts aléatoires
+
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Performances des modèles Ranger (à g.) et Rborist (à d.) , en fonction de leurs hyperparamètres"}
+ggarrange(
+   ncol = 2,
+   MULESP_fit_ranger_Gini_kappa_graphe +
+      theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   ),
+   MULESP_fit_Rborist_kappa_graphe +
+      theme(
+      panel.background = element_rect(fill = "transparent", color="transparent"),
+      plot.background = element_rect(fill = "transparent", color="transparent"),
+      legend.background = element_rect(fill="transparent", color="transparent"),
+      legend.box.background = element_rect(fill="transparent", color="transparent")
+   )
+)
+```
