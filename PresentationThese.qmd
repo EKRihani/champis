@@ -48,6 +48,7 @@ library(tidyverse)
 
 ![](Photos/Formes/Pezziza%20spp_2007_go_1.jpg){fig-align="left" width="32%"} ![](Photos/Formes/Pleurotus_ostreatus_2007_ov_1.jpg){fig-align="center" width="32%"} ![](Photos/Formes/Tremella_mesenterica_2006_jg_1.jpg){fig-align="right" width="32%"}
 
+
 ![](Photos/Formes/Phallus_impudicus_2010_dg_1.jpg){.fragment .absolute bottom="40" left="360" height="540"}
 
 ::: footer
@@ -55,10 +56,11 @@ Source : MycoDB
 :::
 
 ## Critère de couleur
-
+::: {layout-nrow=2}
 ![](Photos/Couleurs/Amanita_muscaria_2005_ov_2.jpg){fig-align="left" width="32%"} ![](Photos/Couleurs/Entoloma_euchroum_2021_fm_2+.jpg){fig-align="center" width="32%"} ![](Photos/Couleurs/Hygrocybe_psittacinus_2008_jd_1.jpg){fig-align="right" width="32%"}
 
 ![](Photos/Couleurs/Phellodon_niger_2013_jg_1.jpg){fig-align="left" width="32%"} ![](Photos/Couleurs/Laccaria_amethystina_1998_dr_1.jpg){fig-align="center" width="32%"} ![](Photos/Couleurs/Hygrocybe_psittacinus_2008_mp_1.jpg){fig-align="right" width="32%"}
+:::
 
 ::: footer
 Source : MycoDB
@@ -257,6 +259,17 @@ BI_lda2_graphe_facteurs +
    )
 ```
 
+## LDA
+::: {layout-ncol=2}
+![A.phalloides, "Calice de la Mort"](Photos/RoseFanee/Amanita_phalloides_2005_rp_1.jpg){width=400}
+
+![A.virosa, "Ange de la Mort"](Photos/RoseFanee/Amanita_virosa_2015_jpr_1.jpg){width=400}
+:::
+
+::: footer
+Source : MycoDB
+:::
+
 ## Arbres décisionnels
 
 ```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Sensibilité (à g.) et spécificité (à d.) de rpartCost en fonction de la complexité et du coût"}
@@ -347,11 +360,11 @@ MULESP_fit_rpart_cp_graphe +
    )
 ```
 
-- Performances médiocres ($\kappa \ll 0.80 $), le modèle atteint ses limites.
+- Performances médiocres ($\kappa \ll $ 0.80)
 
 ## Forêts aléatoires
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Performances des modèles Ranger (à g.) et Rborist (à d.) , en fonction de leurs hyperparamètres"}
+```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Performances des modèles Ranger (à g.) et Rborist (à d.)"}
 ggarrange(
    ncol = 2,
    MULESP_fit_ranger_Gini_kappa_graphe +
