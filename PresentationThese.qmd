@@ -3,8 +3,7 @@ title: "Application de modèles d'apprentissage machine à la classification des
 author: "Emir Kaïs RIHANI"
 format:
   revealjs:
-    #theme: litera
-    theme: solarized
+    theme: [theme.scss]
     slide-number: true
     embed-resources: true
 ---
@@ -138,7 +137,7 @@ Source : MycoDB
 
 - Calcul d'un indice synthétique et du seuil de décision
 - Pondération de chaque caractéristique dans l'indice
-- Optimisation de la "résolution" (maximiser $D^{2}/S$)
+- Optimisation de la "résolution" (maximiser $\mathsf{D^{2}/S}$)
 - Pour valeurs quantitatives ou qualitatives ordinales
 
 ![](LDA+.svg){fig-align="center"}
@@ -163,10 +162,10 @@ Source : MycoDB
 
 ## Optimisation des modèles
 - Indicateur de performance
-   - Indice de Youden pondéré ($J_{w} \geq `r Jw_min`$)
+   - Indice de Youden pondéré ($\mathsf{J_{w} \geq `r Jw_min`}$)
       - Indice synthétique pondérant spécificité et sensibilité
       - `r Jw_ratio`x plus grave d'accepter un non-comestible
-   - Kappa ($\kappa > 0.80$)
+   - Kappa ($\mathsf{\kappa > 0.8}$)
       - Probabilité de prédiction exacte vs hasard
 - Exploration de l'espace des hyperparamètres
    - Plans d'expériences
@@ -176,7 +175,7 @@ Source : MycoDB
 - Plan d'expérience de type *Space-Filling Design*
    - 1 ligne + 1 colonne = 1 expérience
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 3.5, fig.cap = "Carré latin aléatoire (à gauche), optimisé (au milieu), quasi-orthogonal (à droite)"}
+```{r, dev = "svg", dev.args=list(bg="transparent"), fig.height = 3.5, fig.cap = "Carré latin aléatoire (à gauche), optimisé (au milieu), quasi-orthogonal (à droite)"}
 ggarrange(
    widths = c(1.05,1,1),
    ncol = 3,
@@ -185,21 +184,33 @@ ggarrange(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    ),
    graphe_optiLHS + 
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    ),
    graphe_NOHLD + 
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 )
 
@@ -221,26 +232,30 @@ ggarrange(
 ## Génération des critères quantitatifs
 
 - Critères dimensionnels :
-   - Diamètre du chapeau $D_{c}$,
-   - Diamètre du pied (stipe) $D_{S}$,
-   - Hauteur du pied (stipe) $L_{S}$.
- - Proportionnels, liés à la croissance du champignon $F_{C}$.
+   - Diamètre du chapeau $\mathsf{D_{C}}$,
+   - Diamètre du pied (stipe) $\mathsf{D_{S}}$,
+   - Hauteur du pied (stipe) $\mathsf{L_{S}}$.
+ - Proportionnels, liés à la croissance du champignon $\mathsf{F_{C}}$.
 $$\left \{
 \begin{array}{l}
-L_{S} = L_{S_{max}}.F_{C} \\
-D_{S} = D_{S_{max}}.F_{C} \\
-D_{C} = D_{C_{max}}.F_{C} \\
+\mathsf{L_{S} = L_{S_{max}}.F_{C}} \\
+\mathsf{D_{S} = D_{S_{max}}.F_{C}} \\
+\mathsf{D_{C} = D_{C_{max}}.F_{C}} \\
 \end{array}
 \right.$$
 
 ## Génération des critères quantitatifs : loi bêta
-```{r, dev = "png", dev.args=list(bg="transparent")}
+```{r, dev = "svg", dev.args=list(bg="transparent")}
 lois_beta + 
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 ```
 
@@ -250,9 +265,9 @@ lois_beta +
 
 $$\left \{
 \begin{array}{ll} 
-L_{S} = L_{Smax}.F_{T}.\delta_{Ls} & \delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
-D_{S} = D_{Smax}.F_{T}.\delta_{Ds} & \delta_{Ds} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
-D_{C} = D_{Cmax}.F_{T}.\delta_{Dc} & \delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05) \\
+\mathsf{L_{S} = L_{Smax}.F_{T}.\delta_{Ls}} & \mathsf{\delta_{Ls} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05)} \\
+\mathsf{D_{S} = D_{Smax}.F_{T}.\delta_{Ds}} & \mathsf{\delta_{Ds} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05)} \\
+\mathsf{D_{C} = D_{Cmax}.F_{T}.\delta_{Dc}} & \mathsf{\delta_{Dc} \sim \mathcal{N}(\mu = 1 ; \sigma = 0.05)} \\
 \end{array}
 \right.$$
 
@@ -282,16 +297,20 @@ nuage3D_avecdispersion
 
 ## LDA
 
-* Algorithme rapide ($t_{moy} =$ `r BI_temps_lda2` à `r BI_temps_pda` min)
-* Performances prédictives insuffisantes ($J_{w} \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Jw"], BI_fit_pda_lambda_resultats[,"Jw"])),3)`$)
+* Algorithme rapide ($\mathsf{t_{moy} = `r BI_temps_lda2` ~-~ `r BI_temps_pda`}$ min)
+* Performances prédictives insuffisantes ($\mathsf{J_{w} \approx `r round(mean(c(BI_fit_lda2_dim_resultats[,"Jw"], BI_fit_pda_lambda_resultats[,"Jw"])),3)`}$)
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 4.5, fig.cap = "Dix premiers facteurs de LDA prédisant la non-comestibilité des champignons"}
+```{r, dev = "svg", dev.args=list(bg="transparent"), fig.height = 4.5, fig.cap = "Dix premiers facteurs de LDA prédisant la non-comestibilité des champignons"}
 BI_lda2_graphe_facteurs + 
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 ```
 
@@ -308,7 +327,7 @@ Source : MycoDB
 
 ## Arbres décisionnels
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Sensibilité (à g.) et spécificité (à d.) de rpartCost en fonction de la complexité et du coût"}
+```{r, dev = "svg", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Sensibilité (à g.) et spécificité (à d.) de rpartCost en fonction de la complexité et du coût"}
 ggarrange(
    ncol = 2,
    BI_fit_rpartcost_sens_graphe + 
@@ -316,14 +335,22 @@ ggarrange(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    ),
    BI_fit_rpartcost_spec_graphe + 
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 )
 
@@ -331,7 +358,7 @@ ggarrange(
 
 ## Arbres décisionnels
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.width = 6.5, fig.cap = "Indice de Youden pondéré de rpartCost en fonction de ses hyperparamètres"}
+```{r, dev = "svg", dev.args=list(bg="transparent"), fig.height = 5.8, fig.width = 6.5, fig.cap = "Indice de Youden pondéré de rpartCost en fonction de ses hyperparamètres"}
 BI_fit_rpartcost_jw_graphe + 
    theme(legend.position='right') + 
    #theme(legend.text = element_text(angle = 0, vjust = 1, hjust = 0)) +
@@ -339,7 +366,11 @@ BI_fit_rpartcost_jw_graphe +
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 ```
 
@@ -355,15 +386,15 @@ BI_fit_rpartcost_jw_graphe +
 * Performances prédictives et calculatoires correctes.
 $$\left \{
 \begin{array}{l}
-J_{w_{Rpart}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),4)` \\
-J_{w_{RpartCost}} = `r round(BI_fit_rpartcost_best_resultats["Jw"],4)` \\
-J_{w_{c5.0tree}} = `r round(BI_fit_c50tree_resultats["Jw"],4)` \\
+\mathsf{J_{w_{Rpart}} = `r round(max(BI_fit_rpart_cp_resultats["Jw"]),4)`} \\
+\mathsf{J_{w_{RpartCost}} = `r round(BI_fit_rpartcost_best_resultats["Jw"],4)`} \\
+\mathsf{J_{w_{c5.0tree}} = `r round(BI_fit_c50tree_resultats["Jw"],4)`} \\
 \end{array}
 \right.$$
 
 ## Forêts aléatoires
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Sensibilité (à g.) et spécificité (à d.) du modèle Rborist"}
+```{r, dev = "svg", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Sensibilité (à g.) et spécificité (à d.) du modèle Rborist"}
 ggarrange(
    ncol = 2,
    BI_fit_Rborist_sens_graphe + 
@@ -372,13 +403,21 @@ ggarrange(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")),
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)),
       BI_fit_Rborist_spec_graphe + 
       theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 )
 ```
@@ -387,21 +426,25 @@ ggarrange(
 
 ## Arbres décisionnels 
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8,  fig.cap = "Performances de rpart, en fonction du paramètre de complexité"}
+```{r, dev = "svg", dev.args=list(bg="transparent"), fig.height = 5.8,  fig.cap = "Performances de rpart, en fonction du paramètre de complexité"}
 MULESP_fit_rpart_cp_graphe +
       theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 ```
 
-- Performances médiocres ($\kappa \ll 0.80$), limites atteintes
+- Performances médiocres ($\mathsf{\kappa \ll 0.80}$), limites atteintes
 
 ## Forêts aléatoires
 
-```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Performances des modèles Ranger (à g.) et Rborist (à d.)"}
+```{r, dev = "svg", dev.args=list(bg="transparent"), fig.height = 5.8, fig.cap = "Performances des modèles Ranger (à g.) et Rborist (à d.)"}
 ggarrange(
    ncol = 2,
    MULESP_fit_ranger_Gini_kappa_graphe +
@@ -409,14 +452,22 @@ ggarrange(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    ),
    MULESP_fit_Rborist_kappa_graphe +
       theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
       legend.background = element_rect(fill="transparent", color="transparent"),
-      legend.box.background = element_rect(fill="transparent", color="transparent")
+      legend.box.background = element_rect(fill="transparent", color="transparent"),
+      axis.title = element_text(size = 15),
+      axis.text = element_text(size = 12),
+      title = element_text(size = 15),
+      legend.text = element_text(size = 12)
    )
 )
 ```
@@ -427,12 +478,12 @@ ggarrange(
 kable(MULESP_RF_resultat, digits = 5) %>%
    kable_styling(font_size = 30)
 ```
-- Excellentes performances, `r MULESP_erreur_Rborist` à `r MULESP_erreur_ranger` : `r MULESP_n_eval` erreurs
+- Excellentes performances (`r MULESP_erreur_Rborist` à `r MULESP_erreur_ranger` : `r MULESP_n_eval` erreurs)
 - Erreurs "assez proches" de la valeur attendue
 
-```{r, fig.cap = "Matrice de confusion erreurs de Ranger (pred. à g., ref. en h.)"}
-kable(MULESP_CMerreurs_ranger, align = "c") %>%
-   kable_styling(font_size = 15)
+```{r}
+kable(MULESP_CMerreurs_ranger, format = "html", align = "c", caption = "Matrice de confusion des erreurs de Ranger, (prédictions à g., références en h.)") %>%
+   kable_styling(font_size = 15, bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 # Conclusion

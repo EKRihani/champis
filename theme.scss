@@ -1,0 +1,35 @@
+/*-- scss:defaults --*/
+
+// polices
+$font-family-sans-serif: "Source Sans Pro", Helvetica, Verdana, Arial, sans-serif !default;
+
+// couleurs
+$body-bg: #efe !default;
+$body-color: #121 !default;
+$link-color: $body-color;
+$selection-bg: #231 !default;
+$text-muted:lighten($body-color, 50%);
+
+
+// titres/texte
+$presentation-heading-font: $font-family-sans-serif;
+$presentation-heading-color: #383d3d !default;
+$presentation-h1-font-size: 1.8em;
+$presentation-h2-font-size: 1.4em;
+$presentation-h3-font-size: 1.1em;
+$presentation-h4-font-size: 0.9em;
+
+.caption{
+   text-align: center;
+   caption-side: bottom;
+   font-size: 0.6em;
+}
+
+.math.inline{
+  font-size: 78%  !important;
+}
+
+.math.display{
+  font-family: $font-family-sans-serif !important;
+  font-size: 78%  !important;
+}
