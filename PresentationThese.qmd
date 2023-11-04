@@ -23,24 +23,26 @@ load("EKR-Champis-Outro.RData")
 
 library(ggpubr)
 library(tidyverse)
+library(kableExtra)
 ```
 
 # Introduction et objet de l'étude
 
 ## Objet de l'étude
 
--   "Application de modèles d'apprentissage machine à la classification des macromycètes"
-    -   Apprentissage machine
-    -   Classification
-    -   Macromycètes
+- "Application de modèles d'apprentissage machine à la classification des macromycètes"
+    - Application
+    - Apprentissage machine
+    - Classification
+    - Macromycètes
 
 # Notion de macromycète
 
 ## Macromycètes
 
--   Macro-Mycète = "grand champignon"
--   Le champignon (*mycélium*) est en réalité quasi-invisible et intimement lié à son substrat
--   La partie visible du champignon est le *sporophore*
+- Macro-Mycète = "grand champignon"
+- Le champignon (*mycélium*) est en réalité quasi-invisible et intimement lié à son substrat
+- La partie visible du champignon est le *sporophore*
 
 ## Critère de forme
 
@@ -66,7 +68,16 @@ Source : MycoDB
 Source : MycoDB
 :::
 
-## Critère de texture
+## Autres critères morphologiques
+::: {layout-nrow=2}
+![](Photos/Autres/Sarcodon_imbricatus_2008_gm_1.jpg){fig-align="left" width="32%"} ![](Photos/Autres/Xerocomellus_chrysenteron_2016_df_1.jpg){fig-align="center" width="32%"} ![](Photos/Autres/Marasmius_rotula_2009_gg_1.jpg){fig-align="right" width="32%"}
+
+![](Photos/Autres/Amanita_muscaria_2009_jd_2.jpg){fig-align="left" width="32%"} ![](Photos/Autres/Amanita_phalloides_2011_jpa_1.jpg){fig-align="center" width="32%"} ![](Photos/Autres/Cortinarius_torvus_2007_jf_1.jpg){fig-align="right" width="32%"}
+:::
+
+::: footer
+Source : MycoDB
+:::
 
 ## Critère écologique
 
@@ -82,24 +93,24 @@ Source : MycoDB
 
 ## Classification
 
--   Classification binaire : 2 classes
-    -   Comestible ou non ?
-    -   Définition *précise* du critère
--   Classification multiclasse : > 2 classes
-    -   Familles
-    -   Espèces
-    -   Syndromes ?
+- Classification binaire : 2 classes
+   - Comestible ou non ?
+   - Définition *précise* du critère
+- Classification multiclasse : > 2 classes
+   - Familles
+   - Espèces
+   - Syndromes ?
 
 ## Notion de comestibilité
 
--   La comestibilité se situe sur un continuum :
-    -   Excellents comestibles : *Tuber spp.*, *Amanita caesaria*...
-    -   Comestibles : *Agaricus arvensis*...
-    -   Comestibles cuits : *Morchella spp.*...
-    -   Comestibles médiocres : *Boletus felleus*...
-    -   Toxiques en grandes quantités : *Tricholoma equestre*...
-    -   Toxiques : *Amanita muscaria*...
-    -   Mortels : *Amanita phalloides*, *Amanita virosa*...
+- La comestibilité se situe sur un continuum :
+   - Excellents comestibles : *Tuber spp.*, *Amanita caesaria*...
+   - Comestibles : *Agaricus arvensis*...
+   - Comestibles cuits : *Morchella spp.*...
+   - Comestibles médiocres : *Boletus felleus*...
+   - Toxiques en grandes quantités : *Tricholoma equestre*...
+   - Toxiques : *Amanita muscaria*...
+   - Mortels : *Amanita phalloides*, *Amanita virosa*...
 
 ## Notion de comestibilité
 
@@ -109,21 +120,46 @@ Source : MycoDB
 | Gourmand          | [✓]{style="color:green;"} | [✓]{style="color:green;"} | [✓]{style="color:green;"} |  [✗]{style="color:red;"}  | [✓]{style="color:green;"} | [✗]{style="color:red;"} | [✗]{style="color:red;"} |
 | Toxicologue | [✓]{style="color:green;"} | [✓]{style="color:green;"} |  [✗]{style="color:red;"}  | [✓]{style="color:green;"} |  [✗]{style="color:red;"}  | [✗]{style="color:red;"} | [✗]{style="color:red;"} |
 
--   Critères du "gastronome prudent"
-    -   Toxiques et comestibles médiocres : à rejeter
-    -   Comestibles cuits : à conserver (morilles !)
+- Critères du "gastronome prudent"
+   - Toxiques et comestibles médiocres : à rejeter
+   - Comestibles cuits : à conserver (morilles !)
 
 # Notion d'apprentissage machine
 
 ## Généralités
+- Apprentissage machine : 
+   - La machine "apprend" de manière autonome
+   - Amélioration des performances sans intervention
+   - Amélioration par l'entraînement
 
+![](Split-Jeux+.svg){fig-align="center"}
 
 ## Analyse Discriminante Linéaire
 
+- Calcul d'un indice synthétique et du seuil de décision
+- Pondération de chaque caractéristique dans l'indice
+- Optimisation de la "résolution" (maximiser $D^{2}/S$)
+- Pour valeurs quantitatives ou qualitatives ordinales
+
+![](LDA+.svg){fig-align="center"}
 
 ## Arbres de classification
 
+- Construction d'un arbre décisionnel :
+   - Nœud = test, évaluation d'un critère,
+   - Feuille = nœud terminal = prédiction.
+   - Test optimal : génère des sous-groupes homogènes
+
+![](IntroChampisCART2Arbre+.svg){fig-align="center"}
+
 ## Forêts aléatoires
+
+- Création d'une multitude d'arbres :
+   - Masquage de critères : arbres "à œillères"
+   - Décision finale = vote des arbres
+- Plus robuste mais moins interprétable qu'un arbre simple
+
+![](RandomForest+.svg){fig-align="center"}
 
 ## Optimisation des modèles
 - Indicateur de performance
@@ -349,7 +385,8 @@ ggarrange(
 
 # Classification par espèces
 
-## Arbres décisionnels
+## Arbres décisionnels 
+
 ```{r, dev = "png", dev.args=list(bg="transparent"), fig.height = 5.8,  fig.cap = "Performances de rpart, en fonction du paramètre de complexité"}
 MULESP_fit_rpart_cp_graphe +
       theme(
@@ -360,7 +397,7 @@ MULESP_fit_rpart_cp_graphe +
    )
 ```
 
-- Performances médiocres ($\kappa \ll $ 0.80)
+- Performances médiocres ($\kappa \ll 0.80$), limites atteintes
 
 ## Forêts aléatoires
 
@@ -383,3 +420,38 @@ ggarrange(
    )
 )
 ```
+
+## Forêts aléatoires
+
+```{r}
+kable(MULESP_RF_resultat, digits = 5) %>%
+   kable_styling(font_size = 30)
+```
+- Excellentes performances, `r MULESP_erreur_Rborist` à `r MULESP_erreur_ranger` : `r MULESP_n_eval` erreurs
+- Erreurs "assez proches" de la valeur attendue
+
+```{r, fig.cap = "Matrice de confusion erreurs de Ranger (pred. à g., ref. en h.)"}
+kable(MULESP_CMerreurs_ranger, align = "c") %>%
+   kable_styling(font_size = 15)
+```
+
+# Conclusion
+
+## Forces
+
+- Génération de lots de données synthétiques,
+- Plans d'expériences SFD et modélisation,
+- Performances prédictives de l'apprentissage machine,
+- Viabilité de nombreux modèles, selon la classification,
+- Association R + Rmarkdown/Quarto + Latex.
+
+## Limites et perspectives
+- Limites :
+   - Volet "terrain" (mycologie, utilisateurs) limité,
+   - Rationalisation des critères du lot de données,
+   - Pas de tests de robustesse des modèles.
+
+- Perspectives :
+   - Modèles déployables dans de nombreux domaines,
+   - Création d'interface utilisateur (Shiny),
+   - Génération de rapports automatisés.
