@@ -25,9 +25,9 @@
      showgrid="false"
      units="mm"
      width="153.13mm"
-     inkscape:zoom="1"
-     inkscape:cx="190"
-     inkscape:cy="239.5"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="377.59502"
+     inkscape:cy="158.74547"
      inkscape:window-width="1883"
      inkscape:window-height="1062"
      inkscape:window-x="37"
@@ -99,7 +99,7 @@
          style="fill:none;stroke:#000000;stroke-width:0.78;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path52"
          sodipodi:nodetypes="ccc" /></g><text
-       style="font-variant:normal;font-weight:bold;font-size:4.71274px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729"
+       style="font-variant:normal;font-weight:bold;font-size:4.71274px;font-family:Arial;-inkscape-font-specification:'Arial Bold';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729;font-style:normal;font-stretch:normal"
        id="text74"
        x="8.9793434"
        y="19.231773"><tspan
@@ -107,28 +107,28 @@
          y="19.231773"
          sodipodi:role="line"
          id="tspan64"
-         style="stroke-width:0.392729">Hymenophore2_detachables = 0</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Hymenophore2_detachables = 0</tspan><tspan
          x="-0.32046631 3.0821335 5.7024183 9.892046 12.512331 15.391815 18.271301 21.150787 24.030272 26.90976 28.743015 44.723923 46.034065 48.786304 50.096451"
          y="46.789532"
          sodipodi:role="line"
          id="tspan66"
-         style="stroke-width:0.392729">Hymenophore = 0</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Hymenophore = 0</tspan><tspan
          x="100.93279 104.3354 106.95568 111.14532 113.76559 116.64508 119.52457 122.40405 125.28354 128.16302 129.99628 150.42601 151.73616 154.4884 155.79854"
          y="46.769897"
          sodipodi:role="line"
          id="tspan68"
-         style="stroke-width:0.392729">Hymenophore = 1</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Hymenophore = 1</tspan><tspan
          x="73.913086 76.792572 79.412857 83.602486 86.222763 88.843048 90.153191 93.555794 95.125137 96.694481 99.314766 101.88792 104.7674 107.38769 110.00797 112.62826 115.50774 118.38724 121.00751 122.31766 125.0699 126.38005"
          y="74.520096"
          sodipodi:role="line"
          id="tspan70"
-         style="stroke-width:0.392729">Lames.Attache_adne = 0</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Lames.Attache_adne = 0</tspan><tspan
          x="111.12017 114.26358 115.57372 118.194 121.07349 122.38364 125.52702 128.40651 130.23978 131.80911 134.4294 137.0497 159.05348 160.36362 163.11586 164.42601"
          y="102.10535"
          sodipodi:role="line"
          id="tspan72"
-         style="stroke-width:0.392729">Pied.Surface = 1</tspan></text><text
-       style="font-variant:normal;font-weight:bold;font-size:4.71274px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729"
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Pied.Surface = 1</tspan></text><text
+       style="font-variant:normal;font-weight:bold;font-size:4.71274px;font-family:Arial;-inkscape-font-specification:'Arial Bold';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729;font-style:normal;font-stretch:normal"
        id="text96"
        x="159.91512"
        y="26.48547"><tspan
@@ -136,27 +136,27 @@
          y="26.48547"
          sodipodi:role="line"
          id="tspan86"
-         style="stroke-width:0.392729">= 1</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">= 1</tspan><tspan
          x="61.139961 63.892212 65.202347"
          y="54.02359"
          sodipodi:role="line"
          id="tspan88"
-         style="stroke-width:0.392729">= 1</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">= 1</tspan><tspan
          x="192.84146 195.5937 196.90385"
          y="53.980392"
          sodipodi:role="line"
          id="tspan90"
-         style="stroke-width:0.392729">= 0</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">= 0</tspan><tspan
          x="155.21414 157.96638 159.27654"
          y="81.565636"
          sodipodi:role="line"
          id="tspan92"
-         style="stroke-width:0.392729">= 1</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">= 1</tspan><tspan
          x="174.02585 176.77809 178.08823"
          y="109.05663"
          sodipodi:role="line"
          id="tspan94"
-         style="stroke-width:0.392729">= 0</tspan></text><g
+         style="stroke-width:0.392729;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">= 0</tspan></text><g
        id="g98"
        transform="matrix(0.39272851,0,0,-0.39272851,-6.4643858,-9.1419447)"><path
          d="m 268.426,-32.277 0.488,2.23 1.422,2.078 2.258,1.781 2.949,1.372 3.43,0.859 3.691,0.289 h 20.199 l 3.68,-0.289 3.43,-0.859 2.953,-1.372 2.258,-1.781 1.429,-2.078 0.481,-2.23 -0.481,-2.231 -1.429,-2.078 -2.258,-1.793 -2.953,-1.359 -3.43,-0.871 -3.68,-0.289 h -20.199 l -3.691,0.289 -3.43,0.871 -2.949,1.359 -2.258,1.793 -1.422,2.078 z"
@@ -212,7 +212,7 @@
          d="m 481.633,-172.527 0.48,2.23 1.43,2.078 2.262,1.781 2.949,1.372 3.43,0.859 3.679,0.301 h 36.93 l 3.691,-0.301 3.43,-0.859 2.949,-1.372 2.262,-1.781 1.418,-2.078 0.492,-2.23 -0.492,-2.231 -1.418,-2.078 -2.262,-1.781 -2.949,-1.371 -3.43,-0.86 -3.691,-0.289 h -36.93 l -3.679,0.289 -3.43,0.86 -2.949,1.371 -2.262,1.781 -1.43,2.078 z"
          style="fill:#84bcdb;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.78;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path140" /></g><text
-       style="font-variant:normal;font-weight:normal;font-size:3.92729px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Regular;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729"
+       style="font-variant:normal;font-weight:normal;font-size:3.92729px;font-family:Arial;-inkscape-font-specification:Arial;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729;font-style:normal;font-stretch:normal"
        id="text180"
        x="95.956924"
        y="11.432188"><tspan
@@ -220,43 +220,43 @@
          y="11.432188"
          sodipodi:role="line"
          id="tspan164"
-         style="stroke-width:0.392729">57228 / 75177</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">57228 / 75177</tspan><tspan
          x="32.45665 34.640221 36.823788 39.007366 41.190933 43.374504 44.46629 45.558075 46.649857 48.833431 51.017002 53.200569 55.384144"
          y="38.97031"
          sodipodi:role="line"
          id="tspan166"
-         style="stroke-width:0.392729">55341 / 68945</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">55341 / 68945</tspan><tspan
          x="13.641026 15.824602 18.008171 20.19174 22.375311 24.55888 25.650665 26.742451 27.834232 30.017811 32.201378 34.384949 36.56852 55.639412 57.822983 60.006554 62.190125 63.281914 64.373695 65.465485 67.649055 69.832626"
          y="66.508438"
          sodipodi:role="line"
          id="tspan168"
-         style="stroke-width:0.392729">55341 / 68190755 / 755</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">55341 / 68190755 / 755</tspan><tspan
          x="152.23099 154.41457 156.59813 158.78171 160.96527 162.05705 163.14885 164.24063 166.42419 168.60777 170.79134"
          y="38.97031"
          sodipodi:role="line"
          id="tspan170"
-         style="stroke-width:0.392729">1887 / 6232</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">1887 / 6232</tspan><tspan
          x="119.30463 121.4882 123.67178 125.85535 128.03893 129.13071 130.22249 131.31427 133.49785 135.68141 137.86499"
          y="66.508438"
          sodipodi:role="line"
          id="tspan172"
-         style="stroke-width:0.392729">1887 / 5098</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">1887 / 5098</tspan><tspan
          x="91.083168 93.266739 95.450317 97.633881 99.817451 100.90923 102.00102 103.0928 105.27637 107.45995 109.64352 147.52611 149.70969 151.89325 154.07681 156.26039 157.35217 158.44397 159.53575 161.71931 163.90289 166.08646"
          y="94.046555"
          sodipodi:role="line"
          id="tspan174"
-         style="stroke-width:0.392729">1320 / 19922539 / 3106</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">1320 / 19922539 / 3106</tspan><tspan
          x="129.8062 131.98976 134.17334 136.3569 137.4487 138.54048 139.63226 141.81584 143.9994 146.18298 166.34174 168.5253 170.70888 172.89244 175.07602 176.1678 177.25958 178.35136 180.53494 182.71851 184.90208"
          y="121.5886"
          sodipodi:role="line"
          id="tspan176"
-         style="stroke-width:0.392729">567 / 10362070 / 2070</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">567 / 10362070 / 2070</tspan><tspan
          x="185.15735 187.34093 189.52449 191.70807 193.89163 194.98343 196.07521 197.16699 199.35057 201.53413 203.71771"
          y="66.508438"
          sodipodi:role="line"
          id="tspan178"
-         style="stroke-width:0.392729">1134 / 1134</tspan></text><text
-       style="font-variant:normal;font-weight:normal;font-size:4.71274px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Regular;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729"
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">1134 / 1134</tspan></text><text
+       style="font-variant:normal;font-weight:normal;font-size:4.71274px;font-family:Arial;-inkscape-font-specification:Arial;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729;font-style:normal;font-stretch:normal"
        id="text204"
        x="100.91708"
        y="4.7322378"><tspan
@@ -264,57 +264,57 @@
          y="4.7322378"
          sodipodi:role="line"
          id="tspan182"
-         style="stroke-width:0.392729">Rejeter</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="37.416809 40.819412 43.439693 44.485924 47.106209 48.416348 51.036636"
          y="32.270359"
          sodipodi:role="line"
          id="tspan184"
-         style="stroke-width:0.392729">Rejeter</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="18.601187 22.003786 24.624069 25.6703 28.290581 29.600723 32.221012"
          y="59.812408"
          sodipodi:role="line"
          id="tspan186"
-         style="stroke-width:0.392729">Rejeter</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="52.945297 56.347893 58.968178 61.588463 63.944832 66.565125 68.275841 70.514397 73.134682"
          y="60.307251"
          sodipodi:role="line"
          id="tspan188"
-         style="stroke-width:0.392729">Conserver</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan><tspan
          x="155.00757 158.41017 161.03046 162.07669 164.69698 166.00713 168.6274"
          y="32.270359"
          sodipodi:role="line"
          id="tspan190"
-         style="stroke-width:0.392729">Rejeter</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="122.08122 125.48381 128.1041 129.15033 131.77061 133.08076 135.70103"
          y="59.812408"
          sodipodi:role="line"
          id="tspan192"
-         style="stroke-width:0.392729">Rejeter</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="93.859741 97.262344 99.882637 100.92886 103.54914 104.85929 107.47958"
          y="87.350533"
          sodipodi:role="line"
          id="tspan194"
-         style="stroke-width:0.392729">Rejeter</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="147.01949 150.42207 153.04236 155.66264 158.01903 160.63931 162.35004 164.58858 167.20886"
          y="87.845375"
          sodipodi:role="line"
          id="tspan196"
-         style="stroke-width:0.392729">Conserver</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan><tspan
          x="131.491 134.89359 137.51389 138.5601 141.18039 142.49054 145.11082"
          y="114.88866"
          sodipodi:role="line"
          id="tspan198"
-         style="stroke-width:0.392729">Rejeter</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="165.8351 169.2377 171.85799 174.47827 176.83464 179.45493 181.16565 183.40421 186.02449"
          y="115.38349"
          sodipodi:role="line"
          id="tspan200"
-         style="stroke-width:0.392729">Conserver</tspan><tspan
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan><tspan
          x="184.65073 188.05333 190.67361 193.2939 195.65027 198.27055 199.98128 202.21983 204.8401"
          y="60.307251"
          sodipodi:role="line"
          id="tspan202"
-         style="stroke-width:0.392729">Conserver</tspan></text><path
+         style="stroke-width:0.392729;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan></text><path
        d="m 31.589043,42.856095 h 13.86528 v 5.071696 h -13.86528 z"
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.392729"
        id="path206" /><path
@@ -360,7 +360,7 @@
          style="fill:none;stroke:#000000;stroke-width:0.83;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path36-9"
          sodipodi:nodetypes="ccc" /></g><text
-       style="font-variant:normal;font-weight:bold;font-size:5.14143px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495"
+       style="font-variant:normal;font-weight:bold;font-size:5.14143px;font-family:Arial;-inkscape-font-specification:'Arial Bold';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495;font-style:normal;font-stretch:normal"
        id="text50"
        x="227.9133"
        y="21.722509"><tspan
@@ -368,18 +368,18 @@
          y="21.722509"
          sodipodi:role="line"
          id="tspan44"
-         style="stroke-width:0.395495">Chapeau.Diametre &lt; 3</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Chapeau.Diametre &lt; 3</tspan><tspan
          x="288.71274 292.14206 295.28348 298.4249 300.42493 303.38638 304.8157 308.52783 311.66925 314.81064 316.23996 319.0986 322.24002 324.24005 327.09869 330.24011 332.24011 335.09875 338.24017 341.43301 344.29163 345.72095 348.72354 350.15286"
          y="58.115959"
          sodipodi:role="line"
          id="tspan46"
-         style="stroke-width:0.395495">Spore.Couleur_orange = 1</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Spore.Couleur_orange = 1</tspan><tspan
          x="263.97055 267.97061 271.11203 273.97064 277.11206 303.01462 304.44394 307.44653 308.87585"
          y="94.529175"
          sodipodi:role="line"
          id="tspan48"
-         style="stroke-width:0.395495">Odeur = 0</tspan></text><text
-       style="font-variant:normal;font-weight:bold;font-size:5.14143px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495"
+         style="stroke-width:0.395495;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">Odeur = 0</tspan></text><text
+       style="font-variant:normal;font-weight:bold;font-size:5.14143px;font-family:Arial;-inkscape-font-specification:'Arial Bold';writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495;font-style:normal;font-stretch:normal"
        id="text64"
        x="365.94656"
        y="29.521671"><tspan
@@ -387,17 +387,17 @@
          y="29.521671"
          sodipodi:role="line"
          id="tspan58"
-         style="stroke-width:0.395495">&gt;= 3</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">&gt;= 3</tspan><tspan
          x="416.96146 419.96405 421.39337"
          y="65.938843"
          sodipodi:role="line"
          id="tspan60"
-         style="stroke-width:0.395495">= 0</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">= 0</tspan><tspan
          x="350.9415 353.94409 355.37341"
          y="102.40349"
          sodipodi:role="line"
          id="tspan62"
-         style="stroke-width:0.395495">= 1</tspan></text><g
+         style="stroke-width:0.395495;-inkscape-font-specification:'Arial Bold';font-family:Arial;font-weight:bold;font-style:normal;font-stretch:normal;font-variant:normal">= 1</tspan></text><g
        id="g66"
        transform="matrix(0.39549494,0,0,-0.39549494,220.30727,-9.1419552)"><path
          d="m 197.961,-34.762 0.531,2.422 1.539,2.25 2.449,1.93 3.192,1.488 3.719,0.934 3.992,0.316 h 40.008 l 3.992,-0.316 3.719,-0.934 3.191,-1.488 2.457,-1.93 1.543,-2.25 0.519,-2.422 -0.519,-2.41 -1.543,-2.25 -2.457,-1.937 -3.191,-1.481 -3.719,-0.93 -3.992,-0.32 h -40.008 l -3.992,0.32 -3.719,0.93 -3.192,1.481 -2.449,1.937 -1.539,2.25 z"
@@ -439,7 +439,7 @@
          d="m 469.223,-218.91 0.527,2.41 1.543,2.25 2.449,1.941 3.192,1.477 3.718,0.934 3.989,0.316 h 40.011 l 3.989,-0.316 3.722,-0.934 3.199,-1.477 2.45,-1.941 1.539,-2.25 0.519,-2.41 -0.519,-2.422 -1.539,-2.25 -2.45,-1.93 -3.199,-1.488 -3.722,-0.93 -3.989,-0.32 h -40.011 l -3.989,0.32 -3.718,0.93 -3.192,1.488 -2.449,1.93 -1.543,2.25 z"
          style="fill:#fb7e5e;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.83;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
          id="path92" /></g><text
-       style="font-variant:normal;font-weight:normal;font-size:4.35044px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Regular;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495"
+       style="font-variant:normal;font-weight:normal;font-size:4.35044px;font-family:Arial;-inkscape-font-specification:Arial;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495;font-style:normal;font-stretch:normal"
        id="text118"
        x="298.70294"
        y="13.266829"><tspan
@@ -447,28 +447,28 @@
          y="13.266829"
          sodipodi:role="line"
          id="tspan108"
-         style="stroke-width:0.395495">17949 / 75177</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">17949 / 75177</tspan><tspan
          x="243.35342 245.77226 248.19112 250.60995 253.02881 254.23822 255.44766 256.65707 259.07593 261.49478 263.9136 356.46893 358.88776 361.30661 363.72546 366.14432 368.56317 369.77258 370.98199 372.19144 374.61029 377.02911 379.44797 381.86682"
          y="49.68005"
          sodipodi:role="line"
          id="tspan110"
-         style="stroke-width:0.395495">8581 / 886717663 / 66310</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">8581 / 886717663 / 66310</tspan><tspan
          x="309.37338 311.79224 314.21109 316.62991 319.04877 320.25821 321.46762 322.67703 325.09589 327.51474 329.93359"
          y="86.097221"
          sodipodi:role="line"
          id="tspan112"
-         style="stroke-width:0.395495">6169 / 6358</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">6169 / 6358</tspan><tspan
          x="276.36539 278.78421 281.20306 283.62192 286.04077 287.25018 288.45963 289.66904 292.08789 294.50674 296.92557 344.80182 347.22067 349.63953 352.05835 353.26779 354.4772 355.68661 358.10547 360.52432"
          y="122.5144"
          sodipodi:role="line"
          id="tspan114"
-         style="stroke-width:0.395495">6169 / 6169189 / 189</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">6169 / 6169189 / 189</tspan><tspan
          x="405.98489 408.40372 410.82257 413.24142 415.66028 418.0791 419.28854 420.49796 421.7074 424.12622 426.54507 428.96393 431.38278"
          y="86.097221"
          sodipodi:role="line"
          id="tspan116"
-         style="stroke-width:0.395495">17474 / 59952</tspan></text><text
-       style="font-variant:normal;font-weight:normal;font-size:5.14143px;font-family:'Nimbus Sans';-inkscape-font-specification:NimbusSans-Regular;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495"
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">17474 / 59952</tspan></text><text
+       style="font-variant:normal;font-weight:normal;font-size:5.14143px;font-family:Arial;-inkscape-font-specification:Arial;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495;font-style:normal;font-stretch:normal"
        id="text134"
        x="300.74368"
        y="6.4484968"><tspan
@@ -476,37 +476,37 @@
          y="6.4484968"
          sodipodi:role="line"
          id="tspan120"
-         style="stroke-width:0.395495">Conserver</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan><tspan
          x="246.55692 250.26904 253.12766 254.26907 257.12772 258.55704 261.41565"
          y="42.327801"
          sodipodi:role="line"
          id="tspan122"
-         style="stroke-width:0.395495">Rejeter</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="358.50967 362.2218 365.08041 367.93906 370.50977 373.36841 375.23477 377.67694 380.53558"
          y="42.865673"
          sodipodi:role="line"
          id="tspan124"
-         style="stroke-width:0.395495">Conserver</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan><tspan
          x="312.5769 316.289 319.14764 320.28903 323.14767 324.577 327.43564"
          y="78.741013"
          sodipodi:role="line"
          id="tspan126"
-         style="stroke-width:0.395495">Rejeter</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="279.56888 283.28101 286.13965 287.28104 290.13968 291.569 294.42761"
          y="115.15819"
          sodipodi:role="line"
          id="tspan128"
-         style="stroke-width:0.395495">Rejeter</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Rejeter</tspan><tspan
          x="342.00568 345.71777 348.57642 351.43506 354.00577 356.86441 358.73074 361.17294 364.03156"
          y="115.70001"
          sodipodi:role="line"
          id="tspan130"
-         style="stroke-width:0.395495">Conserver</tspan><tspan
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan><tspan
          x="408.02563 411.73773 414.59637 417.45502 420.02576 422.88437 424.75073 427.1929 430.05154"
          y="79.282845"
          sodipodi:role="line"
          id="tspan132"
-         style="stroke-width:0.395495">Conserver</tspan></text><path
+         style="stroke-width:0.395495;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Conserver</tspan></text><path
        d="m 279.53897,90.539776 h 24.36446 v 5.187709 h -24.36446 z"
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.395495"
        id="path136-9" /><g

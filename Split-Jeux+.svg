@@ -40,9 +40,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.5411756"
-     inkscape:cx="210.87798"
-     inkscape:cy="177.46193"
+     inkscape:zoom="2.1795514"
+     inkscape:cx="362.4599"
+     inkscape:cy="166.31863"
      inkscape:window-width="1883"
      inkscape:window-height="1062"
      inkscape:window-x="37"
@@ -134,45 +134,39 @@
        y="20" />
     <g
        id="g20799"
-       transform="translate(-26.548446,-34.667867)">
+       transform="translate(-25.683731,-35.066065)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,46.486042,16.21125)"
          id="text9191"
-         style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect9193);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect9193);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="94.742158"
-           id="tspan110"><tspan
-             style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan108">DONNÉES</tspan></tspan></text>
+           y="94.955341"
+           id="tspan30477">DONNÉES</tspan></text>
     </g>
     <g
        id="g23627"
-       transform="translate(-29.014592,-14.677875)">
+       transform="translate(-25.188824,-14.772862)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,18.427216,16.21125)"
          id="text23625"
-         style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect23629);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect23629);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="94.742158"
-           id="tspan114"><tspan
-             style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan112">ENTRAÎNEMENT &amp; OPTIMISATION</tspan></tspan></text>
+           y="94.955341"
+           id="tspan30479">ENTRAÎNEMENT &amp; OPTIMISATION</tspan></text>
     </g>
     <g
        id="g27059"
-       transform="translate(23.200212,-14.677875)">
+       transform="translate(23.60501,-14.772862)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.397681,16.21125)"
          id="text27057"
-         style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect27061);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect27061);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="94.742158"
-           id="tspan118"><tspan
-             style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan116">ÉVAL</tspan></tspan></text>
+           y="94.955341"
+           id="tspan30481">ÉVAL</tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#ffaaaa;stroke:none;stroke-width:0.848773;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
@@ -190,31 +184,27 @@
        y="40" />
     <g
        id="g28817"
-       transform="translate(-30.683797,5.322125)">
+       transform="translate(-29.051687,5.0503804)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,30.377903,16.21125)"
          id="text28815"
-         style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28825);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28825);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="94.742158"
-           id="tspan122"><tspan
-             style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan120">ENTRAÎNEMENT</tspan></tspan></text>
+           y="94.955341"
+           id="tspan30483">ENTRAÎNEMENT</tspan></text>
     </g>
     <g
        id="g28823"
-       transform="translate(23.200212,5.322125)">
+       transform="translate(23.60501,5.0503804)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.397681,16.21125)"
          id="text28821"
-         style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28827);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28827);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="94.742158"
-           id="tspan126"><tspan
-             style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan124">ÉVAL</tspan></tspan></text>
+           y="94.955341"
+           id="tspan30485">ÉVAL</tspan></text>
     </g>
     <rect
        style="opacity:1;fill:#87de87;stroke:none;stroke-width:0.282924;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
@@ -225,17 +215,15 @@
        y="40" />
     <g
        id="g28835"
-       transform="translate(10.262607,5.322125)">
+       transform="translate(10.76128,5.0073168)">
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,53.701709,16.21125)"
          id="text28833"
-         style="font-style:normal;font-weight:normal;font-size:13.3333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28837);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial Bold';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect28837);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
            x="111.75586"
-           y="94.742158"
-           id="tspan130"><tspan
-             style="font-weight:bold;-inkscape-font-specification:'sans-serif Bold'"
-             id="tspan128">OPTI</tspan></tspan></text>
+           y="94.955341"
+           id="tspan30487">OPTI</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.264583, 0.793749;stroke-dashoffset:0;stroke-opacity:1;marker-start:url(#Scissors);marker-mid:url(#Scissors)"
