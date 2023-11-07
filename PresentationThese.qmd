@@ -494,7 +494,7 @@ kable(MULESP_CMerreurs_ranger, format = "html", align = "c", caption = "Matrice 
 - Plans d'expériences SFD et modélisation,
 - Performances prédictives de l'apprentissage machine,
 - Viabilité de nombreux modèles, selon la classification,
-- Association R + Rmarkdown/Quarto + Latex.
+<!-- - Association R + Rmarkdown/Quarto + Latex. -->
 
 ## Limites et perspectives
 - Limites :
