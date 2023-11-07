@@ -179,7 +179,7 @@ Source : MycoDB
 ggarrange(
    widths = c(1.05,1,1),
    ncol = 3,
-   graphe_LHS + 
+   graphe_LHS + ylab("X2") +
    theme(
       panel.background = element_rect(fill = "transparent", color="transparent"),
       plot.background = element_rect(fill = "transparent", color="transparent"),
@@ -506,3 +506,5 @@ kable(MULESP_CMerreurs_ranger, format = "html", align = "c", caption = "Matrice 
    - Modèles déployables dans de nombreux domaines,
    - Création d'interface utilisateur (Shiny),
    - Génération de rapports automatisés.
+
+# Merci !
