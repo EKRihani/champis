@@ -273,7 +273,7 @@ $$\left \{
 
 ## Induction de variabilité
 
-```{r, dev = "png", dev.args=list(bg="transparent"), dpi = 100, fig.height = 5, fig.cap = paste0("Paramètres de taille (Ls et Dc), sans (à g.) et avec dispersion (à .), pour ", n_reduit, " champignons")}
+```{r, dev = "png", dev.args=list(bg="transparent"), dpi = 100, fig.height = 5, fig.cap = paste0("Paramètres de taille (Ls et Dc), sans (à g.) et avec dispersion (à d.), pour ", n_reduit, " spécimens")}
 plot(ggarrange(
    ncol = 2,
    nuage_sansdispersion + 
@@ -459,7 +459,7 @@ MULESP_fit_rpart_cp_graphe +
    )
 ```
 
-- Performances médiocres ($\mathsf{\kappa \ll 0.80}$), limites atteintes
+- Performances médiocres ($\mathsf{\kappa \ll}$ 0.80), limites atteintes
 
 ## Forêts aléatoires
 
